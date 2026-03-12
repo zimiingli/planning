@@ -1,5 +1,5 @@
 # Phase 5: Full Experiment Status Report
-**Last Updated:** 2026-03-11 (20:00 update)
+**Last Updated:** 2026-03-12 (14:45 update)
 **Goal:** FRVC gating framework across 7 environments (6 GO + 1 negative example)
 
 ---
@@ -12,9 +12,9 @@
 | APPS         | ✅ | ✅ | ⚠️ 3/6 可靠 | ✅ 4/4 (cal)   | ✅ |
 | WebShop      | ✅ | ✅ | ✅ 6/6 | ✅ 4/4 (cal)   | ✅ |
 | BabyAI       | ✅ | ✅ | ✅ 6/6 | ✅ 12/12 done   | ❌ |
-| TWExpress    | ✅ | ✅ | ✅ 6/6 | 🔄 Pending     | ❌ |
-| TextWorld    | ✅ | ✅ | ❌ 4/6 (always_trigger+oracle TIMEOUT) | 🔄 4/12 running | ❌ |
-| Plancraft    | ✅ | ✅ | ⚠️ 4/6 (missing random_50, best_sigma_wrong) | 🔄 10/12 done +2 running | ❌ |
+| TWExpress    | ✅ | ✅ | ✅ 6/6 | 🔄 5/12 done +6 running/pending | ❌ |
+| TextWorld    | ✅ | ✅ | ❌ 4/6 (always_trigger+oracle TIMEOUT) | ⚠️ 10/12 (cats-42 TIMEOUT, corefine-123 FAILED) | ❌ |
+| Plancraft    | ✅ | ✅ | ⚠️ 4/6 (missing random_50, best_sigma_wrong) | ✅ 12/12 done | ❌ |
 
 ### Paper Viability Assessment
 
@@ -44,6 +44,8 @@
 4. **TextWorld SCG seed=456 异常** — rollouts=23.0（其他 seed ~12），SR=49.5% 反而最低。
 5. **WebShop random_50 > always_trigger** — 47.5% vs 43.0%，过度 rollout 反而有害。
 6. **APPS 竞争 baselines 全部退化为 base_only** — rollouts ≈ 0，gate 从不触发。
+7. **TextWorld CB cats-42 TIMEOUT** — CaTS 在 TextWorld 的 rollout 成本极高 (22 ro/ep)，12h 不够。仅有 2/3 seeds 有效。
+8. **TextWorld CB corefine-123 FAILED** — 运行 22 分钟后失败，需检查日志。仅有 2/3 seeds 有效。
 
 ---
 
@@ -267,7 +269,7 @@ Phase 1 signal:      results/phase5/babyai/babyai/phase1_signal_data.json
 | Step 0 | ✅ | base=67.5%, always=99.3%, Δ=+31.8% |
 | Step 1 | ✅ | N=798, step_count 最强 (ρ=−0.477) |
 | Step 2 | ✅ 6/6 | |
-| Step 3 | 🔄 0/12 pending | 被 TextWorld/Plancraft CB 阻塞 |
+| Step 3 | 🔄 5/12 done | cats×3 ✅, catts×2 ✅; catts-456 + corefine×3 + seag×3 running/pending |
 | Cost   | ❌ | |
 
 ### 5.2 Feature Importance (N=798)
@@ -287,10 +289,10 @@ Phase 1 signal:      results/phase5/babyai/babyai/phase1_signal_data.json
 | best_sigma_wrong | core | 99.0% | 99.0% | 99.0% | **99.0%** | 5.2 | 3.20 |
 | **scg_finetune_lr** | **core** | **97.0%** | **98.0%** | **96.0%** | **97.0%** | **5.1** | **1.38** |
 | oracle | core | 98.5% | 99.5% | 100.0% | **99.3%** | 3.5 | 0.91 |
-| CATTS | CB | — | — | — | — | — | — |
-| SEAG | CB | — | — | — | — | — | — |
-| CoRefine | CB | — | — | — | — | — | — |
-| CaTS | CB | — | — | — | — | — | — |
+| CaTS | CB | 96.0% | 96.5% | 97.5% | **96.7%** | 5.5 | 2.08/1.91/1.93 |
+| CATTS | CB | 97.0% | 97.5% | 🔄 | **97.3%** | 6.6 | 2.41/2.21/— |
+| SEAG | CB | 🔄 | 🔄 | 🔄 | — | — | — |
+| CoRefine | CB | 🔄 | 🔄 | 🔄 | — | — | — |
 
 **TWExpress 是"rollout 永远无害"环境：** Step 1 数据显示 utility 从不为负 (0/798)，22.6% 正面、77.4% 中性。因此：
 - **触发率越高 SR 越高：** always(99.3%, 100%) > bsw(99.0%, 63%) > r50(97.8%, 50%) > SCG(97.0%, 28%)
@@ -298,11 +300,12 @@ Phase 1 signal:      results/phase5/babyai/babyai/phase1_signal_data.json
 - **SCG 的选择性在此环境是劣势** — 正确学到"early steps 最有价值"，但选择性限制了 rollout 总量
 - **Oracle(99.3%, 0.91 ro/ep) 的效率最高** — 精准识别 22.6% 有效步骤，用最少 rollout 达到最高 SR
 - **论文叙事：** TWExpress 与 WebShop 形成对比 — WebShop 过度 rollout 有害 (SCG 选择性是优势)，TWExpress rollout 无害 (SCG 选择性是劣势)。两个环境共同说明 SCG 确实学会了信号方向，但最优触发策略因环境而异。
+- **CB 初步结果 (5/12):** CaTS(96.7%) ≈ SCG(97.0%), CATTS(97.3%, 2seeds) ≈ SCG — CB 方法在"rollout 无害"环境中同样有效，佐证了 TWExpress 作为对比案例的价值。
 
 ### 5.4 Data Paths
 ```
 Step 2:              results/phase5/twexpress/twexpress/{method}/seed_{s}/summary.json
-Step 3:              results/phase5/competing_baselines_calibrated/twexpress/{method}/seed_{s}/summary.json  (pending)
+Step 3:              results/phase5/competing_baselines_calibrated/twexpress/{method}/seed_{s}/summary.json  (5/12 done)
 Phase 1 signal:      results/phase5/twexpress/twexpress/phase1_signal_data.json
 ```
 
@@ -316,7 +319,7 @@ Phase 1 signal:      results/phase5/twexpress/twexpress/phase1_signal_data.json
 | Step 0 | ✅ | base=45.0%, Δ 待 always_trigger 完成 |
 | Step 1 | ✅ | N=9999, score_fraction 最强 (ρ=+0.174) |
 | Step 2 | ❌ 4/6 | always_trigger + oracle 均 **TIMEOUT**(12h) |
-| Step 3 | 🔄 4/12 running | cats ×3 + catts ×1 running; 8 pending |
+| Step 3 | ⚠️ 10/12 | cats-42 TIMEOUT, corefine-123 FAILED; 其余 10/12 完成 |
 | Cost   | ❌ | |
 
 ### 6.2 Feature Importance (N=9999)
@@ -339,12 +342,13 @@ Phase 1 signal:      results/phase5/twexpress/twexpress/phase1_signal_data.json
 | best_sigma_wrong | core | 58.0% | 55.5% | 57.5% | **57.0%** | 31.9 | 14.30 |
 | scg_finetune_lr | core | 60.0% | 53.5% | ⚠️49.5% | **54.3%** | 36.8 | 11.6/13.4/⚠️23.0 |
 | oracle | core | ❌ TIMEOUT | ❌ TIMEOUT | ❌ TIMEOUT | — | — | — |
-| CATTS | CB | — | — | — | — | — | — |
-| SEAG | CB | — | — | — | — | — | — |
-| CoRefine | CB | — | — | — | — | — | — |
-| CaTS | CB | — | — | — | — | — | — |
+| CaTS | CB | ❌ TIMEOUT | 58.0% | 69.0% | **63.5%** (2seeds) | 33.5 | 22.0/19.7 |
+| CATTS | CB | 56.5% | 54.5% | 53.0% | **54.7%** | 28.5 | 5.3/6.4/5.5 |
+| SEAG | CB | 56.0% | 54.5% | 53.5% | **54.7%** | 28.6 | 6.1/6.4/5.7 |
+| CoRefine | CB | 56.0% | ❌ FAILED | 53.0% | **54.5%** (2seeds) | 28.6 | 6.2/—/5.5 |
 
-⚠️ always_trigger + oracle 均 12h TIMEOUT (3chains×3horizon×5top_k 成本过高)。TextWorld 现缺 2/6 core methods，**不可用于 paper**。SCG seed=456 rollouts=23.0 翻倍但 SR 最低。
+⚠️ always_trigger + oracle 均 12h TIMEOUT。TextWorld 现缺 2/6 core methods，**不可用于 paper**。SCG seed=456 rollouts=23.0 翻倍但 SR 最低。
+⚠️ CB 新增: cats-42 TIMEOUT, corefine-123 FAILED。CaTS(63.5%, 2seeds) > base_only(45.0%) 但 rollout 极多 (~21 ro/ep)。CATTS/SEAG/CoRefine 均~54.7%，优于 base 但低于 r50(64.8%)。
 
 ### 6.4 Data Paths
 ```
@@ -363,7 +367,7 @@ Phase 1 signal:      results/phase5/textworld/textworld/phase1_signal_data.json
 | Step 0 | ✅ | base=29.8%, always=22.8%, **Δ=−7.0%** (rollout 有害) |
 | Step 1 | ✅ | N=1360, has_output 最强 (ρ=+0.162), utility 极低 (positive_rate=1.1%) |
 | Step 2 | ⚠️ 4/6 (K=3) | Missing random_50, best_sigma_wrong |
-| Step 3 | 🔄 10/12 done | seag-456 + corefine-456 running |
+| Step 3 | ✅ 12/12 done | 全部完成 |
 | Cost   | ❌ | |
 
 ### 7.2 Feature Importance (N=1360)
@@ -385,45 +389,45 @@ Phase 1 signal:      results/phase5/textworld/textworld/phase1_signal_data.json
 | scg_finetune_lr | core | 21.0% | 20.0% | 23.5% | **21.5%** | 8.1 | 3.33 |
 | oracle | core | 20.0% | 20.5% | 23.5% | **21.3%** | 7.0 | 0.08 |
 | CATTS | CB | 23.5% | 25.0% | 26.5% | **25.0%** | 9.6 | 2.01/2.11/2.31 |
-| SEAG | CB | 24.0% | 25.0% | 🔄 | **24.5%** | 9.7 | 2.03/2.13/— |
-| CoRefine | CB | 22.5% | 20.0% | 🔄 | **21.3%** | 9.7 | 2.04/1.98/— |
+| SEAG | CB | 24.0% | 25.0% | 25.5% | **24.8%** | 9.7 | 2.03/2.13/2.32 |
+| CoRefine | CB | 22.5% | 20.0% | 26.0% | **22.8%** | 9.7 | 2.04/1.98/2.17 |
 | CaTS | CB | 21.5% | 20.0% | 25.5% | **22.3%** | 7.9 | 4.65/4.33/4.19 |
 
 **Rollout 在此环境本质上有害。** base_only(29.8%) 是最佳策略，所有 rollout 方法均低于 base_only:
 - 即使 oracle(21.3%) 也比 base_only 低 8.5pp
 - CB 方法 (CATTS 25.0%, SEAG 24.5%, CaTS 22.3%) 同样不如 base_only，但略优于 always_trigger(22.8%)
 - CATTS/SEAG rollout 少 (~2/ep) 因此 SR 损害较小；CaTS rollout 多 (~4.4/ep) 接近 always_trigger 水平
+- **CB 完整排序:** CATTS(25.0%) > SEAG(24.8%) > CaTS(22.3%) ≈ CoRefine(22.8%) ≈ always(22.8%) > SCG(21.5%) ≈ oracle(21.3%)
 
 ### 7.4 Data Paths
 ```
 Step 2:              results/phase5/plancraft/plancraft/{method}/seed_{s}/summary.json
-Step 3:              results/phase5/competing_baselines_calibrated/plancraft/{method}/seed_{s}/summary.json  (pending)
+Step 3:              results/phase5/competing_baselines_calibrated/plancraft/{method}/seed_{s}/summary.json  (12/12 done)
 Phase 1 signal:      results/phase5/plancraft/plancraft/phase1_signal_data.json
 ```
 
 ---
 
-## 8. Job Tracking (2026-03-11 20:00)
+## 8. Job Tracking (2026-03-12 14:45)
 
-### 已完成 (since last update)
-- ✅ **TextWorld oracle × 3** — ❌ 全部 TIMEOUT (12h)
-- ✅ **BabyAI CB 12/12** — 全部完成
-- ✅ **Plancraft CB 10/12** — cats×3 + catts×3 + seag×2 + corefine×2
+### 已完成 (since 2026-03-11 20:00)
+- ✅ **Plancraft CB 12/12** — seag-456, corefine-456 完成
+- ✅ **TextWorld CB 10/12** — cats(2/3, cats-42 TIMEOUT), catts×3, seag×3, corefine(2/3, corefine-123 FAILED)
+- ✅ **TWExpress CB 5/12** — cats×3, catts×2
 
 ### Running (6 jobs)
 | Job ID | Name | Runtime |
 |---|---|---|
-| 23089030 | frvc-cb-pc-corefine-456 | ~1.5h |
-| 23089033 | frvc-cb-pc-seag-456 | ~1h |
-| 23089034 | frvc-cb-tw-cats-123 | ~40min |
-| 23089035 | frvc-cb-tw-cats-42 | ~36min |
-| 23089036 | frvc-cb-tw-cats-456 | ~34min |
-| 23089037 | frvc-cb-tw-catts-123 | ~15min |
+| 23089051 | frvc-cb-twe-catts-456 | ~5h50m |
+| 23089052 | frvc-cb-twe-corefine-123 | ~4h14m |
+| 23089053 | frvc-cb-twe-corefine-42 | ~3h45m |
+| 23089054 | frvc-cb-twe-corefine-456 | ~1h28m |
+| 23089055 | frvc-cb-twe-seag-123 | ~55m |
+| 23089056 | frvc-cb-twe-seag-42 | ~17m |
 
-### Pending (29 jobs)
-- TextWorld CB: 8 remaining (catts×2, corefine×3, seag×3)
-- TWExpress CB: 12 jobs
-- **APPS rerun: 9 jobs** (random_50×3, best_sigma_wrong×3, oracle×3) → `results/phase5/apps_rerun/`
+### Pending (10 jobs)
+- TWExpress CB: 1 remaining (seag-456, QOSMaxGRESPerUser)
+- **APPS rerun: 9 jobs** (random_50×3, best_sigma_wrong×3, oracle×3) → `results/phase5/apps_rerun/` (Priority/QOS 排队)
 
 ---
 
@@ -465,9 +469,9 @@ results/phase5/calibration_data/{env}/phase1_signal_data.json         (Phase1 en
 
 1. ~~TextWorld always_trigger 超时~~ → ❌ oracle 也 TIMEOUT，TextWorld 确认不可用
 2. **APPS rerun r50/bsw/oracle** — 9 jobs pending (GPU quota)，output → `results/phase5/apps_rerun/`
-3. **Plancraft CB** — 还差 seag-456 + corefine-456 (running)
-4. **TWExpress CB** — 12 jobs pending
-5. **TextWorld CB** — 4 running + 8 pending (但 core methods 不完整，仅供参考)
+3. ~~Plancraft CB~~ → ✅ 12/12 全部完成
+4. **TWExpress CB** — 5/12 done, 6 running, 1 pending (预计数小时内完成)
+5. ~~TextWorld CB~~ → ⚠️ 10/12 完成 (cats-42 TIMEOUT, corefine-123 FAILED — 考虑是否重跑)
 6. **Plancraft random_50 + best_sigma_wrong** — 是否补跑？(环境为负例，优先级低)
 7. **Cost Analysis** — 等结果齐全后统一计算 (BabyAI/TWExpress/TextWorld/Plancraft)
 
