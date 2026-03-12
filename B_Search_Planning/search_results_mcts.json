@@ -1,0 +1,127 @@
+[
+  {
+    "success": true,
+    "query": "Monte Carlo Tree Search MCTS for language model planning - RAP LATS ReST-MCTS highly cited papers",
+    "response": "# Monte Carlo Tree Search for Language Model Planning: Recent Advances and Key Research\n\nMonte Carlo Tree Search (MCTS) has emerged as a powerful technique for enhancing language model planning and code generation by enabling systematic exploration of multiple solution trajectories rather than relying on greedy decoding. Recent research demonstrates significant improvements in factual accuracy, code correctness, and task feasibility when MCTS is integrated with large language models.\n\n## Core Applications and Recent Breakthroughs\n\n**Table-Based Question Answering with Code Generation**\n\nA recent approach formulates LLM decoding as a Markov Decision Process, enabling MCTS as a lookahead-based planning algorithm during code generation for table-based question-answering tasks[1]. This neuro-symbolic approach translates natural language queries into executable Python code, using execution success on synthetic tests and real datasets as reward signals. The method allows MCTS to explore multiple code-generation paths, validate outcomes, and iteratively refine solutions rather than maximizing sequence likelihood in a single step, achieving **2.38x accuracy improvement** compared to standard decoding[1].\n\n**Language-Guided Robot Task and Motion Planning**\n\nLGMCTS (Language-Guided Monte-Carlo Tree Search) addresses semantic object rearrangement by combining LLMs with MCTS for feasible action planning[2]. The approach uses LLMs to parse natural language descriptions into spatial distribution specifications, then employs MCTS's efficient exploration to provide executable Task and Motion Planning (TAMP) solutions. Evaluated on the Executable Language-Guided Rearrangement (ELGR) benchmark with over 1,600 language queries, LGMCTS demonstrates superior performance in feasibility and semantic consistency compared to direct LLM-based approaches like Code as Policies and Progprompt[2].\n\n**Automated Program Repair and Debugging**\n\nCodePilot combines Qwen3 large language models with Monte Carlo Tree Search for automated GitHub issue resolution[3]. The framework treats patch generation as a decision tree search, utilizing execution feedback to guide the model toward valid solutions. This hybrid approach integrates hierarchical fault localization and confidence-calibrated refinement, enabling the system to explore diverse solution trajectories where each node represents a partial patch state, with termination occurring when tests pass or maximum iterations are reached[3].\n\n## Heuristic Design and Optimization\n\n**Automatic Heuristic Evolution**\n\nMCTS-AHD (MCTS for Automatic Heuristic Design) extends LLM-based heuristic generation by organizing all LLM-generated heuristics in a tree structure rather than maintaining fixed populations[4]. This approach better develops the potential of temporarily underperforming heuristics and avoids local optima convergence. The method delivers significantly higher-quality heuristics on complex optimization tasks including route planning and task allocation, demonstrating the effectiveness of comprehensive exploration over population-based evolutionary approaches[4].\n\n## Code World Models and Program Synthesis\n\n**Generate, Improve and Fix Framework**\n\nGIF-MCTS (Generate, Improve and Fix with Monte Carlo Tree Search) represents a comprehensive code generation strategy for LLMs addressing complex program synthesis[5][6]. The approach tackles challenges in understanding complex instructions, generating exact code with non-trivial logic, and self-debugging long programs using feedback from unit tests and environment trajectories. Introduced alongside the Code World Models Benchmark (CWMB)—comprising 18 diverse reinforcement learning environments with textual descriptions and curated trajectories—this method demonstrates the effectiveness of iterative refinement guided by MCTS in offline RL settings[5][6].\n\n## Key Methodological Insights\n\nThe integration of MCTS with language models leverages several critical advantages:\n\n- **Execution-based feedback**: Using test execution and environment interaction as reward signals enables more reliable validation than likelihood-based metrics alone\n- **Hierarchical exploration**: MCTS's tree structure allows systematic exploration of solution spaces while maintaining computational efficiency\n- **Iterative refinement**: The ability to backpropagate value estimates through partial solutions enables progressive improvement rather than single-pass generation\n- **Feasibility validation**: Real-world execution checks ensure generated solutions are not merely plausible but actually executable\n\n## Research Gaps and Future Directions\n\nWhile these approaches demonstrate substantial improvements, several research questions remain open. The search results indicate ongoing work in scaling MCTS-LLM integration to larger problem spaces, optimizing the balance between exploration and exploitation in diverse domains, and developing more sophisticated reward signals that capture semantic correctness beyond syntactic validity. The field would benefit from standardized benchmarks comparing MCTS-guided approaches across multiple domains and from theoretical analysis of convergence properties in LLM-based planning scenarios.\n\nThe convergence of MCTS with modern large language models represents a significant methodological advance, moving beyond greedy decoding toward principled planning algorithms that can systematically explore solution spaces while leveraging LLM capabilities for semantic understanding and code generation.",
+    "citations": [
+      {
+        "type": "source",
+        "url": "https://aclanthology.org/2025.semeval-1.256/",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "http://rl.cs.rutgers.edu/publications/HaonanIROS2024C.pdf",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://www.arxiv.org/pdf/2602.00129",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://icml.cc/virtual/2025/poster/45984",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://openreview.net/forum?id=9SpWvX9ykp&noteId=kH2xomkeeu",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://neurips.cc/virtual/2024/poster/96309",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://github.com/benedekrozemberczki/awesome-monte-carlo-tree-search-papers",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://dl.acm.org/doi/10.5555/3737916.3739849",
+        "title": "",
+        "date": ""
+      }
+    ],
+    "sources": [
+      {
+        "type": "source",
+        "url": "https://aclanthology.org/2025.semeval-1.256/",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "http://rl.cs.rutgers.edu/publications/HaonanIROS2024C.pdf",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://www.arxiv.org/pdf/2602.00129",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://icml.cc/virtual/2025/poster/45984",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://openreview.net/forum?id=9SpWvX9ykp&noteId=kH2xomkeeu",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://neurips.cc/virtual/2024/poster/96309",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://github.com/benedekrozemberczki/awesome-monte-carlo-tree-search-papers",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://dl.acm.org/doi/10.5555/3737916.3739849",
+        "title": "",
+        "date": ""
+      }
+    ],
+    "timestamp": "2026-02-12 16:06:00",
+    "model": "perplexity/sonar-pro",
+    "usage": {
+      "prompt_tokens": 834,
+      "completion_tokens": 1085,
+      "total_tokens": 1919,
+      "cost": 0.02478,
+      "is_byok": false,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "cost_details": {
+        "upstream_inference_cost": 0.02478,
+        "upstream_inference_prompt_cost": 0.002502,
+        "upstream_inference_completions_cost": 0.022278
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  }
+]

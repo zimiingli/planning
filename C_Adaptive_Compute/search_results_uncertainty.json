@@ -1,0 +1,127 @@
+[
+  {
+    "success": true,
+    "query": "Uncertainty-based adaptive computation - CoRefine confidence-based early exit for LLMs",
+    "response": "# Uncertainty-Based Adaptive Computation: Confidence-Guided Early Exit Methods for LLMs\n\n**CoRefine** and related confidence-based early exit approaches represent a significant advancement in efficient LLM inference by leveraging uncertainty quantification to adaptively allocate computational resources. These methods enable models to achieve competitive reasoning accuracy while substantially reducing token generation costs through selective layer skipping and dynamic compute allocation.\n\n## Core Methodology and Key Innovations\n\n**CoRefine: Confidence-Guided Self-Refinement** introduces a lightweight approach to adaptive test-time compute that treats confidence as a control signal rather than a correctness guarantee[5]. The method employs a 211k-parameter Conv1D controller atop a frozen LLM to guide self-refinement, achieving competitive accuracy using only a fraction of the tokens required by standard parallel decoding approaches (which typically require 512 samples)[5]. The framework extends to **CoRefine-Tree**, a hybrid sequential-parallel variant that adaptively balances exploration and exploitation while maintaining easy serving integration and verifier compatibility[5].\n\nThe fundamental insight underlying these approaches is that **LLMs can selectively leverage their full computational capacity only for the most challenging token predictions**, rather than applying uniform computation across all generation steps[6]. This observation has motivated the development of early-exit architectures that dynamically determine when intermediate layer predictions are sufficiently confident to terminate processing early.\n\n## Confidence Measurement Strategies\n\nMultiple confidence measurement approaches have been explored in the literature:\n\n- **Softmax response**: Uses the maximum probability from the output distribution as a confidence measure\n- **Hidden states similarity**: Computes cosine similarity between consecutive layer representations; high similarity indicates stable representations and permits early exit[2]\n- **Dedicated early-exit classifiers**: Trains a separate classifier to determine exit eligibility based on intermediate hidden states[2][4]\n\nResearch demonstrates that **hidden states similarity achieves the highest early exit rates and best inference speed** among these techniques[2].\n\n## Recent Advances: CORE and Global Entropy Dynamics\n\nA forthcoming ICLR 2026 submission introduces **COnfidence Region Exits (CORE)**, which pioneers analysis of global entropy dynamics in chain-of-thought (CoT) reasoning[1]. This approach identifies a critical pattern: CoT generation begins in a high-entropy uncertainty region before transitioning to a stable, low-entropy confidence region, with this transition strongly correlating with complete reasoning processes[1].\n\nCORE demonstrates superior trade-offs between computational cost and accuracy across multiple models including Deepseek-R1-Distill-Qwen-7B, Qwen3-4B-Thinking-2507, and Qwen3-14B on challenging benchmarks (AIME24, AIME25, GPQA)[1]. This work extends early-exit methodology beyond single-token prediction to reasoning trajectory analysis, providing insights into the global dynamics of model uncertainty.\n\n## Foundational Work: CALM\n\n**Confident Adaptive Language Modeling (CALM)** established the foundation for confidence-based early exit in Transformer-based LLMs with consistent sequence-level performance[3][4]. CALM's training approach encourages meaningful intermediate layer representations through a weighted loss function that assigns higher weights to top layers while still training all layers[4]. The method requires minimal modifications to standard training and inference pipelines, facilitating practical deployment.\n\n## Practical Implementation and Inference Optimization\n\nImplementing early-exit LLMs presents non-trivial engineering challenges. An efficient inference framework addresses two critical issues[2]:\n\n1. **Batch inference at iteration-level granularity**: Processing batches until all sequences surpass the early-exit confidence threshold\n2. **KV cache management**: Computing key-value pairs for skipped layers to maintain consistency for subsequent token generation\n\nThis framework achieves **up to 1.25× speedup** compared to full-layer inference in vLLM implementations[2], demonstrating practical viability for production deployment.\n\n## Research Landscape and Future Directions\n\nThe field encompasses complementary approaches to adaptive computation:\n\n- **Parameter-sharing recursive architectures** that combine early exits with low-rank adapters to maximize inference speed in large batch settings[6]\n- **Test-time scaling methods** that adaptively allocate parallel decoding resources based on confidence signals\n- **Verifier-compatible frameworks** enabling integration with external verification systems for improved reasoning reliability\n\nCurrent research gaps include: (1) theoretical understanding of why entropy dynamics correlate with reasoning completeness; (2) optimal confidence threshold calibration across diverse task distributions; (3) integration with speculative decoding and other acceleration techniques; and (4) extension to multimodal and long-context reasoning scenarios.\n\n## Implications and Impact\n\nThese confidence-guided approaches address a critical bottleneck in LLM deployment: the computational cost of inference. By enabling models to dynamically allocate compute proportional to task difficulty, these methods reduce operational costs while maintaining output quality—particularly valuable for resource-constrained environments and real-time applications. The modular nature of confidence-based control signals enables integration into diverse reasoning frameworks, from simple token generation to complex agentic systems with imperfect verifiers[5].\n\nThe convergence of entropy-based analysis (CORE), lightweight controller-based refinement (CoRefine), and foundational confidence measurement (CALM) suggests a maturing research area with clear practical applications and theoretical depth.",
+    "citations": [
+      {
+        "type": "source",
+        "url": "https://openreview.net/forum?id=54Klnf9t2s",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://arxiv.org/html/2407.20272v1",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://openreview.net/forum?id=uLYc4L3C81A",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://research.google/blog/accelerating-text-generation-with-confident-adaptive-language-modeling-calm/",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://arxiv.org/abs/2602.08948",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://www.youtube.com/watch?v=tJovEuFw8uk",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://www.themoonlight.io/de/review/corefine-confidence-guided-self-refinement-for-adaptive-test-time-compute",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://github.com/falcon-xu/early-exit-papers",
+        "title": "",
+        "date": ""
+      }
+    ],
+    "sources": [
+      {
+        "type": "source",
+        "url": "https://openreview.net/forum?id=54Klnf9t2s",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://arxiv.org/html/2407.20272v1",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://openreview.net/forum?id=uLYc4L3C81A",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://research.google/blog/accelerating-text-generation-with-confident-adaptive-language-modeling-calm/",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://arxiv.org/abs/2602.08948",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://www.youtube.com/watch?v=tJovEuFw8uk",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://www.themoonlight.io/de/review/corefine-confidence-guided-self-refinement-for-adaptive-test-time-compute",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://github.com/falcon-xu/early-exit-papers",
+        "title": "",
+        "date": ""
+      }
+    ],
+    "timestamp": "2026-02-12 16:07:30",
+    "model": "perplexity/sonar-pro",
+    "usage": {
+      "prompt_tokens": 828,
+      "completion_tokens": 1160,
+      "total_tokens": 1988,
+      "cost": 0.02588,
+      "is_byok": false,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "cost_details": {
+        "upstream_inference_cost": 0.02588,
+        "upstream_inference_prompt_cost": 0.002484,
+        "upstream_inference_completions_cost": 0.023396
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  }
+]

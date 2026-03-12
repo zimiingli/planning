@@ -1,0 +1,103 @@
+[
+  {
+    "success": true,
+    "query": "Hierarchical planning and Plan-and-Act for autonomous agents and LLM-based planning",
+    "response": "# Hierarchical Planning and Plan-and-Act for Autonomous Agents and LLM-Based Planning\n\nHierarchical planning frameworks have emerged as a critical approach to address the limitations of large language models (LLMs) in complex, long-horizon decision-making tasks. Recent research demonstrates that decomposing complex tasks into hierarchical levels—combining high-level strategic planning with low-level reactive execution—significantly improves both task success rates and robustness in autonomous agent systems.\n\n## Core Challenges and Motivations\n\nLLM-based agents struggle with extended planning horizons due to two fundamental limitations: lack of **macroscopic guidance** that provides overall task direction, and insufficient **continuous oversight** during execution that prevents deviation from objectives and adaptation to environmental changes[1]. Traditional end-to-end LLM approaches often fail in complex scenarios requiring multi-step reasoning and dynamic replanning, necessitating structured hierarchical approaches that combine symbolic planning with neural reasoning.\n\n## Key Hierarchical Planning Frameworks\n\n### HiPlan: Adaptive Global-Local Guidance\n\n**HiPlan** introduces a hierarchical planning framework that provides adaptive global-local guidance to boost LLM-based agents' decision-making capabilities[1]. The framework operates through two complementary phases:\n\n- **Offline phase**: Constructs a milestone library from expert demonstrations, enabling structured experience reuse by retrieving semantically similar tasks and milestones\n- **Execution phase**: Dynamically adapts trajectory segments from past milestones to generate step-wise hints that align current observations with milestone objectives\n\nThis approach decomposes complex tasks into two levels: milestone action guides for general direction and step-wise hints for detailed actions. Extensive experiments across challenging benchmarks demonstrate that HiPlan substantially outperforms strong baselines, with ablation studies validating the complementary benefits of its hierarchical components[1].\n\n### H-AIM: Multi-Robot Hierarchical Planning\n\n**H-AIM** (Hierarchical Autonomous Intelligent Multi-Robot Planning) presents a novel three-stage cascaded architecture that orchestrates LLMs, Planning Domain Definition Language (PDDL), and Behavior Trees[2]. This framework establishes an end-to-end closed loop from high-level instruction parsing to low-level robust execution:\n\n1. **PDDL File Generator (PFG)**: Leverages LLMs to parse natural language instructions and generate formal planning problem descriptions\n2. **Hybrid Planner (HP)**: Combines semantic reasoning of LLMs with search capabilities of classical planners to produce optimized action sequences\n3. **Behavior Tree Compiler (BTC)**: Compiles resulting plans into behavior trees for reactive control with embedded precondition checks and fallback mechanisms\n\nThe hierarchical structure ensures macro-task parallelism and micro-action robustness, with automatic synchronization nodes inserted at appropriate positions via shared blackboard mechanisms for multi-robot coordination[2]. This integration of formal symbolic planning with reactive control represents a significant advancement in handling long-horizon collaborative tasks for heterogeneous robot teams.\n\n### Hierarchical Language Agents for Human-AI Coordination\n\n**HLA** (Hierarchical Language Agent) frameworks provide both strong reasoning abilities while maintaining real-time execution capabilities for human-AI coordination scenarios[3]. These agents balance the need for sophisticated planning with responsive, interactive performance in dynamic environments.\n\n## Methodological Innovations\n\nThe convergence of hierarchical planning with LLM-based agents introduces several key methodological advances:\n\n**Semantic-Symbolic Integration**: Modern frameworks combine the semantic understanding and natural language processing capabilities of LLMs with the formal search and optimization properties of symbolic planners (PDDL). This hybrid approach leverages the strengths of both paradigms—LLMs excel at understanding context and generating reasonable action sequences, while symbolic planners provide guarantees about plan optimality and correctness.\n\n**Milestone-Based Decomposition**: Rather than generating complete action sequences end-to-end, hierarchical approaches decompose tasks into intermediate milestones or subgoals. This reduces the planning horizon at each level, making the problem more tractable while enabling better generalization across similar tasks through milestone library reuse.\n\n**Reactive Execution Layers**: Behavior trees and other reactive control mechanisms provide a crucial execution layer that handles real-time adaptation, error recovery, and environmental responsiveness. This decouples high-level planning from low-level control, allowing agents to maintain strategic objectives while adapting tactically to unexpected situations.\n\n## Practical Applications and Enterprise Adoption\n\nBy 2026, hierarchical multi-agent orchestration has become central to enterprise AI systems. Platforms like **CrewAI** implement role-based collaboration among autonomous agents, supporting sequential, hierarchical, and consensual process flows[4]. These systems enable organizations to define high-level goals and allow structured teams of agents to plan, collaborate, and execute tasks autonomously, with features including real-time reasoning tracing, automated training, and serverless scaling.\n\nSimilarly, enterprise platforms integrate **Multi-Agent Orchestration engines** that use reasoning to identify necessary skills and dynamically assign them to suitable agents in real-time, with governance and observability features ensuring compliance and safety[4].\n\n## Research Gaps and Future Directions\n\nWhile hierarchical planning frameworks have demonstrated substantial improvements in task success rates and robustness, several research challenges remain:\n\n- **Scalability to ultra-long horizons**: Current approaches handle complex tasks effectively, but scaling to planning horizons spanning hundreds or thousands of steps remains challenging\n- **Formal verification**: Integrating formal verification methods to provide guarantees about plan safety and correctness in safety-critical applications\n- **Adaptive hierarchy depth**: Determining optimal decomposition levels dynamically based on task complexity and environmental uncertainty\n- **Cross-domain transfer**: Improving generalization of learned milestones and planning strategies across diverse task domains\n\nThe field is moving toward tighter integration of classical planning guarantees with neural network flexibility, creating systems that are both theoretically grounded and practically effective in real-world autonomous agent applications.",
+    "citations": [
+      {
+        "type": "source",
+        "url": "https://arxiv.org/abs/2508.19076",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://arxiv.org/html/2601.11063v1",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://dl.acm.org/doi/10.5555/3635637.3662979",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://dynamicbusiness.com/featured/tech-tuesday/tech-tuesday-best-autonomous-ai-agents-in-2026.html",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://dspace.mit.edu/bitstream/handle/1721.1/162935/nayak-sidnayak-phd-aeroastro-2025-thesis.pdf?sequence=1&isAllowed=y",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://hackernoon.com/the-realistic-guide-to-mastering-ai-agents-in-2026",
+        "title": "",
+        "date": ""
+      }
+    ],
+    "sources": [
+      {
+        "type": "source",
+        "url": "https://arxiv.org/abs/2508.19076",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://arxiv.org/html/2601.11063v1",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://dl.acm.org/doi/10.5555/3635637.3662979",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://dynamicbusiness.com/featured/tech-tuesday/tech-tuesday-best-autonomous-ai-agents-in-2026.html",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://dspace.mit.edu/bitstream/handle/1721.1/162935/nayak-sidnayak-phd-aeroastro-2025-thesis.pdf?sequence=1&isAllowed=y",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://hackernoon.com/the-realistic-guide-to-mastering-ai-agents-in-2026",
+        "title": "",
+        "date": ""
+      }
+    ],
+    "timestamp": "2026-02-12 16:06:41",
+    "model": "perplexity/sonar-pro",
+    "usage": {
+      "prompt_tokens": 827,
+      "completion_tokens": 1258,
+      "total_tokens": 2085,
+      "cost": 0.02735,
+      "is_byok": false,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "cost_details": {
+        "upstream_inference_cost": 0.02735,
+        "upstream_inference_prompt_cost": 0.002481,
+        "upstream_inference_completions_cost": 0.024869
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  }
+]

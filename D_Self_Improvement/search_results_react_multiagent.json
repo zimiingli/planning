@@ -1,0 +1,127 @@
+[
+  {
+    "success": true,
+    "query": "ReAct reasoning and acting multi-agent critique for language model agents",
+    "response": "The **ReAct paradigm** combines reasoning traces and actions in an interleaved manner for language model agents[1][4], demonstrating superior performance over reasoning-only or acting-only approaches across diverse tasks. While the search results provide comprehensive coverage of the foundational ReAct framework, specific research on multi-agent critique extensions requires supplementary context beyond the current results.\n\n## Foundational ReAct Framework\n\n**ReAct** (Reasoning + Acting) represents a paradigm shift in how language models approach complex tasks. Rather than separating reasoning and acting capabilities, ReAct enables language models to generate both verbal reasoning traces and task-specific actions in an interleaved manner[2][5]. The framework operates on a simple but powerful principle: thinking alone is insufficient; external action and observation feedback enable more robust problem-solving[3].\n\nThe core innovation lies in the **synergy between reasoning and acting**: reasoning traces help models induce, track, and update action plans while handling exceptions, while actions interface with external sources (knowledge bases, APIs, environments) to gather grounding information[4][5]. This bidirectional relationship—\"reason to act\" and \"act to reason\"—distinguishes ReAct from prior approaches that treated these capabilities independently[1].\n\n## Empirical Validation and Performance\n\nThe ReAct paper evaluated the paradigm across four diverse benchmarks[1]:\n\n- **Question Answering (HotPotQA)**: ReAct outperformed vanilla action-generation models and achieved competitive performance with chain-of-thought reasoning when combined (best results emerged from ReAct+CoT fusion)[1]\n- **Fact Verification (Fever)**: ReAct overcame hallucination and error propagation issues prevalent in pure chain-of-thought reasoning by leveraging Wikipedia API interactions[4][5]\n- **Interactive Decision-Making (ALFWorld, WebShop)**: The framework demonstrated advantages in tasks requiring dynamic environment interaction[1]\n\nA critical finding was that **reasoning presence matters differentially by task type**[2]: for reasoning-primary tasks, reasoning traces and actions alternate throughout problem-solving trajectories, while decision-making tasks benefit from sparse, strategically-positioned reasoning traces[1]. This flexibility enables the model to determine asynchronous occurrence of reasoning and action components[1].\n\n## Interpretability and Human Alignment\n\nA distinguishing advantage of ReAct is its **human-aligned task-solving trajectories**[1]. Unlike black-box language model inference, ReAct generates explicit reasoning traces that humans can readily inspect, making the decision basis transparent and diagnosable[2]. The paper demonstrated that humans can easily distinguish information sources—internal model knowledge versus external environment feedback—enabling more trustworthy human-machine collaboration[2].\n\nThe research team explored **human-in-the-loop interactions**, showing that human inspectors could edit ReAct's reasoning traces to correct hallucinations[1]. By replacing a single hallucinating sentence with inspector hints, the model successfully realigned behavior to complete tasks—requiring only minimal manual intervention for trajectory correction[1]. This capability opens new forms of human-machine collaboration where the editing burden is substantially reduced compared to other approaches[1].\n\n## Key Advantages Over Alternatives\n\nReAct addresses fundamental limitations in prior approaches[5]:\n\n- **Versus pure chain-of-thought reasoning**: Reduces hallucination and error propagation through external grounding\n- **Versus pure action-based methods**: Improves plan formation, exception handling, and task progress tracking through reasoning traces\n- **Versus reasoning+acting separately**: Generates more grounded, fact-driven trajectories through integrated synergy[2]\n\nThe framework demonstrates **robustness across prompt variations**, with empirical results confirming that ReAct performance remains stable across different prompting strategies[2]. Fine-tuning results further validate the benefit of integrating reasoning into action-based approaches[2].\n\n## Methodology and Generalizability\n\nReAct operates as a **prompt-based paradigm**[2] requiring no specialized model architectures or training procedures—a critical factor enabling broad applicability across different model scales and capabilities. The framework accommodates diverse reasoning types including[1]:\n\n- Decomposing task goals to create action plans\n- Injecting commonsense knowledge\n- Extracting important information from observations\n- Tracking task progress while maintaining execution\n- Handling exceptions through dynamic plan adjustment\n\nThis versatility explains the paradigm's applicability across language reasoning, fact verification, and interactive decision-making domains[1][5].\n\n## Research Impact and Future Directions\n\nThe ReAct paper (published at ICLR 2023, a top-tier AI/ML venue[7]) has established itself as a foundational contribution in agentic reasoning for language models. The authors outlined intentions to extend the framework toward **embodied tasks** through massive multitask training and integration with reward modeling[1]. \n\nThe architecture's transparency and composability have catalyzed follow-up research in agentic reasoning systems[7], though the search results don't provide detailed information on specific multi-agent critique extensions or advanced collaborative frameworks built atop ReAct.\n\n## Limitations and Research Gaps\n\nOne acknowledged limitation is that **strict structural constraints** (interleaving reasoning, actions, and observations) reduce flexibility in formulating reasoning steps, sometimes resulting in higher reasoning error rates compared to pure chain-of-thought approaches[2]. This trade-off between grounding and reasoning expressiveness represents an important design consideration for practitioners.\n\nCurrent evidence suggests ReAct represents a significant advance in interpretable, grounded language model reasoning, with particular strength in multi-hop reasoning and interactive decision-making tasks. The integration of external environment interaction with explicit reasoning traces addresses critical reliability concerns in contemporary large language model applications.",
+    "citations": [
+      {
+        "type": "source",
+        "url": "https://research.google/blog/react-synergizing-reasoning-and-acting-in-language-models/",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://arxiv.org/pdf/2210.03629",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://architecht.com/en/corporate/blog/technology/react-integrating-reasoning-and-acting-in-language-models/",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://react-lm.github.io",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://openreview.net/forum?id=WE_vluYUL-X",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://collaborate.princeton.edu/en/publications/react-synergizing-reasoning-and-acting-in-language-models/",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://github.com/weitianxin/Awesome-Agentic-Reasoning",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://www.promptingguide.ai/techniques/react",
+        "title": "",
+        "date": ""
+      }
+    ],
+    "sources": [
+      {
+        "type": "source",
+        "url": "https://research.google/blog/react-synergizing-reasoning-and-acting-in-language-models/",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://arxiv.org/pdf/2210.03629",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://architecht.com/en/corporate/blog/technology/react-integrating-reasoning-and-acting-in-language-models/",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://react-lm.github.io",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://openreview.net/forum?id=WE_vluYUL-X",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://collaborate.princeton.edu/en/publications/react-synergizing-reasoning-and-acting-in-language-models/",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://github.com/weitianxin/Awesome-Agentic-Reasoning",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://www.promptingguide.ai/techniques/react",
+        "title": "",
+        "date": ""
+      }
+    ],
+    "timestamp": "2026-02-12 16:08:09",
+    "model": "perplexity/sonar-reasoning-pro",
+    "usage": {
+      "prompt_tokens": 823,
+      "completion_tokens": 1654,
+      "total_tokens": 2477,
+      "cost": 0.02088,
+      "is_byok": false,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "cost_details": {
+        "upstream_inference_cost": 0.02088,
+        "upstream_inference_prompt_cost": 0.001646,
+        "upstream_inference_completions_cost": 0.019234
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  }
+]

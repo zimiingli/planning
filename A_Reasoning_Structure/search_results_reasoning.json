@@ -1,0 +1,151 @@
+[
+  {
+    "success": true,
+    "query": "Chain of Thought prompting and Tree of Thoughts deliberate reasoning for large language models - highly cited papers from NeurIPS ICML",
+    "response": "# Chain-of-Thought and Tree-of-Thought Prompting: High-Impact Research on LLM Reasoning\n\n**Chain-of-Thought (CoT) prompting and Tree-of-Thought (ToT) decoding represent foundational advances in enabling large language models to perform complex multi-step reasoning.** The seminal CoT work established that generating intermediate reasoning steps dramatically improves LLM performance on arithmetic, commonsense, and symbolic tasks, while subsequent ToT and optimization approaches have refined these techniques to balance reasoning quality with computational efficiency.\n\n## Foundational Work: Chain-of-Thought Prompting\n\nThe most influential paper in this domain is the landmark study by **Wei et al. (2022), \"Chain-of-Thought Prompting Elicits Reasoning in Large Language Models,\"** published at NeurIPS 2023 (citing arXiv 2201.11903).[2][3][4] This work is among the most highly-cited AI papers in recent years (1,000+ citations), fundamentally demonstrating that prompting language models to generate a series of intermediate reasoning steps—rather than jumping directly to answers—unlocks emergent reasoning capabilities.[2]\n\nThe key findings include:\n\n- **Performance gains on reasoning benchmarks:** Prompting PaLM 540B with just eight CoT exemplars achieved state-of-the-art accuracy on the GSM8K benchmark of mathematical word problems, surpassing finetuned GPT-3 with a verifier.[2][3]\n- **Emergent ability with scale:** CoT reasoning emerges as a natural capability in sufficiently large models (540B+ parameters), scaling better than standard prompting across arithmetic (GSM8K, SVAMP, MAWPS), commonsense, and symbolic reasoning tasks.[2]\n- **Length generalization:** Models demonstrate improved ability to generalize to inference-time inputs longer than those seen in few-shot exemplars.[2]\n\nThe authors demonstrated that the sequential reasoning structure itself—not merely knowledge activation—drives improvements, shown by ablations where CoT prompts provided after the answer yielded minimal benefit.[2]\n\n## Tree-of-Thought: Deliberate Multi-Path Reasoning\n\nBuilding on CoT's success, **Yao et al.'s Tree-of-Thought (ToT) approach** extends single-path reasoning to multi-path exploration, enabling more deliberate and conscious reasoning styles.[1] Rather than following one reasoning trajectory, ToT models the task as search over a tree where each node represents a reasoning step. This method comprises two key components implemented through LLM prompting:[1]\n\n1. **Thought generator:** Constructs multiple candidate thoughts for the next step based on the current state\n2. **State evaluator:** Scores and ranks each candidate thought, enabling strategic exploration\n\nWhile ToT substantially improves reasoning quality, it incurs significant computational overhead—requiring more than 50× longer inference time compared to standard CoT.[1]\n\n## Recent Advances: Efficient Optimization Methods\n\nA notable 2024 NeurIPS paper, **\"Improving Chain-of-Thought Reasoning in LLMs,\"** introduces **Contrastive Preference Optimization (CPO)**, which addresses the efficiency-quality tradeoff.[1] This work (from NeurIPS 2024 proceedings) presents a critical insight: non-optimal reasoning paths explored during ToT's tree search provide valuable preference supervision that can train models more effectively.\n\n**Key contributions:**\n\n- **CPO methodology:** Synthesizes preference data by categorizing intermediate thoughts as preferred or dispreferred based on ToT's final selected paths, then trains models using a contrastive objective to learn these preferences.[1]\n- **Performance improvements:** Experiments on seven reasoning datasets using LLaMA and Mistral base models demonstrate average accuracy improvements of 4.3% (up to 9.7% maximum) compared to baseline CoT, achieved without additional inference overhead.[1]\n- **Efficiency advantage:** CPO achieves comparable or superior performance to ToT while using training-time supervision only, eliminating the 50× inference latency penalty.[1]\n\nThe methodology leverages the insight that existing approaches discard valuable negative examples—suboptimal thoughts generated during tree search can refine model behavior when incorporated as training signals.\n\n## Emerging Variants and Refinements\n\nRecent work has explored robustness and interpretability concerns:\n\n- **Highlighted Chain-of-Thought (HoT):** Proposes techniques for generating responses with explicit referencing and highlighted reasoning chains to improve traceability and reduce hallucination.[8]\n- **Robustness studies:** Emerging research investigates CoT performance under noisy or irrelevant rationales, addressing practical deployment concerns where reasoning quality may degrade.[9]\n\n## Summary of High-Impact Publications\n\n| Paper | Venue | Key Innovation | Citation Impact |\n|-------|-------|----------------|-----------------|\n| Wei et al., 2022 | NeurIPS 2023 | Foundational CoT prompting | 1,000+ (landmark) |\n| Yao et al. (referenced) | — | Tree-of-Thought multi-path reasoning | 500+ |\n| CPO paper, 2024 | NeurIPS 2024 | Contrastive preference training for efficient reasoning | 20+ (recent) |\n| HoT paper, 2025 | NeurIPS 2025 | Highlighted reasoning with referencing | Emerging |\n\n## Future Directions\n\nCurrent research directions include: (1) scaling CoT/ToT to longer reasoning chains without computational explosion, (2) improving robustness to noisy or misleading intermediate steps, (3) integrating external knowledge retrieval with reasoning steps, and (4) understanding which model scales unlock which reasoning capabilities. The field is moving toward hybrid approaches that balance reasoning quality with inference efficiency, exemplified by CPO's success in distilling ToT's benefits into faster CoT-based inference.",
+    "citations": [
+      {
+        "type": "source",
+        "url": "https://proceedings.neurips.cc/paper_files/paper/2024/file/00d80722b756de0166523a87805dd00f-Paper-Conference.pdf",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://arxiv.org/pdf/2201.11903",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://proceedings.neurips.cc/paper/2022/hash/9d5609613524ecf4f15af0f7b31abca4-Abstract-Conference.html",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://arxiv.org/abs/2201.11903",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://openreview.net/forum?id=_VjQlMeSB_J",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://openreview.net/pdf?id=_VjQlMeSB_J",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://dl.acm.org/doi/10.5555/3600270.3602070",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://neurips.cc/virtual/2025/130525",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://neurips.cc/virtual/2024/poster/95956",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://icml.cc/virtual/2024/events/2024SpotlightPosters",
+        "title": "",
+        "date": ""
+      }
+    ],
+    "sources": [
+      {
+        "type": "source",
+        "url": "https://proceedings.neurips.cc/paper_files/paper/2024/file/00d80722b756de0166523a87805dd00f-Paper-Conference.pdf",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://arxiv.org/pdf/2201.11903",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://proceedings.neurips.cc/paper/2022/hash/9d5609613524ecf4f15af0f7b31abca4-Abstract-Conference.html",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://arxiv.org/abs/2201.11903",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://openreview.net/forum?id=_VjQlMeSB_J",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://openreview.net/pdf?id=_VjQlMeSB_J",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://dl.acm.org/doi/10.5555/3600270.3602070",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://neurips.cc/virtual/2025/130525",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://neurips.cc/virtual/2024/poster/95956",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://icml.cc/virtual/2024/events/2024SpotlightPosters",
+        "title": "",
+        "date": ""
+      }
+    ],
+    "timestamp": "2026-02-12 16:05:06",
+    "model": "perplexity/sonar-reasoning-pro",
+    "usage": {
+      "prompt_tokens": 835,
+      "completion_tokens": 1744,
+      "total_tokens": 2579,
+      "cost": 0.02162,
+      "is_byok": false,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "cost_details": {
+        "upstream_inference_cost": 0.02162,
+        "upstream_inference_prompt_cost": 0.00167,
+        "upstream_inference_completions_cost": 0.01995
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  }
+]

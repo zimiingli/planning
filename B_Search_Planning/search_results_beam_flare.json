@@ -1,0 +1,127 @@
+[
+  {
+    "success": true,
+    "query": "Beam search and best-first search for LLM planning - FLARE lookahead retrieval augmented reasoning",
+    "response": "# Research on Beam Search, Best-First Search, and LLM Planning\n\nI must note that the provided search results contain information about **best-first beam search optimization** but do **not include research on FLARE (Forward-Looking Active Retrieval Augmented Generation)** or its application to LLM planning, which represents a significant gap for your specific query.\n\n## Best-First Beam Search for NLP\n\nThe most relevant high-impact research in the search results focuses on optimizing beam search itself rather than LLM planning applications.\n\n**Best-First Beam Search** was proposed as a memory-reduced variant that reformulates traditional beam search using an agenda-based algorithm with A*-style prioritization[1][2][5]. The key contribution is proving that certain prioritization schemes allow safe pruning of hypotheses that cannot remain in the final beam, achieving **up to 10x speedup in practice** while maintaining identical output quality[1][2][3]. On neural machine translation, the algorithm achieves roughly 30% speed-up over traditional beam search, with substantially larger gains for larger beam widths (approximately 10x for beam width 500)[1]. The method assumes monotonic scoring functions in sequence length and provides effective monotonic approximations for non-monotonic scoring functions, including length normalization and mutual information decoding[2].\n\nThe research demonstrates that beam search often **outperforms exact inference methods** due to beneficial search bias in NLP tasks[1][2], a counterintuitive finding that has influenced subsequent work on decoding strategies.\n\n## Modern Beam Search Variants and Adaptive Approaches\n\nRecent advances beyond standard beam search include **adaptive and diversity-aware strategies**[4]. Notable variants include:\n\n- **Relative Threshold Pruning:** Dynamic candidate filtering based on score ratios rather than fixed beam widths\n- **Bidirectional and Creative Beam Search:** Combining left-to-right and right-to-left models or using LLM-based judgment steps to improve diversity and performance[4]\n- **Adaptive beam search:** Location-aware alignment and Bayesian approaches that eliminate need for fixed priors[4]\n\nThese modern approaches demonstrate improvements in speed, accuracy, and response diversity across multiple benchmarks[4].\n\n## Research Gaps: FLARE and LLM Planning\n\n**The search results do not contain academic research on FLARE lookahead retrieval augmented reasoning or its integration with beam/best-first search for LLM planning.** To comprehensively address your query, additional research sources would be needed covering:\n\n- FLARE as a retrieval augmentation strategy for LLMs\n- Planning algorithms in large language model decoding\n- Integration of lookahead mechanisms with search strategies\n- Applications to complex reasoning tasks\n\nThe current search results focus narrowly on classical NLP sequence-to-sequence tasks (machine translation, summarization) rather than modern LLM planning and reasoning applications.\n\n## Recommendation\n\nFor a complete response addressing your full query, particularly regarding FLARE lookahead retrieval augmented reasoning and its connection to beam/best-first search strategies for LLM planning, additional targeted searches specifically for FLARE papers, retrieval-augmented generation research, and LLM planning literature would be necessary. The best-first beam search work provides useful algorithmic foundations, but doesn't directly address the planning and retrieval augmentation aspects central to your inquiry.",
+    "citations": [
+      {
+        "type": "source",
+        "url": "https://direct.mit.edu/tacl/article/doi/10.1162/tacl_a_00346/96473/Best-First-Beam-Search",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://aclanthology.org/2020.tacl-1.51/",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://arxiv.org/abs/2007.03909",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://www.emergentmind.com/topics/beam-search-techniques",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://cimeister.github.io/publication/meisteral-tacl-20/",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://computationalcreativity.net/iccc24/papers/ICCC24_paper_161.pdf",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://codelabsacademy.com/en/blog/beam-search-2026-balancing-diversity-and-accuracy",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://www.width.ai/post/what-is-beam-search",
+        "title": "",
+        "date": ""
+      }
+    ],
+    "sources": [
+      {
+        "type": "source",
+        "url": "https://direct.mit.edu/tacl/article/doi/10.1162/tacl_a_00346/96473/Best-First-Beam-Search",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://aclanthology.org/2020.tacl-1.51/",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://arxiv.org/abs/2007.03909",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://www.emergentmind.com/topics/beam-search-techniques",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://cimeister.github.io/publication/meisteral-tacl-20/",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://computationalcreativity.net/iccc24/papers/ICCC24_paper_161.pdf",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://codelabsacademy.com/en/blog/beam-search-2026-balancing-diversity-and-accuracy",
+        "title": "",
+        "date": ""
+      },
+      {
+        "type": "source",
+        "url": "https://www.width.ai/post/what-is-beam-search",
+        "title": "",
+        "date": ""
+      }
+    ],
+    "timestamp": "2026-02-12 16:06:23",
+    "model": "perplexity/sonar-reasoning-pro",
+    "usage": {
+      "prompt_tokens": 828,
+      "completion_tokens": 1079,
+      "total_tokens": 1907,
+      "cost": 0.01629,
+      "is_byok": false,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "cost_details": {
+        "upstream_inference_cost": 0.01629,
+        "upstream_inference_prompt_cost": 0.001656,
+        "upstream_inference_completions_cost": 0.014634
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      }
+    }
+  }
+]
