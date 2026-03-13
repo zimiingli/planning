@@ -1,5 +1,5 @@
 # Phase 5: Full Experiment Status Report
-**Last Updated:** 2026-03-12 (14:45 update)
+**Last Updated:** 2026-03-13 (全部完成 update)
 **Goal:** FRVC gating framework across 7 environments (6 GO + 1 negative example)
 
 ---
@@ -9,10 +9,10 @@
 | Environment | Step 0 | Step 1 | Step 2 (6 methods) | Step 3 (Baselines) | Cost Analysis |
 |---|---|---|---|---|---|
 | HotpotQA     | ✅ | ✅ | ✅ 6/6 | ✅ 4/4 (cal)   | ✅ |
-| APPS         | ✅ | ✅ | ⚠️ 3/6 可靠 | ✅ 4/4 (cal)   | ✅ |
+| APPS         | ✅ | ✅ | ✅ 6/6 (rerun完成) | ✅ 4/4 (cal)   | ✅ |
 | WebShop      | ✅ | ✅ | ✅ 6/6 | ✅ 4/4 (cal)   | ✅ |
 | BabyAI       | ✅ | ✅ | ✅ 6/6 | ✅ 12/12 done   | ❌ |
-| TWExpress    | ✅ | ✅ | ✅ 6/6 | 🔄 5/12 done +6 running/pending | ❌ |
+| TWExpress    | ✅ | ✅ | ✅ 6/6 | ✅ 12/12 done | ❌ |
 | TextWorld    | ✅ | ✅ | ❌ 4/6 (always_trigger+oracle TIMEOUT) | ⚠️ 10/12 (cats-42 TIMEOUT, corefine-123 FAILED) | ❌ |
 | Plancraft    | ✅ | ✅ | ⚠️ 4/6 (missing random_50, best_sigma_wrong) | ✅ 12/12 done | ❌ |
 
@@ -111,7 +111,7 @@ Token costs:         results/phase5/token_costs/hotpotqa_token_costs.json
 |---|---|---|
 | Step 0 | ✅ | base=58.5%, always=64.5%, Δ=+6.0% |
 | Step 1 | ✅ | N=1567, 仅 step_count 显著 (ρ=−0.155) |
-| Step 2 | ⚠️ 3/6 可靠 | Phase5 有 base/always/scg (gate 正确); r50/bsw/oracle 重跑中 (9 jobs pending) |
+| Step 2 | ✅ 6/6 | Phase5 有 base/always/scg; r50/bsw/oracle rerun 完成 ✅ |
 | Step 3 | ✅ 4/4 (cal) | |
 | Cost   | ✅ | |
 
@@ -131,26 +131,29 @@ Token costs:         results/phase5/token_costs/hotpotqa_token_costs.json
 |---|---|---|---|---|---|---|---|---|---|---|
 | base_only | core | 58.5% | 58.5% | 58.5% | **58.5%** | 3.0 | 0.00 | 2,489 | **1.00×** | Phase5 ✅ |
 | always_trigger | core | 65.0% | 64.5% | 64.0% | **64.5%** | 2.6 | 2.58 | 10,715 | 4.30× | Phase5 ✅ |
-| random_50 | core | 65.5% | 67.0% | 67.0% | **66.5%** | — | — | — | — | ⚠️ P3_supp bug, 重跑中 |
-| best_sigma_wrong | core | 58.5% | 58.5% | 58.5% | **58.5%** | — | — | — | — | ⚠️ P3_supp bug, 重跑中 |
+| random_50 | core | 66.5% | 66.0% | 68.0% | **66.8%** | 2.6 | 1.33 | 6,606 | 2.65× | Rerun ✅ |
+| best_sigma_wrong | core | 58.5% | 58.5% | 58.5% | **58.5%** | 3.0 | 0.00 | 2,495 | 1.00× | Rerun ✅ (=base) |
 | **scg_finetune_lr** | **core** | **59.0%** | **58.5%** | **59.0%** | **58.8%** | **2.9** | **0.18** | **3,065** | **1.23×** | **Phase5 ✅** |
-| oracle | core | 67.5% | 65.5% | 67.5% | **66.8%** | — | — | — | — | ⚠️ P3_supp, 重跑中 |
+| **oracle** | **core** | **75.0%** | **75.0%** | **75.0%** | **75.0%** | **~2.5** | **~0.23** | **~2,860** | **1.15×** | **Rerun ✅** |
 | CATTS | CB | 58.5% | 58.5% | 58.5% | **58.5%** | 3.0 | 0.03 | 14,993 | **6.02×** | Phase5 ✅ |
 | SEAG | CB | 58.5% | 58.5% | 58.5% | **58.5%** | 3.0 | 0.01 | 2,522 | 1.01× | Phase5 ✅ |
 | CoRefine | CB | 58.5% | 58.5% | 58.5% | **58.5%** | 3.0 | 0.01 | 2,522 | 1.01× | Phase5 ✅ |
 | CaTS | CB | 59.0% | 59.0% | 59.0% | **59.0%** | 2.9 | 0.04 | 2,600 | 1.04× | Phase5 ✅ |
 
-**Phase3_supp gate bug:** SCG trigger=1.0 (=always), bsw trigger=0.0 (=base), r50 trigger=0.79 (≠0.50)。已用正确代码重跑 (9 jobs pending → `results/phase5/apps_rerun/`)。
+~~**Phase3_supp gate bug:** SCG trigger=1.0, bsw trigger=0.0, r50 trigger=0.79。~~ → ✅ **Rerun 完成，数据已更新。**
 
-**Takeaway:**
-- 弱信号环境。所有 gated 方法 rollout 极少 → cost≈base，SR≈base
-- SCG 正确识别信号不足 (pearson_r≈−0.05, LR acc 53-58%) → 几乎不触发 (RR=2.5-10.8%)
-- CATTS 是灾难: SR 无提升但 cost **6.02×** — K=5 code gen 投票 (C_vote=4,198) > rollout 本身 (C_rollout=3,306)
+**Takeaway (rerun 后重大更新):**
+- **oracle(75.0%) >> always(64.5%) >> SCG(58.8%)** — rollout 有巨大潜力 (+16.2pp over SCG)，但 handcrafted feature (ρ=0.155) 抓不到信号
+- **r50(66.8%) > always(64.5%)** — 与 WebShop 相同模式: 过度 rollout 有害，选择性触发更优
+- **bsw(58.5%) = base_only** — 正确实现后 bsw 触发率=0%，信号太弱无法越过阈值
+- **SCG(58.8%) ≈ base_only(58.5%)** — gate 正确识别信号不足，几乎不触发
+- **CATTS 仍是灾难:** SR=58.5% (无提升) 但 cost 6.02×
+- **🔑 Hidden State Probe 的最强动机:** oracle 证明存在高质量 rollout 信号，但需要更好的 feature 提取方式
 
 ### 2.5 Data Paths
 ```
-Step 2 (可靠):       results/phase5/comparison/apps/{method}/seed_{s}/summary.json  (base/always/scg)
-Step 2 (⚠️有bug):   results/phase3_supp/apps/core/{method}/seed_{s}/performance_summary.json  (r50/bsw/oracle)
+Step 2 (Phase5):     results/phase5/comparison/apps/{method}/seed_{s}/summary.json  (base/always/scg)
+Step 2 (Rerun):      results/phase5/apps_rerun/{method}/seed_{s}/summary.json  (r50/bsw/oracle) ✅
 Step 3 (cal):        results/phase5/competing_baselines_calibrated/apps/{method}/seed_{s}/summary.json
 Phase 1 signal:      results/phase5/calibration_data/apps/phase1_signal_data.json
 Token costs:         results/phase5/token_costs/apps_token_costs.json
@@ -269,7 +272,7 @@ Phase 1 signal:      results/phase5/babyai/babyai/phase1_signal_data.json
 | Step 0 | ✅ | base=67.5%, always=99.3%, Δ=+31.8% |
 | Step 1 | ✅ | N=798, step_count 最强 (ρ=−0.477) |
 | Step 2 | ✅ 6/6 | |
-| Step 3 | 🔄 5/12 done | cats×3 ✅, catts×2 ✅; catts-456 + corefine×3 + seag×3 running/pending |
+| Step 3 | ✅ 12/12 done | 全部完成 |
 | Cost   | ❌ | |
 
 ### 5.2 Feature Importance (N=798)
@@ -290,9 +293,9 @@ Phase 1 signal:      results/phase5/babyai/babyai/phase1_signal_data.json
 | **scg_finetune_lr** | **core** | **97.0%** | **98.0%** | **96.0%** | **97.0%** | **5.1** | **1.38** |
 | oracle | core | 98.5% | 99.5% | 100.0% | **99.3%** | 3.5 | 0.91 |
 | CaTS | CB | 96.0% | 96.5% | 97.5% | **96.7%** | 5.5 | 2.08/1.91/1.93 |
-| CATTS | CB | 97.0% | 97.5% | 🔄 | **97.3%** | 6.6 | 2.41/2.21/— |
-| SEAG | CB | 🔄 | 🔄 | 🔄 | — | — | — |
-| CoRefine | CB | 🔄 | 🔄 | 🔄 | — | — | — |
+| CATTS | CB | 97.0% | 97.5% | 98.0% | **97.5%** | 6.5 | 2.41/2.21/2.17 |
+| SEAG | CB | 97.0% | 97.5% | 97.5% | **97.3%** | 6.7 | 2.41/2.21/2.30 |
+| CoRefine | CB | 97.0% | 97.5% | 98.0% | **97.5%** | 6.5 | 2.41/2.21/2.17 |
 
 **TWExpress 是"rollout 永远无害"环境：** Step 1 数据显示 utility 从不为负 (0/798)，22.6% 正面、77.4% 中性。因此：
 - **触发率越高 SR 越高：** always(99.3%, 100%) > bsw(99.0%, 63%) > r50(97.8%, 50%) > SCG(97.0%, 28%)
@@ -300,12 +303,12 @@ Phase 1 signal:      results/phase5/babyai/babyai/phase1_signal_data.json
 - **SCG 的选择性在此环境是劣势** — 正确学到"early steps 最有价值"，但选择性限制了 rollout 总量
 - **Oracle(99.3%, 0.91 ro/ep) 的效率最高** — 精准识别 22.6% 有效步骤，用最少 rollout 达到最高 SR
 - **论文叙事：** TWExpress 与 WebShop 形成对比 — WebShop 过度 rollout 有害 (SCG 选择性是优势)，TWExpress rollout 无害 (SCG 选择性是劣势)。两个环境共同说明 SCG 确实学会了信号方向，但最优触发策略因环境而异。
-- **CB 初步结果 (5/12):** CaTS(96.7%) ≈ SCG(97.0%), CATTS(97.3%, 2seeds) ≈ SCG — CB 方法在"rollout 无害"环境中同样有效，佐证了 TWExpress 作为对比案例的价值。
+- **CB 完整结果 (12/12):** CATTS(97.5%) ≈ CoRefine(97.5%) ≈ SEAG(97.3%) ≈ SCG(97.0%) > CaTS(96.7%)。所有方法均 ~97%，差异在噪声范围内。SCG 的 ro/ep(1.38) 最低 — **SCG 在 TWExpress 上 cost 最优但 SR 不 dominate**。
 
 ### 5.4 Data Paths
 ```
 Step 2:              results/phase5/twexpress/twexpress/{method}/seed_{s}/summary.json
-Step 3:              results/phase5/competing_baselines_calibrated/twexpress/{method}/seed_{s}/summary.json  (5/12 done)
+Step 3:              results/phase5/competing_baselines_calibrated/twexpress/{method}/seed_{s}/summary.json  (12/12 done)
 Phase 1 signal:      results/phase5/twexpress/twexpress/phase1_signal_data.json
 ```
 
@@ -408,26 +411,18 @@ Phase 1 signal:      results/phase5/plancraft/plancraft/phase1_signal_data.json
 
 ---
 
-## 8. Job Tracking (2026-03-12 14:45)
+## 8. Job Tracking (2026-03-13 — Phase 5 全部完成 🎉)
 
-### 已完成 (since 2026-03-11 20:00)
-- ✅ **Plancraft CB 12/12** — seag-456, corefine-456 完成
-- ✅ **TextWorld CB 10/12** — cats(2/3, cats-42 TIMEOUT), catts×3, seag×3, corefine(2/3, corefine-123 FAILED)
-- ✅ **TWExpress CB 5/12** — cats×3, catts×2
+### 全部完成
+- ✅ **Plancraft CB 12/12**
+- ✅ **TextWorld CB 10/12** (cats-42 TIMEOUT, corefine-123 FAILED)
+- ✅ **TWExpress CB 12/12**
+- ✅ **APPS rerun 9/9** (r50×3, bsw×3, oracle×3)
 
-### Running (6 jobs)
-| Job ID | Name | Runtime |
-|---|---|---|
-| 23089051 | frvc-cb-twe-catts-456 | ~5h50m |
-| 23089052 | frvc-cb-twe-corefine-123 | ~4h14m |
-| 23089053 | frvc-cb-twe-corefine-42 | ~3h45m |
-| 23089054 | frvc-cb-twe-corefine-456 | ~1h28m |
-| 23089055 | frvc-cb-twe-seag-123 | ~55m |
-| 23089056 | frvc-cb-twe-seag-42 | ~17m |
+### Running: 0 jobs
+### Pending: 0 jobs
 
-### Pending (10 jobs)
-- TWExpress CB: 1 remaining (seag-456, QOSMaxGRESPerUser)
-- **APPS rerun: 9 jobs** (random_50×3, best_sigma_wrong×3, oracle×3) → `results/phase5/apps_rerun/` (Priority/QOS 排队)
+**Phase 5 所有可运行的任务已全部完成。** 剩余未完成项仅为已知不可修复问题 (TextWorld TIMEOUT/FAILED)。
 
 ---
 
@@ -468,12 +463,13 @@ results/phase5/calibration_data/{env}/phase1_signal_data.json         (Phase1 en
 ## 10. Remaining Action Items
 
 1. ~~TextWorld always_trigger 超时~~ → ❌ oracle 也 TIMEOUT，TextWorld 确认不可用
-2. **APPS rerun r50/bsw/oracle** — 9 jobs pending (GPU quota)，output → `results/phase5/apps_rerun/`
+2. ~~APPS rerun r50/bsw/oracle~~ → ✅ 9/9 完成。**重大发现: oracle=75.0%!**
 3. ~~Plancraft CB~~ → ✅ 12/12 全部完成
-4. **TWExpress CB** — 5/12 done, 6 running, 1 pending (预计数小时内完成)
-5. ~~TextWorld CB~~ → ⚠️ 10/12 完成 (cats-42 TIMEOUT, corefine-123 FAILED — 考虑是否重跑)
+4. ~~TWExpress CB~~ → ✅ 12/12 全部完成。SCG(97.0%) ≈ CB(~97.3-97.5%)，SCG cost 最低
+5. ~~TextWorld CB~~ → ⚠️ 10/12 完成 (cats-42 TIMEOUT, corefine-123 FAILED — 不再重跑)
 6. **Plancraft random_50 + best_sigma_wrong** — 是否补跑？(环境为负例，优先级低)
 7. **Cost Analysis** — 等结果齐全后统一计算 (BabyAI/TWExpress/TextWorld/Plancraft)
+8. **🔑 Phase 6 优先:** APPS oracle=75.0% 证明 Hidden State Probe 有巨大潜力
 
 ---
 
@@ -536,8 +532,8 @@ CATTS 在所有 3 个环境都是 cost-效率最差:
 4. **零 per-step overhead:** SCG gate 基于已有 logprobs, 不需额外 LLM 调用 → CATTS (K=5 voting) 在所有环境都是最差 cost-efficiency
 
 ### 补充环境
-5. **弱信号 (APPS):** SCG 正确识别信号不足 → 几乎不触发 (SR≈base_only)。竞争 baselines 也全退化为 base_only
-6. **Rollout 无害 (TWExpress):** utility 从不为负 → 触发率越高越好 → SCG 选择性反而是劣势。与 WebShop (rollout 有时有害) 形成对比
+5. **弱信号但高潜力 (APPS):** oracle(75.0%) >> always(64.5%) >> SCG(58.8%) — rollout 信号存在但 handcrafted feature 抓不到。r50(66.8%) > always(64.5%) 证明选择性触发有价值。**Hidden State Probe 的最强动机环境**
+6. **Rollout 无害 (TWExpress):** utility 从不为负 → 触发率越高越好 → SCG 选择性反而是劣势。CB 完整数据: 所有方法 ~97%，SCG cost 最低但 SR 不 dominate
 7. **反例 (Plancraft):** Rollout 有害 (Δ=−7%)，所有方法均低于 base_only; CB 中 CATTS(25.0%) > always(22.8%) 因 rollout 较少 (2/ep vs 7/ep)
 8. **TextWorld 不可用:** always_trigger + oracle 均 TIMEOUT (12h)，缺 2/6 core methods
 
@@ -557,7 +553,7 @@ CATTS 在所有 3 个环境都是 cost-效率最差:
 | 判断 | 修正 | 说明 |
 |------|------|------|
 | Point 2: BabyAI bsw > SCG | ❌ **部分错误** | bsw(7.0%) < SCG(8.8%)。APPS 数据 Phase3_supp 有 gate bug (bsw trigger=0.0 = base_only)，需等重跑 |
-| Point 2: APPS r50 > SCG | ⚠️ **待确认** | Phase3_supp r50 trigger=0.79 (应为 0.50), 数据不可靠。9 jobs 重跑中 |
+| Point 2: APPS r50 > SCG | ✅ **已确认** | Rerun: r50(66.8%) >> SCG(58.8%)。oracle(75.0%) 证明信号存在但 feature 太弱 |
 | Point 3: TWE bsw > SCG | ✅ **正确** | bsw(99.0%) > SCG(97.0%)，但原因非"方法缺陷"而是"rollout 永不有害" |
 | Point 3: TW bsw > SCG | ✅ **正确** | bsw(57.0%) > SCG(54.3%)，且 SCG 比 r50(64.8%) 更差 — **gate 主动做出错误决策** |
 | Point 4: 所有 core > SCG | ⚠️ **大部分正确** | oracle(21.3%) ≈ SCG(21.5%)。但 base_only(29.8%) >> SCG(21.5%) >> always(22.8%) — rollout 本质有害 |
