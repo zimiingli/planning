@@ -4505,7 +4505,7 @@ Phase 5.2 offline 评估后（~9 天）：
     关键 pending: TWExpress CB 12 jobs, APPS rerun 9 jobs
 
 ═══════════════════════════════════════════════════════════════
-  Phase 6 三路并行（Mar 12 起）— 目标 5 个 Pareto-Dominate
+  Phase 6 四路并行（Mar 12 起）— 目标 5 个 Pareto-Dominate
 ═══════════════════════════════════════════════════════════════
 
   Week 1 (Mar 12-16):
@@ -5104,19 +5104,21 @@ Hidden State Probe 需要从头开始做完整实验。→ 移至 Phase 6。
 
 ---
 
-### ⏳ Phase 6（2026-03-12 起）— 目标 5 个 Pareto-Dominate 环境
+### ⏳ Phase 6（2026-03-12 起）— 目标 4-5 个有效环境 + Toy Model 验证 + Method Novelty 升级
 
-**目标**：从当前 2 个确认 Pareto-dominate 环境扩展至 5 个。
+**版本**：v3.0（2026-03-13）— 新增 Track D (Toy Model Verification) + B6 (Probe Scientific Analysis)，对齐 Writing Guide v5.0
 
-**核心策略**：三条并行路径 — (1) 改进现有环境表现，(2) Hidden State Probe 从零开始，(3) 尝试新环境。
+**目标**：从当前 2 → 4-5 个有效论文环境 + 提升 Method Novelty（⭐⭐ → ⭐⭐⭐⭐） + 完成 Toy Model 实验验证
+
+**核心策略**：**四条**并行路径 — (1) 完善现有环境数据，(2) Hidden State Probe，(3) 新环境候选，🆕(4) **Toy Model Verification + Theory Figures**
 
 **当前 Pareto-dominate 状态**：
 ```
-✅ 确认 Pareto-dominate (2/5):  HotpotQA, WebShop
+✅ 确认 Pareto-dominate (2):    HotpotQA, WebShop
 ❓ 可能 Pareto-dominate (1):    TWExpress（等 CB 数据）
-🔨 需要改进 (1-2):              TextWorld（降 rollout 成本 + MLP gate）
-                                 APPS（Hidden State Probe 提升 1-2pp SR）
+🔨 需要改进 (1):                APPS（Hidden State Probe 提升 1-2pp SR）
 🆕 新环境候选 (1-2):            ToolBench, AgentBench-KG, CrosswordQA
+❌ 已放弃: TextWorld（TIMEOUT + 信号弱 + gate 失败）, BabyAI（无信号）, Plancraft（rollout 有害）
 ```
 
 #### Phase 6 路径 A：改进现有环境表现
@@ -5151,38 +5153,9 @@ Hidden State Probe 需要从头开始做完整实验。→ 移至 Phase 6。
 - [ ] 分析 CB 数据 → 确认是否 Pareto-dominate
 - [ ] 如果不 dominate → 实现 adaptive threshold → 重跑 3 seeds
 
-**A2. TextWorld — 降低 rollout 成本 + MLP gate（概率 50%）**
+**~~A2. TextWorld~~ — ❌ 已放弃 (v3.0)**
 
-- 当前问题：always_trigger 和 oracle 均 12h TIMEOUT（3chains × 3horizon × 5top_k = 每次 45 env.step）
-- 当前 SCG 问题：LR gate 主动做错决策（ro/ep=16 > random 13.75, 但 SR=54.3% < random 64.8%）
-- 修复方案：
-  ```
-  Step 1: 降低 rollout 成本
-    当前: n_chains=3, horizon=3, top_k=5 → 45 env.step/rollout
-    改为: n_chains=1, horizon=2, top_k=3 → 6 env.step/rollout（降 87%）
-    或:   n_chains=2, horizon=2, top_k=3 → 12 env.step/rollout（降 73%）
-
-  Step 2: 验证降成本后 rollout 仍有效
-    提交 always_trigger 50ep 测试 → 确认不 TIMEOUT + SR > base + 5pp
-
-  Step 3: 用 MLP 替代 LR gate
-    TextWorld N=9999 数据点，足够训练小 MLP
-    架构: n_features → 32 → 1, dropout=0.3, weight_decay=1e-2
-    目标: 避免 LR 的线性假设导致的错误决策
-
-  Step 4: 重跑 6-method + CB baselines（3 seeds）
-  ```
-- GO/NO-GO 判断：
-  ```
-  降成本后 always_trigger 在 12h 内完成 → GO Step 2
-  降成本后 Δ(always - base) > 5pp → GO Step 3
-  MLP gate SR > random_50 SR → GO Step 4
-  任何环节失败 → NO-GO，放弃 TextWorld
-  ```
-- [ ] 修改 TextWorld rollout 参数（代码改动，不需要 GPU）
-- [ ] 提交 always_trigger 50ep 测试（降成本版）
-- [ ] 如果通过 → MLP gate 实验 200ep × 3 seeds
-- [ ] 如果 MLP 有效 → CB baselines 补跑
+> 放弃原因：(1) always_trigger + oracle 均 12h TIMEOUT，(2) SCG gate 主动做错决策 (SR=54.3% < random 64.8%)，(3) 信号极弱 (ρ=0.174)。即使修复 TIMEOUT 需 5-7 天，信号太弱 SCG 大概率仍然失败。省下的时间全部投入路径 B + D。
 
 **A3. APPS — Hidden State Probe 提升（概率 40%，依赖 Phase 6 路径 B）**
 
@@ -5197,16 +5170,21 @@ Hidden State Probe 需要从头开始做完整实验。→ 移至 Phase 6。
 
 **目标**：用 LLM hidden state (d=2560) 训练 probe 预测 rollout utility U，替代手工 5-feature LR gate。提升 method novelty（手工 feature + LR = ⭐⭐ → auto feature + probe = ⭐⭐⭐⭐）。
 
-**B1. 数据收集（如果尚未完成）**
+**B1. 数据收集（如果尚未完成）** 🆕 v3.0 升级：保存多层 hidden states
 
 用 HF Transformers 替代 vLLM 跑 always_trigger 200ep，每步保存：
 ```
 输出: {env}_hidden_states.npz
-  - hidden_states: (N_steps, 2560)  # Qwen3-4B last layer, mean-pooled
+  - hidden_states_multi: (N_steps, N_layers, 2560)  # 🆕 多层 hidden states
+    → Qwen3-4B 共 32 layers, 保存 8 个代表层: {0, 4, 8, 12, 16, 20, 24, 28, 31}
+    → 每层 mean-pooled over sequence positions
+  - hidden_states: (N_steps, 2560)  # last layer（兼容 B2-B4 单层实验）
   - utilities: (N_steps,)            # U = R(with_rollout) - R(without_rollout)
   - signals: (N_steps, 5)            # 手工 5 feature（用于对比基线）
   - metadata: step_count, episode_id, action_text
 ```
+
+**为什么多层**：B6.1 Layer-wise Probing 需要不同层的 hidden states，用于生成 Figure 6(a)。
 
 每个环境 ~40min（HF 比 vLLM 慢 3×）。
 
@@ -5304,6 +5282,74 @@ HotpotQA 上:
 | 训练数据量 | N ∈ {50, 100, 200, 500, 1000} | 200+ 饱和 |
 | PCA 维度 | {10, 20, 50, 100} | 50 足够 |
 
+**B6. Probe 科学分析（论文正文 §4.5 + §5.7b + Figure 6）** 🆕🆕 v3.0 新增
+
+**定位**：B5 是参数消融（appendix），B6 是**科学分析**（正文）。这是将 "simple linear probe" 提升为 **scientifically interesting** 的关键。
+
+**B6.1 Layer-wise Probing — Figure 6(a)**
+- 科学问题：gating 信号在哪层出现？
+- 方法：在 8 个代表层各自独立训练 linear probe → AUC
+- 预期：AUC 随 layer depth 单调递增，浅层 ≈ 随机
+- 产出：Figure 6(a) — Layer index vs AUC 折线图（3 环境）
+- [ ] 3 环境 × 8 层 AUC 计算
+- [ ] Figure 6(a) 生成
+
+**B6.2 Cross-Environment Transfer Matrix — Figure 6(b)** 🔥
+- 科学问题：env A 训练的 probe → env B 有效吗？
+- 方法：3×3 transfer matrix (train on X, eval on Y)
+- 预期：对角线 >> 非对角线 → **直接验证 Toy Model: 方向是环境特异的**
+- 产出：Figure 6(b) — 3×3 AUC heatmap
+- 连接：与 Two-Source Model 形成闭环（"different p_I → different ρ direction → probe weights must be re-learned"）
+- [ ] 3×3 transfer matrix 计算
+- [ ] Figure 6(b) 生成
+
+**B6.3 Data Efficiency Learning Curve — Figure 6(c)**
+- 科学问题：direction learning 需要多少数据？
+- 方法：从 {10, 20, 50, 100, 200} episodes 子采样，训练 probe，评估 AUC
+- 预期：N≥50 时 AUC 基本饱和 → 信号强且干净
+- 产出：Figure 6(c) — N_episodes vs AUC 学习曲线
+- [ ] HotpotQA learning curve（bootstrap × 5 repeats）
+- [ ] Figure 6(c) 生成
+
+**B6.4 Feature Attribution（可选）**
+- probe 权重方向 vs handcrafted feature 系数对比
+- [ ] （可选）对比分析
+
+#### Phase 6 路径 D：Toy Model Verification + Theory Figures 🆕🆕 v3.0 新增
+
+**核心目标**：验证 Two-Source Uncertainty Toy Model 的 3 个 Testable Predictions + 生成理论 Figure。
+**论文位置**：§3.3 (Figure 2) + §5.7 E4 (Figure 7)
+**投入**：~1-2 天（纯数据分析 + 绘图，无 GPU）
+**数据来源**：Phase 1 (HotpotQA/MBPP) + Phase 3+S2 (APPS) + Phase 4 (WebShop) 已有数据
+
+**D1. P1 Temporal Shift Analysis** 🔥
+- Prediction: "early-step ρ < late-step ρ"（early steps 有更多 Type I）
+- 方法：split trajectory into early (step 1-3) vs late (step 4+)，计算 conditional ρ
+- 产出：Figure 7 (grouped bar chart: 4 envs × early/late)
+- [ ] 分析脚本编写
+- [ ] 4 环境 early/late ρ 计算 + bootstrap CI
+- [ ] Figure 7 生成
+
+**D2. Simpson's Paradox 子群演示**
+- 目标：用实际数据展示 Simpson's Paradox
+- HotpotQA：按 evidence_count 分组（≤1 vs ≥2），计算 within-group ρ(entropy, U)
+- APPS：按 step_count 分组（≤2 vs ≥3），计算 within-group ρ
+- 预期：within-group 方向相反，aggregated 取决于 group 比例
+- [ ] HotpotQA/APPS 子群分析
+- [ ] 结果记录
+
+**D3. P2/P3 汇总**
+- P2 (Cross-Env Divergence): 已有数据计算 ρ 差异矩阵
+- P3 (Signal Identity Alignment): 已有数据整理对齐表格
+- [ ] P2 divergence 矩阵 + P3 对齐表格
+- [ ] 综合为论文 §5.7 段落
+
+**D4. Figure 2: Two-Source Model 理论曲线**
+- 左图：p_I vs ρ 理论曲线 + 4 环境标注
+- 右图：P1 验证 bar chart（= Figure 7）
+- [ ] 绘图脚本 + 参数估计
+- [ ] Figure 2 生成
+
 #### Phase 6 路径 C：新环境候选 GO/NO-GO
 
 **背景**：已试 18 个环境，11 个 NO-GO。剩余未试的多步 agentic 环境有限。
@@ -5340,20 +5386,9 @@ HotpotQA 上:
 - [ ] 环境搭建 + base agent 适配
 - [ ] Step 0 GO/NO-GO: base_only 50ep + always_trigger 50ep
 
-**C2. AgentBench-KG**
-- 来源：Liu et al., ICLR 2024 (AgentBench 的 Knowledge Graph 子任务)
-- 任务：在 Freebase 知识图谱上导航回答多跳问题
-- 动作：search_entity, get_relations, get_neighbors, answer
-- 预估信号：step_count, entities_visited, relation_explored, token_entropy
-- 风险：不确定是否可独立于完整 AgentBench 框架运行
-- [ ] 确认子任务可独立运行
-- [ ] 环境搭建 + base agent 适配
-- [ ] Step 0 GO/NO-GO
+**~~C2. AgentBench-KG~~ — ❌ 已砍**
 
-**C3. CrosswordQA**
-- 前置确认：是否存在标准化的多步交互版本？如果只有单轮 → 跳过
-- [ ] 调研多步版本是否存在
-- [ ] 如果存在 → 环境搭建 + Step 0 GO/NO-GO
+**~~C3. CrosswordQA~~ — ❌ 已砍**
 
 **候选环境 GO 后的流水线**（与 Phase 5 v3.0 一致）：
 ```
@@ -5368,40 +5403,47 @@ Step 4: Cost Analysis + Pareto 分析
 
 ```
 ═══════════════════════════════════════════════════════════════
-  Phase 6 三路并行（Mar 12 起）
+  Phase 6 四路并行（Mar 12 起）
 ═══════════════════════════════════════════════════════════════
 
   Week 1 (Mar 12-16):
   ├── 路径 A:
   │   ├── 等 TWExpress CB 完成 → 分析 Pareto-dominate（~2-3 天内）
-  │   ├── 等 APPS rerun 完成 → 更新数据表（~2-3 天内）
-  │   └── TextWorld: 修改 rollout 参数 → 提交 always_trigger 测试
+  │   └── 等 APPS rerun 完成 → 更新数据表（~2-3 天内）
   │
   ├── 路径 B:
-  │   ├── B1: HotpotQA hidden state 数据收集（~40min，如果没有）
+  │   ├── B1: 3 env 多层 hidden state 数据收集（~40min/env, 8 层）🆕
   │   ├── B2: HotpotQA 4 种 probe offline 训练+评估（~10min）
-  │   └── B3: GO/NO-GO 判断
+  │   ├── B3: GO/NO-GO 判断
+  │   └── 🆕 B6.1: Layer-wise probing (HotpotQA, B1 就绪后)
   │
-  └── 路径 C:
-      ├── ToolBench 环境搭建（不需要 GPU）
-      ├── AgentBench-KG 环境搭建
-      └── CrosswordQA 调研
+  ├── 路径 C（仅 ToolBench）:
+  │   └── ToolBench 环境搭建（不需要 GPU）
+  │
+  └── 🆕 路径 D（纯 CPU，与 A/B/C 并行）:
+      ├── D1: P1 temporal shift 分析 (4 环境)
+      ├── D2: Simpson's Paradox 子群分析
+      ├── D3: P2/P3 汇总
+      └── D4: Figure 2 + Figure 7 初稿
 
   Week 1 检查点 (Mar 16):
   ├── TWExpress: Pareto-dominate 确认/否？→ 第 3 个环境？
   ├── Hidden State Probe: HotpotQA R² 多少？GO/NO-GO？
-  ├── TextWorld: 降成本后 always_trigger 是否完成？Δ 多少？
-  └── 新环境: 哪些搭建成功？提交 GO/NO-GO jobs
+  ├── ToolBench: 搭建成功？提交 GO/NO-GO jobs
+  ├── 🆕 Toy Model P1: ρ_early < ρ_late? → Two-Source confirmed?
+  └── 🆕 Simpson's Paradox: within-group ρ 方向相反? → §3.3 confirmed?
 
   Week 2 (Mar 17-21):
   ├── 路径 A:
   │   ├── TWExpress adaptive threshold（如果需要）→ 3 seeds
-  │   ├── TextWorld MLP gate（如果 always_trigger 通过）→ 3 seeds
   │   └── APPS probe gate（如果路径 B GO）
   │
   ├── 路径 B:
   │   ├── B2 跨环境: APPS + WebShop probe offline 评估
-  │   └── B4: HotpotQA end-to-end 200ep × 3 seeds（如果 B3 GO）
+  │   ├── B4: HotpotQA + WebShop end-to-end 200ep × 3 seeds（如果 B3 GO）
+  │   ├── 🆕 B6.1: Layer-wise probing (APPS + WebShop)
+  │   ├── 🆕 B6.2: Cross-env transfer matrix (3×3)
+  │   └── 🆕 B6.3: Data efficiency learning curve
   │
   └── 路径 C:
       ├── GO 环境: Step 1 Signal Discovery
@@ -5410,32 +5452,36 @@ Step 4: Cost Analysis + Pareto 分析
   Week 2 检查点 (Mar 21):
   ├── 确认 Pareto-dominate 环境总数（目标 ≥ 4）
   ├── Hidden State Probe end-to-end 结果
-  └── 新环境 Step 2 进展
+  ├── 新环境 Step 2 进展
+  ├── 🆕 B6 科学分析完成? Figure 6 三面板就绪?
+  └── 🆕 Toy Model + Theory: Figure 2 + Figure 7 最终版就绪?
 
   Week 3 (Mar 22-26):
   ├── 新环境: Step 3 Competing Baselines + Cost Analysis
   ├── Probe gate: 跨环境 end-to-end（如果 B4 有效）
+  ├── 🆕 B6: Figure 6 最终版（如果需要迭代）
   ├── 所有环境 Pareto 分析统一更新
+  ├── 🆕 所有 Theory Figures 最终确认 (Fig 2, 6, 7)
   └── 论文数据集确定 → 开始写 LaTeX
 
 ═══════════════════════════════════════════════════════════════
 
-  最终 5 个环境的最可能组合（按概率排序）:
+  最终环境组合预测（按概率排序，C2/C3 已砍，TextWorld 已放弃）:
 
-  组合 1（最可能，P=35%）:
-    HotpotQA + WebShop + TWExpress + TextWorld(fixed) + 1 新环境(ToolBench)
+  组合 1（最可能，P=40%）:
+    HotpotQA + WebShop + TWExpress + APPS(probe升级) + ToolBench
+    → 5 环境 Pareto-dominate
 
-  组合 2（P=25%）:
-    HotpotQA + WebShop + TWExpress + APPS(probe升级) + 1 新环境
+  组合 2（P=30%）:
+    HotpotQA + WebShop + TWExpress + APPS(probe升级)
+    → 4 环境 Pareto-dominate（ToolBench 未达标）
 
   组合 3（P=20%）:
-    HotpotQA + WebShop + TWExpress + TextWorld(fixed) + APPS(probe升级)
+    HotpotQA + WebShop + TWExpress + ToolBench
+    → 4 环境 Pareto-dominate（APPS 未达标）
 
-  组合 4（P=15%）:
-    HotpotQA + WebShop + TWExpress + 2 新环境
-
-  回退方案（P=5%）:
-    如果只有 3-4 个 Pareto-dominate → 调整论文为 "diagnostic framework"
+  回退方案（P=10%）:
+    如果只有 3 个 Pareto-dominate → 调整论文为 "diagnostic framework"
     + 分析为什么某些环境 SCG 不 dominate（弱信号/rollout-safe/rollout-harmful 三类）
 
 ═══════════════════════════════════════════════════════════════
@@ -5452,22 +5498,19 @@ Mar 26 检查点 — 论文环境集确定:
   ≤ 2 个 Pareto-dominate → ❌ 需要重大方法改进或调整论文定位
 ```
 
-#### Phase 6 实验 Checklist
+#### Phase 6 实验 Checklist（v3.0 更新）
 
-**路径 A — 改进现有环境**
+**路径 A — 完善现有环境**
 - [ ] A1: TWExpress CB 12 jobs 完成 → Pareto-dominate 分析
 - [ ] A1: （如需）adaptive threshold 实现 + 重跑 3 seeds
-- [ ] A2: TextWorld rollout 参数修改（n_chains, horizon, top_k 降低）
-- [ ] A2: TextWorld always_trigger 50ep 测试（降成本版）
-- [ ] A2: （如 always 通过）TextWorld MLP gate 实现 + 200ep × 3 seeds
-- [ ] A2: （如 MLP 有效）TextWorld CB baselines 补跑
+- [x] ~~A2: TextWorld~~ — ❌ 已放弃
 - [ ] A3: APPS rerun 9 jobs 完成 → 数据更新
 - [ ] A3: （如 probe 有效）APPS probe gate 200ep × 3 seeds
 
 **路径 B — Hidden State Probe**
-- [ ] B1: HotpotQA hidden state 数据收集（200ep, HF Transformers）
-- [ ] B1: APPS hidden state 数据收集
-- [ ] B1: WebShop hidden state 数据收集
+- [ ] B1: HotpotQA 多层 hidden state 收集（200ep, HF, 8 层）🆕
+- [ ] B1: APPS 多层 hidden state 收集
+- [ ] B1: WebShop 多层 hidden state 收集
 - [ ] B2: HotpotQA 4 种 probe offline 训练 + 评估（R², AUC, ρ）
 - [ ] B2: 对比 handcrafted LR 基线
 - [ ] B3: HotpotQA GO/NO-GO 判断（R² > 0.10 或 AUC > 0.70）
@@ -5476,21 +5519,34 @@ Mar 26 检查点 — 论文环境集确定:
 - [ ] B4: （如 B4 有效）APPS end-to-end 200ep × 3 seeds
 - [ ] B4: （如 B4 有效）WebShop end-to-end 200ep × 3 seeds
 - [ ] B5: （如 B4 有效）消融实验（pooling, hidden layer, d_hidden, 数据量, PCA）
+- [ ] 🆕 B6.1: Layer-wise probing — 3 环境 × 8 层 AUC + Figure 6(a)
+- [ ] 🆕 B6.2: Cross-env transfer matrix — 3×3 AUC heatmap + Figure 6(b)
+- [ ] 🆕 B6.3: Data efficiency learning curve + Figure 6(c)
+- [ ] 🆕 B6.4: （可选）Feature attribution 对比
 
-**路径 C — 新环境**
+**路径 C — 新环境（仅 ToolBench）**
 - [ ] C1: ToolBench 环境搭建 + base agent 适配
 - [ ] C1: ToolBench Step 0 GO/NO-GO（50ep base + 50ep always）
 - [ ] C1: （如 GO）Step 1 Signal Discovery 200ep
 - [ ] C1: （如 GO）Step 2 6-Method Core 6×3×200ep
 - [ ] C1: （如 GO）Step 3 CB baselines 4×3×200ep
-- [ ] C2: AgentBench-KG 确认独立运行可行性
-- [ ] C2: AgentBench-KG 环境搭建 + Step 0 GO/NO-GO
-- [ ] C2: （如 GO）Step 1-3 完整流水线
-- [ ] C3: CrosswordQA 调研多步版本是否存在
-- [ ] C3: （如存在）环境搭建 + Step 0 GO/NO-GO
+- [x] ~~C2: AgentBench-KG~~ — ❌ 已砍
+- [x] ~~C3: CrosswordQA~~ — ❌ 已砍
+
+**路径 D — Toy Model Verification** 🆕🆕
+- [ ] D1.1: Temporal shift 分析脚本
+- [ ] D1.2: 4 环境 early/late ρ 计算 + bootstrap CI
+- [ ] D1.3: Figure 7 生成
+- [ ] D2.1: HotpotQA Simpson's Paradox 子群分析
+- [ ] D2.2: APPS Simpson's Paradox 子群分析
+- [ ] D3.1: P2 divergence 矩阵 + P3 对齐表格
+- [ ] D3.2: P1/P2/P3 综合为论文 §5.7 段落
+- [ ] D4.1: Figure 2 绘图脚本 + 参数估计
+- [ ] D4.2: Figure 2 生成
 
 **汇总分析**
 - [ ] 所有环境 Cost Analysis 统一计算
 - [ ] 所有环境 Pareto figure 统一生成
+- [ ] 🆕 Figure 2 (Two-Source Model) + Figure 6 (Probe) + Figure 7 (P1) 就绪
 - [ ] 论文最终环境集确定
 - [ ] phase5_environment_report.md 更新为最终版

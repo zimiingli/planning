@@ -1,8 +1,8 @@
 # Phase 6 执行计划：目标 5 个有效环境 + Method Novelty 升级
 
-**版本**：v2.0（2026-03-12）
+**版本**：v3.0（2026-03-13）— 新增 Track D (Toy Model Verification) + B6 (Probe Scientific Analysis)，对齐 Writing Guide v5.0
 **前置依赖**：Phase 0-5 完成，当前 2 个确认 Pareto-dominate（HotpotQA + WebShop）
-**核心目标**：从 2 → 4-5 个有效论文环境 + 提升 Method Novelty（⭐⭐ → ⭐⭐⭐⭐）
+**核心目标**：从 2 → 4-5 个有效论文环境 + 提升 Method Novelty（⭐⭐ → ⭐⭐⭐⭐） + 完成 Toy Model 实验验证
 **计划周期**：2026-03-12 至 2026-03-26（3 周）
 **论文标题**：Same Signal, Opposite Meaning: Why Adaptive Compute Fails Across Environments
 
@@ -84,31 +84,34 @@
 **核心变化**：砍掉 TextWorld（路径 A2），将资源集中到路径 B（战略价值最高）和路径 C。
 
 ```
-═══════════════════════════════════════════════════════════════
-  路径 A：完善现有环境数据                路径 B：Hidden State Probe
-  （轻量，主要等 pending jobs）           （核心战略路径，最高优先）
-  ─────────────────────────              ──────────────────────
-  A1: TWExpress 等 CB 确认                B1: 数据收集 (3 env)
-  A2: APPS 等 rerun 完成                  B2: Offline probe 训练
-  A3: Cost Analysis 统一计算              B3: GO/NO-GO 判断
-                                          B4: End-to-end gate
-  路径 C：新环境候选                       B5: 消融实验
-  ──────────────────
-  C1: ToolBench (40%)
-  C2: AgentBench-KG (35%)
-  C3: CrosswordQA (25%)
-═══════════════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════════════════
+  路径 A：完善现有环境数据      路径 B：Hidden State Probe     路径 D：Toy Model Verification 🆕
+  （轻量，主要等 pending）     （核心战略路径，最高优先）       （纯分析，无 GPU）
+  ─────────────────────       ──────────────────────        ───────────────────────
+  A1: TWExpress 等 CB 确认     B1: 多层数据收集 (3 env)      D1: P1 temporal shift 分析
+  A2: APPS 等 rerun 完成       B2: Offline probe 训练        D2: Simpson's Paradox 子群
+  A3: Cost Analysis 统一       B3: GO/NO-GO 判断             D3: P2/P3 汇总
+                               B4: End-to-end gate           D4: Figure 2 (理论曲线)
+  路径 C：新环境候选            B5: 消融实验
+  ──────────────────           B6: 科学分析 🆕
+  C1: ToolBench (40%)            → B6.1 Layer-wise probing
+                                 → B6.2 Cross-env transfer
+                                 → B6.3 Data efficiency
+═══════════════════════════════════════════════════════════════════════════
 ```
 
 **优先级排序**：
 1. **路径 B（最高）**：Hidden State Probe 是 NeurIPS 接受概率从 40% → 75% 的关键。省下的 TextWorld 时间全部投入这里。
-2. **路径 A（中等，低投入）**：主要是等 pending jobs 完成 + 分析，几乎不需要主动工作。
-3. **路径 C（补充）**：如果路径 B 快速 GO，可以并行搭建新环境。
+2. **路径 D（高，与 B 并行）** 🆕：Toy Model 验证是论文从 "finding paper" → "finding + theory paper" 的关键。纯数据分析，无 GPU 需求，Day 1 即可启动。
+3. **路径 A（中等，低投入）**：主要是等 pending jobs 完成 + 分析，几乎不需要主动工作。
+4. **路径 C（补充，仅 ToolBench）**：AgentBench-KG 和 CrosswordQA 已砍。仅保留 ToolBench 一个候选。
 
 **依赖关系**：
 - A2(APPS probe gate) 依赖 B3/B4 结果
 - B4 依赖 B3 GO
-- A/B/C 之间无其他依赖，可最大并行
+- B6 依赖 B1 数据（但 B6.1/B6.2/B6.3 与 B4 可并行）
+- D 路径完全独立（用已有 Phase 1-4 数据），Day 1 即可启动
+- A/B/C/D 之间无阻塞依赖，可最大并行
 
 ---
 
@@ -177,14 +180,19 @@
 **已有上界**：Phase 5 offline AUC=0.88（vs handcraft LR AUC=0.85），暗示 GO 概率较高。
 **省下的 TextWorld 时间（5-7 天）全部投入路径 B。**
 
-### B1. 数据收集（Day 1-2, 每环境 ~40min）
+### B1. 数据收集（Day 1-2, 每环境 ~40min）🆕 v3.0 升级：多层 hidden states
 
 用 HF Transformers 替代 vLLM 跑 always_trigger 200ep，每步保存 hidden state。
+
+**⚠️ v3.0 升级**：保存**多层** hidden states（不仅 last layer），用于 B6.1 Layer-wise Probing 科学分析（论文 §4.5 + Figure 6a）。
 
 **输出格式**：
 ```
 {env}_hidden_states.npz:
-  - hidden_states: (N_steps, 2560)  # Qwen3-4B last layer, mean-pooled
+  - hidden_states_multi: (N_steps, N_layers, 2560)  # 🆕 多层 hidden states
+    → Qwen3-4B 共 32 layers, 保存 8 个代表层: {0, 4, 8, 12, 16, 20, 24, 28, 31}
+    → 每层 mean-pooled over sequence positions
+  - hidden_states: (N_steps, 2560)   # last layer（兼容 B2-B4 单层实验）
   - utilities: (N_steps,)            # U = R(with_rollout) - R(without_rollout)
   - signals: (N_steps, 5)            # 手工 5 feature（对比基线）
   - metadata: step_count, episode_id, action_text
@@ -192,14 +200,16 @@
 
 **执行清单**：
 - [ ] 检查是否已有 hidden state 数据（Phase 5 Track 1 可能已收集部分）
-- [ ] HotpotQA 200ep hidden state 收集（1 seed, ~40min）
-- [ ] APPS 200ep hidden state 收集（1 seed, ~40min）
-- [ ] WebShop 200ep hidden state 收集（1 seed, ~40min）
-- [ ] 数据验证：hidden_states shape, utilities 分布, NaN 检查
+- [ ] HotpotQA 200ep hidden state 收集（1 seed, ~40min）— 保存 8 层
+- [ ] APPS 200ep hidden state 收集（1 seed, ~40min）— 保存 8 层
+- [ ] WebShop 200ep hidden state 收集（1 seed, ~40min）— 保存 8 层
+- [ ] 数据验证：hidden_states shape (N, 8, 2560), utilities 分布, NaN 检查
 
 **注意事项**：
 - HF Transformers 比 vLLM 慢 ~3×，实验阶段完全可接受
 - 保存中间检查点，防止 OOM 或中断丢失
+- 多层保存增加存储 ~8×，但每个 env 数据量仍 <500MB，可接受
+- 如果存储成 bottleneck，可降为 4 层: {0, 10, 21, 31}
 
 ---
 
@@ -335,6 +345,212 @@ APPS probe gate SR ≤ 58.5%
 
 ---
 
+### B6. Probe 科学分析（Day 3-10, 与 B4 并行，论文 §4.5 + §5.7b + Figure 6）🆕🆕 v3.0 新增
+
+**定位**：B5 是参数消融（appendix），B6 是**科学分析**（正文 §4.5 + §5.7b）。这是将 "simple linear probe" 从 trivial 提升为 **scientifically interesting** 的关键。
+
+**B6.1 Layer-wise Probing — 论文 §4.5 + Figure 6(a)**
+
+**科学问题**：gating 信号在 LLM 的哪一层表征中出现？如果只有深层有效 → gating 需要 reasoning-level 表征（不是表面 token 统计）。
+
+```
+输入: B1 收集的多层 hidden states (N_steps, 8_layers, 2560)
+方法: 在 8 个层各自独立训练 linear probe → 预测 U > 0
+指标: AUC-ROC per layer
+预期: AUC 随 layer depth 单调递增, 前 1/3 层 ≈ 随机 (AUC~0.5), 后 1/3 层 >> 0.7
+```
+
+- [ ] 实现 layer-wise probing 脚本（每层独立训练 LR probe）
+- [ ] HotpotQA 8 层 AUC 计算
+- [ ] APPS 8 层 AUC 计算
+- [ ] WebShop 8 层 AUC 计算
+- [ ] 生成 Figure 6(a): Layer index vs AUC 折线图（3 环境 3 条线）
+
+**B6.2 Cross-Environment Transfer Matrix — 论文 §4.5 核心 + Figure 6(b)** 🔥
+
+**科学问题**：env A 训练的 probe 用于 env B 是否有效？如果 transfer 失败 → **直接验证 Toy Model**: 方向是环境特异的，probe 权重需要重新学。
+
+**⚠️ 这是 probe 实验中最重要的分析 — 它连接了 method (probe) 和 theory (Two-Source Model)**。
+
+```
+输入: B1 收集的 3 个环境的 last-layer hidden states
+方法: 3×3 transfer matrix:
+  - 对角线: train on A, eval on A (in-env performance)
+  - 非对角线: train on A, eval on B (cross-env transfer)
+指标: AUC-ROC
+预期: 对角线 >> 非对角线 (transfer 大幅下降)
+```
+
+| Train \ Eval | HotpotQA | APPS | WebShop |
+|---|:---:|:---:|:---:|
+| HotpotQA | AUC_AA | AUC_AB | AUC_AC |
+| APPS | AUC_BA | AUC_BB | AUC_BC |
+| WebShop | AUC_CA | AUC_CB | AUC_CC |
+
+**论文叙事**：
+```
+"This cross-environment transfer failure is a direct consequence
+ of our theoretical model: different environments have different
+ p_I compositions, producing different ρ(entropy, U) directions
+ that require environment-specific probing."
+```
+
+- [ ] 实现 cross-env transfer evaluation 脚本
+- [ ] 计算 3×3 transfer matrix (AUC)
+- [ ] 生成 Figure 6(b): 3×3 heatmap
+
+**B6.3 Data Efficiency / Learning Curve — 论文 §4.5 + Figure 6(c)**
+
+**科学问题**：direction learning 需要多少数据？如果 ~50 episodes 即饱和 → 信号强且干净，在线学习开销极低。
+
+```
+输入: B1 收集的 hidden states
+方法: 从 {10, 20, 50, 100, 200} episodes 子采样训练数据
+      对每个 N 训练 linear probe, 评估 AUC
+指标: AUC vs N_episodes learning curve
+预期: N≥50 时 AUC 基本饱和
+```
+
+- [ ] 实现 learning curve 脚本（bootstrap 子采样 × 5 repeats）
+- [ ] HotpotQA learning curve
+- [ ] 生成 Figure 6(c): N_episodes vs AUC 学习曲线
+
+**B6.4 Feature Attribution（可选，论文 §4.5 一句话）**
+
+- 比较 probe 权重方向 vs 手工 feature 系数方向
+- 用 CCA / cosine similarity 衡量对应关系
+- 如果高度对应 → probe 自动发现了人类选择的特征
+- 如果不对应 → probe 发现了超越人类设计的新信号维度
+- [ ] （可选）probe 权重 vs handcrafted feature 对比分析
+
+---
+
+## 4.5 路径 D：Toy Model Verification + Theory Figures（与 A/B/C 并行）🆕🆕 v3.0 新增
+
+**核心目标**：验证 Two-Source Uncertainty Toy Model 的 3 个 Testable Predictions + 生成理论 Figure。
+**论文位置**：§3.3 (Figure 2) + §5.7 E4 (Figure 7)
+**投入**：~1-2 天分析时间（纯数据分析 + 绘图，无需 GPU）
+**数据来源**：Phase 1 (HotpotQA/MBPP) + Phase 3+S2 (APPS) + Phase 4 (WebShop) 已有数据
+
+### D1. P1 验证: Temporal Shift Analysis（最重要，需新分析）🔥
+
+**Prediction 1**："Within the same environment, early steps have higher p_I than late steps. Therefore, early-step ρ should be more negative than late-step ρ."
+
+**方法**：
+```
+对每个环境:
+  1. 取 Phase 1/3+/4 已有的 signal discovery 数据
+     - HotpotQA: Phase 1 (293 pts) + Phase 0 (293 pts)
+     - APPS: Phase 3+S2 Step 1 (489 pts)
+     - MBPP: Phase 1 (1,479 pts 中的 MBPP 部分)
+     - WebShop: Phase 4 Step 1 (1,073 pts)
+
+  2. Split 每条 trajectory 为:
+     - early: step 1-3 (trajectory 前半段，信息少 → 更多 Type I)
+     - late: step 4+ (trajectory 后半段，信息多 → 更少 Type I)
+
+  3. 分别计算:
+     - ρ(token_entropy, U | early steps)
+     - ρ(token_entropy, U | late steps)
+
+  4. 预期结果:
+     - HotpotQA (Type I 主导): ρ_early << ρ_late (最明显)
+     - APPS (混合): ρ_early < ρ_late (弱效应)
+     - MBPP (Type D 主导): ρ_early ≈ ρ_late 或 ρ_early > ρ_late
+     - WebShop: 依赖 state_category 更多，可能不显著
+```
+
+**Figure 7 设计**：Grouped bar chart
+- X 轴：4 环境
+- 每组两条柱：early (深色) vs late (浅色)
+- Y 轴：ρ(entropy, U)
+- 误差条：bootstrap 95% CI
+
+- [ ] 编写 temporal shift 分析脚本（split trajectories by step）
+- [ ] 加载 4 环境已有数据，计算 early/late ρ
+- [ ] Bootstrap CI 计算（10K resamples）
+- [ ] 生成 Figure 7
+- [ ] 记录结果到 progress.md
+
+### D2. Simpson's Paradox 子群演示（论文 §3.3 理论支撑）
+
+**目标**：用实际数据展示 Simpson's Paradox 在 signal-utility 空间中的实例。
+
+**方法**：
+```
+在 HotpotQA 中（数据最丰富，signal 最强）:
+  1. 将 states 分为 Type I proxy 和 Type D proxy:
+     - Type I proxy: evidence_count ≤ 1 (信息匮乏状态)
+     - Type D proxy: evidence_count ≥ 2 (信息充分但需决策)
+
+  2. 计算:
+     - ρ(entropy, U | Type I states) → 预期: 负（高 entropy = 还没找到信息 → 不值得 rollout）
+     - ρ(entropy, U | Type D states) → 预期: 正（高 entropy = 有多条路 → 值得 rollout 探索）
+     - ρ(entropy, U | all states)     → 实际值: −0.327（负，因为 HotpotQA 中 Type I 占多数）
+
+  3. 展示：within-group 正负相反，aggregated 呈负 → 经典 Simpson's Paradox
+
+APPS 中也类似尝试:
+  - Type I proxy: step_count ≤ 2 (刚开始，信息少)
+  - Type D proxy: step_count ≥ 3 (已执行多步，面临选择)
+```
+
+**论文价值**：这不是新实验，而是对已有数据的重新分析。但它为 Two-Source Model 提供了**直接的实证支撑**，将 narrative 从 "post-hoc explanation" 提升为 "verified statistical phenomenon"。
+
+- [ ] HotpotQA: 按 evidence_count 分组计算 within-group ρ
+- [ ] APPS: 按 step_count 分组计算 within-group ρ
+- [ ] 记录 Simpson's Paradox 演示结果
+- [ ] （可选）生成 Simpson's Paradox 可视化（scatter plot with colored sub-groups）
+
+### D3. P2/P3 Cross-Env + Signal Identity 汇总（论文 §5.7）
+
+**P2 (Cross-Environment Divergence)**: 定性验证——已有数据足够
+```
+ρ 差异矩阵:
+  |ρ_HotpotQA - ρ_MBPP| = |−0.327 − 0.153| = 0.480 (最大，task structure 差异最大)
+  |ρ_APPS - ρ_MBPP|      = |+0.144 − 0.153| = 0.009 (最小，都是代码环境)
+  |ρ_WebShop - ρ_HotpotQA| = |+0.133 − (−0.327)| = 0.460 (大，不同 task type)
+→ 环境 task structure 差异越大，ρ 差异越大 ✅
+```
+
+**P3 (Signal Identity Alignment)**: 已有数据整理
+```
+| 环境 | 主导 Type | 最强信号 | 信号含义 | 对齐？ |
+|------|----------|---------|---------|--------|
+| HotpotQA | Type I | evidence_count (ρ=−0.586) | 信息充分度 | ✅ 完美对齐 |
+| MBPP | Type D | step_count (ρ=+0.526) | 决策积累 | ✅ 完美对齐 |
+| APPS | 混合 | step_count (ρ=−0.274) | 负方向 | ⚠️ 部分一致 |
+| WebShop | 混合 | state_category (η²=0.598) | 状态编码 | ✅ 互补 |
+```
+
+- [ ] P2 divergence 矩阵计算 + 格式化
+- [ ] P3 signal identity 对齐表格整理
+- [ ] 综合 P1/P2/P3 为论文 §5.7 段落
+
+### D4. Figure 2: Two-Source Model 理论曲线（论文 §3.3）
+
+**设计**：
+```
+左图：p_I vs ρ(entropy, U) 理论曲线
+  - X 轴: p_I (0 → 1)
+  - Y 轴: ρ (−0.4 → +0.2)
+  - 线性曲线: ρ = β − (α+β)·p_I
+  - 标注 p* = β/(α+β) 零点
+  - 标注 4 环境位置:
+    • HotpotQA (p_I 高, ρ=−0.327)
+    • APPS (p_I 中, ρ≈0)
+    • MBPP (p_I 低, ρ=+0.153)
+    • WebShop (p_I 中偏高, ρ=+0.133)
+
+右图：Prediction 1 验证 — Early vs Late step ρ (= Figure 7)
+```
+
+- [ ] 实现 Figure 2 绘图脚本（matplotlib）
+- [ ] 确定 α, β 参数（从实际数据拟合或使用合理估计）
+- [ ] 生成 Figure 2（两面板）
+
+---
+
 ## 5. 路径 C：新环境候选 GO/NO-GO
 
 **背景**：已试 18 个环境（7 GO / 11 NO-GO）。新环境是获得第 5 个有效环境和第 3 个 Pareto-dominate 的机会。
@@ -370,21 +586,9 @@ APPS probe gate SR ≤ 58.5%
 
 **风险**：Qwen3-4B 在 16K API 集合选择上可能太弱 → base SR < 10% → NO-GO。
 
-### C2. AgentBench-KG（知识图谱导航，GO 概率 35%）
+### ~~C2. AgentBench-KG~~ — ❌ 已砍
 
-**来源**：Liu et al., ICLR 2024
-**任务**：Freebase 知识图谱导航回答多跳问题
-**动作**：search_entity, get_relations, get_neighbors, answer
-
-**执行清单**：
-- [ ] C2.0: 确认 KG 子任务可独立运行（Day 1, ~2h）→ 不可独立 → 跳过
-- [ ] C2.1: （如可行）环境搭建 + Step 0 GO/NO-GO（Day 2-3）
-- [ ] C2.2-C2.4: （如 GO）Signal Discovery → 6-Method → CB 完整流水线
-
-### C3. CrosswordQA（填字游戏推理，GO 概率 25%）
-
-- [ ] C3.0: 调研多步交互版本是否存在（Day 1, ~1h）→ 单轮 → 跳过
-- [ ] C3.1: （如多步存在）搭建 + Step 0 GO/NO-GO
+### ~~C3. CrosswordQA~~ — ❌ 已砍
 
 ### 新环境标准流水线
 
@@ -404,27 +608,31 @@ Step 3: CB + Cost    → 4 × 3 seeds × 200ep + analysis, ~8-16h + 2h
   Week 1 (Mar 12-16) — 数据收集 + Probe Offline + 新环境搭建
 ═══════════════════════════════════════════════════════════════════════
 
-  Day 1 (Mar 12):
+  Day 1 (Mar 12-13):
   ├── [A1] 检查 TWExpress CB 6 running + 1 pending 状态
   ├── [A2] 检查 APPS rerun 9 jobs pending 状态
   ├── [B1] 检查已有 hidden state 数据
-  ├── [C3] CrosswordQA 多步版本调研（~1h → 快速判断）
-  └── [C1] ToolBench 环境搭建开始
+  ├── [C1] ToolBench 环境搭建开始
+  ├── 🆕 [D1] Temporal shift 分析脚本编写 + HotpotQA P1 验证
+  └── 🆕 [D2] Simpson's Paradox 子群分析（HotpotQA）
 
   Day 2-3 (Mar 13-14):
-  ├── [B1] HotpotQA hidden state 收集 (~40min)
-  ├── [B1] APPS hidden state 收集 (~40min)
-  ├── [B1] WebShop hidden state 收集 (~40min)
+  ├── [B1] HotpotQA 多层 hidden state 收集 (~40min) 🆕 8 层
+  ├── [B1] APPS 多层 hidden state 收集 (~40min)
+  ├── [B1] WebShop 多层 hidden state 收集 (~40min)
   ├── [C1] ToolBench Step 0 GO/NO-GO (50ep × 2)
-  └── [C2] AgentBench-KG 独立运行可行性确认
+  ├── 🆕 [D1] APPS/MBPP/WebShop P1 temporal shift 分析
+  ├── 🆕 [D2] APPS Simpson's Paradox 子群分析
+  ├── 🆕 [D3] P2/P3 汇总表格 + 段落初稿
+  └── 🆕 [D4] Figure 2 + Figure 7 初稿生成
 
   Day 4-5 (Mar 15-16):
   ├── [A1] TWExpress CB 完成 → 分析定位（Pareto 还是对比案例？）
   ├── [B2] HotpotQA 4 种 probe offline 训练 + 评估 (<10min)
   ├── [B3] HotpotQA GO/NO-GO 判断 ← 关键节点
   ├── [B2] （如 B3 GO）APPS + WebShop probe offline 评估
-  ├── [C1] （如 GO）ToolBench Signal Discovery
-  └── [C2] （如可行）AgentBench-KG Step 0 GO/NO-GO
+  ├── 🆕 [B6.1] Layer-wise probing (HotpotQA 8 层 AUC) ← B1 数据就绪后
+  └── [C1] （如 GO）ToolBench Signal Discovery
 
   ┌──────────────────────────────────────────────────────────────────┐
   │ Week 1 检查点 (Mar 16)                                          │
@@ -438,9 +646,17 @@ Step 3: CB + Cost    → 4 × 3 seeds × 200ep + analysis, ~8-16h + 2h
   │    → Pareto: 第 3 个！论文更强                                    │
   │    → 对比案例: 仍有论文价值（与 WebShop 对比叙事）                │
   │                                                                  │
-  │ 3. 新环境: ToolBench/AgentBench-KG GO/NO-GO?                     │
+  │ 3. 新环境: ToolBench GO/NO-GO?                                    │
   │    → GO: Week 2 启动 Step 1-2                                    │
-  │    → 全 NO-GO: 确认论文最终 3-4 个环境                           │
+  │    → NO-GO: 确认论文最终 3-4 个环境                              │
+  │                                                                  │
+  │ 🆕 4. Toy Model P1 Verification: ρ_early < ρ_late?              │
+  │    → Yes: Two-Source Model 有预测力 → 论文 §5.7 confirmed        │
+  │    → No/Weak: 调整 P1 的 cutoff 或 downgrade P1 为 "suggestive"  │
+  │                                                                  │
+  │ 🆕 5. Simpson's Paradox: within-group ρ 方向相反?                │
+  │    → Yes: 强理论支撑 → §3.3 confident writing                   │
+  │    → Weak: 调整 proxy 定义或 soften claim                        │
   └──────────────────────────────────────────────────────────────────┘
 
 ═══════════════════════════════════════════════════════════════════════
@@ -450,12 +666,16 @@ Step 3: CB + Cost    → 4 × 3 seeds × 200ep + analysis, ~8-16h + 2h
   Day 6-8 (Mar 17-19):
   ├── [B4] HotpotQA probe gate end-to-end 200ep × 3 seeds
   ├── [B4] WebShop probe gate end-to-end 200ep × 3 seeds
+  ├── 🆕 [B6.1] Layer-wise probing (APPS + WebShop 8 层 AUC)
+  ├── 🆕 [B6.2] Cross-env transfer matrix (3×3, 最重要)
+  ├── 🆕 [B6.3] Data efficiency learning curve (HotpotQA)
   ├── [C*] GO 环境 Step 2: 6-Method Core
   └── [A2] APPS rerun 结果分析（如果已完成）
 
   Day 9-10 (Mar 20-21):
   ├── [B4] APPS probe gate end-to-end 200ep × 3 seeds
   │         → 关键：SR 能否超过 CaTS 59.0%?
+  ├── 🆕 [B6] Figure 6 生成（三面板：layer-wise + transfer + learning curve）
   ├── [C*] GO 环境 Step 3: CB baselines
   └── B4 结果分析 → 确定论文 method 叙事
 
@@ -467,6 +687,9 @@ Step 3: CB + Cost    → 4 × 3 seeds × 200ep + analysis, ~8-16h + 2h
   │ 2. APPS probe 是否超过 CaTS → APPS 定位升级？                    │
   │ 3. 有效论文环境总数（目标 ≥ 4）                                  │
   │ 4. Pareto-dominate 环境总数（目标 ≥ 2, 争取 3）                  │
+  │ 🆕 5. B6 科学分析: cross-env transfer 失败？layer-wise 显著？     │
+  │    → 与 Toy Model 闭环确认                                       │
+  │ 🆕 6. D 路径全部完成？Figure 2 + Figure 7 就绪？                 │
   └──────────────────────────────────────────────────────────────────┘
 
 ═══════════════════════════════════════════════════════════════════════
@@ -498,8 +721,8 @@ Step 3: CB + Cost    → 4 × 3 seeds × 200ep + analysis, ~8-16h + 2h
   = 4 环境, 2 Pareto + 2 diagnostic
   + probe 成功 → method novelty ⭐⭐⭐⭐
 
-组合 2（P=25%）:
-  上述 4 + 🆕 1 新环境(ToolBench/AgentBench-KG) GO
+组合 2（P=20%）:
+  上述 4 + 🆕 ToolBench GO
   = 5 环境, 2-3 Pareto + 2-3 diagnostic
   + probe 成功 → 最强论文
 
@@ -529,7 +752,11 @@ Step 3: CB + Cost    → 4 × 3 seeds × 200ep + analysis, ~8-16h + 2h
 | Probe R² > 0.10 | ✅ 全速推进 B4 end-to-end |
 | Probe R² ∈ (0.05, 0.10) | ⚠️ 尝试调参（pooling/layer），不立即放弃 |
 | Probe R² < 0.05 | ❌ 放弃 probe, 资源全转路径 C + 强化 finding 叙事 |
-| 新环境全部无法搭建 | 确认论文 3-4 环境，不再尝试 |
+| 🆕 P1 ρ_early < ρ_late (显著) | ✅ Toy Model P1 confirmed, §5.7 confident |
+| 🆕 P1 方向对但不显著 | ⚠️ Report as "suggestive" with CI overlap caveat |
+| 🆕 Simpson's Paradox within-group 方向相反 | ✅ §3.3 理论支撑 confirmed |
+| 🆕 Simpson's Paradox 不明显 | ⚠️ 调整 Type I/D proxy 定义，或 soften claim |
+| ToolBench NO-GO | 确认论文 3-4 环境（仅保留 ToolBench 一个候选） |
 
 ### Mar 26 检查点（Phase 6 结束，论文环境集确定）
 
@@ -542,7 +769,7 @@ Step 3: CB + Cost    → 4 × 3 seeds × 200ep + analysis, ~8-16h + 2h
 
 ---
 
-## 9. 完整 Checklist
+## 9. 完整 Checklist（v3.0 更新）
 
 ### 路径 A — 完善现有环境（低投入）
 
@@ -556,9 +783,9 @@ Step 3: CB + Cost    → 4 × 3 seeds × 200ep + analysis, ~8-16h + 2h
 ### 路径 B — Hidden State Probe（核心）
 
 - [ ] **B1.0** 检查已有 hidden state 数据
-- [ ] **B1.1** HotpotQA hidden state 收集（200ep, HF）
-- [ ] **B1.2** APPS hidden state 收集
-- [ ] **B1.3** WebShop hidden state 收集
+- [ ] **B1.1** HotpotQA 多层 hidden state 收集（200ep, HF, 8 层）🆕 升级
+- [ ] **B1.2** APPS 多层 hidden state 收集
+- [ ] **B1.3** WebShop 多层 hidden state 收集
 - [ ] **B2.1** 4 种 probe 训练脚本实现
 - [ ] **B2.2** HotpotQA P1-P4 训练 + 评估（R², AUC, ρ）
 - [ ] **B2.3** 对比 handcrafted LR 基线
@@ -568,21 +795,40 @@ Step 3: CB + Cost    → 4 × 3 seeds × 200ep + analysis, ~8-16h + 2h
 - [ ] **B4.2** （如 B3 GO）WebShop probe gate 200ep × 3 seeds
 - [ ] **B4.3** （如 B3 GO）APPS probe gate 200ep × 3 seeds
 - [ ] **B5** （如 B4 有效）消融实验
+- [ ] **B6.1** 🆕 Layer-wise probing: 3 环境 × 8 层 AUC + Figure 6(a)
+- [ ] **B6.2** 🆕 Cross-env transfer matrix: 3×3 AUC heatmap + Figure 6(b)
+- [ ] **B6.3** 🆕 Data efficiency learning curve: AUC vs N_episodes + Figure 6(c)
+- [ ] **B6.4** 🆕 （可选）Feature attribution: probe 权重 vs handcrafted 对比
 
-### 路径 C — 新环境
+### 路径 C — 新环境（仅 ToolBench）
 
 - [ ] **C1.0** ToolBench 环境搭建
 - [ ] **C1.1** ToolBench Step 0 GO/NO-GO
 - [ ] **C1.2-C1.4** （如 GO）完整流水线
-- [ ] **C2.0** AgentBench-KG 独立运行可行性确认
-- [ ] **C2.1-C2.4** （如可行+GO）完整流水线
-- [ ] **C3.0** CrosswordQA 多步版本调研
-- [ ] **C3.1** （如存在）GO/NO-GO
+- [x] ~~C2 AgentBench-KG~~ — ❌ 已砍
+- [x] ~~C3 CrosswordQA~~ — ❌ 已砍
+
+### 路径 D — Toy Model Verification 🆕🆕
+
+- [ ] **D1.1** Temporal shift 分析脚本编写
+- [ ] **D1.2** HotpotQA P1: early vs late step ρ 计算 + bootstrap CI
+- [ ] **D1.3** APPS/MBPP/WebShop P1 验证
+- [ ] **D1.4** Figure 7 生成（grouped bar chart）
+- [ ] **D2.1** HotpotQA Simpson's Paradox 子群分析（按 evidence_count 分组）
+- [ ] **D2.2** APPS Simpson's Paradox 子群分析（按 step_count 分组）
+- [ ] **D2.3** （可选）Simpson's Paradox 可视化
+- [ ] **D3.1** P2 divergence 矩阵计算
+- [ ] **D3.2** P3 signal identity 对齐表格
+- [ ] **D3.3** P1/P2/P3 综合为论文 §5.7 段落
+- [ ] **D4.1** Figure 2 绘图脚本（Two-Source Model 理论曲线）
+- [ ] **D4.2** α, β 参数估计（从数据拟合或合理假设）
+- [ ] **D4.3** Figure 2 生成（两面板）
 
 ### 收尾
 
 - [ ] Unified Results Table（所有论文环境）
 - [ ] Pareto figure 统一生成
+- [ ] Figure 2 (Two-Source Model) + Figure 6 (Probe Analysis) + Figure 7 (P1 Verification) 就绪 🆕
 - [ ] phase6_final_report.md
 - [ ] 论文最终环境集确定 → 开始 LaTeX
 
@@ -594,15 +840,18 @@ Step 3: CB + Cost    → 4 × 3 seeds × 200ep + analysis, ~8-16h + 2h
 
 | 任务 | GPU 时间 | 优先级 |
 |------|---------|:------:|
-| B1: Hidden state 收集 (3 env) | ~2h | 🔴 最高 |
+| B1: Hidden state 收集 (3 env, 多层) | ~3h (比单层多 ~50%) | 🔴 最高 |
 | B2: Probe offline 训练 | ~0.5h (CPU) | 🔴 |
 | B4: End-to-end (3×2×3 seeds) | ~12h | 🔴 |
 | B5: 消融 | ~4h | 🟡 |
+| 🆕 B6: 科学分析 (layer-wise + transfer + learning curve) | ~1h (CPU/单 GPU) | 🔴 |
+| 🆕 D: Toy Model Verification + Figures | ~0h (纯 CPU 分析) | 🔴 |
 | C*: 新环境流水线 (per env) | ~20h | 🟠 |
 | ~~A2: TextWorld~~ | ~~16h~~ | ~~已砍~~ |
-| **总计** | **~40-60h** | |
+| **总计** | **~42-62h** | |
 
-**vs v1.0 省下 ~16h GPU 时间**（TextWorld 砍掉），全部可投入路径 B/C。
+**vs v1.0 省下 ~16h GPU 时间**（TextWorld 砍掉），全部可投入路径 B/C/D。
+**路径 D 零 GPU 成本** — 纯数据分析 + 绘图，可在 CPU 上并行执行。
 
 ### SLURM 管理
 
@@ -630,16 +879,29 @@ Step 3: CB + Cost    → 4 × 3 seeds × 200ep + analysis, ~8-16h + 2h
 
 | Phase 6 产出 | 论文位置 | 依赖 |
 |-------------|---------|------|
-| Probe 结果 | Section 3/4 方法描述 + Section 5.3 消融 | B3/B4 |
-| 统一 Pareto 图 | Figure 2 + Table 2 | A3 |
-| 新环境数据 | Section 5 环境扩展 | C* |
-| TWExpress 对比分析 | Section 5.2 Diagnostic Analysis | A1 |
-| APPS 弱信号分析 | Section 5.2 或 Appendix | A2 |
+| Probe 结果 | §4.4 方法描述 + §5.7b 分析 | B3/B4 |
+| 🆕 Layer-wise + Transfer + Learning Curve | §4.5 + Figure 6 (三面板) | B6 |
+| 统一 Pareto 图 | Figure 4 + Table 2 | A3 |
+| 新环境数据 | §5 环境扩展 | C* |
+| TWExpress 对比分析 | §5.2 Diagnostic Analysis | A1 |
+| APPS 弱信号分析 | §5.2 或 Appendix | A2 |
+| 🆕 P1 Temporal Shift 验证 | §5.7 E4 + Figure 7 | D1 |
+| 🆕 Simpson's Paradox 子群 | §3.3 Theoretical grounding | D2 |
+| 🆕 P2/P3 Cross-env + Signal Identity | §5.7 E4 | D3 |
+| 🆕 Two-Source Model 理论曲线 | §3.3 + Figure 2 | D4 |
 
 **论文叙事依赖**：
 ```
 Probe 成功 → 方法叙事: "SCG learns both direction and features from LLM hidden states"
            → 升级为: 无需领域知识的端到端 gating
+           → B6 科学分析提供 theory-method 闭环
 Probe 失败 → 方法叙事: "SCG uses lightweight trajectory features with zero overhead"
            → 保持: finding-driven paper, 方法简洁是 feature not bug
+
+Toy Model 验证成功 → 理论叙事: "finding + verified theory paper"
+                   → P1/P2/P3 confirmed → NeurIPS 理论深度 ⭐⭐⭐⭐
+Toy Model 验证部分 → 理论叙事: "finding + suggestive theory paper"
+                   → 至少 2/3 predictions → 仍有价值
+Toy Model 验证失败 → 理论叙事: "finding + post-hoc explanatory model"
+                   → 降级为 discussion-level hypothesis
 ```
