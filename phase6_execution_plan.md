@@ -1,6 +1,6 @@
 # Phase 6 执行计划：目标 5 个有效环境 + Method Novelty 升级
 
-**版本**：v3.0（2026-03-13）— 新增 Track D (Toy Model Verification) + B6 (Probe Scientific Analysis)，对齐 Writing Guide v5.0
+**版本**：v3.1（2026-03-13）— ToolBench G1 NO-GO, 新增 ALFWorld/ScienceWorld/InterCode 候选, ToolBench 升级 G2/G3
 **前置依赖**：Phase 0-5 完成，当前 2 个确认 Pareto-dominate（HotpotQA + WebShop）
 **核心目标**：从 2 → 4-5 个有效论文环境 + 提升 Method Novelty（⭐⭐ → ⭐⭐⭐⭐） + 完成 Toy Model 实验验证
 **计划周期**：2026-03-12 至 2026-03-26（3 周）
@@ -75,7 +75,7 @@
 | **Pareto-dominate 主实验** | 证明 SCG 在 SR 和 cost 上双优 | ≥ 2（HotpotQA + WebShop 已确认） |
 | **弱信号 diagnostic** | 展示 gate 在信号不足时正确保守 | 1（APPS） |
 | **Rollout-safe 对比** | 展示不同环境需要不同策略 | 1（TWExpress） |
-| **新环境扩展** | 额外多样性 + 可能的第 3 个 Pareto-dominate | 0-1（路径 C） |
+| **新环境扩展** | 额外多样性 + 可能的第 3 个 Pareto-dominate | 1-2（C1-C4, 并行 Step 0 取最先 GO） |
 
 ---
 
@@ -92,11 +92,12 @@
   A2: APPS 等 rerun 完成       B2: Offline probe 训练        D2: Simpson's Paradox 子群
   A3: Cost Analysis 统一       B3: GO/NO-GO 判断             D3: P2/P3 汇总
                                B4: End-to-end gate           D4: Figure 2 (理论曲线)
-  路径 C：新环境候选            B5: 消融实验
-  ──────────────────           B6: 科学分析 🆕
-  C1: ToolBench (40%)            → B6.1 Layer-wise probing
-                                 → B6.2 Cross-env transfer
-                                 → B6.3 Data efficiency
+  路径 C：新环境候选 (3-4个)     B5: 消融实验
+  ──────────────────────        B6: 科学分析 🆕
+  C1: ToolBench G2/G3 (35%)      → B6.1 Layer-wise probing
+  C2: ALFWorld (55%) 🆕           → B6.2 Cross-env transfer
+  C3: ScienceWorld (45%) 🆕       → B6.3 Data efficiency
+  C4: InterCode-SQL (40%) 🆕
 ═══════════════════════════════════════════════════════════════════════════
 ```
 
@@ -104,7 +105,7 @@
 1. **路径 B（最高）**：Hidden State Probe 是 NeurIPS 接受概率从 40% → 75% 的关键。省下的 TextWorld 时间全部投入这里。
 2. **路径 D（高，与 B 并行）** 🆕：Toy Model 验证是论文从 "finding paper" → "finding + theory paper" 的关键。纯数据分析，无 GPU 需求，Day 1 即可启动。
 3. **路径 A（中等，低投入）**：主要是等 pending jobs 完成 + 分析，几乎不需要主动工作。
-4. **路径 C（补充，仅 ToolBench）**：AgentBench-KG 和 CrosswordQA 已砍。仅保留 ToolBench 一个候选。
+4. **路径 C（补充，4 候选取 1-2）**：ToolBench G1 NO-GO，升级为 G2/G3 + 新增 ALFWorld/ScienceWorld/InterCode。并行 Step 0，取最先 GO 的 1-2 个。
 
 **依赖关系**：
 - A2(APPS probe gate) 依赖 B3/B4 结果
@@ -555,6 +556,8 @@ APPS 中也类似尝试:
 
 **背景**：已试 18 个环境（7 GO / 11 NO-GO）。新环境是获得第 5 个有效环境和第 3 个 Pareto-dominate 的机会。
 
+**v3.1 更新 (2026-03-13)：** ToolBench G1 NO-GO (base SR=98%, 太简单)。MirrorAPI 已部署但不改变结论。调整策略：升级 ToolBench 到 G2/G3 + 新增 2-3 个候选环境。
+
 ### GO/NO-GO 标准（基于 18 个环境经验总结）
 
 ```
@@ -571,24 +574,117 @@ APPS 中也类似尝试:
   ❌ 最强 signal ρ < 0.2            — SCG 大概率失败（TextWorld/BabyAI 教训）
 ```
 
-### C1. ToolBench（多步 API 调用链，GO 概率 40%）
+### C1. ToolBench G2/G3（多工具链式调用，GO 概率 35%）
 
-**来源**：Qin et al., 2023（清华 NLP）
-**任务**：从 16K+ 工具中选择合适 API 序列
-**Rollout T**：K-variant API call generation (temp=0.7, K=5) + execution verification
+**来源**：Qin et al., 2023（清华 NLP）/ StableToolBench
+**G1 结果**：❌ NO-GO — base SR=98% (单工具 tool selection 太简单)
+**G2/G3 升级**：从单工具 → 多工具链式调用，需跨不同类别的多个 API 完成任务
+
+**G1 vs G2/G3 难度对比**：
+| 级别 | 任务类型 | 工具数 | 链长 | 预期 base SR | 难度来源 |
+|------|---------|:------:|:----:|:------------:|---------|
+| G1 ❌ | 单工具内 API 调用 | 1 | 1-2 | ~98% (已验证) | 仅 tool selection |
+| **G2** | 同类别内多工具调用 | 2-3 | 3-5 | 30-60% (预估) | 需选正确工具 + 链式调用 |
+| **G3** | 跨类别多工具调用 | 3-5 | 4-8 | 10-40% (预估) | 最难：跨域 reasoning + 长链 |
+
+**已有基础设施**：
+- ✅ MirrorAPI 服务器 (`run_mirror.py`) 已部署可用
+- ✅ ToolEnv2404 工具数据 (12,304 JSON, 49 类别)
+- ✅ MirrorAPI 专用模型 (Qwen2-7B) 已下载
+- ✅ ToolBenchEnv adapter 已实现 (支持 /virtual 端点)
+- ⚠️ 需下载 G2/G3 instruction 数据 (`solvable_queries/test_instruction/G2_*.json`, `G3_*.json`)
 
 **执行清单**：
-- [ ] C1.0: 环境搭建 + base agent 适配（Day 1-2）
-- [ ] C1.1: Step 0 GO/NO-GO: base 50ep + always 50ep（Day 2-3, ~2h）
-- [ ] C1.2: （如 GO）Step 1 Signal Discovery 200ep（Day 3-4, ~4h）
-- [ ] C1.3: （如 GO + ρ>0.2）Step 2 6-Method Core 6×3×200ep（Day 4-7, ~16h）
-- [ ] C1.4: （如 GO）Step 3 CB + Cost Analysis（Day 7-10, ~16h）
+- [ ] C1.0: 下载 G2/G3 任务数据 + 更新 config (task_file 切换)
+- [ ] C1.1: G2 Step 0 GO/NO-GO: base 50ep + always 50ep (~2-3h, 含 MirrorAPI)
+- [ ] C1.2: (如 G2 NO-GO) G3 Step 0 GO/NO-GO
+- [ ] C1.3: (如 GO) Step 1 Signal Discovery 200ep
+- [ ] C1.4: (如 GO + ρ>0.2) Step 2-3 完整流水线
 
-**风险**：Qwen3-4B 在 16K API 集合选择上可能太弱 → base SR < 10% → NO-GO。
+**风险/机会**：
+- 风险：G2/G3 每步需 MirrorAPI LLM 调用 (~5s/step)，速度慢 → 可能 TIMEOUT
+- 风险：多工具任务 Qwen3-4B 可能太弱 → base SR < 10%
+- 机会：多工具链式调用是 rollout 最有价值的场景（选错工具后回退 → 高 rollout utility）
+- 机会：已有完整 MirrorAPI 基础设施，搭建成本几乎为零
 
-### ~~C2. AgentBench-KG~~ — ❌ 已砍
+### C2. ALFWorld（文本家庭任务，GO 概率 55%）🆕
 
-### ~~C3. CrosswordQA~~ — ❌ 已砍
+**来源**：Shridhar et al., 2021（Allen AI）
+**任务**：文本版具身任务 — agent 在房间间导航、操作物品完成目标（如 "put a clean apple in the fridge"）
+**特点**：
+- 纯文本交互，无视觉依赖 ✅
+- 固定动作模板（go to X, take X, put X in/on Y, examine X, open X, close X, use X）
+- 6 种任务类型：pick, clean, heat, cool, examine, pick two
+- 平均 episode 15-30 步，明确 success/failure 判定
+- `pip install alfworld` 即可安装，无大型外部依赖 ✅
+
+**FRVC 适配性分析**：
+- 动作空间：~30-50 个 admissible actions/step（与 TextWorld 类似但更稳定）
+- Rollout 价值：在"探索哪个房间有目标物品"时 rollout 可大幅减少无效探索
+- 预期 base SR：20-50%（Qwen3-4B 在文本导航上应有基本能力）
+- 信号候选：step_count, rooms_visited, inventory_size, distance_to_goal
+
+**执行清单**：
+- [ ] C2.0: `pip install alfworld` + 环境验证 + BaseEnv adapter 编写
+- [ ] C2.1: Step 0 GO/NO-GO (50ep × 2, ~2h)
+- [ ] C2.2-C2.4: (如 GO) 完整流水线
+
+### C3. ScienceWorld（文本科学实验，GO 概率 45%）🆕
+
+**来源**：Wang et al., 2022（Allen AI）
+**任务**：文本版科学实验 — agent 在模拟实验室中操作仪器、混合材料、观察结果
+**特点**：
+- 纯文本交互 ✅
+- 30 个不同科学任务（化学、生物、物理）
+- 动作空间：~50-100 个（move to, pick up, pour X into Y, focus on, use thermometer 等）
+- 需要多步推理链：找到正确仪器 → 正确操作顺序 → 观察结果
+- `pip install scienceworld` 安装 ✅
+
+**FRVC 适配性分析**：
+- Rollout 价值高：科学实验有明确的"正确操作顺序"，错误步骤导致实验失败
+- 预期 base SR：15-40%（任务较难，需要 reasoning）
+- 信号候选：step_count, score_fraction, num_available_actions, task_progress
+- 与 HotpotQA 不同域（科学 vs 问答）→ 增加论文环境多样性
+
+**执行清单**：
+- [ ] C3.0: `pip install scienceworld` + 环境验证 + BaseEnv adapter
+- [ ] C3.1: Step 0 GO/NO-GO (50ep × 2, ~2h)
+- [ ] C3.2-C3.4: (如 GO) 完整流水线
+
+### C4. InterCode-SQL（交互式 SQL 查询，GO 概率 40%）🆕
+
+**来源**：Yang et al., 2024（Princeton）
+**任务**：agent 通过多轮交互编写 SQL 查询，可执行并获得反馈后修改
+**特点**：
+- 纯文本交互 ✅
+- 动作空间：生成 SQL 语句 + submit (类似 APPS 的代码生成但交互式)
+- Bird/Spider 数据库，~1000 个任务
+- 多步：初始查询 → 执行反馈 → 修正 → 再执行
+- 需要 Docker（SQLite 后端）
+
+**FRVC 适配性分析**：
+- Rollout 价值：SQL 修正过程中探索不同查询策略
+- 与 APPS 形成对比：都是代码生成但 InterCode 有执行反馈 → 信号更强
+- 预期 base SR：25-50%
+- 风险：需要 Docker 环境，集群可能不支持
+
+**执行清单**：
+- [ ] C4.0: 检查集群 Docker 支持 + 安装 intercode
+- [ ] C4.1: (如可安装) Step 0 GO/NO-GO
+- [ ] C4.2-C4.4: (如 GO) 完整流水线
+
+### 新环境优先级排序
+
+| 候选 | GO 概率 | 搭建成本 | 基础设施就绪 | 优先级 |
+|------|:-------:|:--------:|:----------:|:------:|
+| **C2 ALFWorld** | 55% | 低 (pip install) | 无依赖 | 🔴 最高 |
+| **C1 ToolBench G2/G3** | 35% | 极低 (已有) | ✅ 全部就绪 | 🔴 最高 |
+| **C3 ScienceWorld** | 45% | 低 (pip install) | 无依赖 | 🟠 高 |
+| C4 InterCode-SQL | 40% | 中 (需 Docker) | 待验证 | 🟡 中 |
+| ~~C2旧 AgentBench-KG~~ | — | — | — | ❌ 已砍 |
+| ~~C3旧 CrosswordQA~~ | — | — | — | ❌ 已砍 |
+
+**策略**：并行启动 C1(G2/G3) + C2(ALFWorld) + C3(ScienceWorld)，取最先 GO 的 1-2 个环境。
 
 ### 新环境标准流水线
 
@@ -609,10 +705,10 @@ Step 3: CB + Cost    → 4 × 3 seeds × 200ep + analysis, ~8-16h + 2h
 ═══════════════════════════════════════════════════════════════════════
 
   Day 1 (Mar 12-13):
-  ├── [A1] 检查 TWExpress CB 6 running + 1 pending 状态
-  ├── [A2] 检查 APPS rerun 9 jobs pending 状态
+  ├── [A1] ✅ TWExpress CB 12/12 完成, token cost 完成
+  ├── [A2] ✅ APPS rerun 9/9 完成
   ├── [B1] 检查已有 hidden state 数据
-  ├── [C1] ToolBench 环境搭建开始
+  ├── [C1] ✅ ToolBench G1 环境搭建 + MirrorAPI 部署 → NO-GO (base=98%)
   ├── 🆕 [D1] Temporal shift 分析脚本编写 + HotpotQA P1 验证
   └── 🆕 [D2] Simpson's Paradox 子群分析（HotpotQA）
 
@@ -620,7 +716,9 @@ Step 3: CB + Cost    → 4 × 3 seeds × 200ep + analysis, ~8-16h + 2h
   ├── [B1] HotpotQA 多层 hidden state 收集 (~40min) 🆕 8 层
   ├── [B1] APPS 多层 hidden state 收集 (~40min)
   ├── [B1] WebShop 多层 hidden state 收集 (~40min)
-  ├── [C1] ToolBench Step 0 GO/NO-GO (50ep × 2)
+  ├── [C1] ToolBench G2/G3 Step 0 GO/NO-GO (升级难度)
+  ├── [C2] 🆕 ALFWorld 环境搭建 + Step 0 GO/NO-GO
+  ├── [C3] 🆕 ScienceWorld 环境搭建 + Step 0 GO/NO-GO
   ├── 🆕 [D1] APPS/MBPP/WebShop P1 temporal shift 分析
   ├── 🆕 [D2] APPS Simpson's Paradox 子群分析
   ├── 🆕 [D3] P2/P3 汇总表格 + 段落初稿
@@ -646,9 +744,9 @@ Step 3: CB + Cost    → 4 × 3 seeds × 200ep + analysis, ~8-16h + 2h
   │    → Pareto: 第 3 个！论文更强                                    │
   │    → 对比案例: 仍有论文价值（与 WebShop 对比叙事）                │
   │                                                                  │
-  │ 3. 新环境: ToolBench GO/NO-GO?                                    │
-  │    → GO: Week 2 启动 Step 1-2                                    │
-  │    → NO-GO: 确认论文最终 3-4 个环境                              │
+  │ 3. 新环境: C1(G2/G3) + C2(ALFWorld) + C3(ScienceWorld) GO/NO-GO?   │
+  │    → ≥1 GO: Week 2 启动 Step 1-2                                │
+  │    → 全 NO-GO: 确认论文最终 3-4 个环境                          │
   │                                                                  │
   │ 🆕 4. Toy Model P1 Verification: ρ_early < ρ_late?              │
   │    → Yes: Two-Source Model 有预测力 → 论文 §5.7 confirmed        │
@@ -721,8 +819,8 @@ Step 3: CB + Cost    → 4 × 3 seeds × 200ep + analysis, ~8-16h + 2h
   = 4 环境, 2 Pareto + 2 diagnostic
   + probe 成功 → method novelty ⭐⭐⭐⭐
 
-组合 2（P=20%）:
-  上述 4 + 🆕 ToolBench GO
+组合 2（P=25%）:
+  上述 4 + 🆕 ALFWorld/ScienceWorld/ToolBench-G2 其一 GO
   = 5 环境, 2-3 Pareto + 2-3 diagnostic
   + probe 成功 → 最强论文
 
@@ -756,7 +854,8 @@ Step 3: CB + Cost    → 4 × 3 seeds × 200ep + analysis, ~8-16h + 2h
 | 🆕 P1 方向对但不显著 | ⚠️ Report as "suggestive" with CI overlap caveat |
 | 🆕 Simpson's Paradox within-group 方向相反 | ✅ §3.3 理论支撑 confirmed |
 | 🆕 Simpson's Paradox 不明显 | ⚠️ 调整 Type I/D proxy 定义，或 soften claim |
-| ToolBench NO-GO | 确认论文 3-4 环境（仅保留 ToolBench 一个候选） |
+| ToolBench G1 NO-GO ✅ (已确认) | 升级 G2/G3 + ALFWorld/ScienceWorld 并行 Step 0 |
+| 新环境全 NO-GO | 确认论文最终 3-4 环境 |
 
 ### Mar 26 检查点（Phase 6 结束，论文环境集确定）
 
@@ -773,11 +872,11 @@ Step 3: CB + Cost    → 4 × 3 seeds × 200ep + analysis, ~8-16h + 2h
 
 ### 路径 A — 完善现有环境（低投入）
 
-- [ ] **A1.1** TWExpress CB 7 jobs 完成 → 数据提取
-- [ ] **A1.2** TWExpress Pareto 分析 + 论文定位确定
-- [ ] **A1.3** TWExpress token cost 常数提取 + cost 表
-- [ ] **A2.1** APPS rerun 9 jobs 完成 → 数据更新
-- [ ] **A2.2** APPS 统一结果表更新（正确 random_50/bsw/oracle）
+- [x] **A1.1** ✅ TWExpress CB 12/12 完成 → 数据已提取
+- [x] **A1.2** ✅ TWExpress 定位确定: 对比案例 (rollout-safe, SCG 选择性是劣势)
+- [x] **A1.3** ✅ TWExpress token cost: C_base=524, C_rollout=8002, C_vote=2620
+- [x] **A2.1** ✅ APPS rerun 9/9 完成 → oracle=75.0%!
+- [x] **A2.2** ✅ APPS 统一结果表已更新
 - [ ] **A3** 所有论文环境 Pareto figure 统一生成
 
 ### 路径 B — Hidden State Probe（核心）
@@ -800,13 +899,21 @@ Step 3: CB + Cost    → 4 × 3 seeds × 200ep + analysis, ~8-16h + 2h
 - [ ] **B6.3** 🆕 Data efficiency learning curve: AUC vs N_episodes + Figure 6(c)
 - [ ] **B6.4** 🆕 （可选）Feature attribution: probe 权重 vs handcrafted 对比
 
-### 路径 C — 新环境（仅 ToolBench）
+### 路径 C — 新环境（4 候选取 1-2）
 
-- [ ] **C1.0** ToolBench 环境搭建
-- [ ] **C1.1** ToolBench Step 0 GO/NO-GO
+- [x] **C1.0** ToolBench G1 环境搭建 + MirrorAPI 部署 → ✅ 完成但 G1 NO-GO
+- [ ] **C1.1** ToolBench G2/G3 Step 0 GO/NO-GO (升级难度)
 - [ ] **C1.2-C1.4** （如 GO）完整流水线
-- [x] ~~C2 AgentBench-KG~~ — ❌ 已砍
-- [x] ~~C3 CrosswordQA~~ — ❌ 已砍
+- [ ] **C2.0** 🆕 ALFWorld 环境搭建 + BaseEnv adapter
+- [ ] **C2.1** 🆕 ALFWorld Step 0 GO/NO-GO
+- [ ] **C2.2-C2.4** （如 GO）完整流水线
+- [ ] **C3.0** 🆕 ScienceWorld 环境搭建 + BaseEnv adapter
+- [ ] **C3.1** 🆕 ScienceWorld Step 0 GO/NO-GO
+- [ ] **C3.2-C3.4** （如 GO）完整流水线
+- [ ] **C4.0** 🆕 InterCode-SQL Docker 检查 + 环境搭建
+- [ ] **C4.1** 🆕 (如可安装) InterCode Step 0 GO/NO-GO
+- [x] ~~AgentBench-KG~~ — ❌ 已砍
+- [x] ~~CrosswordQA~~ — ❌ 已砍
 
 ### 路径 D — Toy Model Verification 🆕🆕
 
@@ -847,10 +954,11 @@ Step 3: CB + Cost    → 4 × 3 seeds × 200ep + analysis, ~8-16h + 2h
 | 🆕 B6: 科学分析 (layer-wise + transfer + learning curve) | ~1h (CPU/单 GPU) | 🔴 |
 | 🆕 D: Toy Model Verification + Figures | ~0h (纯 CPU 分析) | 🔴 |
 | C*: 新环境流水线 (per env) | ~20h | 🟠 |
+| C* Step 0 并行 (4 env) | ~8h (4×2h 并行) | 🔴 |
 | ~~A2: TextWorld~~ | ~~16h~~ | ~~已砍~~ |
-| **总计** | **~42-62h** | |
+| **总计** | **~50-70h** | |
 
-**vs v1.0 省下 ~16h GPU 时间**（TextWorld 砍掉），全部可投入路径 B/C/D。
+**v3.1 变化**: 新增 3 个环境候选 Step 0 (~8h 并行), ToolBench 基础设施已就绪无需额外搭建。
 **路径 D 零 GPU 成本** — 纯数据分析 + 绘图，可在 CPU 上并行执行。
 
 ### SLURM 管理
@@ -866,7 +974,7 @@ Step 3: CB + Cost    → 4 × 3 seeds × 200ep + analysis, ~8-16h + 2h
 | 风险 | 概率 | 影响 | 缓解措施 |
 |------|:----:|:----:|---------|
 | Hidden State Probe NO-GO | 30% | 高 | 保持手工 LR 为主方法；强化 finding 叙事（方向反转 + adaptive behavior）。论文仍可投但 method novelty 不足 |
-| 所有新环境 NO-GO | 40% | 中 | 4 环境 (HotpotQA+WebShop+APPS+TWExpress) 仍可支撑论文 |
+| 所有新环境 NO-GO | 25% | 中 | 4 候选 (G2/G3+ALFWorld+ScienceWorld+InterCode) 全 NO-GO 概率降低; 4 环境仍可支撑论文 |
 | TWExpress 不 Pareto-dominate | 50% | 低 | 定位为 "rollout-safe 对比案例"，与 WebShop 形成对比叙事 |
 | APPS probe 仍不超过 CaTS | 60% | 低 | APPS 保持弱信号案例定位，展示正确保守行为 |
 | GPU quota 不足 | 15% | 中 | 优先路径 B（战略价值最高），错峰提交 |

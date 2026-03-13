@@ -1,6 +1,6 @@
 # Phase 5: Full Experiment Status Report
-**Last Updated:** 2026-03-13 (全部完成 update)
-**Goal:** FRVC gating framework across 7 environments (6 GO + 1 negative example)
+**Last Updated:** 2026-03-13 (ToolBench NO-GO confirmed, MirrorAPI deployed, all token costs done)
+**Goal:** FRVC gating framework across 7 environments (6 GO + 1 negative example) + new environment expansion
 
 ---
 
@@ -11,10 +11,10 @@
 | HotpotQA     | ✅ | ✅ | ✅ 6/6 | ✅ 4/4 (cal)   | ✅ |
 | APPS         | ✅ | ✅ | ✅ 6/6 (rerun完成) | ✅ 4/4 (cal)   | ✅ |
 | WebShop      | ✅ | ✅ | ✅ 6/6 | ✅ 4/4 (cal)   | ✅ |
-| BabyAI       | ✅ | ✅ | ✅ 6/6 | ✅ 12/12 done   | ❌ |
-| TWExpress    | ✅ | ✅ | ✅ 6/6 | ✅ 12/12 done | ❌ |
+| BabyAI       | ✅ | ✅ | ✅ 6/6 | ✅ 12/12 done   | ✅ |
+| TWExpress    | ✅ | ✅ | ✅ 6/6 | ✅ 12/12 done | ✅ |
 | TextWorld    | ✅ | ✅ | ❌ 4/6 (always_trigger+oracle TIMEOUT) | ⚠️ 10/12 (cats-42 TIMEOUT, corefine-123 FAILED) | ❌ |
-| Plancraft    | ✅ | ✅ | ⚠️ 4/6 (missing random_50, best_sigma_wrong) | ✅ 12/12 done | ❌ |
+| Plancraft    | ✅ | ✅ | ⚠️ 4/6 (missing random_50, best_sigma_wrong) | ✅ 12/12 done | ✅ |
 
 ### Paper Viability Assessment
 
@@ -226,7 +226,7 @@ Token costs:         results/phase5/token_costs/webshop_token_costs.json
 | Step 1 | ✅ | N=11550, 信号极弱 (max |ρ|=0.052) |
 | Step 2 | ✅ 6/6 | |
 | Step 3 | ✅ 12/12 done | |
-| Cost   | ❌ | |
+| Cost   | ✅ | C_base=336, C_rollout=2173, C_vote=1681 |
 
 ### 4.2 Feature Importance (N=11550)
 | Rank | Signal | Spearman ρ | p-value |
@@ -273,7 +273,7 @@ Phase 1 signal:      results/phase5/babyai/babyai/phase1_signal_data.json
 | Step 1 | ✅ | N=798, step_count 最强 (ρ=−0.477) |
 | Step 2 | ✅ 6/6 | |
 | Step 3 | ✅ 12/12 done | 全部完成 |
-| Cost   | ❌ | |
+| Cost   | ✅ | C_base=524, C_rollout=8002, C_vote=2620 |
 
 ### 5.2 Feature Importance (N=798)
 | Rank | Signal | Spearman ρ | p-value |
@@ -371,7 +371,7 @@ Phase 1 signal:      results/phase5/textworld/textworld/phase1_signal_data.json
 | Step 1 | ✅ | N=1360, has_output 最强 (ρ=+0.162), utility 极低 (positive_rate=1.1%) |
 | Step 2 | ⚠️ 4/6 (K=3) | Missing random_50, best_sigma_wrong |
 | Step 3 | ✅ 12/12 done | 全部完成 |
-| Cost   | ❌ | |
+| Cost   | ✅ | C_base=1120, C_rollout=10651, C_vote=5598 |
 
 ### 7.2 Feature Importance (N=1360)
 | Rank | Signal | Spearman ρ | p-value |
@@ -396,6 +396,8 @@ Phase 1 signal:      results/phase5/textworld/textworld/phase1_signal_data.json
 | CoRefine | CB | 22.5% | 20.0% | 26.0% | **22.8%** | 9.7 | 2.04/1.98/2.17 |
 | CaTS | CB | 21.5% | 20.0% | 25.5% | **22.3%** | 7.9 | 4.65/4.33/4.19 |
 
+**Token cost 常数:** C_base=1,120 tok/step, C_rollout=10,651 tok/trigger (9.5×), C_vote=5,598 tok/step (CATTS K=5)
+
 **Rollout 在此环境本质上有害。** base_only(29.8%) 是最佳策略，所有 rollout 方法均低于 base_only:
 - 即使 oracle(21.3%) 也比 base_only 低 8.5pp
 - CB 方法 (CATTS 25.0%, SEAG 24.5%, CaTS 22.3%) 同样不如 base_only，但略优于 always_trigger(22.8%)
@@ -411,18 +413,67 @@ Phase 1 signal:      results/phase5/plancraft/plancraft/phase1_signal_data.json
 
 ---
 
-## 8. Job Tracking (2026-03-13 — Phase 5 全部完成 🎉)
+## 8. New Environment Expansion (Wave 2)
 
-### 全部完成
+### 8.1 Candidate Assessment
+
+| Environment | 可行性 | 主要障碍 | 状态 |
+|---|---|---|---|
+| **ToolBench** | **高** | StableToolBench + MirrorAPI 离线运行, vLLM 支持 | ❌ **NO-GO** (base SR=98%, G1 单工具任务太简单) |
+| AgentBench-KG | **低** | 需 53GB Freebase + 100GB RAM Virtuoso SPARQL | ❌ 暂缓 (基础设施门槛太高) |
+| CrosswordQA | **低** | CrossWordBench 为多模态, Qwen3-4B 纯文本不匹配 | ❌ 暂缓 (需 VLM) |
+
+### 8.2 ToolBench (StableToolBench) — NO-GO
+- **任务类型:** Agent 通过 REST API 调用解决用户查询 (tool-use benchmark)
+- **交互模式:** ReAct (Thought → Action → Observation)
+- **动作空间:** 可用 API 工具 + Finish (文本型, 动态)
+- **离线评估:** MirrorAPI (HF 模型模拟 7000+ API 行为)
+- **MirrorAPI 部署:** ✅ 已完成
+  - MirrorAPI 服务器: `StableToolBench/server/run_mirror.py` (pydantic v2 兼容)
+  - 工具数据: `stabletoolbench/ToolEnv2404` (12,304 工具 JSON, 49 类别)
+  - 专用模型: `stabletoolbench/MirrorAPI` (Qwen2-7B, 已下载到 scratch)
+  - 配置: `StableToolBench/server/config_frvc.yml` (Qwen3-4B 后端)
+  - 配置: `StableToolBench/server/config_frvc_dedicated.yml` (专用模型后端)
+- **Step 0 结果: NO-GO**
+  - 无 MirrorAPI (job 23148496): base SR=94%, NO-GO (纯 tool selection 太简单)
+  - 有 MirrorAPI (job 23148694): base SR=98%, always SR=98%, Δ=0%, NO-GO
+  - **根因:** G1 单工具任务对 Qwen3-4B 太简单 — agent 在 98% 的 episode 中正确识别并调用 relevant API
+  - Loop detection 在 2-3 步后自动 Finish, API 覆盖率评分 → SR 极高
+  - 有 MirrorAPI 时 API 真实响应可用 (smoke test 确认), 但不改变 tool selection 难度
+- **历史:** 8次提交 (pydantic冲突→stub模式→路径bug→Finish逻辑→MirrorAPI缺失→loop detection→MirrorAPI部署→最终NO-GO)
+- **潜在改进:** G2/G3 多工具任务更难 (需跨多服务调用), 但优先级低
+- **文件:**
+  - Adapter: `frvc/envs/toolbench_env.py`
+  - Config: `configs/phase5_toolbench.yaml`
+  - SLURM: `scripts/step0_toolbench_mirror.sbatch` (1-GPU), `scripts/step0_toolbench_2gpu.sbatch` (2-GPU)
+
+### 8.3 AgentBench-KG / CrosswordQA (已暂缓)
+- Adapter 和 config 已创建但不提交运行
+- AgentBench-KG: `frvc/envs/agentbench_kg_env.py`, `configs/phase5_agentbench_kg.yaml`
+- CrosswordQA: `frvc/envs/crosswordqa_env.py`, `configs/phase5_crosswordqa.yaml`
+- 如需恢复: `sbatch scripts/step0_agentbench_kg.sbatch` / `sbatch scripts/step0_crosswordqa.sbatch`
+
+---
+
+## 9. Job Tracking (2026-03-13)
+
+### Running
+(无)
+
+### 已完成
+- ✅ **ToolBench Step 0 — NO-GO** (最终 job 23148694, MirrorAPI 版): base=98%, always=98%, Δ=0%
+  - 8次提交历史: 23145327→23145464→23148015→23148086→23148327→23148421→23148496→23148694
+- ✅ **TWExpress token cost** (job 23145097) — C_base=524, C_rollout=8002, C_vote=2620
+- ✅ **BabyAI token cost** (job 23145100) — C_base=336, C_rollout=2173, C_vote=1681
+- ✅ **Plancraft token cost** (job 23145101) — C_base=1120, C_rollout=10651, C_vote=5598
 - ✅ **Plancraft CB 12/12**
 - ✅ **TextWorld CB 10/12** (cats-42 TIMEOUT, corefine-123 FAILED)
 - ✅ **TWExpress CB 12/12**
 - ✅ **APPS rerun 9/9** (r50×3, bsw×3, oracle×3)
 
-### Running: 0 jobs
-### Pending: 0 jobs
-
-**Phase 5 所有可运行的任务已全部完成。** 剩余未完成项仅为已知不可修复问题 (TextWorld TIMEOUT/FAILED)。
+### 暂缓
+- ❌ AgentBench-KG Step 0 (需 Virtuoso + 53GB Freebase)
+- ❌ CrosswordQA Step 0 (需 VLM, Qwen3-4B 不支持)
 
 ---
 
@@ -441,7 +492,7 @@ Phase 1 signal:      results/phase5/plancraft/plancraft/phase1_signal_data.json
 
 ### Table 2: Cost Analysis
 ```
-results/phase5/token_costs/{env}_token_costs.json       (HotpotQA/APPS/WebShop only)
+results/phase5/token_costs/{env}_token_costs.json       (全部 6 环境完成 ✅)
 reports/phase5_cost_analysis_report.md                   (详细)
 reports/table2_cost_analysis.md                          (精简)
 ```
@@ -467,9 +518,14 @@ results/phase5/calibration_data/{env}/phase1_signal_data.json         (Phase1 en
 3. ~~Plancraft CB~~ → ✅ 12/12 全部完成
 4. ~~TWExpress CB~~ → ✅ 12/12 全部完成。SCG(97.0%) ≈ CB(~97.3-97.5%)，SCG cost 最低
 5. ~~TextWorld CB~~ → ⚠️ 10/12 完成 (cats-42 TIMEOUT, corefine-123 FAILED — 不再重跑)
-6. **Plancraft random_50 + best_sigma_wrong** — 是否补跑？(环境为负例，优先级低)
-7. **Cost Analysis** — 等结果齐全后统一计算 (BabyAI/TWExpress/TextWorld/Plancraft)
-8. **🔑 Phase 6 优先:** APPS oracle=75.0% 证明 Hidden State Probe 有巨大潜力
+6. ~~Plancraft token cost~~ → ✅ C_base=1120, C_rollout=10651, C_vote=5598
+7. ~~TWExpress token cost~~ → ✅ C_base=524, C_rollout=8002, C_vote=2620
+8. ~~BabyAI token cost~~ → ✅ C_base=336, C_rollout=2173, C_vote=1681
+9. ~~ToolBench Step 0 GO/NO-GO~~ → ❌ **NO-GO** (base SR=98%, G1 太简单; MirrorAPI 已部署但不改变结论)
+10. **Plancraft random_50 + best_sigma_wrong** — 是否补跑？(环境为负例，优先级低)
+11. ~~Cost Analysis~~ → ✅ 6/6 环境 token cost 全部完成
+12. **🔑 Phase 6 优先:** APPS oracle=75.0% 证明 Hidden State Probe 有巨大潜力
+13. **ToolBench G2/G3** — 多工具任务可能难度适中, 但优先级低于 Phase 6
 
 ---
 
@@ -477,13 +533,13 @@ results/phase5/calibration_data/{env}/phase1_signal_data.json         (Phase1 en
 
 ### 11.1 Token Cost 常数
 
-| | HotpotQA | APPS | WebShop |
-|--|:--------:|:----:|:-------:|
-| **C_base** (tok/step) | 216 | 840 | 705 |
-| **C_rollout** (tok/trigger) | 7,743 | 3,306 | 9,089 |
-| **C_vote** (tok/step, CATTS) | 1,063 | 4,198 | 3,385 |
-| Rollout/base ratio | 35.8× | 3.9× | 12.9× |
-| Rollout type | Tree search 5×3 | Code batch n=5 | Tree search 5×3 |
+| | HotpotQA | APPS | WebShop | Plancraft | TWExpress | BabyAI |
+|--|:--------:|:----:|:-------:|:---------:|:---------:|:------:|
+| **C_base** (tok/step) | 216 | 840 | 705 | 1,120 | 524 | 336 |
+| **C_rollout** (tok/trigger) | 7,743 | 3,306 | 9,089 | 10,651 | 8,002 | 2,173 |
+| **C_vote** (tok/step, CATTS) | 1,063 | 4,198 | 3,385 | 5,598 | 2,620 | 1,681 |
+| Rollout/base ratio | 35.8× | 3.9× | 12.9× | 9.5× | 15.3× | 6.5× |
+| Rollout type | Tree search 5×3 | Code batch n=5 | Tree search 5×3 | Tree search 5×2 | Tree search 5×3 | LLM 3×2 |
 
 ### 11.2 Pareto 摘要 (FRVC vs 最佳竞争方法)
 
