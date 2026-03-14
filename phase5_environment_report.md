@@ -415,13 +415,18 @@ Phase 1 signal:      results/phase5/plancraft/plancraft/phase1_signal_data.json
 
 ## 8. New Environment Expansion (Wave 2)
 
-### 8.1 Candidate Assessment
+### 8.1 Candidate Assessment — 全部 NO-GO (Phase 6 确认)
 
-| Environment | 可行性 | 主要障碍 | 状态 |
-|---|---|---|---|
-| **ToolBench** | **高** | StableToolBench + MirrorAPI 离线运行, vLLM 支持 | ❌ **NO-GO** (base SR=98%, G1 单工具任务太简单) |
-| AgentBench-KG | **低** | 需 53GB Freebase + 100GB RAM Virtuoso SPARQL | ❌ 暂缓 (基础设施门槛太高) |
-| CrosswordQA | **低** | CrossWordBench 为多模态, Qwen3-4B 纯文本不匹配 | ❌ 暂缓 (需 VLM) |
+| Environment | Base SR | Always SR | Δ | 状态 | 测试日期 |
+|---|:---:|:---:|:---:|---|:---:|
+| **ToolBench (G1)** | 94-98% | 94-98% | 0% | ❌ **NO-GO** (太简单) | 3/13 |
+| **ALFWorld** | 28% | 30% | +2% | ❌ **NO-GO** (Δ不足) | 3/7 |
+| **ScienceWorld** | 0% | 0% | 0% | ❌ **NO-GO** (模型太弱) | 3/7 |
+| **InterCode-bash** | 100% | 100% | 0% | ❌ **NO-GO** (太简单) | 3/7 |
+| AgentBench-KG | — | — | — | ❌ 暂缓 (53GB Freebase) | — |
+| CrosswordQA | — | — | — | ❌ 暂缓 (需 VLM) | — |
+
+**结论 (Phase 6 v3.2):** 共 16 个环境测试，5 GO + 11 NO-GO。论文环境集锁定为 4 个。
 
 ### 8.2 ToolBench (StableToolBench) — NO-GO
 - **任务类型:** Agent 通过 REST API 调用解决用户查询 (tool-use benchmark)
