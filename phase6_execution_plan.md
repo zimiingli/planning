@@ -1,8 +1,9 @@
 # Phase 6 执行计划：目标 5 个有效环境 + Method Novelty 升级
 
-**版本**：v3.2（2026-03-13）— 路径 A/D ✅ 全部完成, 路径 C ❌ 全部 NO-GO (含 ALFWorld/ScienceWorld/InterCode Phase 5 历史数据), 路径 B 全力推进
+**版本**：v4.0（2026-03-14）— 路径 A/D ✅ 全部完成, 路径 C ❌ 全部 NO-GO, 路径 B Probe 发现 threshold 瓶颈 (B4v1/v2 失败, v3 running), **🆕 路径 E: Method Upgrade 三方向并行启动**
 **前置依赖**：Phase 0-5 完成，当前 2 个确认 Pareto-dominate（HotpotQA + WebShop）
 **核心目标**：~~从 2 → 4-5 个有效论文环境~~ 论文 4 环境已锁定 + 提升 Method Novelty（⭐⭐ → ⭐⭐⭐⭐） + ~~完成 Toy Model 实验验证~~ ✅ 已完成
+**v4.0 新增**：路径 E — 三个 Method Upgrade 方向（E1 Contextual Bandit / E2 Contrastive Probe / E3 Principled SCG），目标解决两个结构性问题：(1) 没有好的 method, (2) 可行环境太少
 **计划周期**：2026-03-12 至 2026-03-26（3 周）
 **论文标题**：Same Signal, Opposite Meaning: Why Adaptive Compute Fails Across Environments
 
@@ -648,91 +649,1090 @@ APPS 中也类似尝试:
 
 ---
 
-## 6. 执行时间线（v3.2 修订）
+## 5.5 路径 E：Method Upgrade — 三个新方法方向 🆕🆕 v4.0 新增
+
+### 背景与动机
+
+**Phase 6 暴露的两个结构性问题**：
+
+1. **没有好的 method**：当前 SCG = 手工 5 feature + LR，这是 baseline 不是 method。Probe (路径 B) offline AUC 高但 end-to-end threshold 校准连续 3 轮失败（B4v1: threshold 太低 → always_trigger；B4v2: 在线校准数据不足；B4v3: running 中但趋势不乐观）
+2. **可行环境太少**：仅 2 个 Pareto-dominate（HotpotQA + WebShop），18 个环境 11 个 NO-GO。一个更强的 method 可能让 APPS 从 "弱信号 diagnostic" 升级为 Pareto-dominate
+
+**瓶颈诊断**：
+```
+✅ Ranking 能力已足够好: Probe AUC 0.88-1.00, Handcrafted AUC 0.98-1.00
+❌ Threshold 校准是核心瓶颈: B4v1/v2/v3 连续失败
+❌ 方法过于简单: "手工 feature + LR" 无法撑起 NeurIPS method section
+❌ 无自动化: 每个环境需要人工挑选 feature，不 scalable
+```
+
+**三条路线定位**：
+
+| 路线 | 目标瓶颈 | 核心思路 | Novelty | 推荐度 |
+|------|---------|---------|:-------:|:------:|
+| **E1: Contextual Bandit** | ❌ Threshold 校准 | Thompson sampling 自动平衡 explore/exploit，无需显式 threshold | ⭐⭐⭐⭐ | 🔴 最推荐 |
+| **E2: Contrastive Probe** | ✅ Ranking → 更好的 score 分布 | Contrastive learning 产生 bimodal score，简化 threshold | ⭐⭐⭐ | 🟡 补充 |
+| **E3: Principled SCG** | ❌ 方法过简 + 无自动化 | LASSO auto feature selection + CMDP 最优 threshold | ⭐⭐⭐ | 🟠 E1 的补充 |
+
+**数据基础**：路径 E 复用 B1 已收集的 hidden state 数据 + Phase 1-4 所有 signal discovery 数据。无需额外数据收集。
+
+---
+
+### E1. Cost-Aware Contextual Bandit Gate (CACB) — 🔴 最高优先
+
+#### E1.1 问题建模
+
+将 step-level gating 建模为 **contextual bandit with partial feedback**：
+
+```
+Contextual Bandit 定义:
+  - Context space X: state feature 向量 x ∈ R^d
+  - Action space A = {0: skip, 1: trigger rollout}
+  - Reward:
+      R(x, a=1) = U(x) - λ · C_ratio     (触发: 获得 utility 减去 cost)
+      R(x, a=0) = 0                        (不触发: 零收益)
+  - 目标: 最大化 cumulative reward Σ_t R(x_t, a_t)
+
+  其中:
+    U(x) = rollout utility (只有触发时才能观测)
+    λ = cost penalty (CMDP λ* 或 C_rollout/C_base)
+    C_ratio = normalized rollout cost
+
+与当前 SCG 的关键区别:
+  SCG:     explore 50ep → 一次性拟合 LR → 固定 exploit
+  CACB:    每步 Thompson sampling → posterior 持续更新 → 无硬分界
+```
+
+#### E1.2 核心算法：Bayesian Logistic Regression + Thompson Sampling
+
+```python
+import numpy as np
+from scipy.optimize import minimize
+from scipy.linalg import cho_factor, cho_solve
+
+class CACBGate:
+    """Cost-Aware Contextual Bandit Gate with Thompson Sampling."""
+
+    def __init__(self, d, lambda_cost, prior_var=1.0,
+                 warmup_episodes=10, update_freq='episode'):
+        """
+        Args:
+            d: feature 维度
+            lambda_cost: CMDP cost ratio (C_rollout / C_base)
+            prior_var: 先验方差 σ²_0
+            warmup_episodes: 纯探索阶段（全部触发，收集初始数据）
+            update_freq: posterior 更新频率 ('step' 或 'episode')
+        """
+        self.d = d
+        self.lambda_cost = lambda_cost
+        self.prior_var = prior_var
+        self.warmup_episodes = warmup_episodes
+        self.update_freq = update_freq
+
+        # Bayesian LR posterior: P(w|D) ≈ N(w_map, Σ)
+        self.w_map = np.zeros(d)                    # MAP estimate
+        self.Sigma = prior_var * np.eye(d)          # posterior covariance
+        self.Sigma_inv = (1/prior_var) * np.eye(d)  # precision matrix
+
+        # 数据缓冲
+        self.X_buffer = []      # features
+        self.U_buffer = []      # observed utilities (only for triggered steps)
+        self.A_buffer = []      # actions taken
+
+        # 统计
+        self.episode_count = 0
+        self.total_triggers = 0
+        self.total_steps = 0
+
+    def extract_features(self, state, hidden_state=None):
+        """
+        Feature extraction — 三种模式:
+
+        Mode A (handcrafted only): x = [5 handcrafted signals]
+            → 直接对比现有 SCG，最快验证 CACB 框架
+
+        Mode B (hidden state PCA): x = PCA(hidden_state, k=50)
+            → 自动 feature，对比 Probe gate
+
+        Mode C (hybrid): x = concat([5 handcrafted, PCA(h, k=20)])
+            → 最强配置，handcrafted 提供 strong prior + PCA 补充
+        """
+        # 实现时根据 mode 选择
+        pass
+
+    def decide(self, x_t):
+        """
+        Thompson Sampling 决策:
+        1. 从 posterior 采样 w̃ ~ N(w_map, Σ)
+        2. 计算 predicted utility: û = w̃ · x_t
+        3. 计算 net value: v = û - λ · C_ratio
+        4. 触发条件: v > 0  ↔  û > λ · C_ratio
+        """
+        self.total_steps += 1
+
+        # Warmup: 全部触发（收集无偏 U 数据）
+        if self.episode_count < self.warmup_episodes:
+            return True, {'phase': 'warmup'}
+
+        # Thompson Sampling
+        w_sample = np.random.multivariate_normal(self.w_map, self.Sigma)
+        u_pred = w_sample @ x_t                         # predicted utility
+        net_value = u_pred - self.lambda_cost            # cost-adjusted
+        trigger = (net_value > 0)
+
+        # 也可以用 sigmoid 做 soft decision:
+        # p_trigger = sigmoid(w_sample @ x_t - log(lambda_cost))
+        # trigger = (np.random.random() < p_trigger)
+
+        return trigger, {
+            'phase': 'thompson',
+            'u_pred': u_pred,
+            'net_value': net_value,
+            'w_norm': np.linalg.norm(w_sample),
+            'posterior_std': np.sqrt(np.diag(self.Sigma).mean())
+        }
+
+    def observe(self, x_t, action, utility=None):
+        """
+        观测 rollout 结果并更新 posterior。
+
+        关键: 只有 action=1 (triggered) 时才能观测到 utility。
+        action=0 时 utility 是 counterfactual，不可观测。
+
+        处理策略:
+          - Option A (推荐): 只用 triggered steps 更新 posterior
+            → 无偏但数据少
+          - Option B: 假设 skip 时 utility=0
+            → 有偏但数据多
+          - Option C: IPS (Inverse Propensity Scoring) 加权
+            → 无偏但方差大
+        """
+        self.X_buffer.append(x_t)
+        self.A_buffer.append(action)
+
+        if action == 1 and utility is not None:
+            self.U_buffer.append((x_t, utility))
+            self.total_triggers += 1
+
+    def update_posterior(self):
+        """
+        Laplace Approximation 更新 posterior。
+
+        目标: 拟合 P(U > 0 | x) = σ(w · x)
+
+        Prior:     P(w) = N(0, σ²_0 · I)
+        Likelihood: Π_i σ(w·x_i)^{y_i} · (1-σ(w·x_i))^{1-y_i}
+
+        MAP:  w_map = argmax [log likelihood + log prior]
+        Σ = (-∇² log P(w|D))^{-1} |_{w=w_map}  (Hessian 的逆)
+        """
+        if len(self.U_buffer) < 5:  # 数据太少，不更新
+            return
+
+        X = np.array([xu[0] for xu in self.U_buffer])  # (N, d)
+        U = np.array([xu[1] for xu in self.U_buffer])   # (N,)
+        y = (U > 0).astype(float)                        # binary labels
+
+        N = len(y)
+        prior_precision = (1/self.prior_var) * np.eye(self.d)
+
+        # Newton's method for MAP
+        w = self.w_map.copy()
+        for _ in range(20):  # max 20 Newton steps
+            p = 1 / (1 + np.exp(-X @ w))           # sigmoid predictions
+            p = np.clip(p, 1e-8, 1-1e-8)
+
+            grad = X.T @ (y - p) - prior_precision @ w
+            S = p * (1 - p)                          # diagonal of Hessian weight
+            H = -(X.T * S) @ X - prior_precision     # Hessian
+
+            try:
+                step = np.linalg.solve(H, grad)
+                w = w - step
+            except np.linalg.LinAlgError:
+                break
+
+            if np.linalg.norm(step) < 1e-6:
+                break
+
+        self.w_map = w
+
+        # Posterior covariance = inverse of negative Hessian at MAP
+        p = 1 / (1 + np.exp(-X @ self.w_map))
+        p = np.clip(p, 1e-8, 1-1e-8)
+        S = p * (1 - p)
+        self.Sigma_inv = (X.T * S) @ X + prior_precision
+
+        try:
+            self.Sigma = np.linalg.inv(self.Sigma_inv)
+        except np.linalg.LinAlgError:
+            self.Sigma = self.prior_var * np.eye(self.d)
+
+    def on_episode_end(self):
+        """每个 episode 结束时更新 posterior（如果 update_freq='episode'）"""
+        self.episode_count += 1
+        if self.update_freq == 'episode':
+            self.update_posterior()
+```
+
+#### E1.3 与 VOC/CMDP 的理论连接
+
+```
+Thompson Sampling ≈ 在线 VOC 估计:
+
+  VOC(T, s) = E[R(with_rollout) | s] - E[R(without_rollout) | s] - Cost(T)
+            = E[U | x(s)] - λ
+
+  CACB trigger condition: û_t > λ
+  ↔ VOC(T, s_t) > 0 的采样近似（û_t 是从 posterior 采的 U 估计）
+
+  Posterior uncertainty → 自然 exploration:
+  - 不确定时 û_t 方差大 → 有时 û_t > λ 有时不是 → 自动探索
+  - 确定时 û_t 集中在 E[U|x] 附近 → 稳定 exploit
+
+  Regret bound (标准 Bayesian LR + Thompson Sampling):
+    Regret(T) = O(d · √T · log T)
+  其中 d = feature 维度, T = total steps
+```
+
+#### E1.4 三种 Feature Mode 的实验设计
+
+```
+Mode A: Handcrafted Only (d=5)
+  x = [token_entropy, step_count, evidence_count/state_category, ...]
+  目的: 直接对比现有 SCG-LR, 验证 CACB 框架本身的价值
+  预期: 消除 threshold 校准问题 → APPS 可能从 58.8% 提升到 60%+
+  GPU 时间: 3 env × 3 seeds × 200ep × ~40min = ~18h
+
+Mode B: Hidden State PCA (d=50)
+  x = PCA(hidden_state_last_layer, n_components=50)
+  目的: 对比 B4 Probe gate, 验证 CACB 是否解决 threshold 问题
+  PCA 从 B1 收集的 offline data 拟合, 部署时固定
+  GPU 时间: 同 Mode A
+
+Mode C: Hybrid (d=25 = 5 handcrafted + 20 PCA)
+  x = concat([handcrafted_5, PCA(hidden_state, k=20)])
+  目的: 最强配置, handcrafted 提供 informed prior + PCA 补充
+  预期: 最高 SR + 最合理 trigger rate
+  GPU 时间: 同 Mode A
+```
+
+#### E1.5 超参数
+
+| 超参数 | 默认值 | 搜索范围 | 说明 |
+|--------|--------|---------|------|
+| `prior_var` (σ²_0) | 1.0 | {0.1, 1.0, 10.0} | 先验方差，越大 → 探索越多 |
+| `warmup_episodes` | 10 | {5, 10, 20} | 纯探索阶段长度 |
+| `lambda_cost` | 环境 specific | CMDP λ* | HotpotQA ~6.5, APPS ~1.06, WebShop ~1.27 |
+| `update_freq` | 'episode' | {'step', 'episode'} | Posterior 更新频率 |
+| Feature mode | C (hybrid) | {A, B, C} | 特征类型 |
+
+#### E1.6 GO/NO-GO 判断标准
+
+```
+在 HotpotQA 上 (信号最强, 最容易验证):
+  CACB Mode A SR ≥ 95% AND trigger_rate ∈ [30%, 70%]
+    → GO, CACB 框架有效
+  CACB Mode A SR ≥ SCG-LR(96.8%) AND cost < SCG cost
+    → GO+, CACB Pareto-dominates SCG
+  CACB Mode A SR < 90% OR trigger_rate > 90% OR trigger_rate < 5%
+    → NO-GO, 检查实现
+
+在 APPS 上 (关键: 能否超过 CaTS 59.0%):
+  CACB any mode SR > 60% AND cost < CaTS 1.04×
+    → 🎉 APPS 升级为 Pareto-dominate
+  CACB any mode SR ∈ (58.8%, 60%)
+    → 略有改进, 但不够 Pareto-dominate
+  CACB any mode SR ≤ 58.8%
+    → CACB 在弱信号环境无帮助
+```
+
+#### E1.7 论文叙事
+
+```
+§4: Method
+  §4.1 Problem: Step-level Gating as Contextual Bandit
+    "At each decision point, the agent faces a bandit problem:
+     trigger the optimizer (paying cost λ) or proceed with the
+     base policy (receiving zero additional value). The optimal
+     policy triggers when E[U|x] > λ."
+
+  §4.2 Cost-Aware Contextual Bandit Gate
+    "We maintain a Bayesian posterior over the mapping from state
+     features to optimizer utility. Thompson Sampling naturally
+     balances exploration (learning the signal-utility direction)
+     with exploitation (triggering when profitable), without
+     requiring a separate calibration phase or explicit threshold
+     tuning."
+
+  §4.3 Connection to VOC
+    "Our trigger condition û > λ is equivalent to the rational
+     metareasoning condition VOC(T,s) > 0, where û is a posterior
+     sample of the expected utility. The posterior uncertainty
+     encodes the agent's epistemic uncertainty about signal
+     direction — precisely the assumption that existing methods
+     incorrectly treat as known."
+
+贡献:
+  (1) Principled exploration-exploitation for direction discovery
+  (2) No threshold calibration needed (posterior + cost ratio 自动确定)
+  (3) 理论 regret bound: O(d√T log T)
+  (4) 统一 VOC/CMDP/Bandit 三个理论视角
+```
+
+#### E1.8 执行清单
+
+- [ ] **E1.0** 实现 `frvc/cacb_gate.py` (CACBGate 类)
+  - [ ] Bayesian LR posterior update (Laplace approximation)
+  - [ ] Thompson sampling decision function
+  - [ ] 三种 feature mode (A/B/C)
+  - [ ] Warmup 逻辑 + posterior update scheduling
+- [ ] **E1.1** 实现 `experiments/p6_e1_cacb_gate.py` (实验 runner)
+  - [ ] 集成 CACBGate 到现有 SCG 框架
+  - [ ] 支持 mode A/B/C 参数切换
+  - [ ] Logging: posterior mean/std, trigger rate per episode, cumulative reward
+- [ ] **E1.2** HotpotQA Mode A sanity check: 1 seed × 200ep (~40min)
+  - [ ] 验证 trigger rate 在合理范围 (30%-70%)
+  - [ ] 验证 SR 不低于 SCG-LR (96.8%)
+- [ ] **E1.3** 如果 E1.2 GO → 全量实验:
+  - [ ] 3 modes × 3 envs × 3 seeds = 27 runs (可 9 并发)
+  - [ ] sbatch: `scripts/phase6/run_e1_cacb.sbatch`
+- [ ] **E1.4** 结果分析:
+  - [ ] SR / trigger_rate / cost 对比表
+  - [ ] Posterior convergence 可视化 (w_map 随 episode 变化)
+  - [ ] Thompson sampling exploration-exploitation 可视化 (trigger rate per episode)
+
+---
+
+### E2. Contrastive Probe Gate — 🟡 补充方向
+
+#### E2.1 核心思路
+
+**目标**：让 probe 的输出 score 分布更 bimodal（"trigger" vs "skip" 两簇明显分开），使 threshold 校准变得 trivial。
+
+**⚠️ 风险评估**：当前 ranking 不是瓶颈（Probe AUC 已 0.88-1.00），但 contrastive learning 可能产生更好校准的 score 分布，间接解决 threshold 问题。
+
+#### E2.2 三种 Contrastive 方案
+
+**方案 A: Supervised Contrastive Learning (SupCon)**
+
+```python
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class ContrastiveProbeGate(nn.Module):
+    """Supervised Contrastive Learning for Gating."""
+
+    def __init__(self, input_dim=2560, proj_dim=64, temperature=0.07):
+        super().__init__()
+        # Projection head (训练时用)
+        self.projector = nn.Sequential(
+            nn.Linear(input_dim, 256),
+            nn.ReLU(),
+            nn.Linear(256, proj_dim)
+        )
+        # Scoring head (部署时用)
+        self.scorer = nn.Linear(proj_dim, 1)
+        self.temperature = temperature
+
+    def forward(self, h):
+        z = F.normalize(self.projector(h), dim=-1)  # L2 normalized
+        return z
+
+    def score(self, h):
+        z = self.forward(h)
+        return self.scorer(z).squeeze(-1)
+
+def supcon_loss(features, labels, temperature=0.07):
+    """
+    Supervised Contrastive Loss.
+
+    features: (N, proj_dim), L2-normalized
+    labels: (N,), binary (1=trigger, 0=skip)
+
+    目标: 同类 hidden state 拉近, 异类推远
+    → positive (U>0) 的 hidden states 聚成一簇
+    → negative (U≤0) 的 hidden states 聚成另一簇
+    → 两簇之间有清晰边界 → threshold trivial
+    """
+    N = features.shape[0]
+    similarity = features @ features.T / temperature  # (N, N)
+
+    # Mask: same class = positive pair
+    mask_pos = (labels.unsqueeze(0) == labels.unsqueeze(1)).float()
+    mask_pos.fill_diagonal_(0)  # 排除自己
+
+    # Log-softmax over negative pairs
+    logits_max = similarity.max(dim=1, keepdim=True).values
+    logits = similarity - logits_max.detach()
+
+    exp_logits = torch.exp(logits)
+    mask_neg = 1 - torch.eye(N, device=features.device)
+    log_prob = logits - torch.log((exp_logits * mask_neg).sum(dim=1, keepdim=True))
+
+    # Mean of positive pairs
+    pos_count = mask_pos.sum(dim=1).clamp(min=1)
+    loss = -(mask_pos * log_prob).sum(dim=1) / pos_count
+
+    return loss.mean()
+```
+
+**方案 B: Margin Ranking Loss (最简单)**
+
+```python
+class RankingProbeGate(nn.Module):
+    """Pairwise Ranking for Gating — 最简实现."""
+
+    def __init__(self, input_dim=2560, hidden_dim=128, margin=1.0):
+        super().__init__()
+        self.scorer = nn.Sequential(
+            nn.Linear(input_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Dropout(0.3),
+            nn.Linear(hidden_dim, 1)
+        )
+        self.margin = margin
+
+    def forward(self, h):
+        return self.scorer(h).squeeze(-1)
+
+    def ranking_loss(self, h_pos, h_neg):
+        """
+        Margin ranking: s(h_pos) should exceed s(h_neg) by at least margin.
+
+        h_pos: hidden states where U > 0 (rollout 有用)
+        h_neg: hidden states where U ≤ 0 (rollout 无用)
+        """
+        s_pos = self.forward(h_pos)
+        s_neg = self.forward(h_neg)
+        return F.margin_ranking_loss(
+            s_pos, s_neg,
+            target=torch.ones_like(s_pos),
+            margin=self.margin
+        )
+```
+
+**方案 C: Prototypical Networks (最适合小样本)**
+
+```python
+class PrototypicalGate:
+    """Prototypical Networks for few-shot gating adaptation."""
+
+    def __init__(self, input_dim=2560, proj_dim=64):
+        # 简单线性投影（不需要深度网络）
+        self.projector = nn.Linear(input_dim, proj_dim)
+        self.prototype_pos = None  # 正类原型
+        self.prototype_neg = None  # 负类原型
+
+    def fit(self, H, U):
+        """
+        从 exploration 数据拟合 prototypes.
+
+        H: (N, 2560) hidden states
+        U: (N,) utilities
+        """
+        with torch.no_grad():
+            Z = self.projector(H)  # (N, proj_dim)
+            mask_pos = (U > 0)
+            mask_neg = (U <= 0)
+            self.prototype_pos = Z[mask_pos].mean(dim=0)  # (proj_dim,)
+            self.prototype_neg = Z[mask_neg].mean(dim=0)
+
+    def score(self, h):
+        """
+        Score = 到正类原型的负距离 - 到负类原型的负距离.
+        score > 0 → 更接近 "应该触发" → trigger
+        score < 0 → 更接近 "不应触发" → skip
+
+        → 天然 threshold = 0, 无需校准!
+        """
+        z = self.projector(h)
+        d_pos = torch.norm(z - self.prototype_pos, dim=-1)
+        d_neg = torch.norm(z - self.prototype_neg, dim=-1)
+        return d_neg - d_pos  # 正值 = 更接近 pos = 应该触发
+
+    def decide(self, h):
+        return self.score(h) > 0  # threshold = 0, 固定
+```
+
+#### E2.3 训练流程
+
+```
+Phase 1: Offline Training (B1 数据, CPU/单 GPU, <10min per env)
+  1. 加载 B1 hidden states: H (N, 2560), U (N,)
+  2. 标签: y = (U > 0).float()
+  3. Train/Val split: 80/20, 5-fold CV
+  4. 训练三种方案 (A/B/C), 选最优
+
+Phase 2: Offline Evaluation
+  指标:
+    - AUC-ROC (对比 B2 probe)
+    - Score 分布: 画 positive/negative 的 score histogram
+      → 关键: 两个分布是否 well-separated?
+      → bimodality index (Hartigan's dip test)
+    - 最优 threshold 位置: 两分布交叉点
+    - Threshold 稳定性: bootstrap 100 次, threshold 的 std
+
+Phase 3: End-to-End Gate (如果 offline 评估 GO)
+  - 方案 A/B: 用 scorer output 做 threshold
+  - 方案 C: 用 score > 0 (prototype 天然 threshold)
+  - 跑 200ep × 3 seeds × 3 envs
+```
+
+#### E2.4 GO/NO-GO 标准
+
+```
+Offline (Phase 2):
+  AUC ≥ 现有 Probe (0.88-1.00) → 继续
+  Score bimodality: Hartigan's dip test p < 0.05 → score 分布是 bimodal → GO
+  Threshold stability: bootstrap std < 0.1 → threshold 稳定 → GO
+
+  如果 AUC 高但 score 不 bimodal → 方案 C (prototypical) 可能更好
+  如果 AUC 低于 Probe → NO-GO for contrastive, 保持原 Probe
+
+End-to-End (Phase 3):
+  SR ≥ SCG-LR AND trigger_rate < always_trigger → GO
+  SR < SCG-LR → NO-GO
+```
+
+#### E2.5 执行清单
+
+- [ ] **E2.0** 实现 `frvc/contrastive_gate.py`
+  - [ ] 方案 A: SupCon loss + scorer
+  - [ ] 方案 B: Margin ranking loss
+  - [ ] 方案 C: Prototypical networks
+- [ ] **E2.1** Offline 训练 + 评估 (CPU, 使用 B1 数据)
+  - [ ] 3 方案 × 3 环境 = 9 组 offline 实验
+  - [ ] Score 分布可视化 + bimodality test
+  - [ ] 对比 B2 Probe AUC
+  - [ ] GO/NO-GO 判断
+- [ ] **E2.2** 如果 GO → End-to-End 实验:
+  - [ ] 最优方案 × 3 envs × 3 seeds = 9 runs
+  - [ ] sbatch: `scripts/phase6/run_e2_contrastive.sbatch`
+- [ ] **E2.3** 结果分析:
+  - [ ] SR / trigger_rate / cost 对比
+  - [ ] Score 分布 vs threshold 可视化 (论文 appendix 图)
+
+---
+
+### E3. Principled SCG: Auto Feature Selection + CMDP Integration — 🟠 E1 补充
+
+#### E3.1 核心思路
+
+在不改变 gate 框架的前提下，让 feature selection 自动化，并与 CMDP 最优 threshold 紧密集成。
+
+```
+当前 SCG:
+  人工选 5 feature → LR → 人工设 threshold(0.5)
+  问题: (1) feature 需领域知识, (2) threshold 不最优
+
+Principled SCG:
+  自动构建 feature pool → LASSO 选最优子集 → CMDP λ* 最优 threshold
+  目标: (1) 自动化, (2) 最优化, (3) 可解释
+```
+
+#### E3.2 自动 Feature Pool 构建
+
+```python
+def build_feature_pool(state_text, action_text, hidden_state,
+                       env_name, history):
+    """
+    构建候选 feature pool（每个环境 25-50 个候选）.
+
+    三类特征:
+      Type U (Universal): 所有环境通用
+      Type H (Hidden): hidden state 派生
+      Type E (Environment): 环境特异（自动从 state_text 提取）
+    """
+    features = {}
+
+    # === Type U: Universal Features (10 个) ===
+    features['step_count'] = history['step_count']
+    features['step_ratio'] = history['step_count'] / history['max_steps']
+    features['token_entropy'] = compute_entropy(logits)
+    features['response_length'] = len(action_text.split())
+    features['action_diversity'] = len(set(history['recent_actions'][-5:])) / 5
+    features['cumulative_reward'] = history['cumulative_reward']
+    features['token_entropy_delta'] = features['token_entropy'] - history.get('prev_entropy', 0)
+    features['perplexity'] = np.exp(features['token_entropy'])
+    features['state_length'] = len(state_text.split())
+    features['action_repetition'] = count_repeats(history['recent_actions'][-5:])
+
+    # === Type H: Hidden State PCA Features (20 个) ===
+    # PCA 从 B1 offline data 拟合, 部署时固定
+    h_pca = pca_transform(hidden_state, n_components=20)  # (20,)
+    for i in range(20):
+        features[f'h_pca_{i}'] = h_pca[i]
+
+    # === Type E: Environment-Specific Auto-Extracted (5-20 个) ===
+    # 通过正则表达式从 state_text 自动提取结构化信息
+    # 这些不是手工设计的"信号"，而是通用提取规则
+
+    features['num_entities'] = len(re.findall(r'\b[A-Z][a-z]+\b', state_text))
+    features['num_numbers'] = len(re.findall(r'\d+\.?\d*', state_text))
+    features['has_error'] = int(bool(re.search(r'error|fail|invalid', state_text, re.I)))
+    features['num_sections'] = state_text.count('\n\n')
+    features['question_marks'] = state_text.count('?')
+
+    # 环境自适应特征（通用 parser，根据 state_text 结构自动生成）
+    if 'Observation:' in state_text:  # ReAct-style 环境
+        features['observation_length'] = len(state_text.split('Observation:')[-1].split())
+        features['num_observations'] = state_text.count('Observation:')
+    if 'Action:' in state_text:
+        features['num_actions_taken'] = state_text.count('Action:')
+
+    return features  # dict of 35-50 features
+```
+
+#### E3.3 LASSO Auto Feature Selection
+
+```python
+from sklearn.linear_model import LogisticRegressionCV
+from sklearn.preprocessing import StandardScaler
+from sklearn.feature_selection import mutual_info_classif
+import numpy as np
+
+class AutoFeatureSelector:
+    """自动 feature selection: MI ranking → LASSO → 最终模型."""
+
+    def __init__(self, max_features=10, cv_folds=5):
+        self.max_features = max_features
+        self.cv_folds = cv_folds
+        self.selected_features = None
+        self.scaler = StandardScaler()
+        self.model = None
+        self.feature_importance = None
+
+    def fit(self, X_pool, y, feature_names):
+        """
+        Two-stage feature selection:
+
+        Stage 1: MI-based pre-filtering (去掉明显无信息的)
+          - 计算每个 candidate feature 与 y 的 mutual information
+          - 保留 MI > 0.01 的 features (top-30 if > 30)
+
+        Stage 2: LASSO selection (从 pre-filtered 中选最优子集)
+          - L1-regularized logistic regression
+          - λ_lasso 由 5-fold CV 选择
+          - 非零系数的 features = selected features
+
+        输出:
+          - selected_features: 选中的 feature 名列表
+          - feature_importance: 每个 feature 的 |coefficient|
+          - model: 最终 LR 模型 (用选中 features)
+        """
+        # Stage 1: MI pre-filtering
+        mi_scores = mutual_info_classif(X_pool, y, random_state=42)
+        mi_ranking = sorted(zip(feature_names, mi_scores),
+                           key=lambda x: -x[1])
+
+        # 保留 MI > 0.01 的 top-30
+        prefiltered = [(name, mi) for name, mi in mi_ranking
+                       if mi > 0.01][:30]
+        prefiltered_names = [name for name, _ in prefiltered]
+        prefiltered_idx = [feature_names.index(n) for n in prefiltered_names]
+        X_pre = X_pool[:, prefiltered_idx]
+
+        # Stage 2: LASSO
+        X_scaled = self.scaler.fit_transform(X_pre)
+
+        self.model = LogisticRegressionCV(
+            penalty='l1',
+            solver='saga',
+            Cs=20,                    # 搜索 20 个 C 值
+            cv=self.cv_folds,
+            scoring='roc_auc',
+            max_iter=5000,
+            random_state=42
+        )
+        self.model.fit(X_scaled, y)
+
+        # 提取非零系数 = selected features
+        coef = self.model.coef_[0]
+        nonzero_mask = np.abs(coef) > 1e-6
+
+        self.selected_features = [prefiltered_names[i]
+                                  for i in range(len(prefiltered_names))
+                                  if nonzero_mask[i]]
+        self.feature_importance = {
+            prefiltered_names[i]: abs(coef[i])
+            for i in range(len(prefiltered_names))
+            if nonzero_mask[i]
+        }
+
+        # 按重要性排序
+        self.feature_importance = dict(
+            sorted(self.feature_importance.items(),
+                   key=lambda x: -x[1])
+        )
+
+        return self
+
+    def report(self):
+        """生成可解释的 feature selection 报告."""
+        print(f"Selected {len(self.selected_features)} features "
+              f"from pool of {self.max_features}:")
+        for name, importance in self.feature_importance.items():
+            direction = "positive" if self.model.coef_[0][
+                list(self.feature_importance.keys()).index(name)
+            ] > 0 else "negative"
+            print(f"  {name}: importance={importance:.3f}, "
+                  f"direction={direction}")
+```
+
+#### E3.4 CMDP-Optimal Threshold Integration
+
+```python
+class PrincipledSCG:
+    """
+    完整的 Principled SCG pipeline:
+    Feature Pool → Auto Selection → CMDP Threshold → Gate
+    """
+
+    def __init__(self, budget_ratio=0.5):
+        """
+        budget_ratio: 允许的 compute budget (占 always_trigger 的比例)
+          0.5 = 最多用 always_trigger 一半的 cost
+        """
+        self.budget_ratio = budget_ratio
+        self.feature_selector = AutoFeatureSelector()
+        self.lambda_star = None  # CMDP optimal multiplier
+
+    def calibrate(self, explore_data):
+        """
+        从 exploration 数据完成全部校准:
+        1. 构建 feature pool
+        2. Auto feature selection (LASSO)
+        3. CMDP dual ascent 求 λ*
+        4. 最优 threshold = λ*/(1+λ*)
+        """
+        X_pool, y, feature_names = self._build_pool(explore_data)
+
+        # Step 1: Auto feature selection
+        self.feature_selector.fit(X_pool, y, feature_names)
+        self.feature_selector.report()
+
+        # Step 2: CMDP dual ascent for optimal λ*
+        # 在 selected features 上训练最终 LR model
+        # 然后找最优 threshold 使得 E[cost] ≤ budget
+        X_selected = self._extract_selected(X_pool, feature_names)
+
+        self.lambda_star = self._cmdp_dual_ascent(
+            X_selected, y,
+            budget=self.budget_ratio
+        )
+
+        print(f"CMDP λ* = {self.lambda_star:.4f}")
+        print(f"Optimal threshold = {self.lambda_star/(1+self.lambda_star):.4f}")
+
+    def _cmdp_dual_ascent(self, X, y, budget, lr=0.01, max_iter=100):
+        """
+        CMDP dual ascent:
+          max_π E[U · 1{trigger}]
+          s.t.  E[1{trigger}] ≤ budget
+
+        Lagrangian:
+          L(π, λ) = E[U · 1{trigger}] - λ(E[1{trigger}] - budget)
+                   = E[(U - λ) · 1{trigger}] + λ·budget
+
+        Optimal policy: trigger iff E[U|x] > λ
+        Dual update: λ ← λ + lr · (E[1{trigger}] - budget)
+        """
+        lam = 0.1  # 初始 λ
+
+        # 训练 utility predictor (LR on selected features)
+        from sklearn.linear_model import LogisticRegression
+        lr_model = LogisticRegression(max_iter=1000)
+        lr_model.fit(X, y)
+        u_pred = lr_model.predict_proba(X)[:, 1]  # P(U > 0)
+
+        for i in range(max_iter):
+            # Primal: trigger iff u_pred > λ/(1+λ)
+            threshold = lam / (1 + lam)
+            triggers = (u_pred > threshold).astype(float)
+            trigger_rate = triggers.mean()
+
+            # Dual update
+            constraint_violation = trigger_rate - budget
+            lam = max(0, lam + lr * constraint_violation)
+
+            if abs(constraint_violation) < 0.01:
+                break
+
+        return lam
+
+    def decide(self, features_dict):
+        """Gate 决策: 提取 selected features → LR predict → 对比 threshold."""
+        x = np.array([features_dict[f] for f in self.feature_selector.selected_features])
+        x_scaled = self.feature_selector.scaler.transform(x.reshape(1, -1))
+        p = self.feature_selector.model.predict_proba(x_scaled)[0, 1]
+        threshold = self.lambda_star / (1 + self.lambda_star)
+        return p > threshold
+```
+
+#### E3.5 关键可解释性产出
+
+```
+论文最有价值的输出: "LASSO 自动发现了什么 feature?"
+
+预期结果（基于已有 signal discovery 数据的合理推测）:
+
+HotpotQA LASSO 选出的 features:
+  1. evidence_count (重要度 0.85)     ← 与手工选择完全一致
+  2. h_pca_3 (重要度 0.42)            ← 新发现的 hidden state 维度
+  3. step_ratio (重要度 0.31)         ← 手工未选但合理
+  4. token_entropy (重要度 0.18)      ← 手工已选
+  → LASSO 自动重新发现了 evidence_count! 且加入了 hidden state 维度
+
+APPS LASSO 选出的 features:
+  1. h_pca_0 (重要度 0.55)            ← hidden state 主成分
+  2. step_count (重要度 0.38)         ← 与手工选择一致
+  3. h_pca_7 (重要度 0.22)            ← 另一个 hidden state 维度
+  → 手工 feature 信号弱 (ρ=0.274)，但 hidden state PCA 可能捕捉到更强信号
+
+WebShop LASSO 选出的 features:
+  1. state_category_encoded (重要度 0.91) ← 与手工选择完全一致
+  2. num_observations (重要度 0.35)    ← 自动提取的结构化特征
+  3. h_pca_1 (重要度 0.28)            ← hidden state 维度
+
+论文叙事:
+  "LASSO automatically rediscovered the key features that domain experts
+   manually identified (evidence_count in QA, state_category in web
+   navigation), while also uncovering hidden-state dimensions that
+   carry additional predictive power."
+```
+
+#### E3.6 执行清单
+
+- [ ] **E3.0** 实现 `frvc/principled_scg.py`
+  - [ ] Feature pool 构建器 (Universal + Hidden PCA + Auto-extracted)
+  - [ ] AutoFeatureSelector (MI + LASSO)
+  - [ ] CMDP dual ascent threshold optimizer
+  - [ ] PrincipledSCG 完整 pipeline
+- [ ] **E3.1** Offline 验证 (CPU, 使用 B1 数据 + Phase 1-4 signal data)
+  - [ ] 3 环境: feature pool 构建 + LASSO 选择 + 可解释性报告
+  - [ ] 对比: LASSO 选出的 features vs 手工选择的 5 features
+  - [ ] AUC 对比: LASSO-selected vs handcrafted vs full pool
+- [ ] **E3.2** End-to-End Gate 实验:
+  - [ ] PrincipledSCG × 3 envs × 3 seeds = 9 runs
+  - [ ] sbatch: `scripts/phase6/run_e3_principled.sbatch`
+- [ ] **E3.3** 可解释性分析:
+  - [ ] Feature selection report 生成 (每环境)
+  - [ ] Cross-env feature overlap 分析
+  - [ ] LASSO vs 手工选择 Venn 图
+
+---
+
+### E 综合: 三方向对比 + 最优组合
+
+#### 实验矩阵
+
+```
+Phase 1: Offline 验证 (CPU/单 GPU, ~2h total)
+  E1: Bayesian LR posterior 在 B1 数据上的 calibration quality
+  E2: 3 种 contrastive 方案 offline AUC + score bimodality
+  E3: LASSO feature selection + 可解释性报告
+
+Phase 2: Sanity Check (1 env, 1 seed each)
+  E1 Mode A: HotpotQA 200ep (~40min)     → SR / trigger_rate
+  E2 best:   HotpotQA 200ep (~40min)     → SR / trigger_rate
+  E3:        HotpotQA 200ep (~40min)     → SR / trigger_rate
+
+Phase 3: Full Experiment (GO 的方向, 3 env × 3 seeds)
+  最多: 27 runs (E1) + 9 runs (E2) + 9 runs (E3) = 45 runs
+  最少: 9 runs (仅 E1 best mode)
+```
+
+#### 方向间组合策略
+
+```
+最强组合 (如果 E1 + E3 都 GO):
+  "Principled Cost-Aware Gating"
+  = E3 auto feature selection → E1 Bayesian LR + Thompson sampling
+  = 自动选特征 + Bayesian 在线学习方向 + Thompson sampling 做决策
+  → Method novelty ⭐⭐⭐⭐
+
+备选组合 (如果 E1 GO 但 E3 无显著优于手工):
+  = E1 Mode A (handcrafted features + Thompson sampling)
+  = 保持手工特征但升级学习框架
+  → Method novelty ⭐⭐⭐
+
+保底 (如果仅 E3 GO):
+  = PrincipledSCG (auto features + CMDP threshold)
+  = 升级 feature selection 但保持 LR 框架
+  → Method novelty ⭐⭐½
+
+全 NO-GO 回退:
+  保持现有 SCG-LR + Probe 作为分析工具
+  论文定位为 finding + theory paper
+  → Method novelty ⭐⭐
+```
+
+#### GPU 时间预估
+
+| 阶段 | 任务 | GPU 时间 |
+|------|------|---------|
+| Phase 1 Offline | E1/E2/E3 offline 验证 | ~0h (CPU) |
+| Phase 2 Sanity | E1+E2+E3 各 1 seed HotpotQA | ~2h |
+| Phase 3 E1 Full | 3 modes × 3 envs × 3 seeds = 27 | ~18h |
+| Phase 3 E2 Full | 1 best × 3 envs × 3 seeds = 9 | ~6h |
+| Phase 3 E3 Full | 1 config × 3 envs × 3 seeds = 9 | ~6h |
+| **总计 (最大)** | | **~32h** |
+| **总计 (最可能: E1 full + E3 full)** | | **~24h** |
+
+#### 执行优先级与时间线
+
+```
+═══════════════════════════════════════════════════════════════════
+  路径 E 执行计划 (Mar 14 起, 与 B4v3 结果分析并行)
+═══════════════════════════════════════════════════════════════════
+
+  Day 0 (Mar 14-15): 🔴 实现 + Offline 验证
+  ├── [E1.0] 实现 CACBGate (frvc/cacb_gate.py)
+  ├── [E2.0] 实现 ContrastiveGate (frvc/contrastive_gate.py)
+  ├── [E3.0] 实现 PrincipledSCG (frvc/principled_scg.py)
+  ├── [E1] Offline: Bayesian LR calibration quality (CPU)
+  ├── [E2] Offline: 3 方案 AUC + bimodality test (CPU)
+  └── [E3] Offline: LASSO selection + 可解释性报告 (CPU)
+
+  Day 0 检查点:
+  ├── E2 score bimodal? → YES: 继续 E2 | NO: 降优先级
+  ├── E3 LASSO vs 手工: 选出了什么? AUC 有提升?
+  └── B4v3 结果出了吗? → 确认当前 probe threshold 策略
+
+  Day 1 (Mar 15-16): 🔴 Sanity Check (3 个方向各 1 seed)
+  ├── [E1.2] HotpotQA Mode A sanity (1 seed, ~40min)
+  ├── [E2.2] HotpotQA best contrastive sanity (1 seed, ~40min)
+  ├── [E3.2] HotpotQA PrincipledSCG sanity (1 seed, ~40min)
+  └── 分析: 哪些方向 GO? 哪些 NO-GO?
+
+  Day 1 检查点 (关键决策):
+  ├── E1 SR ≥ 95% + trigger_rate ∈ [30%, 70%] → GO for full
+  ├── E2 SR ≥ SCG-LR + score well-separated → GO for full
+  ├── E3 SR ≥ SCG-LR + 选出了有意义的 features → GO for full
+  └── 至少 1 个 GO → 继续 Phase 3
+
+  Day 2-4 (Mar 16-18): Full Experiment (GO 的方向)
+  ├── GO 方向: 3 envs × 3 seeds each
+  ├── 并发: 9 jobs/方向, 最多 27 jobs 并发
+  └── 每个 job ~40min (HF Transformers)
+
+  Day 5-6 (Mar 19-20): 结果分析 + 论文定位确定
+  ├── 全方向 SR/cost/trigger_rate 对比
+  ├── 最优组合确定
+  ├── 论文 §4 Method 结构确定
+  └── 开始写 LaTeX
+═══════════════════════════════════════════════════════════════════
+```
+
+---
+
+## 6. 执行时间线（v4.0 修订）
 
 ```
 ═══════════════════════════════════════════════════════════════════════
-  Week 1 (Mar 12-16) — ✅ A/D 完成 + ❌ C 全 NO-GO + B 启动
+  Week 1 (Mar 12-16) — ✅ A/D 完成 + ❌ C 全 NO-GO + B 启动 + B4 发现 threshold 瓶颈
 ═══════════════════════════════════════════════════════════════════════
 
-  Day 1 (Mar 12): ← 已完成
+  Day 1 (Mar 12): ✅ 已完成
   ├── [A1] ✅ TWExpress CB 12/12 完成, 定位: 对比案例
   ├── [A2] ✅ APPS rerun 9/9 完成, oracle=75.0%
   └── [C1] ✅ ToolBench G1 环境搭建 + MirrorAPI 部署
 
-  Day 2 (Mar 13): ← 已完成
+  Day 2 (Mar 13): ✅ 已完成
   ├── [A3] ✅ Token cost 全部完成 (TWExpress/BabyAI/Plancraft)
-  ├── [C1] ✅→❌ ToolBench G1+MirrorAPI Step 0: base=94-98%, NO-GO
-  ├── [C2] ❌ ALFWorld Phase 5 已测试 NO-GO (Δ=2%)
-  ├── [C3] ❌ ScienceWorld Phase 5 已测试 NO-GO (base=0%)
-  ├── [C4] ❌ InterCode Phase 5 已测试 NO-GO (base=100%)
-  ├── [D1] ✅ Temporal shift: 4/4 环境 confirmed
-  ├── [D2] ✅ Simpson's Paradox: 3/4 案例 confirmed
-  ├── [D3] ✅ P2/P3 divergence + signal identity confirmed
-  └── [D4] ✅ Figure 2 + Figure 7 已生成
+  ├── [C1-C4] ❌ 全部 NO-GO (ToolBench/ALFWorld/ScienceWorld/InterCode)
+  ├── [D1-D4] ✅ Toy Model 全部完成 (P1/P2/P3 confirmed, Figure 2+7 已生成)
+  ├── [B1-B3] ✅ Hidden state 收集 + Probe 训练 + GO 判断 (3/3 GO)
+  ├── [B4v1] ⚠️ End-to-end 发现 cost 问题 (probe = always_trigger)
+  └── [B6] ✅ 科学分析完成 (layer-wise, transfer matrix, learning curve)
 
-  Day 3-4 (Mar 14-15): ← 当前重点
-  ├── [B1.0] 检查 Phase 5 已有 hidden state 数据
-  ├── [B1.1-B1.3] HotpotQA/APPS/WebShop 多层 hidden state 收集 (3×~40min)
-  └── [B2.1] 4 种 probe 训练脚本实现
+  Day 3 (Mar 14): ✅ 已完成
+  ├── [B4v2] ⚠️ 4 种 threshold 校准方法 → 在线校准失败
+  ├── [B4v3] 🔄 Offline threshold + Adaptive RL → Running (job 23164633)
+  └── [E] 🆕 识别结构性问题 → 启动路径 E Method Upgrade 规划
 
-  Day 5 (Mar 16):
-  ├── [B2.2] HotpotQA 4 种 probe offline 训练 + 评估 (<10min)
-  ├── [B2.3] 对比 handcrafted LR 基线
-  └── [B3] HotpotQA GO/NO-GO 判断 ← 唯一剩余关键决策
+═══════════════════════════════════════════════════════════════════════
+  Week 1.5 (Mar 15-16) — 🆕 路径 E 实现 + Offline 验证 + B4v3 结果
+═══════════════════════════════════════════════════════════════════════
+
+  Day 4 (Mar 15): 🔴 路径 E 实现
+  ├── [E1.0] 实现 CACBGate (frvc/cacb_gate.py)
+  │          - Bayesian LR posterior (Laplace approximation)
+  │          - Thompson sampling decision
+  │          - 3 feature modes (A/B/C)
+  ├── [E2.0] 实现 ContrastiveGate (frvc/contrastive_gate.py)
+  │          - SupCon / Margin Ranking / Prototypical 三方案
+  ├── [E3.0] 实现 PrincipledSCG (frvc/principled_scg.py)
+  │          - Feature pool builder + LASSO selector + CMDP threshold
+  ├── [E1-E3] Offline 验证 (CPU, 复用 B1 数据)
+  │          - E1: Bayesian posterior calibration quality
+  │          - E2: 3 方案 AUC + score bimodality test
+  │          - E3: LASSO selection report (选了什么 feature?)
+  └── [B4v3] 🔄 分析结果 (如果已完成)
+
+  Day 5 (Mar 16): 🔴 Sanity Check (每方向 1 seed)
+  ├── [E1.2] HotpotQA CACB Mode A (1 seed, ~40min) → SR/trigger_rate?
+  ├── [E2.2] HotpotQA Contrastive best (1 seed, ~40min) → SR/trigger_rate?
+  ├── [E3.2] HotpotQA PrincipledSCG (1 seed, ~40min) → SR/trigger_rate?
+  └── 🔴 GO/NO-GO 决策: 哪些方向继续 full experiment?
 
   ┌──────────────────────────────────────────────────────────────────┐
-  │ Week 1 检查点 (Mar 16) — v3.2 修订                              │
+  │ Week 1.5 检查点 (Mar 16 EOD) — 关键决策                         │
   │                                                                  │
-  │ ✅ 已确定 (4/5):                                                │
-  │  ✅ TWExpress: 对比案例（rollout-safe, SCG 选择性是劣势）         │
-  │  ✅ 新环境: 全部 NO-GO → 论文 4 环境锁定                         │
-  │  ✅ P1 Temporal Shift: 4/4 环境 confirmed                       │
-  │  ✅ Simpson's Paradox: 3/4 案例 confirmed                       │
+  │ 必须确定:                                                        │
+  │ 1. B4v3 结果 → 现有 probe threshold 策略是否可用?                │
+  │ 2. E1 CACB sanity → Thompson sampling 有效? trigger_rate 合理?   │
+  │ 3. E2 Contrastive → score bimodal? 优于 probe?                  │
+  │ 4. E3 Principled → LASSO 选了什么? AUC 提升?                    │
   │                                                                  │
-  │ ⬜ 唯一剩余关键决策:                                             │
-  │  Hidden State Probe: HotpotQA R² = ?  GO/NO-GO?                 │
-  │    → GO: 路径 B 全速推进（Week 2 核心）                          │
-  │    → NO-GO: 保持 handcrafted LR, 论文 NeurIPS ~40%              │
+  │ 决策:                                                            │
+  │  ≥ 2 个方向 GO → 并行 full experiment (Week 2)                   │
+  │  = 1 个方向 GO → 集中资源做好这个                                │
+  │  = 0 个方向 GO → 回退: 保持 SCG-LR, 论文走 finding+theory 路线  │
   └──────────────────────────────────────────────────────────────────┘
 
 ═══════════════════════════════════════════════════════════════════════
-  Week 2 (Mar 17-21) — Probe End-to-End + 科学分析
+  Week 2 (Mar 17-21) — GO 方向 Full Experiment + 科学分析
 ═══════════════════════════════════════════════════════════════════════
 
   Day 6-8 (Mar 17-19):
-  ├── [B4] HotpotQA probe gate end-to-end 200ep × 3 seeds
-  ├── [B4] WebShop probe gate end-to-end 200ep × 3 seeds
-  ├── [B6.1] Layer-wise probing (3 环境 × 8 层 AUC)
-  ├── [B6.2] Cross-env transfer matrix (3×3, 最重要)
-  └── [B6.3] Data efficiency learning curve (HotpotQA)
+  ├── [E*] GO 方向 full: 3 envs × 3 seeds (9-27 runs per direction)
+  │         E1: 最优 mode × 3 envs × 3 seeds = 9 runs
+  │         E2: (如果 GO) best 方案 × 3 envs × 3 seeds = 9 runs
+  │         E3: (如果 GO) × 3 envs × 3 seeds = 9 runs
+  │         并发 9 jobs, 每 job ~40min → ~4-12h
+  ├── [B6] Figure 6 最终版 (三面板: layer-wise + transfer + learning curve)
+  └── [E*] 中间结果分析: 哪个方向在 APPS 上超过 CaTS?
 
   Day 9-10 (Mar 20-21):
-  ├── [B4] APPS probe gate end-to-end 200ep × 3 seeds
-  │         → 关键：SR 能否超过 CaTS 59.0%?
-  ├── [B6] Figure 6 生成（三面板：layer-wise + transfer + learning curve）
-  └── B4 结果分析 → 确定论文 method 叙事
+  ├── [E*] 全方向结果分析: SR / cost / trigger_rate / Pareto
+  ├── [E*] 最优组合确定 (E1+E3? E1 only? 等)
+  ├── 论文 §4 Method 结构确定
+  └── 论文 method 叙事最终确定
 
   ┌──────────────────────────────────────────────────────────────────┐
   │ Week 2 检查点 (Mar 21)                                          │
   │                                                                  │
   │ 确认:                                                            │
-  │ 1. Probe gate end-to-end 结果 → method 叙事确定                  │
-  │ 2. APPS probe 是否超过 CaTS → APPS 定位升级？                    │
-  │ 3. B6 科学分析: cross-env transfer 失败？layer-wise 显著？       │
-  │    → 与 Toy Model 闭环确认                                       │
+  │ 1. 最优 method 确定 → 论文 §4 写什么?                            │
+  │ 2. APPS 最优 method SR > CaTS 59.0%? → APPS 定位升级?           │
+  │ 3. 方法对比表: CACB vs Contrastive vs PrincipledSCG vs 原 SCG   │
+  │ 4. B6 cross-env transfer 闭环 Two-Source Model ✅                │
+  │ 5. 论文 NeurIPS 接受概率重新评估                                 │
   └──────────────────────────────────────────────────────────────────┘
 
 ═══════════════════════════════════════════════════════════════════════
-  Week 3 (Mar 22-26) — 收尾 + 统一分析 + 开始写作
+  Week 3 (Mar 22-26) — 收尾 + 统一分析 + 写作
 ═══════════════════════════════════════════════════════════════════════
 
   Day 11-13 (Mar 22-24):
-  ├── [B5] Probe 消融实验（如果 B4 有效）
-  └── 所有环境统一 Pareto 分析
+  ├── 消融实验 (最优 method 的 ablation)
+  ├── 所有环境 + 所有方法 统一 Pareto 分析
+  └── Unified Results Table 定稿
 
   Day 14-15 (Mar 25-26):
-  ├── 汇总：Unified Results Table
   ├── Pareto figure 统一生成
   ├── phase6_final_report.md 撰写
   └── 开始写 LaTeX（数据齐全）
@@ -742,45 +1742,86 @@ APPS 中也类似尝试:
 
 ---
 
-## 7. 最终环境组合预测（v3.2 — 环境已锁定，仅 probe 结果待定）
+## 7. 最终环境组合预测（v4.0 — 方法升级后的环境定位）
 
 ```
-✅ 确定: 4 环境 = HotpotQA(Pareto) + WebShop(Pareto) + APPS(弱信号→升级中) + TWExpress(对比)
+✅ 确定: 4 环境 = HotpotQA(Pareto) + WebShop(Pareto) + APPS(升级中) + TWExpress(对比)
 
-✅ 实际结果 → 组合 A 实现:
-  Probe gate end-to-end:
-    HotpotQA: 97.0% (≈ handcrafted 96.8%, +0.2pp)
-    APPS:     64.5% (>> handcrafted 58.8%, +5.7pp) 🔥
-    WebShop:  41.8% (略低于 handcrafted 43.7%, -1.9pp)
+⚠️ B4v1 Probe 的"假成功":
+  Probe gate end-to-end (B4v1, threshold=0.05):
+    HotpotQA: 97.0% (但 Ro/ep=1.80 ≈ always_trigger 1.80 → 100%触发)
+    APPS:     64.5% (但 Ro/ep=2.58 ≈ always_trigger 2.58 → 100%触发)
+    WebShop:  41.8% (但 Ro/ep=5.61 ≈ always_trigger 5.63 → 100%触发)
+  → SR 提升来自过度触发，不是精准选择。Cost 极高。
 
-  → Probe 在 APPS 上大幅超越 (+5.7pp)，HotpotQA 持平，WebShop 略逊
-  → Method novelty ⭐⭐⭐⭐ (自动化 feature 发现，无需领域知识)
-  → Cross-env transfer 失败直接验证 Two-Source Model
-  → NeurIPS 70-85%
+路径 E Method Upgrade 后的预期:
+
+  场景 1 (E1 CACB 成功, P=40%):
+    HotpotQA: ~96-97% @ 合理 trigger rate (40-60%)  → Pareto-dominate ✅
+    APPS:     ~60-62% @ trigger rate ~15-25%         → 可能 Pareto-dominate CaTS 🎉
+    WebShop:  ~42-44% @ trigger rate ~15-25%         → Pareto-dominate ✅
+    → 3 个 Pareto-dominate + 1 对比
+    → Method novelty ⭐⭐⭐⭐ (Bayesian + cost-aware)
+    → NeurIPS 70-80%
+
+  场景 2 (E1 部分成功 + E3 补充, P=35%):
+    Method: CACB on handcrafted features + LASSO auto discovery
+    → 2-3 个 Pareto-dominate
+    → Method novelty ⭐⭐⭐½
+    → NeurIPS 60-70%
+
+  场景 3 (路径 E 全 NO-GO, P=25%):
+    → 保持 SCG-LR + Probe 作为分析工具
+    → Method novelty ⭐⭐
+    → 论文走 finding + theory 路线
+    → NeurIPS 45-55%
 ```
 
 ---
 
-## 8. GO/NO-GO 总判定（v3.2 — 大部分已确定）
+## 8. GO/NO-GO 总判定（v4.0 — 路径 E 加入后更新）
 
-### Mar 16 检查点（Week 1 结束）— v3.2 更新
+### Mar 16 检查点（Week 1.5 结束）— v4.0 关键决策点
 
 | 条件 | 状态 | 行动 |
 |------|:----:|------|
-| Probe R² > 0.10 | ✅ **已确认** | R²=0.25-0.96, AUC=0.88-1.00, 3/3 GO → B4 完成 |
-| ~~Probe R² ∈ (0.05, 0.10)~~ | — | — |
-| ~~Probe R² < 0.05~~ | — | — |
-| P1 ρ_early < ρ_late (显著) | ✅ **已确认** | Toy Model P1 confirmed, 4/4 环境 shift 为负 |
-| Simpson's Paradox within-group 方向相反 | ✅ **已确认** | 3/4 案例 paradox confirmed, HotpotQA 最清晰 |
-| TWExpress 定位 | ✅ **已确认** | 对比案例（rollout-safe, SCG 选择性是劣势） |
-| 新环境 | ✅ **已确认** | 全部 NO-GO → 论文 4 环境锁定 |
+| Probe offline R² > 0.10 | ✅ **已确认** | R²=0.25-0.96, AUC=0.88-1.00, 3/3 GO |
+| Probe end-to-end (B4) | ⚠️ **threshold 瓶颈** | B4v1/v2 失败, v3 running |
+| P1 ρ_early < ρ_late | ✅ **已确认** | Toy Model P1 confirmed |
+| Simpson's Paradox | ✅ **已确认** | 3/4 案例 confirmed |
+| TWExpress 定位 | ✅ **已确认** | 对比案例 |
+| 新环境 | ✅ **已确认** | 全部 NO-GO → 4 环境锁定 |
+| **🆕 E1 CACB sanity** | ⬜ **待测** | HotpotQA 1 seed → SR/trigger_rate? |
+| **🆕 E2 Contrastive sanity** | ⬜ **待测** | Score bimodal? |
+| **🆕 E3 Principled sanity** | ⬜ **待测** | LASSO 选了什么? |
+
+### Mar 21 检查点（Week 2 结束）— Method 最终确定
+
+```
+E1 CACB Pareto-dominates 原 SCG + APPS > CaTS:
+  → 🎉 论文方法: CACB-Gate (Contextual Bandit + cost-aware)
+  → APPS 升级为 Pareto-dominate (第 3 个)
+  → Method novelty ⭐⭐⭐⭐
+  → NeurIPS 70-80%
+
+E1 CACB ≈ 原 SCG 但更 principled + E3 LASSO 可解释:
+  → ✅ 论文方法: Principled Direction-Aware Gate (E1+E3 组合)
+  → Method novelty ⭐⭐⭐½
+  → NeurIPS 60-70%
+
+E1/E2/E3 均 ≤ 原 SCG:
+  → ⚠️ 保持 SCG-LR + Probe 分析
+  → 论文定位 finding + theory paper
+  → Method novelty ⭐⭐ (Probe B6 分析作为补充贡献)
+  → NeurIPS 45-55%
+```
 
 ### Mar 26 检查点（Phase 6 结束）
 
 ```
-4 env + probe 有效:     → 🎉 NeurIPS 65-80%, 全面开始写作
-4 env + probe 持平:     → ✅ NeurIPS 50-60%, 可投
-4 env + probe 失败:     → ⚠️ NeurIPS 35-45%, 考虑 ICLR 2027
+4 env + 方法升级成功:   → 🎉 NeurIPS 70-80%, 全面写作
+4 env + 方法持平:       → ✅ NeurIPS 55-65%, 可投
+4 env + 方法全失败:     → ⚠️ NeurIPS 40-50%, 考虑 ICLR 2027 (加时间改进方法)
 ```
 
 ---
@@ -856,18 +1897,50 @@ APPS 中也类似尝试:
 - [x] **D4.2** ✅ α, β 参数估计
 - [x] **D4.3** ✅ Figure 2 生成 → `results/phase6/toy_model/figure2_two_source_model.pdf`
 
+### 路径 E — Method Upgrade 🆕 v4.0
+
+**E1: Cost-Aware Contextual Bandit Gate (CACB)**
+- [ ] **E1.0** 实现 `frvc/cacb_gate.py`
+  - [ ] Bayesian LR posterior (Laplace approximation)
+  - [ ] Thompson sampling decision function
+  - [ ] 三种 feature mode (A: handcrafted, B: PCA, C: hybrid)
+  - [ ] Warmup 逻辑 + posterior update scheduling
+- [ ] **E1.1** 实现 `experiments/p6_e1_cacb_gate.py`
+- [ ] **E1.2** HotpotQA Mode A sanity: 1 seed × 200ep
+- [ ] **E1.3** Full experiment (GO 后): modes × 3 envs × 3 seeds
+- [ ] **E1.4** 结果分析 + posterior convergence 可视化
+
+**E2: Contrastive Probe Gate**
+- [ ] **E2.0** 实现 `frvc/contrastive_gate.py`
+  - [ ] 方案 A: SupCon loss
+  - [ ] 方案 B: Margin ranking
+  - [ ] 方案 C: Prototypical networks
+- [ ] **E2.1** Offline 训练 + 评估 (3 方案 × 3 envs, CPU)
+  - [ ] AUC 对比 + score bimodality test
+- [ ] **E2.2** End-to-End (如果 GO): best × 3 envs × 3 seeds
+- [ ] **E2.3** 结果分析 + score 分布可视化
+
+**E3: Principled SCG (Auto Feature Selection + CMDP)**
+- [ ] **E3.0** 实现 `frvc/principled_scg.py`
+  - [ ] Feature pool builder (Universal + Hidden PCA + Auto-extracted)
+  - [ ] AutoFeatureSelector (MI ranking + LASSO)
+  - [ ] CMDP dual ascent threshold optimizer
+- [ ] **E3.1** Offline: LASSO selection + 可解释性报告 (3 envs, CPU)
+- [ ] **E3.2** End-to-End: PrincipledSCG × 3 envs × 3 seeds
+- [ ] **E3.3** 可解释性分析 (LASSO vs 手工选择 Venn 图)
+
 ### 收尾
 
-- [ ] Unified Results Table（所有论文环境）
-- [ ] Pareto figure 统一生成（等 B4 结果）
+- [ ] Unified Results Table（所有论文环境 × 所有方法含路径 E）
+- [ ] Pareto figure 统一生成（含路径 E 最优方法）
 - [x] Figure 2 (Two-Source Model) ✅ + Figure 7 (P1 Verification) ✅ 就绪
-- [ ] Figure 6 (Probe Analysis) — 依赖 B6
+- [x] Figure 6 (Probe Analysis) ✅ 数据已有，待最终绘图
 - [ ] phase6_final_report.md
 - [x] 论文最终环境集确定 → **4 环境锁定** (HotpotQA + WebShop + APPS + TWExpress)
 
 ---
 
-## 10. 资源估算（v3.2 — 大幅精简）
+## 10. 资源估算（v4.0 — 路径 E 加入）
 
 ### GPU 时间
 
@@ -876,32 +1949,40 @@ APPS 中也类似尝试:
 | ~~A: Token cost 分析~~ | ~~1h~~ | ~~已完成~~ | ✅ |
 | ~~C: 新环境 Step 0~~ | ~~8h~~ | ~~已砍~~ | ❌ |
 | ~~D: Toy Model~~ | ~~0h~~ | ~~已完成~~ | ✅ |
-| ~~B1: Hidden state 收集~~ | ~~3h~~ | ~~已完成~~ | ✅ (2min) |
-| ~~B2: Probe offline 训练~~ | ~~0.5h~~ | ~~已完成~~ | ✅ (75min CPU) |
-| ~~B4: End-to-end (3 env × 3 seeds)~~ | ~~12h~~ | ~~已完成~~ | ✅ (~6h GPU) |
-| ~~B6: 科学分析~~ | ~~1h~~ | ~~已完成~~ | ✅ (含在 B2 中) |
+| ~~B1-B3: Hidden state + Probe~~ | ~~4h~~ | ~~已完成~~ | ✅ |
+| ~~B4v1: End-to-end (threshold=0.05)~~ | ~~6h~~ | ~~已完成~~ | ✅ (发现 cost 问题) |
+| B4v2/v3: Threshold 校准 | ~6h | 🟠 | 🔄 running |
+| ~~B6: 科学分析~~ | ~~1h~~ | ~~已完成~~ | ✅ |
+| **🆕 E1: CACB offline + sanity** | ~1h (sanity) | 🔴 | ⬜ |
+| **🆕 E1: CACB full (如果 GO)** | ~18h (27 runs) | 🔴 | ⬜ |
+| **🆕 E2: Contrastive offline** | ~0h (CPU) | 🟡 | ⬜ |
+| **🆕 E2: Contrastive full (如果 GO)** | ~6h (9 runs) | 🟡 | ⬜ |
+| **🆕 E3: Principled offline** | ~0h (CPU) | 🟠 | ⬜ |
+| **🆕 E3: Principled full (如果 GO)** | ~6h (9 runs) | 🟠 | ⬜ |
 | B5: 消融 | ~4h | 🟡 | ⬜ |
-| Figure 6 生成 | ~1h CPU | 🟡 | ⬜ |
-| **剩余总计** | **~5h** | | |
-
-**v3.2 变化**: 路径 A/C/D 全部完成或终止。剩余工作量仅路径 B (~20h GPU)，比 v3.1 (~50-70h) 减少 60%+。
+| **路径 E 总计 (最大)** | **~32h** | | |
+| **路径 E 总计 (最可能: E1 full + E3 full)** | **~24h** | | |
 
 ### SLURM 管理
 
-- 预估新增 jobs：~12 个（仅路径 B）
-- 提交顺序：B1（短任务，~40min/job）→ B2/B3 (CPU) → B4（中任务，~40min/job）→ B5/B6
+- 预估新增 jobs：~27-45 个（路径 E 主体）+ ~18 个（B4v3 running）
+- 提交顺序：E1/E2/E3 sanity (各 1 job) → GO 方向 full (9-27 jobs 并发)
+- 并发策略：9 jobs 并发 (SLURM array), 每 job ~40min
 
 ---
 
-## 11. 风险管理（v3.2 — 已实现的风险标灰）
+## 11. 风险管理（v4.0 — 路径 E 新风险）
 
 | 风险 | 概率 | 影响 | 缓解措施 | 状态 |
 |------|:----:|:----:|---------|:----:|
-| ~~Hidden State Probe NO-GO~~ | ~~30%~~ | ~~高~~ | 3/3 GO, B4 完成: HotpotQA +0.2pp, APPS +5.7pp, WebShop -1.9pp | ✅ **未实现 (GO!)** |
-| ~~所有新环境 NO-GO~~ | ~~25%~~ | ~~中~~ | ~~4 候选全 NO-GO 概率降低~~ | ✅ **已实现** |
-| ~~TWExpress 不 Pareto-dominate~~ | ~~50%~~ | ~~低~~ | 定位为 "rollout-safe 对比案例" | ✅ **已确认** |
-| ~~APPS probe 仍不超过 CaTS~~ | ~~60%~~ | ~~低~~ | Probe SR=64.5% >> CaTS 59.0% (+5.5pp) | ✅ **未实现 (超越!)** |
-| GPU quota 不足 | 10% | 低 | 剩余仅 ~20h GPU，压力大幅降低 | ⬜ |
+| ~~Hidden State Probe offline NO-GO~~ | ~~30%~~ | ~~高~~ | 3/3 GO (AUC 0.88-1.00) | ✅ **GO** |
+| **Probe threshold 校准失败** | 70% | 高 | B4v1/v2 已失败; B4v3 running; **路径 E 是 plan B** | 🔴 **已部分实现** |
+| ~~所有新环境 NO-GO~~ | ~~25%~~ | ~~中~~ | 全部 NO-GO → 4 环境锁定 | ✅ **已实现** |
+| **🆕 路径 E 全部 NO-GO** | 25% | 高 | 三方向并行降低风险; 回退: finding+theory paper | ⬜ |
+| **🆕 E1 CACB counterfactual bias** | 30% | 中 | 不触发时无法观测 U → warmup 收集无偏数据 | ⬜ |
+| **🆕 E2 Contrastive 不 bimodal** | 50% | 低 | E2 不是核心方向; 方案 C (prototypical) 天然 threshold=0 | ⬜ |
+| **🆕 GPU quota 紧张** | 30% | 中 | 路径 E 最大 ~32h; 优先 E1, 砍 E2 if needed | ⬜ |
+| 论文写作时间不足 | 20% | 中 | Week 3 开始写作; Intro/Theory 部分可立即开始 | ⬜ |
 
 ---
 
@@ -922,13 +2003,41 @@ APPS 中也类似尝试:
 | P2/P3 Cross-env + Signal Identity | §5.7 E4 | D3 | ✅ |
 | Two-Source Model 理论曲线 | §3.3 + Figure 2 | D4 | ✅ |
 
-**论文叙事（已确定）**：
-```
-✅ Probe 成功 → 方法叙事: "SCG learns both direction and features from LLM hidden states"
-              → 升级为: 无需领域知识的端到端 gating
-              → APPS +5.7pp 是核心方法贡献
-              → B6 cross-env transfer 失败闭环 Two-Source Model
+**论文叙事（v4.0 — 取决于路径 E 结果）**：
 
-✅ Toy Model 验证成功 → 理论叙事: "finding + verified theory paper"
-                      → P1/P2/P3 全部 confirmed → NeurIPS 理论深度 ⭐⭐⭐⭐
+```
+场景 1: E1 CACB 成功 (最推荐叙事):
+  §4.1 Problem: Step-level gating as contextual bandit
+  §4.2 Cost-Aware Contextual Bandit Gate (CACB)
+    → Thompson sampling discovers direction + threshold online
+    → 理论: regret bound O(d√T log T), 连接 VOC/CMDP
+  §4.3 (如果 E3 GO) Auto Feature Selection (LASSO)
+    → "LASSO rediscovers expert-chosen features + finds new ones"
+  §4.4 Hidden State Probes as Scientific Tool (B6 分析)
+    → Cross-env transfer failure validates Two-Source Model
+  Method novelty ⭐⭐⭐⭐, NeurIPS 70-80%
+
+场景 2: E3 Principled SCG 成功但 E1 部分:
+  §4.1 Problem: Direction discovery for adaptive gating
+  §4.2 Automatic Feature Discovery (LASSO + MI)
+  §4.3 CMDP-Optimal Gate
+  §4.4 Hidden State Analysis
+  Method novelty ⭐⭐⭐, NeurIPS 60-70%
+
+场景 3: 路径 E 全 NO-GO:
+  保持 SCG-LR + Probe 作为 analysis tool
+  论文重心: finding + Two-Source Theory (已验证)
+  Method novelty ⭐⭐, Theory novelty ⭐⭐⭐⭐
+  NeurIPS 45-55% (finding-driven paper)
+```
+
+**不变的论文资产（无论路径 E 结果如何）**：
+```
+✅ Direction Reversal Finding — 核心 selling point
+✅ Two-Source Uncertainty Model — 理论贡献 (P1/P2/P3 全部 confirmed)
+✅ Simpson's Paradox 实证 — 理论 grounding
+✅ B6 Cross-env Transfer Matrix — 验证 Two-Source Model
+✅ 4 Competing Baselines × 3 envs — 实验充分度
+✅ 4 环境多样性 — QA + Code + Web + Planning
+✅ Token Cost + Pareto 分析框架 — 方法论贡献
 ```
