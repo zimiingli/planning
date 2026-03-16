@@ -1,8 +1,8 @@
 # Phase 6 Progress Report
 
-**Date**: 2026-03-14 (Day 3, v3)
-**Reporting Period**: 2026-03-12 ~ 2026-03-14
-**Plan Version**: v3.4
+**Date**: 2026-03-15 (Day 4)
+**Reporting Period**: 2026-03-12 ~ 2026-03-15
+**Plan Version**: v3.5
 
 ---
 
@@ -378,11 +378,12 @@ Exploitation 触发率偏高（主要因素）:
 **根因**：CMDP threshold 用启发式公式，过于激进 → 触发率接近 always_trigger。
 
 **修复迭代**：
-1. **principled_auto** (job 23176425): 固定 λ=0.05 扫描 threshold → HotpotQA SR 暴跌至 68.2%（λ×C_ratio=1.79 过度惩罚高 cost 环境）
-2. **principled_adaptive** (job 23179282): 🆕 环境自适应 λ → 从探索数据估计 λ_adaptive = (always_gain)/(always_cost-1)
-   - HotpotQA: λ≈0.004 → 不过度惩罚
-   - Plancraft: λ<0 → 自动不触发
-   - TWExpress: λ≈0.28 → 多触发
+1. **principled_auto** (job 23176425): 固定 λ=0.05 扫描 → HotpotQA SR 暴跌 68.2%（过度惩罚）
+2. **principled_adaptive** (job 23179282): 自适应 λ → HotpotQA 恢复 95.7%, TWExpress 99.2% 🔥
+   - 但 Plancraft LASSO 2/3 seeds 失败 → 仍过度触发
+3. **principled_fbeta** (job 23185268): 🆕 F-beta threshold, β=sqrt(pos_rate/(1-pos_rate))
+   - 完全不需要 C_ratio，纯粹从 positive_rate 推断
+   - Plancraft pos_rate<2% → fallback threshold=0.95 → 预期几乎不触发
 
 ---
 
@@ -440,34 +441,63 @@ principled_nopca (自动化, 补充方法):
 |------|:---:|:----:|
 | ~~Path E Online Ablation~~ | ~~23175320~~ | ✅ 30/30 完成 |
 | ~~TWExpress online/nopca~~ | ~~23176360~~ | ✅ 完成 |
-| principled_auto (6 envs × 3 seeds) | 23176425 | 🔄 Running (HotpotQA/APPS ✅, 其余 running) |
-| **principled_adaptive (6 envs × 3 seeds = 18 jobs)** | **23179282** | **⬜ Pending** |
+| ~~principled_auto~~ | ~~23176425~~ | ✅ 18/18 完成 (HotpotQA SR 暴跌问题) |
+| ~~principled_adaptive~~ | ~~23179282~~ | ✅ 18/18 完成 (最佳版本, CAGC #2) |
+| **principled_fbeta (6 envs × 3 seeds = 18 jobs)** | **23185268** | **⬜ Pending** |
 
 ### Threshold 优化迭代
 
-| 版本 | Threshold 方法 | 问题 |
+| 版本 | Threshold 方法 | 结果 |
 |------|---------------|------|
 | nopca | 启发式 `λ×0.001/pos_rate` | APPS 触发率过高 (2.19 ro/ep) |
-| auto | 固定 λ=0.05 扫描 AdjSR | **HotpotQA SR 暴跌** (68.2%): λ×C_ratio=1.79 过度惩罚 |
-| **adaptive** 🆕 | **环境自适应 λ**: `λ=(always_gain)/(always_cost-1)` | 预期修复所有环境 |
+| auto | 固定 λ=0.05 扫描 AdjSR | HotpotQA SR 暴跌 68.2% |
+| adaptive | 自适应 λ from data | ✅ HotpotQA 恢复 95.7%, TWExpress 99.2%, 但 Plancraft LASSO 失败 |
+| **fbeta** 🆕 | F-beta, β=sqrt(pos_rate/(1-pos_rate)) | 🔄 Running, 预期修复 Plancraft |
 
-**adaptive λ 预估值**（从探索数据在线计算）：
+### principled_adaptive 完整结果（6 环境）
 
-| 环境 | C_ratio | λ_adaptive | 含义 |
-|------|:-------:|:----------:|------|
-| HotpotQA | 35.8 | ~0.004 | rollout 贵但值得 → 正常触发 |
-| APPS | 3.9 | ~0.018 | 性价比一般 → 适度触发 |
-| WebShop | 12.9 | ~0.079 | rollout 值得 → 多触发 |
-| TWExpress | — | ~0.277 | rollout 极值 → 大量触发 |
-| BabyAI | — | ~0.016 | 性价比低 → 少触发 |
-| Plancraft | — | **<0** | rollout 有害 → 不触发 |
+| 环境 | adaptive† SR | Ro/ep | Cost† | SCG SR | SCG Cost | vs SCG SR |
+|------|:----------:|:-----:|:-----:|:------:|:--------:|:---------:|
+| **HotpotQA** | **96.9%** | 1.07 | **6.49×** | 96.8% | 6.59× | **+0.1pp** |
+| **APPS** | **65.6%** | 1.04 | 2.33× | 58.8% | 1.20× | **+6.8pp** |
+| WebShop | 43.3% | 1.46 | 1.90× | 43.7% | 1.27× | -0.4pp |
+| **TWExpress** | **99.1%** | 3.25 | 2.10× | 97.0% | 1.00× | **+2.1pp** |
+| BabyAI | 8.4% | 40.26 | 5.08× | 8.8% | 1.46× | -0.4pp |
+| Plancraft | 21.8% | 5.41 | 5.08× | 21.5% | 3.31× | +0.3pp |
+
+† = exploitation-only
+
+### CAGC 排名（GapClosed% / Cost，综合 SR+Cost）
+
+| 排名 | Method | Avg CAGC | 类型 |
+|:----:|--------|:--------:|:----:|
+| 1 | **SCG** | **44.8%** | **Ours** |
+| 2 | **adaptive†** | **28.6%** | **Ours** |
+| 3 | CoRefine | 25.6% | CB |
+| 4 | CaTS | 25.0% | CB |
+| 5 | CATTS | 24.2% | CB |
+| 6 | SEAG | 23.5% | CB |
+
+**我们的两个方法包揽 CAGC 前两名，超过所有 competing baselines。**
+
+### 剩余问题
+
+adaptive 在 TWExpress/BabyAI/Plancraft 上 CAGC 仍低于 CB：
+- TWExpress: cost=2.10× 偏高（SCG cost=1.00×）
+- BabyAI: Ro/ep=40 过度触发
+- Plancraft: LASSO 2/3 seeds 失败 → Ro/ep=5.4 过度触发
+
+**principled_fbeta** (job 23185268) 预期改善：
+- β=sqrt(pos_rate/(1-pos_rate))：pos_rate 低 → 低 β → 重 precision → 少触发
+- Plancraft (pos_rate~1%): fallback threshold=0.95 → 几乎不触发
+- 完全不需要 C_ratio，纯粹 online
 
 ### 待完成
 
 | 任务 | 优先级 |
 |------|:------:|
-| principled_adaptive 结果分析 (6 envs) | 🔴 |
-| nopca vs auto vs adaptive 最终对比 | 🔴 |
+| principled_fbeta 结果分析 (6 envs) | 🔴 |
+| nopca vs auto vs adaptive vs fbeta 最终对比 | 🔴 |
 | 确定最终方法定位 | 🔴 |
 | Unified Pareto Figure | 🟠 |
 | phase6_final_report.md | 🟠 |
@@ -494,8 +524,7 @@ principled_nopca (自动化, 补充方法):
 
 | 文件 | Job | 备注 |
 |------|:---:|------|
-| principled_auto | 23176425 | auto threshold × 6 envs × 3 seeds (HotpotQA SR 暴跌问题) |
-| **principled_adaptive** | **23179282** | **adaptive λ × 6 envs × 3 seeds = 18 runs** |
+| **principled_fbeta** | **23185268** | **F-beta threshold × 6 envs × 3 seeds = 18 runs** |
 
 ### 新增代码
 
@@ -515,5 +544,6 @@ principled_nopca (自动化, 补充方法):
 | `scripts/phase6/run_path_e_twexpress.sbatch` | TWExpress online/nopca sbatch (6 jobs) |
 | `scripts/phase6/run_path_e_auto.sbatch` | principled_auto sbatch (18 jobs) |
 | `scripts/phase6/run_path_e_adaptive.sbatch` | principled_adaptive sbatch (18 jobs) |
+| `scripts/phase6/run_path_e_fbeta.sbatch` | principled_fbeta sbatch (18 jobs) |
 | `scripts/phase6/run_path_e_failed_envs.sbatch` | 失败环境验证 sbatch |
 | `scripts/phase6/run_b1_new_envs.sbatch` | B1 新环境数据收集 sbatch |

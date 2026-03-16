@@ -1554,13 +1554,17 @@ Phase 3: Full Experiment (GO 的方向, 3 env × 3 seeds)
 
 已验证的优化:
   ✅ 4. 去掉 PCA → principled_nopca: SR 几乎不变, 省掉 HF engine
-  ⚠️ 1a. principled_auto (固定 λ=0.05): HotpotQA SR 暴跌 (68.2%), λ×C_ratio 过度惩罚
-  🔄 1b. principled_adaptive (自适应 λ): λ=(always_gain)/(always_cost-1), job 23179282
+  ⚠️ 1a. principled_auto (固定 λ=0.05): HotpotQA SR 暴跌 68.2%
+  ✅ 1b. principled_adaptive (自适应 λ): HotpotQA 恢复 95.7%, TWExpress 99.2% 🔥
+       但 Plancraft LASSO 2/3 seeds 失败, BabyAI/Plancraft cost 仍高
+  🔄 1c. principled_fbeta: F-beta threshold, β=sqrt(pos_rate/(1-pos_rate))
+       完全不需要 C_ratio, 纯 online, pos_rate<2% → fallback 不触发
 
-Threshold 优化迭代:
-  nopca:    启发式 threshold → APPS 过度触发 (cost 高)
-  auto:     固定 λ=0.05 sweep → HotpotQA 过度保守 (SR 暴跌)
-  adaptive: λ 从数据估计, 每环境自动不同 → 预期同时修复两个问题
+Threshold 优化完整迭代:
+  nopca:      启发式 threshold → APPS 过度触发 (Ro/ep=2.19)
+  auto:       固定 λ=0.05 sweep → HotpotQA 过度保守 (SR 68.2%)
+  adaptive:   自适应 λ from data → ✅ 主环境修复, ⚠️ Plancraft LASSO 失败
+  fbeta:      F-beta, β from pos_rate → 🔄 running, 预期修复 Plancraft
 
 后续可优化方向:
   2. 缩短探索期 (50ep→20ep) → 减少探索浪费
@@ -1610,16 +1614,15 @@ Threshold 优化迭代:
   │     关键发现: No PCA ≈ Offline PCA → 不需要 HF engine
   ├── 🔄 BabyAI/Plancraft online/nopca (23175320): running
   ├── 🔄 TWExpress online/nopca (job 23176360): pending
-  ├── ⚠️ principled_auto (job 23176425): 固定 λ=0.05 → HotpotQA SR 暴跌
-  └── 🔄 principled_adaptive (job 23179282, 18 runs): ← 修复版
-        自适应 λ = (always_gain)/(always_cost-1), 从探索数据在线估计
-        6 envs × 3 seeds, 不需要 HF engine
+  ├── ✅ principled_auto (job 23176425): 18/18 完成, HotpotQA 暴跌
+  ├── ✅ principled_adaptive (job 23179282): 18/18 完成, CAGC #2
+  └── 🔄 principled_fbeta (job 23185268): F-beta threshold, 18 runs
 ```
 
-  后续结果分析:
-  ├── principled_adaptive 全 6 环境结果
-  ├── nopca vs auto vs adaptive 最终对比
-  ├── 6 环境 SR/cost/AdjSR 完整对比
+  后续:
+  ├── principled_fbeta 全 6 环境结果
+  ├── adaptive vs fbeta 最终对比
+  ├── 确定最终方法版本
   ├── 论文 §4 Method 结构确定
   └── 开始写 LaTeX
 ═══════════════════════════════════════════════════════════════════
