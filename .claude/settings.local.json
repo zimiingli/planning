@@ -38,7 +38,10 @@
       "WebFetch(domain:ar5iv.labs.arxiv.org)",
       "WebFetch(domain:appworld.dev)",
       "Bash(wc:*)",
-      "Bash(pip install:*)"
+      "Bash(pip install:*)",
+      "Skill(claude-scientific-writer:markitdown)",
+      "Read(//Users/liziming/.claude/plugins/cache/claude-scientific-writer/claude-scientific-writer/2ae9407efbb2/skills/research-lookup/**)",
+      "Read(//tmp/**)"
     ]
   }
 }
