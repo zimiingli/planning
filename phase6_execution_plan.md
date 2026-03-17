@@ -1557,20 +1557,33 @@ Phase 3: Full Experiment (GO 的方向, 3 env × 3 seeds)
   ⚠️ 1a. principled_auto (固定 λ=0.05): HotpotQA SR 暴跌 68.2%
   ✅ 1b. principled_adaptive (自适应 λ): HotpotQA 恢复 95.7%, TWExpress 99.2% 🔥
        但 Plancraft LASSO 2/3 seeds 失败, BabyAI/Plancraft cost 仍高
-  🔄 1c. principled_fbeta: F-beta threshold, β=sqrt(pos_rate/(1-pos_rate))
-       完全不需要 C_ratio, 纯 online, pos_rate<2% → fallback 不触发
+  ⚠️ 1c. principled_fbeta: HotpotQA 91.8% (太保守), BabyAI 4.0% (确认 limitation)
+       主环境+BabyAI 已取消, 仅保留 TWExpress/Plancraft
+       BabyAI 结论: signal 不可预测 (ρ=0.052, pos_rate=0.2%), 选择性 gating 不适用
+  🔄 1d. principled_v2: adaptive λ + low pos_rate fallback (job 23185483)
+       = adaptive + LASSO 失败且 pos_rate<2% → threshold=0.95
+       5 envs (HotpotQA/APPS/WebShop/TWExpress/Plancraft), BabyAI 已取消
+       预期: Plancraft 修复, 主环境与 adaptive 相同
 
 Threshold 优化完整迭代:
   nopca:      启发式 threshold → APPS 过度触发 (Ro/ep=2.19)
   auto:       固定 λ=0.05 sweep → HotpotQA 过度保守 (SR 68.2%)
   adaptive:   自适应 λ from data → ✅ 主环境修复, ⚠️ Plancraft LASSO 失败
-  fbeta:      F-beta, β from pos_rate → 🔄 running, 预期修复 Plancraft
+  fbeta:      F-beta, β from pos_rate → ⚠️ HotpotQA 91.8% 太保守, BabyAI 4.0% 确认 limitation
+  v2:         adaptive + fallback → 🔄 running (5 envs, BabyAI 已取消), 预期最终版本
+
+环境分类 (最终):
+  ✅ 主实验: HotpotQA, APPS, WebShop (gating 有价值)
+  ✅ 对比案例: TWExpress (rollout 无害), Plancraft (rollout 有害)
+  ❌ Limitation: BabyAI (signal 不可预测, 任何 gating 方法不适用)
 
 后续可优化方向:
   2. 缩短探索期 (50ep→20ep) → 减少探索浪费
   3. 自适应探索期 (explore_rate 随信号强度衰减)
   5. 用 offline 数据预训练 LASSO → 跳过在线探索
   6. E1+E3 组合: LASSO 选特征 + Thompson Sampling 做决策
+  🆕 7. Self-Evolving V2: 多 cycle 迭代进化 (explore→reflect→exploit→re-reflect→...)
+  🆕 8. Self-Evolving + 环境特异 feature 自动发现 (解决 TWExpress/Plancraft 问题)
 ```
 
 #### GPU 时间预估
@@ -1616,15 +1629,26 @@ Threshold 优化完整迭代:
   ├── 🔄 TWExpress online/nopca (job 23176360): pending
   ├── ✅ principled_auto (job 23176425): 18/18 完成, HotpotQA 暴跌
   ├── ✅ principled_adaptive (job 23179282): 18/18 完成, CAGC #2
-  └── 🔄 principled_fbeta (job 23185268): F-beta threshold, 18 runs
+  ├── ⚠️ principled_fbeta (job 23185268): 主环境+BabyAI 取消, 仅 TWExpress/Plancraft
+  └── 🔄 principled_v2 (job 23185483): adaptive + fallback, 15 runs (BabyAI 取消)
 ```
 
-  后续:
-  ├── principled_fbeta 全 6 环境结果
-  ├── adaptive vs fbeta 最终对比
-  ├── 确定最终方法版本
-  ├── 论文 §4 Method 结构确定
-  └── 开始写 LaTeX
+  🆕 路径 F: Self-Evolving Adaptive Gating (Mar 15)
+  ├── 实现 frvc/self_evolving_gate.py
+  ├── LLM 在 _on_transition 前分析探索经验 → 生成 feature extractor 代码
+  ├── 生成的 LLM features 加入 LASSO 候选 pool
+  ├── 两个 backend: local (Qwen3-4B) + openrouter (Claude-opus-4.6)
+  ├── 🔄 Job 23189478: 30 runs (2 backends × 5 envs × 3 seeds)
+  │
+  ├── 同时 running:
+  │   principled_v2 TWExpress (23185483 tasks 9-11)
+  │   principled_v2 Plancraft fix (23189295, 修复 LASSO 失败 fallback bug)
+  │
+  └── 后续:
+      ├── Self-Evolving 结果分析 (local vs openrouter)
+      ├── 最终方法版本确定 (adaptive vs v2 vs self-evolving)
+      ├── 论文 §4 Method 结构确定
+      └── 开始写 LaTeX
 ═══════════════════════════════════════════════════════════════════
 ```
 

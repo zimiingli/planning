@@ -381,9 +381,19 @@ Exploitation 触发率偏高（主要因素）:
 1. **principled_auto** (job 23176425): 固定 λ=0.05 扫描 → HotpotQA SR 暴跌 68.2%（过度惩罚）
 2. **principled_adaptive** (job 23179282): 自适应 λ → HotpotQA 恢复 95.7%, TWExpress 99.2% 🔥
    - 但 Plancraft LASSO 2/3 seeds 失败 → 仍过度触发
-3. **principled_fbeta** (job 23185268): 🆕 F-beta threshold, β=sqrt(pos_rate/(1-pos_rate))
-   - 完全不需要 C_ratio，纯粹从 positive_rate 推断
-   - Plancraft pos_rate<2% → fallback threshold=0.95 → 预期几乎不触发
+3. **principled_fbeta** (job 23185268): F-beta threshold, β=sqrt(pos_rate/(1-pos_rate))
+   - HotpotQA 91.8% → 比 adaptive 低 4pp（β=0.70 过于保守，不考虑 rollout value）
+   - WebShop 39.8% (2/3 seeds) → 也比 adaptive 低
+   - 结论：fbeta 在主环境上不如 adaptive，仅保留 TWExpress/Plancraft 实验
+   - BabyAI fbeta: 4.0%@1.51ro → 几乎不触发但 SR 也极低（signal 不可预测）
+   - **BabyAI 已确认为 limitation 环境**：rollout 有用但不可预测，选择性 gating 不适用
+4. **principled_v2** (job 23185483 + 23189295):
+   - = adaptive + 当 LASSO 失败且 pos_rate<2% 时 threshold=0.95
+   - 发现并修复 bug: LASSO 失败时 `_model=None` → `should_rollout` 直接 return True → 无视 threshold
+   - 修复后: `_model=None` + threshold>=0.9 → return False
+   - **Plancraft v2 结果: SR=26.2%@0.25ro ✅** — 接近 base_only(29.8%), cost=1.07×
+   - 主环境与 adaptive 相同（LASSO 不会失败）
+   - BabyAI 已取消（limitation 环境）
 
 ---
 
@@ -391,14 +401,14 @@ Exploitation 触发率偏高（主要因素）:
 
 ### 最终环境矩阵
 
-| 环境 | 论文角色 | SCG SR / Cost | Nopca† SR / Cost | 最佳 CB |
-|------|---------|:-------------:|:---------------------:|:-------:|
-| HotpotQA | ✅ Pareto-dominate | 96.8% / 6.59× | 95.8% / 8.29× | CaTS 93.2% / 10.60× |
-| WebShop | ✅ Pareto-dominate | 43.7% / 1.27× | 43.7% / 3.59× | CaTS 30.5% / 3.43× |
-| APPS | ⚠️ 弱信号 diagnostic | 58.8% / 1.20× | **65.7%** / 3.71× | CaTS 59.0% / 1.02× |
-| TWExpress | ⚠️ Rollout-safe 对比 | 97.0% / — | 🔄 running | CATTS 97.5% |
-| BabyAI | ❌ SCG 失败 | 8.8% / — | 🔄 running | — |
-| Plancraft | ❌ rollout 有害 | 21.5% / — | 🔄 running | base 29.8% |
+| 环境 | 论文角色 | SCG SR / Cost | **V2 SR / Cost** | 最佳 CB | V2 Pareto CB |
+|------|---------|:-------------:|:----------------:|:-------:|:------------:|
+| HotpotQA | ✅ Pareto-dominate | 96.8% / 6.59× | 94.8% / 6.61× | CaTS 93.2% / 10.60× | ✅ 5个 |
+| APPS | ⚠️ 弱信号 | 58.8% / 1.20× | **64.2%** / 2.45× | CaTS 59.0% / 1.02× | — |
+| WebShop | ✅ Pareto-dominate | 43.7% / 1.27× | 42.7% / 1.93× | CaTS 30.5% / 3.43× | ✅ 3个 |
+| TWExpress | ⚠️ Rollout-safe | 97.0% / 1.00× | 97.3% / 1.74× | CATTS 97.5% / 1.57× | ≈持平 |
+| BabyAI | ❌ **Limitation** | 8.8% / 1.46× | — (已取消) | signal 不可预测 | — |
+| Plancraft | ⚠️ rollout 有害 | 21.5% / 3.31× | **27.2% / 1.49×** 🔥 | base 29.8% | ✅ **6个** |
 
 ### 方法定位 — 双方法互补 + 自动 threshold 优化中
 
@@ -409,18 +419,25 @@ SCG (handcrafted, 主方法):
   ❌ 弱信号环境 (APPS) 几乎无效 (SR ≈ base_only)
   ❌ 需要领域知识手工设计 feature
 
-principled_nopca (自动化, 补充方法):
+principled_v2 (自动化, 补充方法, 当前最佳版本):
   ✅ 完全 online: 无需 offline 数据 / HF engine / 领域知识
-  ✅ 弱信号环境 APPS +6.9pp 大幅超越 SCG
-  ✅ 强信号环境 HotpotQA (-1.0pp) / WebShop (=) 接近 SCG
-  ❌ Cost 偏高（CMDP threshold 过于激进）
-  🔄 principled_auto: threshold 自动调优版本 running
+  ✅ 弱信号环境 APPS +5.4pp 超越 SCG
+  ✅ 强信号环境 HotpotQA (-2.0pp) / WebShop (-1.0pp) 接近 SCG
+  ✅ 有害环境 Plancraft: 27.2%@1.49× → 自动学会不触发, Pareto-dominates SCG + 5个 CB
+  ✅ Rollout-safe TWExpress: 97.3% ≈ 所有 CB (差距 <0.2pp)
+  ✅ 自适应 λ + fallback: 每环境自动不同的 threshold
+  ✅ Pareto-dominates 大部分 CB: HotpotQA 5个, WebShop 3个, Plancraft 6个
+
+Self-Evolving (路径 F, 🔄 running):
+  → Agent 反思自己的探索经验 → LLM 生成 feature extractor → LASSO 选择
+  → 预期发现环境特异 feature (如 TWExpress num_admissible_commands)
+  → 两个 backend: local (Qwen3-4B) + openrouter (Claude-opus-4.6)
 
 论文叙事:
-  → 两种方法互补: SCG 用于 cost-sensitive, Principled 用于 SR-first
-  → Principled 证明完全自动化 online gating 可行
-  → principled_auto 如果降低 cost → Method novelty ⭐⭐⭐-⭐⭐⭐⭐
-  → NeurIPS 估计: 55-75% (取决于 auto threshold 效果)
+  → SCG + v2 互补: cost-sensitive vs SR-first
+  → Self-Evolving: agent learns what to look for (meta-reasoning)
+  → Method novelty ⭐⭐⭐-⭐⭐⭐⭐ (取决于 self-evolving 效果)
+  → NeurIPS 估计: 60-80%
 ```
 
 ---
@@ -443,7 +460,10 @@ principled_nopca (自动化, 补充方法):
 | ~~TWExpress online/nopca~~ | ~~23176360~~ | ✅ 完成 |
 | ~~principled_auto~~ | ~~23176425~~ | ✅ 18/18 完成 (HotpotQA SR 暴跌问题) |
 | ~~principled_adaptive~~ | ~~23179282~~ | ✅ 18/18 完成 (最佳版本, CAGC #2) |
-| **principled_fbeta (6 envs × 3 seeds = 18 jobs)** | **23185268** | **⬜ Pending** |
+| ~~principled_fbeta~~ | ~~23185268~~ | ✅ 完成 (主环境不如 adaptive, BabyAI confirmed limitation) |
+| ~~principled_v2~~ | ~~23185483 + 23189295~~ | ✅ **5/5 环境全部完成** |
+| ~~Self-Evolving (job 23189478)~~ | ~~23189478~~ | ❌ f-string bug, 已取消 |
+| **Self-Evolving (修复后)** | **23189559** | **🔄 Running (2 backends × 5 envs × 3 seeds)** |
 
 ### Threshold 优化迭代
 
@@ -452,7 +472,8 @@ principled_nopca (自动化, 补充方法):
 | nopca | 启发式 `λ×0.001/pos_rate` | APPS 触发率过高 (2.19 ro/ep) |
 | auto | 固定 λ=0.05 扫描 AdjSR | HotpotQA SR 暴跌 68.2% |
 | adaptive | 自适应 λ from data | ✅ HotpotQA 恢复 95.7%, TWExpress 99.2%, 但 Plancraft LASSO 失败 |
-| **fbeta** 🆕 | F-beta, β=sqrt(pos_rate/(1-pos_rate)) | 🔄 Running, 预期修复 Plancraft |
+| fbeta | F-beta, β=sqrt(pos_rate/(1-pos_rate)) | ⚠️ HotpotQA 91.8% (太保守), 主环境已取消 |
+| **v2** 🆕 | adaptive λ + pos_rate<2% fallback | ✅ **Plancraft 26.2%@1.07× (Pareto-dominates 所有 gating)** |
 
 ### principled_adaptive 完整结果（6 环境）
 
@@ -463,16 +484,40 @@ principled_nopca (自动化, 补充方法):
 | WebShop | 43.3% | 1.46 | 1.90× | 43.7% | 1.27× | -0.4pp |
 | **TWExpress** | **99.1%** | 3.25 | 2.10× | 97.0% | 1.00× | **+2.1pp** |
 | BabyAI | 8.4% | 40.26 | 5.08× | 8.8% | 1.46× | -0.4pp |
-| Plancraft | 21.8% | 5.41 | 5.08× | 21.5% | 3.31× | +0.3pp |
+| Plancraft (adaptive) | 21.8% | 5.41 | 5.08× | 21.5% | 3.31× | +0.3pp |
+| **Plancraft (v2)** | **26.2%** | **0.25** | **1.07×** | 21.5% | 3.31× | **+4.8pp** 🔥 |
 
 † = exploitation-only
+
+**v2 Plancraft 是最大改进**: LASSO 失败 → fallback threshold=0.95 → 几乎不触发 (0.25 ro/ep)
+→ SR 26.2% 接近 base_only (29.8%), cost=1.07× ≈ base。
+Pareto-dominates 所有 gating 方法（SCG 21.5%@3.31×, CATTS 25.0%@2.50×）。
+
+### principled_v2 完整结果（5 环境 SR + Cost + Pareto）
+
+| 环境 | v2 SR | v2 Ro/ep | v2 Cost | SCG SR | SCG Cost | vs SCG SR | Pareto vs CB |
+|------|:-----:|:--------:|:-------:|:------:|:--------:|:---------:|:------------:|
+| HotpotQA | 94.8% | 1.09 | 6.61× | 96.8% | 6.59× | -2.0pp | ✅ dominates CaTS/CATTS/SEAG/CoRefine/r50 (5) |
+| APPS | 64.2% | 1.18 | 2.45× | 58.8% | 1.20× | **+5.4pp** | — (cost 偏高) |
+| WebShop | 42.7% | 1.65 | 1.93× | 43.7% | 1.27× | -1.0pp | ✅ dominates CaTS/SEAG/CoRefine (3) |
+| TWExpress | 97.3% | 2.71 | 1.74× | 97.0% | 1.00× | +0.3pp | ≈持平 CB (差距 <0.2pp SR, <0.17× cost) |
+| **Plancraft** | **27.2%** | **0.77** | **1.49×** | 21.5% | 3.31× | **+5.7pp** | ✅ **dominates SCG/CaTS/CATTS/SEAG/CoRefine/always (6!)** |
+
+**v2 Pareto domination 汇总**:
+- HotpotQA: Pareto-dominates **5** 个方法（所有 CB + random_50）
+- WebShop: Pareto-dominates **3** 个方法（CaTS/SEAG/CoRefine）
+- Plancraft: Pareto-dominates **6** 个方法（包括 SCG！）
+- APPS: SR #4 但 cost #8 → tradeoff
+- TWExpress: 与 CB 差距极小（SR -0.2pp, cost +0.13-0.17×），实质持平
+
+**TWExpress 详细分析**: 所有方法 SR 在 96.7-97.8% 内，差异不显著。v2 (97.3%@1.74×) vs CATTS (97.5%@1.57×) 仅差 0.2pp SR + 0.17× cost。本环境 rollout 永远无害，所有选择性 gating 方法表现趋同。
 
 ### CAGC 排名（GapClosed% / Cost，综合 SR+Cost）
 
 | 排名 | Method | Avg CAGC | 类型 |
 |:----:|--------|:--------:|:----:|
 | 1 | **SCG** | **44.8%** | **Ours** |
-| 2 | **adaptive†** | **28.6%** | **Ours** |
+| 2 | **adaptive†/v2** | **~28%** | **Ours** |
 | 3 | CoRefine | 25.6% | CB |
 | 4 | CaTS | 25.0% | CB |
 | 5 | CATTS | 24.2% | CB |
@@ -482,22 +527,46 @@ principled_nopca (自动化, 补充方法):
 
 ### 剩余问题
 
-adaptive 在 TWExpress/BabyAI/Plancraft 上 CAGC 仍低于 CB：
-- TWExpress: cost=2.10× 偏高（SCG cost=1.00×）
-- BabyAI: Ro/ep=40 过度触发
-- Plancraft: LASSO 2/3 seeds 失败 → Ro/ep=5.4 过度触发
+### 已解决的问题
 
-**principled_fbeta** (job 23185268) 预期改善：
-- β=sqrt(pos_rate/(1-pos_rate))：pos_rate 低 → 低 β → 重 precision → 少触发
-- Plancraft (pos_rate~1%): fallback threshold=0.95 → 几乎不触发
-- 完全不需要 C_ratio，纯粹 online
+- ✅ **Plancraft v2 修复**: 26.2%@1.07× → 接近 base_only, Pareto-dominates 所有 gating
+- ✅ **BabyAI 定性为 limitation**: signal 不可预测, 不再优化
+
+### 剩余问题
+
+- **TWExpress**: adaptive 99.2%@2.10× → SR 好但 cost 偏高 (SCG 1.00×)
+  - Self-Evolving 可能通过发现 `num_admissible_commands` 等 feature 降低 cost
+- **主环境 cost**: adaptive APPS 2.33×, WebShop 1.90× vs SCG 1.20×/1.27×
+  - Self-Evolving 可能通过更好的 feature 提高精准度从而降低触发率
+
+### 🆕 Self-Evolving Adaptive Gating (路径 F)
+
+**核心思想**：Agent 反思自己的探索经验，用 LLM 自动发现环境特异的 feature，然后 LASSO 从中选择。
+
+**流程**：
+```
+Explore (50ep) → LLM Self-Reflect → Generate Feature Extractor Code
+  → LASSO(universal + LLM features) → Adaptive λ → Exploit
+```
+
+**两个 LLM backend 对比**：
+- `self_evolving_local`: Qwen3-4B（同一个模型，truly self-contained）
+- `self_evolving_openrouter`: Claude-opus-4.6（更强 reflection，via OpenRouter API）
+
+**Job 23189559** (修复 f-string bug 后重提交): 30 runs = 2 backends × 5 envs × 3 seeds
+
+**论文叙事**：
+> "The agent not only learns the task, but reflects on its own experience
+>  to discover what signals predict its need for additional computation,
+>  then evolves its gating strategy accordingly."
 
 ### 待完成
 
 | 任务 | 优先级 |
 |------|:------:|
-| principled_fbeta 结果分析 (6 envs) | 🔴 |
-| nopca vs auto vs adaptive vs fbeta 最终对比 | 🔴 |
+| Self-Evolving 结果分析 (local vs openrouter × 5 envs) | 🔴 |
+| principled_v2 Plancraft 修复结果 | 🔴 |
+| adaptive vs v2 vs self-evolving 最终对比 | 🔴 |
 | 确定最终方法定位 | 🔴 |
 | Unified Pareto Figure | 🟠 |
 | phase6_final_report.md | 🟠 |
@@ -524,7 +593,8 @@ adaptive 在 TWExpress/BabyAI/Plancraft 上 CAGC 仍低于 CB：
 
 | 文件 | Job | 备注 |
 |------|:---:|------|
-| **principled_fbeta** | **23185268** | **F-beta threshold × 6 envs × 3 seeds = 18 runs** |
+| principled_v2 | 23185483 + 23189295 | TWExpress + Plancraft fix running |
+| **Self-Evolving** | **23189478** | **local + openrouter × 5 envs × 3 seeds = 30 runs** |
 
 ### 新增代码
 
@@ -545,5 +615,7 @@ adaptive 在 TWExpress/BabyAI/Plancraft 上 CAGC 仍低于 CB：
 | `scripts/phase6/run_path_e_auto.sbatch` | principled_auto sbatch (18 jobs) |
 | `scripts/phase6/run_path_e_adaptive.sbatch` | principled_adaptive sbatch (18 jobs) |
 | `scripts/phase6/run_path_e_fbeta.sbatch` | principled_fbeta sbatch (18 jobs) |
+| `frvc/self_evolving_gate.py` | Self-Evolving Gate (LLM reflect + LASSO) |
+| `scripts/phase6/run_self_evolving.sbatch` | Self-Evolving sbatch (30 jobs) |
 | `scripts/phase6/run_path_e_failed_envs.sbatch` | 失败环境验证 sbatch |
 | `scripts/phase6/run_b1_new_envs.sbatch` | B1 新环境数据收集 sbatch |
