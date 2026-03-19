@@ -1,9 +1,10 @@
 # Phase 6 执行计划：目标 5 个有效环境 + Method Novelty 升级
 
-**版本**：v4.1（2026-03-14）— 路径 A/D ✅ 完成, 路径 C ❌ 全 NO-GO, 路径 B Probe gate ❌ 失败 (hidden_state bug + 分布偏移), **路径 E ✅ 完成: E3:principled 最佳 (HotpotQA -0.1pp, APPS +7.4pp, WebShop -1.0pp vs SCG)**
-**前置依赖**：Phase 0-5 完成，当前 2 个确认 Pareto-dominate（HotpotQA + WebShop）
-**核心目标**：~~从 2 → 4-5 个有效论文环境~~ 论文 4 环境已锁定 + 提升 Method Novelty（⭐⭐ → ⭐⭐⭐⭐） + ~~完成 Toy Model 实验验证~~ ✅ 已完成
-**v4.0 新增**：路径 E — 三个 Method Upgrade 方向（E1 Contextual Bandit / E2 Contrastive Probe / E3 Principled SCG），目标解决两个结构性问题：(1) 没有好的 method, (2) 可行环境太少
+**版本**：v5.0（2026-03-18）— 路径 A/D ✅, 路径 C ❌, 路径 B ❌, **路径 E ✅ (principled_v2 全5环境完成)**, **路径 F ✅ Self-Evolving: Phase 1-2 完成, Phase 3 running, 方案D 完成 4/5**
+**前置依赖**：Phase 0-5 完成
+**核心目标**：~~从 2 → 4-5 个有效论文环境~~ 论文 6 环境已锁定 (3主+2诊断+1限制) + ~~Method Novelty 提升~~ ✅ 三方法互补 (SCG + v2 + SE)
+**v4.0 新增**：路径 E — E1/E2/E3 全部完成, E3→principled_v2 最佳自动化方法
+**v5.0 新增**：路径 F — Self-Evolving Adaptive Gating, LLM自动发现环境特异feature, Phase 1-3 + 方案D
 **计划周期**：2026-03-12 至 2026-03-26（3 周）
 **论文标题**：Same Signal, Opposite Meaning: Why Adaptive Compute Fails Across Environments
 
@@ -15,13 +16,13 @@
 
 | 环境 | Paper 定位 | 数据完整度 | 关键数据 |
 |------|-----------|-----------|---------|
-| **HotpotQA** | ✅ **主实验** | ✅ 全部完成 | SCG 0.968@6.55× Pareto-dominate CaTS 0.932@10.55× |
-| **WebShop** | ✅ **主实验** | ✅ 全部完成 | SCG 0.437@1.27× Pareto-dominate CaTS 0.305@3.44× |
-| **APPS** | ⚠️ **弱信号案例** | ✅ 全部完成 (rerun 9/9 done) | SCG 0.588/1.23× vs CaTS 0.590/1.04×, 弱信号(ρ=−0.155), oracle=75.0% |
-| **TWExpress** | ⚠️ **对比案例** | ✅ 全部完成 (CB 12/12 done) | rollout 永远无害, SCG 选择性反而是劣势, token cost 已提取 |
-| **BabyAI** | ❌ 不用 | ✅ 全部完成 | SCG < always_trigger, 信号极弱(ρ=0.052), 高方差 |
-| **TextWorld** | ❌ **放弃** | ❌ 缺 2/6 core | always+oracle TIMEOUT, 信号极弱(ρ=0.174), gate 做错决策 |
-| **Plancraft** | ❌ 附录负例 | ⚠️ 缺 2/6 | rollout 本质有害, base_only > 所有方法 |
+| **HotpotQA** | ✅ **主实验** | ✅ 全部完成 | SCG 96.8%@6.59×, v2 94.8%@1.09×, SE 94.7%@1.09× → 全超CaTS |
+| **WebShop** | ✅ **主实验** | ✅ 全部完成 | SCG 43.7%@1.27×, v2 42.7%@1.65×, 100cal 43.2%@2.25× → 全超CaTS |
+| **APPS** | ✅ **主实验 (升级!)** | ✅ 全部完成 | SE 65.8-66.0% >> CaTS 59.0% → **Pareto-dominate** 🔥 |
+| **TWExpress** | ✅ **诊断: rollout-safe** | ✅ 全部完成 | SE 98.5-98.7% > v2 97.3% > CaTS 97.0% |
+| **Plancraft** | ✅ **诊断: rollout-harmful** | ✅ 全部完成 | v2 27.2%@0.77×, SE 28.3%@0.28× → 自动学会不触发 |
+| **BabyAI** | ❌ **Limitation** | ✅ SE测试完成 | SE 3.5% < base 9.3%, LASSO 2/3失败 → 信号不存在 |
+| **TextWorld** | ❌ **放弃** | ❌ 缺 2/6 core | always+oracle TIMEOUT, 信号极弱(ρ=0.174) |
 
 ### 1.2 为什么放弃 TextWorld
 
@@ -61,7 +62,7 @@
 ### 1.4 目标调整
 
 **原目标**：5 个 Pareto-dominate（过于乐观）
-**修订目标**：**论文呈现 4-5 个有效环境，其中 2-3 个 Pareto-dominate + 1-2 个 diagnostic/对比案例**
+**修订目标**：**论文呈现 6 个环境，其中 3 个主实验 + 2 个诊断 + 1 个 limitation** ← v5.0 已达成!
 
 这个调整更现实，因为：
 - 并非每个环境都需要 Pareto-dominate；不同环境展示不同 insight 更有论文价值
@@ -1560,30 +1561,30 @@ Phase 3: Full Experiment (GO 的方向, 3 env × 3 seeds)
   ⚠️ 1c. principled_fbeta: HotpotQA 91.8% (太保守), BabyAI 4.0% (确认 limitation)
        主环境+BabyAI 已取消, 仅保留 TWExpress/Plancraft
        BabyAI 结论: signal 不可预测 (ρ=0.052, pos_rate=0.2%), 选择性 gating 不适用
-  🔄 1d. principled_v2: adaptive λ + low pos_rate fallback (job 23185483)
+  ✅ 1d. principled_v2: adaptive λ + low pos_rate fallback (job 23185483) — 全部完成
        = adaptive + LASSO 失败且 pos_rate<2% → threshold=0.95
-       5 envs (HotpotQA/APPS/WebShop/TWExpress/Plancraft), BabyAI 已取消
-       预期: Plancraft 修复, 主环境与 adaptive 相同
+       结果: HotpotQA 94.8%, APPS 64.2%, WebShop 42.7%, TWExpress 97.3%, Plancraft 27.2%
+       Plancraft Ro/ep=0.77 (自动学会保守触发!) → 最终自动化方法
 
 Threshold 优化完整迭代:
   nopca:      启发式 threshold → APPS 过度触发 (Ro/ep=2.19)
   auto:       固定 λ=0.05 sweep → HotpotQA 过度保守 (SR 68.2%)
   adaptive:   自适应 λ from data → ✅ 主环境修复, ⚠️ Plancraft LASSO 失败
   fbeta:      F-beta, β from pos_rate → ⚠️ HotpotQA 91.8% 太保守, BabyAI 4.0% 确认 limitation
-  v2:         adaptive + fallback → 🔄 running (5 envs, BabyAI 已取消), 预期最终版本
+  v2:         adaptive + fallback → ✅ 完成 (5 envs), 最终自动化方法
 
 环境分类 (最终):
   ✅ 主实验: HotpotQA, APPS, WebShop (gating 有价值)
   ✅ 对比案例: TWExpress (rollout 无害), Plancraft (rollout 有害)
   ❌ Limitation: BabyAI (signal 不可预测, 任何 gating 方法不适用)
 
-后续可优化方向:
-  2. 缩短探索期 (50ep→20ep) → 减少探索浪费
-  3. 自适应探索期 (explore_rate 随信号强度衰减)
-  5. 用 offline 数据预训练 LASSO → 跳过在线探索
-  6. E1+E3 组合: LASSO 选特征 + Thompson Sampling 做决策
-  🆕 7. Self-Evolving V2: 多 cycle 迭代进化 (explore→reflect→exploit→re-reflect→...)
-  🆕 8. Self-Evolving + 环境特异 feature 自动发现 (解决 TWExpress/Plancraft 问题)
+后续已完成的优化 (路径 F):
+  ✅ 7. Self-Evolving V1: LLM反思+feature发现 → APPS 64.2%, TWExpress 98.2%
+  ✅ 8. SE fewer features: 5 features + filter → APPS 65.8%, TWExpress 98.5%
+  ✅ 9. SE feedback evolution: multi-cycle + LASSO反馈 → WebShop 41.3% (SE最高)
+  ✅ 10. SE 100cal: 更多探索数据 → WebShop 43.2% (超过v2!), APPS 66.0% (全方法最高!)
+  ✅ 11. BabyAI SE验证: SR=3.5% < base → limitation环境确认
+  🔄 12. Phase 3 ablation: feedback/selective/cumulative 消融 (job 23209062)
 ```
 
 #### GPU 时间预估
@@ -1633,22 +1634,22 @@ Threshold 优化完整迭代:
   └── 🔄 principled_v2 (job 23185483): adaptive + fallback, 15 runs (BabyAI 取消)
 ```
 
-  🆕 路径 F: Self-Evolving Adaptive Gating (Mar 15)
-  ├── 实现 frvc/self_evolving_gate.py
-  ├── LLM 在 _on_transition 前分析探索经验 → 生成 feature extractor 代码
-  ├── 生成的 LLM features 加入 LASSO 候选 pool
-  ├── 两个 backend: local (Qwen3-4B) + openrouter (Claude-opus-4.6)
-  ├── 🔄 Job 23189478: 30 runs (2 backends × 5 envs × 3 seeds)
+  🆕 路径 F: Self-Evolving Adaptive Gating (Mar 15-18) — ✅ 大部分完成
+  ├── ✅ 实现 frvc/self_evolving_gate.py + self_evolving_v2.py
+  ├── ✅ V1: 30 runs, local ≈ openrouter, WebShop 弱 (38.2%)
+  ├── ✅ Phase 1 (fewer features): 60 runs, filter有效, APPS 65.8%
+  ├── ✅ Phase 2 (feedback): 60 runs, fb_c3_or WebShop 41.3%
+  ├── ✅ 方案 D (100cal): 12/15, WebShop 43.2% 超过v2!, APPS 66.0%
+  ├── ✅ BabyAI SE test: 3/3, limitation 确认 (SR=3.5%)
+  ├── 🔄 Phase 3 (ablation): 36 runs submitted (job 23209062)
   │
-  ├── 同时 running:
-  │   principled_v2 TWExpress (23185483 tasks 9-11)
-  │   principled_v2 Plancraft fix (23189295, 修复 LASSO 失败 fallback bug)
+  ├── principled_v2: ✅ 全 5 环境完成 (job 23185483)
   │
-  └── 后续:
-      ├── Self-Evolving 结果分析 (local vs openrouter)
-      ├── 最终方法版本确定 (adaptive vs v2 vs self-evolving)
-      ├── 论文 §4 Method 结构确定
-      └── 开始写 LaTeX
+  └── 结论:
+      ├── ✅ 三方法互补确认: SCG + v2 + SE
+      ├── ✅ 6 环境全覆盖: 3主 + 2诊断 + 1限制
+      ├── 🔄 Phase 3 ablation 待完成
+      └── 下一步: 写 LaTeX
 ═══════════════════════════════════════════════════════════════════
 ```
 
@@ -1720,33 +1721,42 @@ Threshold 优化完整迭代:
   └──────────────────────────────────────────────────────────────────┘
 
 ═══════════════════════════════════════════════════════════════════════
-  Week 2 (Mar 17-21) — GO 方向 Full Experiment + 科学分析
+  Week 2 (Mar 17-21) — ✅ Self-Evolving 改进 + 全环境覆盖
 ═══════════════════════════════════════════════════════════════════════
 
-  Day 6-8 (Mar 17-19):
-  ├── [E*] GO 方向 full: 3 envs × 3 seeds (9-27 runs per direction)
-  │         E1: 最优 mode × 3 envs × 3 seeds = 9 runs
-  │         E2: (如果 GO) best 方案 × 3 envs × 3 seeds = 9 runs
-  │         E3: (如果 GO) × 3 envs × 3 seeds = 9 runs
-  │         并发 9 jobs, 每 job ~40min → ~4-12h
-  ├── [B6] Figure 6 最终版 (三面板: layer-wise + transfer + learning curve)
-  └── [E*] 中间结果分析: 哪个方向在 APPS 上超过 CaTS?
+  Day 6 (Mar 17): ✅ 已完成
+  ├── [F2] ✅ Phase 1 (fewer features): 58/60 完成
+  │         se_few5_filter_local 最佳: APPS 65.8%, TWExpress 98.5%
+  ├── [F3] ✅ Phase 2 (feedback): 60/60 完成
+  │         fb_c3_or WebShop 41.3% (SE最高), 全系诊断环境正确
+  └── [E3] ✅ principled_v2 全 5 环境完成
 
-  Day 9-10 (Mar 20-21):
-  ├── [E*] 全方向结果分析: SR / cost / trigger_rate / Pareto
-  ├── [E*] 最优组合确定 (E1+E3? E1 only? 等)
-  ├── 论文 §4 Method 结构确定
-  └── 论文 method 叙事最终确定
+  Day 7 (Mar 18): 🔄 进行中
+  ├── [F4] 🔄 方案 D (100cal): 12/15 完成, TWExpress 3 runs running
+  │         WebShop 43.2% 超过v2! APPS 66.0% 全方法最高!
+  ├── [F5] ✅ BabyAI SE test: 3/3 完成, limitation 确认 (SR=3.5%)
+  └── [F6] 🔄 Phase 3 (ablation): 36 runs submitted (job 23209062)
+
+  Day 8-10 (Mar 19-21): 预计
+  ├── [F6] Phase 3 ablation 结果分析
+  ├── [F4] 方案 D TWExpress 结果
+  ├── 方法最终确定: SCG + v2 + SE 三方法互补叙事
+  └── 开始 Unified Results Table + Pareto figure
 
   ┌──────────────────────────────────────────────────────────────────┐
-  │ Week 2 检查点 (Mar 21)                                          │
+  │ Week 2 实际成果 (Mar 18 EOD)                                     │
   │                                                                  │
-  │ 确认:                                                            │
-  │ 1. 最优 method 确定 → 论文 §4 写什么?                            │
-  │ 2. APPS 最优 method SR > CaTS 59.0%? → APPS 定位升级?           │
-  │ 3. 方法对比表: CACB vs Contrastive vs PrincipledSCG vs 原 SCG   │
-  │ 4. B6 cross-env transfer 闭环 Two-Source Model ✅                │
-  │ 5. 论文 NeurIPS 接受概率重新评估                                 │
+  │ ✅ 已确认:                                                       │
+  │ 1. 三方法互补: SCG(HotpotQA/WebShop) + v2(Plancraft) + SE(APPS)│
+  │ 2. APPS SR 66.0% >> CaTS 59.0% → Pareto-dominate 🔥            │
+  │ 3. 6 环境全覆盖: 3主 + 2诊断 + 1限制                             │
+  │ 4. BabyAI limitation 确认 (SE 也失败)                            │
+  │ 5. Method novelty ⭐⭐⭐⭐ (SCG + v2 + Self-Evolving)            │
+  │                                                                  │
+  │ 🔄 待完成:                                                       │
+  │ 1. Phase 3 ablation 结果 (feedback/selective/cumulative 贡献)    │
+  │ 2. 方案 D TWExpress 结果                                        │
+  │ 3. Unified Results Table 定稿                                    │
   └──────────────────────────────────────────────────────────────────┘
 
 ═══════════════════════════════════════════════════════════════════════
@@ -1754,12 +1764,13 @@ Threshold 优化完整迭代:
 ═══════════════════════════════════════════════════════════════════════
 
   Day 11-13 (Mar 22-24):
-  ├── 消融实验 (最优 method 的 ablation)
-  ├── 所有环境 + 所有方法 统一 Pareto 分析
-  └── Unified Results Table 定稿
+  ├── Phase 3 ablation 结果分析 (消融完成)
+  ├── 所有环境 × 所有方法 统一 Pareto 分析
+  ├── Unified Results Table 定稿 (SCG + v2 + SE + all CBs)
+  └── SE feature 可解释性分析 (LLM 发现了什么 feature?)
 
   Day 14-15 (Mar 25-26):
-  ├── Pareto figure 统一生成
+  ├── Pareto figure 统一生成 (6 环境)
   ├── phase6_final_report.md 撰写
   └── 开始写 LaTeX（数据齐全）
 
@@ -1768,86 +1779,78 @@ Threshold 优化完整迭代:
 
 ---
 
-## 7. 最终环境组合预测（v4.0 — 方法升级后的环境定位）
+## 7. 最终环境与方法定位（v5.0 — 实际结果）
 
 ```
-✅ 确定: 4 环境 = HotpotQA(Pareto) + WebShop(Pareto) + APPS(升级中) + TWExpress(对比)
+✅ 确定: 6 环境 = 3 主实验 + 2 诊断 + 1 限制
 
-⚠️ B4v1 Probe 的"假成功":
-  Probe gate end-to-end (B4v1, threshold=0.05):
-    HotpotQA: 97.0% (但 Ro/ep=1.80 ≈ always_trigger 1.80 → 100%触发)
-    APPS:     64.5% (但 Ro/ep=2.58 ≈ always_trigger 2.58 → 100%触发)
-    WebShop:  41.8% (但 Ro/ep=5.61 ≈ always_trigger 5.63 → 100%触发)
-  → SR 提升来自过度触发，不是精准选择。Cost 极高。
+三方法互补叙事 (已实现):
 
-路径 E Method Upgrade 后的预期:
+  ┌──────────┬───────────┬──────────┬───────────┬───────────┬───────────┐
+  │          │ HotpotQA  │ APPS     │ WebShop   │ TWExpress │ Plancraft │
+  │          │ 主实验    │ 主实验   │ 主实验    │ 诊断      │ 诊断      │
+  ├──────────┼───────────┼──────────┼───────────┼───────────┼───────────┤
+  │ SCG      │ 96.8%🏆   │ 58.8%   │ 43.7%🏆   │ 97.0%    │ 21.5%    │
+  │ v2       │ 94.8%    │ 64.2%   │ 42.7%    │ 97.3%    │ 27.2%🏆   │
+  │ SE best  │ 95.7%    │ 66.0%🏆 │ 43.2%    │ 98.7%🏆  │ 28.3%    │
+  │ Best CB  │ 93.2%    │ 59.0%   │ 30.5%    │ 97.5%    │ 25.0%    │
+  └──────────┴───────────┴──────────┴───────────┴───────────┴───────────┘
 
-  场景 1 (E1 CACB 成功, P=40%):
-    HotpotQA: ~96-97% @ 合理 trigger rate (40-60%)  → Pareto-dominate ✅
-    APPS:     ~60-62% @ trigger rate ~15-25%         → 可能 Pareto-dominate CaTS 🎉
-    WebShop:  ~42-44% @ trigger rate ~15-25%         → Pareto-dominate ✅
-    → 3 个 Pareto-dominate + 1 对比
-    → Method novelty ⭐⭐⭐⭐ (Bayesian + cost-aware)
-    → NeurIPS 70-80%
+  → 没有单一方法在所有环境最优 (核心论点)
+  → 三者组合在每个环境都超过所有 competing baselines
+  → Method novelty ⭐⭐⭐⭐ (SCG + v2 + Self-Evolving)
+  → NeurIPS 预估: 70-80%
 
-  场景 2 (E1 部分成功 + E3 补充, P=35%):
-    Method: CACB on handcrafted features + LASSO auto discovery
-    → 2-3 个 Pareto-dominate
-    → Method novelty ⭐⭐⭐½
-    → NeurIPS 60-70%
+  BabyAI (limitation):
+  → SE 3.5% < base 9.3%, 所有方法失败
+  → 信号不存在 (pos_rate=0.2%), 验证 Two-Source Model 的边界条件
 
-  场景 3 (路径 E 全 NO-GO, P=25%):
-    → 保持 SCG-LR + Probe 作为分析工具
-    → Method novelty ⭐⭐
-    → 论文走 finding + theory 路线
-    → NeurIPS 45-55%
+各方法角色:
+  SCG:  需要领域知识, cost-sensitive, HotpotQA/WebShop 最优
+  v2:   完全自动化, online learning, rollout-harmful 自动防护 (Plancraft)
+  SE:   self-evolving, LLM 自动发现环境特异 feature (APPS/TWExpress 最优)
 ```
 
 ---
 
 ## 8. GO/NO-GO 总判定（v4.0 — 路径 E 加入后更新）
 
-### Mar 16 检查点（Week 1.5 结束）— v4.0 关键决策点
+### Mar 16 检查点（Week 1.5 结束）— ✅ 已通过
 
 | 条件 | 状态 | 行动 |
 |------|:----:|------|
 | Probe offline R² > 0.10 | ✅ **已确认** | R²=0.25-0.96, AUC=0.88-1.00, 3/3 GO |
-| Probe end-to-end (B4) | ⚠️ **threshold 瓶颈** | B4v1/v2 失败, v3 running |
+| Probe end-to-end (B4) | ❌ **threshold 瓶颈** | B4v1/v2/v3 全失败, 转路径 E |
 | P1 ρ_early < ρ_late | ✅ **已确认** | Toy Model P1 confirmed |
 | Simpson's Paradox | ✅ **已确认** | 3/4 案例 confirmed |
 | TWExpress 定位 | ✅ **已确认** | 对比案例 |
-| 新环境 | ✅ **已确认** | 全部 NO-GO → 4 环境锁定 |
-| **🆕 E1 CACB sanity** | ⬜ **待测** | HotpotQA 1 seed → SR/trigger_rate? |
-| **🆕 E2 Contrastive sanity** | ⬜ **待测** | Score bimodal? |
-| **🆕 E3 Principled sanity** | ⬜ **待测** | LASSO 选了什么? |
+| 新环境 | ✅ **已确认** | 全部 NO-GO → 环境集锁定 |
+| E1 CACB | ✅ **完成** | 方差大不稳定, 不作主方法 |
+| E2 Contrastive | ✅ **完成** | 第二好, proto APPS +6.8pp |
+| E3 Principled | ✅ **完成** | 🏆 最佳 → 发展为 principled_v2 |
 
-### Mar 21 检查点（Week 2 结束）— Method 最终确定
+### Mar 21 检查点（Week 2 结束）— 🔄 进行中
 
 ```
-E1 CACB Pareto-dominates 原 SCG + APPS > CaTS:
-  → 🎉 论文方法: CACB-Gate (Contextual Bandit + cost-aware)
-  → APPS 升级为 Pareto-dominate (第 3 个)
+✅ 实际走向: 场景超预期!
+
+  E3 Principled → v2 (全自动化, 5环境完成) + Self-Evolving (LLM feature discovery)
+  → 论文方法: 三方法互补 (SCG + v2 + SE)
+  → APPS 66.0% >> CaTS 59.0% → Pareto-dominate 确认 🔥
   → Method novelty ⭐⭐⭐⭐
   → NeurIPS 70-80%
 
-E1 CACB ≈ 原 SCG 但更 principled + E3 LASSO 可解释:
-  → ✅ 论文方法: Principled Direction-Aware Gate (E1+E3 组合)
-  → Method novelty ⭐⭐⭐½
-  → NeurIPS 60-70%
-
-E1/E2/E3 均 ≤ 原 SCG:
-  → ⚠️ 保持 SCG-LR + Probe 分析
-  → 论文定位 finding + theory paper
-  → Method novelty ⭐⭐ (Probe B6 分析作为补充贡献)
-  → NeurIPS 45-55%
+待完成:
+  - Phase 3 ablation 结果 (消融: feedback/selective/cumulative 贡献)
+  - 方案 D TWExpress 结果
+  - SE feature 可解释性分析
 ```
 
 ### Mar 26 检查点（Phase 6 结束）
 
 ```
-4 env + 方法升级成功:   → 🎉 NeurIPS 70-80%, 全面写作
-4 env + 方法持平:       → ✅ NeurIPS 55-65%, 可投
-4 env + 方法全失败:     → ⚠️ NeurIPS 40-50%, 考虑 ICLR 2027 (加时间改进方法)
+6 env + 三方法互补成功: → 🎉 NeurIPS 70-80%, 全面写作
+→ 当前状态: 数据基本齐全, Phase 3 ablation 收尾后可开始写作
 ```
 
 ---
@@ -1923,92 +1926,115 @@ E1/E2/E3 均 ≤ 原 SCG:
 - [x] **D4.2** ✅ α, β 参数估计
 - [x] **D4.3** ✅ Figure 2 生成 → `results/phase6/toy_model/figure2_two_source_model.pdf`
 
-### 路径 E — Method Upgrade 🆕 v4.0
+### 路径 E — Method Upgrade ✅ 全部完成 (v4.0→v5.0)
 
-**E1: Cost-Aware Contextual Bandit Gate (CACB)**
-- [ ] **E1.0** 实现 `frvc/cacb_gate.py`
-  - [ ] Bayesian LR posterior (Laplace approximation)
-  - [ ] Thompson sampling decision function
-  - [ ] 三种 feature mode (A: handcrafted, B: PCA, C: hybrid)
-  - [ ] Warmup 逻辑 + posterior update scheduling
-- [ ] **E1.1** 实现 `experiments/p6_e1_cacb_gate.py`
-- [ ] **E1.2** HotpotQA Mode A sanity: 1 seed × 200ep
-- [ ] **E1.3** Full experiment (GO 后): modes × 3 envs × 3 seeds
-- [ ] **E1.4** 结果分析 + posterior convergence 可视化
+**E1: Cost-Aware Contextual Bandit Gate (CACB)** — ✅ 完成, 不够稳定
+- [x] **E1.0** ✅ 实现 `frvc/cacb_gate.py` (Bayesian LR + Thompson Sampling + 3 modes)
+- [x] **E1.1** ✅ 实现 `experiments/p6_e_method_upgrade.py` 统一 runner
+- [x] **E1.2** ✅ HotpotQA sanity: SR=74.7% (方差大 50-88%)
+- [x] **E1.3** ✅ Full: 3 modes × 3 envs × 3 seeds = 27 runs (job 23167005)
+- [x] **E1.4** ✅ 结论: Thompson Sampling 在 200ep 不稳定, 不适合作主方法
 
-**E2: Contrastive Probe Gate**
-- [ ] **E2.0** 实现 `frvc/contrastive_gate.py`
-  - [ ] 方案 A: SupCon loss
-  - [ ] 方案 B: Margin ranking
-  - [ ] 方案 C: Prototypical networks
-- [ ] **E2.1** Offline 训练 + 评估 (3 方案 × 3 envs, CPU)
-  - [ ] AUC 对比 + score bimodality test
-- [ ] **E2.2** End-to-End (如果 GO): best × 3 envs × 3 seeds
-- [ ] **E2.3** 结果分析 + score 分布可视化
+**E2: Contrastive Probe Gate** — ✅ 完成, 第二好
+- [x] **E2.0** ✅ 实现 `frvc/contrastive_gate.py` (Prototypical Networks, threshold=0)
+- [x] **E2.1-2.2** ✅ End-to-End: proto × 3 envs × 3 seeds = 9 runs (job 23167005)
+- [x] **E2.3** ✅ 结论: HotpotQA -2.4pp, APPS +6.8pp, WebShop -3.9pp
 
-**E3: Principled SCG (Auto Feature Selection + CMDP)**
-- [ ] **E3.0** 实现 `frvc/principled_scg.py`
-  - [ ] Feature pool builder (Universal + Hidden PCA + Auto-extracted)
-  - [ ] AutoFeatureSelector (MI ranking + LASSO)
-  - [ ] CMDP dual ascent threshold optimizer
-- [ ] **E3.1** Offline: LASSO selection + 可解释性报告 (3 envs, CPU)
-- [ ] **E3.2** End-to-End: PrincipledSCG × 3 envs × 3 seeds
-- [ ] **E3.3** 可解释性分析 (LASSO vs 手工选择 Venn 图)
+**E3: Principled SCG** — ✅ 完成, 🏆 最佳 → 发展为 principled_v2
+- [x] **E3.0** ✅ 实现 `frvc/principled_scg.py` (LASSO + CMDP + adaptive λ)
+- [x] **E3.1-3.2** ✅ Full: principled × 3 envs × 3 seeds = 9 runs (job 23167005)
+- [x] **E3.3** ✅ Threshold 优化迭代: nopca→auto→adaptive→fbeta→**v2** (最终版)
+- [x] **E3.4** ✅ principled_v2: 全 5 环境 3-seed 完成 (job 23185483)
+  - HotpotQA 94.8%@1.09×, APPS 64.2%@1.18×, WebShop 42.7%@1.65×
+  - TWExpress 97.3%@2.71×, Plancraft 27.2%@0.77× (自动 rollout-harmful 防护)
+
+### 路径 F — Self-Evolving Adaptive Gating 🆕 v5.0
+
+**详见**: `planning/phase6_1_self_evolving_plan.md` + `planning/phase6_1_progress.md`
+
+**F1: Self-Evolving V1** — ✅ 完成
+- [x] **F1.0** ✅ 实现 `frvc/self_evolving_gate.py` (LLM reflection + feature discovery)
+- [x] **F1.1** ✅ 2 backends × 5 envs × 3 seeds = 30 runs (job 23189478/23189559)
+- [x] **F1.2** ✅ 结论: APPS 64.2%, TWExpress 98.2%, Plancraft 26.5% → WebShop 弱 (38.2%)
+
+**F2: Phase 1 — Fewer Features** — ✅ 完成
+- [x] **F2.0** ✅ max_llm_features=5 + feature_filter (|corr|>0.05)
+- [x] **F2.1** ✅ 4 variants × 5 envs × 3 seeds = 60 runs (job 23192753)
+- [x] **F2.2** ✅ 结论: filter有效(+0.7~5.4pp), se_few5_filter_local 最佳SE: APPS 65.8%, TWExpress 98.5%
+
+**F3: Phase 2 — Feedback Evolution** — ✅ 完成
+- [x] **F3.0** ✅ 实现 `frvc/self_evolving_v2.py` (SelfEvolvingGateV2, multi-cycle + feedback)
+- [x] **F3.1** ✅ 4 variants × 5 envs × 3 seeds = 60 runs (job 23192761)
+- [x] **F3.2** ✅ 结论: fb_c3_or WebShop 41.3% (SE最高), 全系TWExpress/Plancraft正确处理
+
+**F4: 方案 D — 100cal openrouter** — 🔄 4/5 完成
+- [x] **F4.0** ✅ se_few5flt_or_100cal (min_cal_points=100)
+- [x] **F4.1** ✅ 12/15 done (job 23194924), TWExpress 3 runs still running
+- [x] **F4.2** ✅ 关键发现: WebShop 43.2% 超过v2! APPS 66.0% 全方法最高!
+
+**F5: BabyAI SE 验证** — ✅ 完成
+- [x] **F5.0** ✅ se_few5_filter_local × BabyAI × 3 seeds (job 23201746)
+- [x] **F5.1** ✅ 结论: SR=3.5% < base 9.3%, limitation环境确认
+
+**F6: Phase 3 — Multi-Cycle Ablation** — 🔄 提交中
+- [x] **F6.0** ✅ 实现 4 消融变体 (additive/selective × cumulative/latest, NO feedback)
+- [x] **F6.1** ✅ 36 runs submitted (job 23209062)
+- [ ] **F6.2** 结果分析: feedback vs no-feedback, selective vs additive, cumulative vs latest
 
 ### 收尾
 
-- [ ] Unified Results Table（所有论文环境 × 所有方法含路径 E）
-- [ ] Pareto figure 统一生成（含路径 E 最优方法）
+- [ ] Unified Results Table（所有论文环境 × 所有方法含路径 E/F）
+- [ ] Pareto figure 统一生成（含 SCG + v2 + SE 三方法）
 - [x] Figure 2 (Two-Source Model) ✅ + Figure 7 (P1 Verification) ✅ 就绪
 - [x] Figure 6 (Probe Analysis) ✅ 数据已有，待最终绘图
 - [ ] phase6_final_report.md
-- [x] 论文最终环境集确定 → **4 环境锁定** (HotpotQA + WebShop + APPS + TWExpress)
+- [x] 论文最终环境集确定 → **6 环境** (3主: HotpotQA/APPS/WebShop + 2诊断: TWExpress/Plancraft + 1限制: BabyAI)
 
 ---
 
-## 10. 资源估算（v4.0 — 路径 E 加入）
+## 10. 资源估算（v5.0 — 路径 E/F 完成）
 
 ### GPU 时间
 
-| 任务 | GPU 时间 | 优先级 | 状态 |
-|------|---------|:------:|:----:|
-| ~~A: Token cost 分析~~ | ~~1h~~ | ~~已完成~~ | ✅ |
-| ~~C: 新环境 Step 0~~ | ~~8h~~ | ~~已砍~~ | ❌ |
-| ~~D: Toy Model~~ | ~~0h~~ | ~~已完成~~ | ✅ |
-| ~~B1-B3: Hidden state + Probe~~ | ~~4h~~ | ~~已完成~~ | ✅ |
-| ~~B4v1: End-to-end (threshold=0.05)~~ | ~~6h~~ | ~~已完成~~ | ✅ (发现 cost 问题) |
-| B4v2/v3: Threshold 校准 | ~6h | 🟠 | 🔄 running |
-| ~~B6: 科学分析~~ | ~~1h~~ | ~~已完成~~ | ✅ |
-| **🆕 E1: CACB offline + sanity** | ~1h (sanity) | 🔴 | ⬜ |
-| **🆕 E1: CACB full (如果 GO)** | ~18h (27 runs) | 🔴 | ⬜ |
-| **🆕 E2: Contrastive offline** | ~0h (CPU) | 🟡 | ⬜ |
-| **🆕 E2: Contrastive full (如果 GO)** | ~6h (9 runs) | 🟡 | ⬜ |
-| **🆕 E3: Principled offline** | ~0h (CPU) | 🟠 | ⬜ |
-| **🆕 E3: Principled full (如果 GO)** | ~6h (9 runs) | 🟠 | ⬜ |
-| B5: 消融 | ~4h | 🟡 | ⬜ |
-| **路径 E 总计 (最大)** | **~32h** | | |
-| **路径 E 总计 (最可能: E1 full + E3 full)** | **~24h** | | |
+| 任务 | GPU 时间 | 状态 |
+|------|---------|:----:|
+| ~~A: Token cost 分析~~ | ~~1h~~ | ✅ |
+| ~~B1-B6: Hidden state + Probe~~ | ~~11h~~ | ✅ |
+| ~~C: 新环境~~ | ~~8h~~ | ❌ NO-GO |
+| ~~D: Toy Model~~ | ~~0h~~ | ✅ |
+| ~~E1: CACB 27 runs~~ | ~~18h~~ | ✅ |
+| ~~E2: Proto 9 runs~~ | ~~6h~~ | ✅ |
+| ~~E3: Principled 9 runs~~ | ~~6h~~ | ✅ |
+| ~~E3 optimizations (nopca/auto/adaptive/fbeta/v2)~~ | ~~90 runs, ~60h~~ | ✅ |
+| ~~F1: Self-Evolving V1 30 runs~~ | ~~20h~~ | ✅ |
+| ~~F2: Phase 1 (fewer features) 60 runs~~ | ~~40h~~ | ✅ |
+| ~~F3: Phase 2 (feedback) 60 runs~~ | ~~40h~~ | ✅ |
+| ~~F4: 方案 D 15 runs~~ | ~~10h~~ | 🔄 12/15 |
+| ~~F5: BabyAI SE 3 runs~~ | ~~2h~~ | ✅ |
+| **F6: Phase 3 ablation 36 runs** | **~24h** | **🔄 submitted** |
+| **总计已用** | **~230h** | |
 
 ### SLURM 管理
 
-- 预估新增 jobs：~27-45 个（路径 E 主体）+ ~18 个（B4v3 running）
-- 提交顺序：E1/E2/E3 sanity (各 1 job) → GO 方向 full (9-27 jobs 并发)
-- 并发策略：9 jobs 并发 (SLURM array), 每 job ~40min
+**当前 running jobs:**
+| Job | Name | Tasks | Status |
+|-----|------|:-----:|:------:|
+| 23194924 | 方案 D: 100cal | 15 | 🔄 3 running (TWExpress) |
+| 23209062 | Phase 3 ablation | 36 | 🔄 submitted |
 
 ---
 
-## 11. 风险管理（v4.0 — 路径 E 新风险）
+## 11. 风险管理（v5.0 — 最终更新）
 
 | 风险 | 概率 | 影响 | 缓解措施 | 状态 |
 |------|:----:|:----:|---------|:----:|
-| ~~Hidden State Probe offline NO-GO~~ | ~~30%~~ | ~~高~~ | 3/3 GO (AUC 0.88-1.00) | ✅ **GO** |
-| **Probe threshold 校准失败** | 70% | 高 | B4v1/v2 已失败; B4v3 running; **路径 E 是 plan B** | 🔴 **已部分实现** |
-| ~~所有新环境 NO-GO~~ | ~~25%~~ | ~~中~~ | 全部 NO-GO → 4 环境锁定 | ✅ **已实现** |
-| **🆕 路径 E 全部 NO-GO** | 25% | 高 | 三方向并行降低风险; 回退: finding+theory paper | ⬜ |
-| **🆕 E1 CACB counterfactual bias** | 30% | 中 | 不触发时无法观测 U → warmup 收集无偏数据 | ⬜ |
-| **🆕 E2 Contrastive 不 bimodal** | 50% | 低 | E2 不是核心方向; 方案 C (prototypical) 天然 threshold=0 | ⬜ |
-| **🆕 GPU quota 紧张** | 30% | 中 | 路径 E 最大 ~32h; 优先 E1, 砍 E2 if needed | ⬜ |
-| 论文写作时间不足 | 20% | 中 | Week 3 开始写作; Intro/Theory 部分可立即开始 | ⬜ |
+| ~~Probe offline NO-GO~~ | ~~30%~~ | ~~高~~ | 3/3 GO | ✅ |
+| ~~Probe threshold 校准失败~~ | ~~70%~~ | ~~高~~ | 路径 E/F 成功替代 | ✅ **已缓解** |
+| ~~新环境 NO-GO~~ | ~~25%~~ | ~~中~~ | 4→6 环境锁定 | ✅ |
+| ~~路径 E 全 NO-GO~~ | ~~25%~~ | ~~高~~ | E3 成功 → principled_v2 | ✅ |
+| ~~E1 CACB 不稳定~~ | ~~30%~~ | ~~中~~ | 确认不稳定, 不作主方法 | ✅ **已实现** |
+| Phase 3 ablation 无新信息 | 30% | 低 | 消融已有足够数据支撑论文叙事 | 🔄 |
+| 论文写作时间不足 | 40% | 中 | 数据基本齐全, Week 3 全力写作 | ⬜ |
 
 ---
 

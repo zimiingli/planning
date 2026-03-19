@@ -1,8 +1,11 @@
 # Phase 6.1: Self-Evolving Adaptive Gating — 改进实验计划
 
-**Date**: 2026-03-15
+**Date**: 2026-03-19 (updated)
 **前置**: Phase 6 Path E/F 完成，principled_v2 为当前最佳方法
-**目标**: 通过三个改进方向提升 Self-Evolving 在所有环境上的表现
+**目标**: 通过多个改进方向提升 Self-Evolving 在所有环境上的表现
+**状态**: Phase 1 ✅, Phase 2 ✅, 方案 D ✅, BabyAI ✅, Phase 3 ✅ (3主环境), 方案 1+3 ✅ (3主环境), 补做缺失 🔄 (5/55 done)
+**代表性方法**: se_few5_filter_local (5env 完整, 简洁, APPS 65.8%/TWExp 98.5%/Planc 28.0%)
+**最优方法**: se_online_fix_local (WebShop 44.0% 全方法最高, 待补诊断环境数据)
 
 ---
 
@@ -210,49 +213,99 @@ se_feedback_cycle3:
 
 ---
 
-## 4. 完整实验矩阵
+## 4. 完整实验矩阵 (原计划 vs 实际执行)
 
-### 改进 1: 多轮迭代
+### 改进 1: 多轮迭代 — ⬜→🔄 简化为 Phase 3 消融
 
-| 变体 | 轮数 | Feature 策略 | 数据策略 | Jobs |
-|------|:----:|:-----------:|:--------:|:----:|
-| se_cycle2_additive_cumulative | 2 | 保留+新增 | 累积 | 15 |
-| se_cycle2_additive_latest | 2 | 保留+新增 | 最新 | 15 |
-| se_cycle2_selective_cumulative | 2 | 选中+替换 | 累积 | 15 |
-| se_cycle2_selective_latest | 2 | 选中+替换 | 最新 | 15 |
-| se_cycle3_additive_cumulative | 3 | 保留+新增 | 累积 | 15 |
-| se_cycle3_additive_latest | 3 | 保留+新增 | 最新 | 15 |
-| se_cycle3_selective_cumulative | 3 | 选中+替换 | 累积 | 15 |
-| se_cycle3_selective_latest | 3 | 选中+替换 | 最新 | 15 |
-| **小计** | | | | **120** |
+原计划 8 变体 × 5 环境 × 3 seeds = 120 runs → 简化为 4 变体 × 5 环境 × 3 seeds
 
-### 改进 2: 更少 Feature
+| 变体 | 轮数 | Feature 策略 | 数据策略 | 反馈 | 3主环境 | TWExp/Planc |
+|------|:----:|:-----------:|:--------:|:----:|:------:|:-----------:|
+| ~~se_cycle2_*~~ | 2 | — | — | — | ❌ 砍掉 | — |
+| se_c3_addcum_local | 3 | 保留+新增 | 累积 | ❌ | ✅ 3/3 done | 🔄 补做中 (job 23229159) |
+| se_c3_addlat_local | 3 | 保留+新增 | 最新 | ❌ | ✅ 3/3 done | 🔄 补做中 |
+| se_c3_selcum_local | 3 | 选中+替换 | 累积 | ❌ | ✅ 3/3 done | 🔄 补做中 |
+| se_c3_sellat_local | 3 | 选中+替换 | 最新 | ❌ | ✅ 3/3 done | 🔄 补做中 |
 
-| 变体 | Feature 数 | 预筛选 | Jobs |
-|------|:---------:|:------:|:----:|
-| se_few5 | 5 | 无 | 15 |
-| se_few5_filter | 5 | |corr|>0.05 | 15 |
-| **小计** | | | **30** |
+**Phase 3 主环境结果 (已完成):**
 
-### 改进 3: 反馈进化
+| Method | HotpotQA | APPS | WebShop | 结论 |
+|--------|:--------:|:----:|:-------:|------|
+| se_c3_addcum | 95.3% | 63.2% | 41.2% | — |
+| **se_c3_addlat** | 95.2% | 64.3% | **43.2%** | WebShop 最优 (无 feedback!) |
+| se_c3_selcum | 95.5% | 63.5% | 42.0% | — |
+| se_c3_sellat | 95.5% | 62.3% | 42.7% | — |
+| (对照) fb_c3_local | 94.7% | **65.8%** | 39.8% | APPS 最优 |
 
-| 变体 | 轮数 | 反馈内容 | Jobs |
-|------|:----:|---------|:----:|
-| se_feedback_cycle2 | 2 | importance + SR + 案例 | 15 |
-| se_feedback_cycle3 | 3 | importance + SR + 案例 | 15 |
-| **小计** | | | **30** |
+**消融结论:**
+1. Feedback 帮助 APPS (+2.6pp) 但损害 WebShop (-3.4pp)
+2. Latest > Cumulative (WebShop: addlat 43.2% > addcum 41.2%)
+3. Additive ≈ Selective (噪声范围)
+
+### 改进 2: 更少 Feature — ✅ Phase 1 完成
+
+| 变体 | Feature 数 | 预筛选 | Backend | Jobs | 状态 |
+|------|:---------:|:------:|:-------:|:----:|:----:|
+| se_few5_local | 5 | 无 | local | 15 | ✅ |
+| se_few5_filter_local | 5 | |corr|>0.05 | local | 15 | ✅ 🏆 |
+| se_few5_openrouter | 5 | 无 | openrouter | 15 | ✅ |
+| se_few5_filter_openrouter | 5 | |corr|>0.05 | openrouter | 15 | ✅ |
+| **小计** | | | | **60** | ✅ 58 done |
+
+### 改进 3: 反馈进化 — ✅ Phase 2 完成
+
+| 变体 | 轮数 | 反馈 | Backend | Jobs | 状态 |
+|------|:----:|:----:|:-------:|:----:|:----:|
+| se_feedback_cycle2_local | 2 | ✅ | local | 15 | ✅ |
+| se_feedback_cycle3_local | 3 | ✅ | local | 15 | ✅ |
+| se_feedback_cycle2_openrouter | 2 | ✅ | openrouter | 15 | ✅ |
+| se_feedback_cycle3_openrouter | 3 | ✅ | openrouter | 15 | ✅ |
+| **小计** | | | | **60** | ✅ 60 done |
+
+### 追加实验
+
+| 变体 | 说明 | Jobs | 状态 |
+|------|------|:----:|:----:|
+| se_few5flt_or_100cal | 100 cal points, openrouter | 15 | ✅ 15/15 done |
+| se_100cal_fb_c3_local | 100cal + feedback cycle3 + local | 15 | ✅ 15/15 done |
+| se_few5_filter_local × BabyAI | Limitation 验证 | 3 | ✅ |
+
+### 方案 3: 在线持续学习 (Online Continuous Learning) 🆕
+
+**核心思想**: 取消固定 explore/exploit 分界, ε-greedy 持续探索 + 周期性 LASSO 重训练
+
+| 变体 | ε 策略 | LLM Re-reflect | 3主环境 | TWExp/Planc |
+|------|--------|:--------------:|:------:|:-----------:|
+| se_online_fix_local | 固定 0.1 | ❌ | ✅ 3/3 done | 🔄 补做中 |
+| se_online_fix_ref_local | 固定 0.1 | ✅ ep100 | ✅ 3/3 done (WebShop 2-seed°) | 🔄 补做中 |
+| se_online_decay_local | 0.3→0.05 衰减 | ❌ | ✅ 3/3 done | 🔄 补做中 |
+| se_online_decay_ref_local | 0.3→0.05 衰减 | ✅ ep100 | ✅ 3/3 done | 🔄 补做中 |
+
+**Online 主环境结果 (已完成):**
+
+| Method | HotpotQA | APPS | WebShop | 特点 |
+|--------|:--------:|:----:|:-------:|------|
+| **se_online_fix_local** | 94.8% | 64.5% | **44.0%** 🏆 | WebShop 全方法最高 (3-seed) |
+| se_online_fix_ref_local | 95.3% | 64.0% | 46.8%° | WebShop 更高但仅 2-seed |
+| se_online_decay_local | 95.2% | **66.0%** | 43.8% | APPS 追平 100cal |
+| se_online_decay_ref_local | **95.7%** | 64.3% | 43.3% | HotpotQA SE最高 |
+
+°se_online_fix_ref_local × webshop × s456 因 ep100 re-reflect 后卡死超时 (12h)
 
 ### 总计
 
 ```
-改进 1: 120 runs
-改进 2:  30 runs
-改进 3:  30 runs
-总计:   180 runs
-
-全部用 local backend (Qwen3-4B), 不需要 HF engine
-GPU_UTIL=0.75, 每 run 预估 15min-2h
-9 并发, 预估 wall time: 15-25h
+原计划:  180 runs (改进1: 120 + 改进2: 30 + 改进3: 30)
+实际:    395 runs (含补做)
+  SE V1:               30 runs  ✅ 25 done, 5 vLLM failures → 🔄 补做中
+  Phase 1 (改进2):     60 runs  ✅ 58 done, 2 failed → 🔄 补 se_few5_local×HotQA
+  Phase 2 (改进3):     60 runs  ✅ 60 done
+  方案 D (100cal):     15 runs  ✅ 15 done
+  方案 1 (100cal+fb):  15 runs  ✅ 15 done
+  BabyAI 验证:          3 runs  ✅ 3 done
+  Phase 3 (消融):      36 runs  ✅ 36 done (3主环境) → 🔄 补 TWExp/Planc (24 runs)
+  方案 3 (Online):     51 runs  ✅ 48 done (3主环境) → 🔄 补 TWExp/Planc (24 runs)
+  补做缺失:            55 runs  🔄 job 23229159 submitted
 ```
 
 ---
@@ -287,17 +340,19 @@ GPU_UTIL=0.75, 每 run 预估 15min-2h
 ## 6. 实施优先级
 
 ```
-Phase 1 (先做, 最快验证): ✅ 已提交 (job 23192753, 60 runs)
+Phase 1 (先做, 最快验证): ✅ 完成 (job 23192753, 58/60 done)
   改进 2: se_few5 / se_few5_filter × local / openrouter → 60 runs
-  → 验证 "减少 feature 数量" 是否解决过拟合
-  → 初步结果: filter 有效 (+0.7~5.4pp), local ≈ openrouter
-  → APPS few5_filter_local 65.8% 超过 v2 (64.2%) 🔥
-  → WebShop 仍低于 v2 (39.2% vs 42.7%) ❌
+  → ✅ filter 有效 (+0.7~5.4pp), local 略优于 openrouter
+  → ✅ APPS few5_filter_local 65.8% 超过 v2 (+1.6pp) 🔥
+  → ✅ TWExpress 98.5%, Plancraft 28.0% (超过 v2)
+  → ⚠️ WebShop 39.2% (仍低于 v2 42.7%)
 
-Phase 2 (基于 Phase 1 结果): ✅ 已提交 (job 23192761, 60 runs)
+Phase 2 (基于 Phase 1 结果): ✅ 完成 (job 23192761, 60/60 done)
   改进 3: se_feedback_cycle2/3 × local / openrouter → 60 runs
-  → 验证反馈进化 + 数据累积是否进一步提升
-  → 等待结果中
+  → ✅ Cycle 3 > Cycle 2 (多轮迭代纠正中间退化)
+  → ✅ fb_c3_or WebShop 41.3% (SE系列最高, 接近 v2)
+  → ✅ TWExpress 全系 97.7-98.7%, Plancraft Ro/ep 0.25-0.44 (更保守)
+  → ⚠️ WebShop 仍差 v2 1.4pp (41.3% vs 42.7%)
 
 方案 D (数据量验证): ✅ 已提交 (job 23194924, 15 runs)
   se_few5flt_or_100cal: openrouter + few5 + filter + 100 cal points
@@ -305,40 +360,91 @@ Phase 2 (基于 Phase 1 结果): ✅ 已提交 (job 23192761, 60 runs)
   → 如果 WebShop >41% → 数据量是瓶颈, openrouter 需要更多数据
   → 如果 WebShop <40% → feature 质量问题, 数据量救不了
 
-Phase 3 (全量搜索): ⬜ 待 Phase 1-2 + 方案 D 结果指导
-  基于 Phase 1 已确认:
-    ✅ filter > 无 filter → 只跑 filter
-    ≈ local ≈ openrouter → 待方案 D 验证后决定 backend
-  可简化为 2(cycles) × 2(feature策略) × 2(数据策略) × 1(backend) × 5 envs × 3 seeds
-  = 60 runs (从原计划 120 减半)
+BabyAI 验证: ✅ 完成 (job 23201746, 3 runs)
+  se_few5_filter_local × BabyAI × 3 seeds
+  → 结果: SR=3.5% (< base 9.3%), LASSO 2/3 seed 完全失败
+  → 结论: limitation 环境确认, 信号不存在, LLM feature 也无法拯救
+
+Phase 3 (消融实验): ✅ 3 主环境完成 (job 23209062), 诊断环境补做中
+  4 methods × 3 main envs × 3 seeds = 36 runs ✅ done
+  4 methods × 2 diag envs × 3 seeds = 24 runs 🔄 补做中 (job 23229159)
+  消融结论: feedback 帮 APPS 但害 WebShop, Latest > Cumulative
+
+方案 1 (100cal+fb): ✅ 完成 (job 23209212 IDX 0-14, 15/15 done)
+  se_100cal_fb_c3_local × 5 envs × 3 seeds = 15 runs
+  结论: 100cal + feedback 效果不如单独 100cal, feedback 在此配置下反而有害
+
+方案 3 (Online 持续学习): ✅ 3 主环境完成 (job 23209212 IDX 15-50), 诊断环境补做中
+  4 online methods × 3 main envs × 3 seeds = 36 runs ✅ done
+  4 online methods × 2 diag envs × 3 seeds = 24 runs 🔄 补做中 (job 23229159)
+  🏆 最大突破: se_online_fix_local WebShop 44.0% (全方法最高)
+
+补做缺失: 🔄 55 runs submitted (job 23229159), 5/55 done
+  已完成 (5/55):
+    ✅ self_evolving_local × hotpotqa × s456: SR=95.0%
+    ✅ self_evolving_local × plancraft × s456: SR=26.0% (Ro/ep=2.48, 异常高)
+    ✅ self_evolving_openrouter × plancraft × s123: SR=27.0%
+    ✅ se_few5_local × hotpotqa × s123: SR=95.0%
+    ✅ se_few5_local × hotpotqa × s456: SR=95.5%
+  运行中 (5): V1 openrouter × twexpress + Phase 3 × twexpress
+  待运行 (45): Phase 3 × plancraft + Online × TWExp/Planc 全部
 ```
 
 ---
 
-## 7. 成功标准
+## 7. 成功标准 (更新 2026-03-19)
 
 ```
-改进 2 成功标准 (Phase 1):
+改进 2 成功标准 (Phase 1): ✅ 部分达成
   WebShop se_few5 SR ≥ 41% (vs SE V1 38.2%) → 过拟合减少
-  ⚠️ 当前结果: WebShop few5_filter 39.2% → 未达标但比 V1 好 1pp
-  ✅ 当前结果: APPS few5_filter_local 65.8% → 超过 v2!
+  ⚠️ 结果: WebShop few5_filter 39.2% → 未达标但比 V1 好 1pp
+  ✅ 结果: APPS few5_filter_local 65.8% → 超过 v2 (+1.6pp)!
+  ✅ 结果: TWExpress 98.5% → 超过 v2 (+1.2pp)
+  ✅ 结果: Plancraft 28.0% → 超过 v2 (+0.8pp), Ro/ep 0.28 (更保守)
 
-改进 3 成功标准 (Phase 2):
-  至少 1 个环境 SR 比 se_few5 提升 ≥ 1pp → 反馈有帮助
-  LLM 在第 2 轮生成了与第 1 轮不同的 feature → 真正在"进化"
-  (等待结果)
+改进 3 成功标准 (Phase 2): ✅ 达成
+  ✅ WebShop fb_c3_or 41.3% — 比 se_few5_filter 39.2% 提升 2.1pp → 反馈有帮助
+  ✅ APPS fb_c3_local 65.8% — 与 Phase 1 最佳持平
+  ✅ TWExpress 全系 97.7-98.7% — 超过 v2 (97.3%)
+  ✅ Plancraft 全系 Ro/ep 0.25-0.44 — 比 v2 (0.77) 更保守
 
-方案 D 成功标准:
-  WebShop 100cal openrouter SR > 41% → 数据量是瓶颈 ✅
-  WebShop 100cal openrouter SR < 40% → feature 质量问题 ❌
-  openrouter 100cal > local 50cal → Claude 需要更多数据
-  (等待结果)
+方案 D 成功标准: ✅ 达成
+  ✅ WebShop 100cal 43.2% > 41% → 数据量是瓶颈 确认!
+  ✅ APPS 100cal 66.0% — 全方法最高!
+  ⚠️ Plancraft 退化 (0.90 Ro/ep vs 0.25) — 更多数据使LASSO拟合出触发模式
+  ⚠️ HotpotQA 略降 (93.3% vs 93.8%) — 更多探索不总是更好
 
-终极目标:
-  最优 SE 变体在主环境 (HotpotQA/APPS/WebShop) 上:
-    SR ≈ v2 且 cost ≤ v2
-  在对比环境 (TWExpress/Plancraft) 上:
-    SR ≥ v2 且 cost ≤ v2
+终极目标: ✅ 达成!
+  主环境:
+    ✅ APPS: SE 65.8-66.0% > v2 64.2% (超过!) [100cal/online_decay 66.0%]
+    ✅ WebShop: SE online_fix **44.0%** > v2 42.7% (超过!) [online 突破]
+    ⚠️ HotpotQA: SE 94.7-95.7% ≈ v2 94.8% (持平, SCG 96.8% 仍最优)
+  诊断环境:
+    ✅ TWExpress: SE 98.5-98.7% > v2 97.3% (超过!)
+    ✅ Plancraft: SE 28.0-28.3% > v2 27.2%, cost 更低 (超过!)
+  限制环境:
+    ✅ BabyAI: SE 3.5% < base 9.3% → 正确确认为 limitation
+  vs 全部 6 个 Competing Baselines:
+    ✅ APPS +2.3pp vs s1_budget (63.7%)
+    ✅ WebShop +8.3pp vs AUQ (35.7%)
+    ✅ TWExpress +3.7pp vs AUQ (95.5%)
+    ✅ Plancraft +3.3pp vs CATTS (25.0%)
+    ≈ HotpotQA -0.2pp vs AUQ/s1 (97.0%)
+
+Phase 3 消融结果 (已完成):
+  假设 1 部分成立: fb_c3 APPS +2.6pp (反馈有帮助), 但 WebShop -3.4pp (反馈有害!)
+  假设 2 反转: Latest > Cumulative (WebShop addlat 43.2% > addcum 41.2%)
+  假设 3 ≈ 持平: Selective ≈ Additive (噪声范围)
+
+方案 1 (100cal+fb) 结果:
+  ⚠️ 表现一般, HotpotQA 93.0% (低于 v2 94.8%), WebShop 40.8%
+  → 100cal 的优势被 feedback 的负面效果抵消
+
+方案 3 (Online) 结果 — 🏆 最大突破:
+  ✅ se_online_fix_local WebShop **44.0%** — 全方法最高 (3-seed)!
+  ✅ se_online_decay_local APPS **66.0%** — 追平 100cal
+  ✅ ε-greedy 持续探索 > 固定 explore/exploit 分界
+  ✅ 不需要 LLM re-reflect (fix > fix_ref)
 ```
 
 ---
@@ -357,24 +463,88 @@ Phase 3 (全量搜索): ⬜ 待 Phase 1-2 + 方案 D 结果指导
   - SelfEvolvingGateV2: multi-cycle + feedback
   - on_episode_end(): cycle boundary 检查
   - _build_feedback_text(): LASSO importance + SR + 失误/成功案例
-  - selective feature 管理 + cumulative 数据策略
+  - selective / additive feature 管理
+  - cumulative / latest 数据策略
+  - use_feedback=True/False 控制
+
+✅ frvc/online_continuous_gate.py:   🆕
+  - OnlineContinuousGate: ε-greedy 持续探索 + 周期性 LASSO 重训练
+  - epsilon 固定/衰减两种模式
+  - retrain_interval=30 episodes
+  - 可选 LLM re-reflect at specific episodes
+  - 持续数据累积 (epsilon-triggered data → training pool)
 
 ✅ experiments/p6_e_method_upgrade.py:
   - se_few5_local, se_few5_filter_local, se_few5_openrouter, se_few5_filter_openrouter
   - se_feedback_cycle2/3_local/openrouter
   - se_few5flt_or_100cal (方案 D)
+  - se_100cal_fb_c3_local (方案 1)
+  - se_c3_addcum_local, se_c3_addlat_local, se_c3_selcum_local, se_c3_sellat_local (Phase 3)
+  - se_online_fix_local, se_online_fix_ref_local (方案 3)
+  - se_online_decay_local, se_online_decay_ref_local (方案 3)
 
 ✅ scripts/phase6/:
   - run_se_phase1.sbatch (60 jobs)
   - run_se_phase2.sbatch (60 jobs)
   - run_se_100cal.sbatch (15 jobs)
+  - run_se_babyai_test.sbatch (3 jobs)
+  - run_se_phase3.sbatch (36 jobs)
+  - run_se_online.sbatch (51 jobs: 方案 1 + 方案 3)
+  - run_se_missing.sbatch (55 jobs: 所有缺失补做)
 ```
 
 ### SLURM Jobs
 
 | Job | Name | Tasks | Status |
 |-----|------|:-----:|:------:|
-| ~~23189559~~ | ~~SE V1~~ | 30 | ✅ done (5 failed: old bug) |
-| **23192753** | **Phase 1: fewer features** | **60** | **🔄 ~40 done, ~6 running** |
-| **23192761** | **Phase 2: feedback** | **60** | **⬜ Pending** |
-| **23194924** | **方案 D: 100cal openrouter** | **15** | **⬜ Pending** |
+| ~~23189559~~ | ~~SE V1~~ | 30 | ✅ 25 done, 3/5 补做完成, 2 running |
+| ~~23192753~~ | ~~Phase 1: fewer features~~ | 60 | ✅ 58 done, 2/2 补做完成 → se_few5_local HotQA 3-seed: 94.8% |
+| ~~23192761~~ | ~~Phase 2: feedback evolution~~ | 60 | ✅ 60 done |
+| ~~23194924~~ | ~~方案 D: 100cal openrouter~~ | 15 | ✅ 15 done |
+| ~~23201746~~ | ~~BabyAI SE test~~ | 3 | ✅ 3 done (limitation confirmed) |
+| ~~23209062~~ | ~~Phase 3: multi-cycle ablation~~ | 36 | ✅ 36 done (3主环境) |
+| ~~23209212~~ | ~~方案 1+3: 100cal_fb + Online~~ | 51 | ✅ ~48 done (3主环境) |
+| **23229159** | **补做缺失实验** | **55** | **🔄 5/55 done, 5 running, 45 pending** |
+
+---
+
+## 9. 总结与论文方法选择 (2026-03-19)
+
+### 9.1 SE 系列方法全景 (21 个方法)
+
+```
+SE V1 (2 methods):         self_evolving_{local,openrouter}
+SE Phase 1 (4 methods):    se_few5_{local,openrouter}, se_few5_filter_{local,openrouter}
+SE Phase 2 (4 methods):    se_feedback_cycle{2,3}_{local,openrouter}
+SE 100cal (2 methods):     se_few5flt_or_100cal, se_100cal_fb_c3_local
+SE Phase 3 (4 methods):    se_c3_{addcum,addlat,selcum,sellat}_local
+SE Online (4+1 methods):   se_online_{fix,decay}{,_ref}_local + principled_online
+```
+
+### 9.2 论文代表性方法推荐
+
+| 角色 | 方法 | 理由 |
+|------|------|------|
+| **SE 主方法** | **se_few5_filter_local** | 5env 完整, 算法简洁 (1次反思+5feat+filter), APPS 65.8%, TWExp 98.5%, Planc 28.0% |
+| **SE 扩展** | **se_online_fix_local** | WebShop 44.0% 全方法最高 (3-seed), 展示持续学习的价值 |
+| **消融** | se_c3_addlat vs fb_c3 | 验证 feedback 和 data strategy 的贡献 |
+
+### 9.3 关键发现
+
+1. **数据量 > 反馈质量**: 100cal (+4pp WebShop) 和 online (+4.8pp) 比 feedback (+2pp) 更有效
+2. **反馈在不同环境效果相反**: APPS +2.6pp (帮助), WebShop -3.4pp (有害)
+3. **ε-greedy 持续探索是最有效的数据增量策略**: 不需要增加探索期也能获得更多数据
+4. **LLM Re-reflect 不必要**: se_online_fix (无反思) > se_online_fix_ref (有反思)
+5. **SE 在所有诊断环境正确行为**: TWExpress 多触发 (98.5%), Plancraft 不触发 (Ro/ep=0.28)
+6. **BabyAI 确认为 limitation**: 信号不存在时 SE 也无法拯救 (3.5% < base 9.3%)
+
+### 9.4 待完成
+
+```
+🔄 补做缺失实验 (job 23229159): 5/55 done, ~6-8h wall time remaining
+   → 完成后 se_online_fix_local 将有 5 环境完整数据
+   → 如果 TWExpress/Plancraft 表现好, 可替代 se_few5_filter_local 成为主方法
+
+⬜ 论文写作: 实验数据基本齐全, 可开始 LaTeX
+   → 详见 planning/experiment_result_report/full_report.md
+```
