@@ -2,50 +2,64 @@
 
 **目标会议**：NeurIPS 2026（主投）/ ICLR 2027（备投）
 **论文标题**：Same Signal, Opposite Meaning: Why Adaptive Compute Fails Across Environments
-**核心问题**：Adaptive compute methods assume a fixed signal-utility direction (e.g., high entropy → need more compute). We show this assumption is wrong — the direction reverses across environments, causing systematic failure. How to learn the correct direction online?
-**主方法**：SCG (Signal-Conditioned Gate) — 从 online exploration 数据学习每个 feature 的系数和符号（方向），logistic regression on 5 trajectory features, zero per-step overhead
-**有效环境**：HotpotQA（QA, SR=0.968@6.55x）+ APPS（code, SR=0.588@1.06x）+ WebShop（web, SR=0.437@1.27x）+ 待扩展 1-2 个（Game of 24 / GSM8K 候选）
-**核心指标**：Accuracy (SR) + Normalized Token Cost (x base)，Pareto 分析
+**核心问题**：Adaptive compute methods assume a fixed signal-utility direction (e.g., high entropy → need more compute). We show this assumption is wrong — the direction reverses across environments, causing systematic failure. How to learn the correct direction automatically?
+**主方法**：EAAG (Environment-Aware Adaptive Gating) — LLM 自主分析环境 → 发现 task structure → LASSO 自动选 feature + 学方向 → 在线持续适应
+**有效环境**：主实验 4 个 (HotpotQA, APPS, WebShop, FEVER) + 诊断 2 个 (TWExpress, Plancraft) + Appendix 2 个 (APPS Interview, CRUXEval)
+**核心指标**：SR (Success Rate) + Total Cost (含 Phase 1 amortized ro/ep)，Pareto 分析
+
+---
+
+**v6.0 关键更新（2026-03-22）**：
+
+- **方法重命名**：SCG → **EAAG (Environment-Aware Adaptive Gating)**
+  - SCG（手工 feature + LR）不再作为论文主方法，降为 ablation baseline
+  - EAAG = SE (Self-Evolving) 的重新包装，核心不变
+  - **LLM 角色重构**：从 "feature engineer" → **"environment reasoner"**
+    - LLM 分析 trajectory 数据 → 输出 environment profile + task-specific hypothesis
+    - LASSO 自动验证 hypothesis → 选 feature → 学 gate
+    - LLM 的价值不在 SR 提升（<1pp marginal），在于 **zero-shot 适配新环境**（无需手工 feature）
+
+- **环境扩展**：3 → 8 个环境（4 主 + 2 诊断 + 2 appendix）
+  - 🆕 **FEVER**（fact verification）：EAAG 49.8% >> base 37.0%，所有 CB 也约 50%
+  - 🆕 **APPS Interview**（code, harder）：EAAG 73.0%，rollout-safe ceiling
+  - 🆕 **CRUXEval**（code reasoning）：appendix，base=85% 偏高
+  - DS-1000 放弃（test harness 集成问题无法修复）
+
+- **Finding 升级（6→8 环境数据）**：
+  - 🆕 **同族环境方向一致**：FEVER (ρ=−0.619) 与 HotpotQA (ρ=−0.494) 同为负方向（search-based QA）
+  - 🆕 **同环境不同难度方向变化**：APPS Interview entropy ρ=+0.317 vs APPS Intro ρ≈0
+  - 🆕 **FEVER 上所有固定方向 CB 系统性失败**：catts 34.2% < base 37.0%
+  - 🆕 **信号强度因环境差异巨大**：FEVER ρ=−0.619 vs APPS ρ=−0.155（4× 差距）
+  - Direction reversal finding 从 3 环境验证 → 8 环境验证，generalizability 大幅增强
+
+- **Cost 分析升级**：
+  - 🆕 **Phase 1 数据收集成本必须计入**：SCG/CaTS/SEAG/CoRefine 都依赖 200 ep always_trigger 数据
+  - EAAG 无需 Phase 1（自带 50 ep exploration），总 cost 在大部分环境更低
+  - 含 Phase 1 后 EAAG Pareto-dominates SCG in 4/7 environments
+
+- **Baseline 对比升级**：
+  - 8 个 CB (CATTS, SEAG, CoRefine, CaTS, AUQ, s1) + SCG (as ablation)
+  - **EAAG vs CB win rate**: 34W 2L 2T / 38 场（SR 维度）
+  - EAAG Pareto-dominates cats/seag/corefine 在 5-6/6 环境
+
+- **叙事结构（v6.0）**：
+  - Layer A: **Direction Reversal Finding** + **Two-Source Theory**（核心 — 8 环境验证）
+  - Layer B: **EAAG Method** — LLM as environment reasoner + LASSO direction discovery + online adaptation
+  - Layer C: **Exploration Bias Analysis** — 为什么 online exploration 在 early-step critical 环境中有局限（FEVER）
+  - Layer D: **Fair Cost Comparison** — 含 Phase 1 的真实 total cost + Pareto 分析
+
+- **论文类型**：Finding + Theory + Method paper
+- **给 community 的 takeaway**：
+  - "信号语义是环境的函数——同一信号在不同环境中含义相反。LLM agent 可以自主发现这种环境特异的 compute allocation 规律，而不需要人类预设方向。"
 
 **v5.0 关键更新（2026-03-13）**：
-- **叙事升级**：从 "empirical finding + simple method" 升级为 **"finding + explanatory theory + method evolution"**
-  - 新增 **Two-Source Uncertainty Toy Model**：解释为什么方向会反转（Information-Poverty vs Decision-Difficulty）
-  - 产生 3 个 testable predictions，在实验中验证
-  - 把 empirical finding 升级为 explanatory theory（从 observation 到 explanation）
-  - 🆕 **理论基础显式化**：连接 Simpson's Paradox (Simpson 1951; Pearl 2014) + Epistemic/Aleatoric Uncertainty (Hüllermeier & Waegeman 2021; Der Kiureghian & Ditlevsen 2009)
-- **Method 叙事升级**：从 "SCG-LR" 单一方法 → **"手工 feature → Hidden State Probe" 演进叙事**
-  - Hidden State Probe 定位为 finding 的验证工具 + scalability enabler（不是独立 method contribution）
-  - 配合 layer-wise probing / cross-env transfer / data efficiency 分析
-- **Future Vision 新增**：连接 OpenClaw-RL (OPD) 和 XSkill 的 experience/skill 框架
-  - 从 binary U 学习 → 从 rollout 内容学习 → 从跨 episode patterns 积累 gating skills
-  - 在 Discussion 中定位为研究方向延伸
-- 🆕 **VOC/Metareasoning 降级**：从 v4.0 的 C4 独立贡献 → 正文仅 ~3 句 + Appendix C 详述
-  - 理论重心完全转到 Two-Source Model + Simpson's Paradox
-  - VOC 保留为 "经典理论连接点"，不再占用正文空间
-- **四层叙事（v5.0 升级版）**：
-  - Layer A: Direction Reversal Finding + **Two-Source Theory**（核心 — 假设错了 + 为什么错）
-  - Layer B: Method Evolution — Manual Features → Hidden State Probe（从手工到自动）
-  - Layer C: Adaptive Behavior（发现 — gate 自动适配 headroom）
-  - Layer D: T-as-Parameter + Cost Efficiency（框架 — 公平比较 + Pareto dominance）
-- **论文类型升级**：Finding paper → **Finding + Theory paper**（更接近 science，不只是 engineering）
-- **给 community 的 takeaway 升级**：
-  - 旧："方向需要学习"
-  - 新："信号语义是环境的函数，由状态组成（信息收集 vs 决策）决定；简单方法就够用，瓶颈是那个被忽视的假设"
+- Two-Source Uncertainty Toy Model：Information-Poverty vs Decision-Difficulty
+- 理论基础：Simpson's Paradox + Epistemic/Aleatoric Uncertainty
+- VOC/Metareasoning 降级到 Appendix
 
 **v4.0 关键更新（2026-03-06）**：
-- **标题更新**：从 "Think at the Right Moment" 改为 "Same Signal, Opposite Meaning"（更抓住核心张力）
-- **叙事重构**：从 "step-level vs problem-level" 改为 **Direction Discovery 为核心**
-  - Step-level 不再是卖点（只是粒度选择，trivial），降为方法的自然形态
-  - Direction reversal 是核心 finding（surprising + explanatory + prescriptive）
-  - 三层困难（方向未知、episode-level 反馈、online 约束）作为过渡
-- **三层叙事**：
-  - Layer A: Direction Reversal Finding（核心 — 假设是错的）
-  - Layer B: Adaptive Behavior（发现 — gate 自动适配 headroom）
-  - Layer C: T-as-Parameter + Cost Efficiency（框架 — 公平比较 + Pareto dominance）
-- APPS P0 resolved：Phase 5 SR=0.588 为正确数据
-- Token cost 分析完成：SCG 在 HotpotQA/WebShop Pareto-dominates
-- 计划扩展至 4-5 环境（Game of 24 / GSM8K）
-- Phase 5 Track 1 恢复：自动 feature extraction 作为方法论贡献
+- 标题："Same Signal, Opposite Meaning"
+- Direction Discovery 为核心叙事
 
 ---
 
@@ -80,20 +94,45 @@ NeurIPS reviewer **不买账**的：
 - "我们在 N 个 benchmark 上 SOTA"（如果没解释 why）
 - 冗长的数学推导（如果实验已经说明问题）
 
-### 1.2 本文的 NeurIPS 定位：Empirical Finding Paper + Direction-Aware Method
+### 1.2 本文的 NeurIPS 定位：Finding + Theory + Environment-Aware Method (v6.0)
 
-**本文是一个 finding-driven paper：核心卖点是揭示一个被所有现有方法忽视的隐含假设是错的。**
+**本文是一个 finding-driven paper：核心卖点是揭示一个被所有现有方法忽视的隐含假设是错的，并提出让 LLM agent 自主发现环境规律的方法。**
 
-> "All existing adaptive compute methods share an unquestioned assumption: the direction of signal-utility correlation is fixed (high entropy → need more compute). We show this assumption is wrong — the same signal has opposite meaning across environments, causing all fixed-direction methods to systematically trigger at the worst moments. We propose learning the direction from data instead of assuming it."
+> "All existing adaptive compute methods share an unquestioned assumption: the direction of signal-utility correlation is fixed (high entropy → need more compute). We show across 8 diverse environments that this assumption is wrong — the same signal has opposite meaning across environments, causing all fixed-direction methods to systematically fail. We propose EAAG: the LLM agent autonomously analyzes its own exploration experience to discover environment-specific compute allocation patterns, without human-prescribed signal directions."
 
-**三层 Contribution：**
-1. **Finding（核心）**：Direction reversal — 同一 signal 在不同环境中方向相反，所有 fixed-direction 方法因此跨环境系统性失败。Calibration 也无法修复（方向错了 threshold 越精准越差）
-2. **Method**：SCG — 从 online exploration 数据学习方向（系数符号），zero overhead。+ T-as-parameter 公平比较框架
-3. **Analysis**：Adaptive behavior（gate trigger rate 自动对齐 rollout headroom）+ Token cost Pareto dominance + 三层失败模型
+**四层 Contribution：**
+1. **Finding（核心）**：Direction reversal — 同一 signal 在不同环境中方向相反（8 环境验证），所有 fixed-direction 方法因此系统性失败。新发现：同族环境方向一致（FEVER≈HotpotQA），同环境不同难度方向也会变（APPS Intro vs Interview）
+2. **Theory**：Two-Source Uncertainty Model — Information-Poverty（信息不足型，如 FEVER/HotpotQA）vs Decision-Difficulty（决策困难型，如 APPS），解释方向为什么反转
+3. **Method**：EAAG (Environment-Aware Adaptive Gating) — LLM 作为 environment reasoner 自动分析 trajectory → LASSO direction discovery → online adaptation。无需手工 feature，无需 Phase 1 数据，零部署 cost
+4. **Analysis**：Online exploration bias 分析（FEVER 案例）+ 含 Phase 1 的真实 cost 对比 + Pareto dominance 分析
 
 **NeurIPS 论文类型对标**：
 - **最佳对标**：Finding-driven papers that reveal a hidden assumption is wrong, then propose a fix
 - **结构对标**：Snell et al., *"Scaling LLM Test-Time Compute Optimally"* (ICLR 2025) — 他们发现 compute allocation 不是越多越好，我们发现方向不是固定的
+- **方法对标**：ReAct (ICLR 2023), Reflexion (NeurIPS 2023) — 方法简单但 insight 强
+
+### 1.2.1 EAAG 方法核心（论文 §4 的写法指南）
+
+**论文中的方法描述（3 步，clean）：**
+
+> **Step 1 — Explore**: Agent 在新环境中用 50 episodes 的随机 gating 探索，收集 (trajectory state, rollout utility) 数据。
+>
+> **Step 2 — Reason**: LLM 分析探索数据中 "rollout 有用 vs 无用" 的 pattern，输出 environment profile（如 "early search steps are critical for this QA task"），并生成 environment-specific features。
+>
+> **Step 3 — Learn & Deploy**: LASSO 从 universal features + LLM-discovered features 中自动选择最相关的信号，训练 logistic gate 学习 direction。部署时每步零额外 cost。
+>
+> **Optional — Online Adaptation**: 在部署过程中通过 ε-greedy 持续收集数据并定期重训 gate（每 30 episodes），使 gate 随环境变化自适应。
+
+**LLM 的角色定位（reviewer Q&A 准备）：**
+- LLM 不是 "feature engineer"（因为 universal features 已经在大部分环境够用）
+- LLM 是 **"environment reasoner"** — 为全新环境提供 zero-shot task-specific hypothesis
+- Ablation 证明：去掉 LLM 后 SR 差距 <1pp（大部分环境），但在 WebShop 上 LLM 贡献了 +4pp（通过 `price_mentioned`, `action_is_click` 等 task-specific features）
+- LLM 的价值是 **generalizability**（适配新环境），不是 accuracy（在已知环境上的提升）
+
+**与 SCG 的关系（ablation 定位）：**
+- SCG = EAAG 去掉 LLM + 去掉 online adaptation + 使用手工 feature + 需要 Phase 1 数据
+- SCG 在某些环境 SR 更高（如 FEVER 98% vs EAAG 50%），但需要领域知识 + Phase 1 成本
+- 论文主表报 EAAG，SCG 作为 "oracle feature selection ablation" 在 ablation section 报告
 
 ### 1.3 与现有工作的三维差异化
 
@@ -1982,12 +2021,21 @@ AdaptThink) methods achieve.
 - **关键句**："The gate architecture is identical across all T types; only T and the discovered direction differ." ⚠️ Phase 2.5 S2 验证了这一点：gate architecture（LR on 5 features）无需修改即可适配不同 T，但方向校准需要针对 (env, T) pair 重新收集
 - **⚠️ 诚实声明**：T 的选择目前是 engineering design（基于 action space 结构的直觉），尚无 formal theory 指导最优 T 选择。但论文的核心贡献是 gate（when to use T），不是 T 的选择（what T to use）。Future work: automatic T selection。
 
-### Section 5: Experiments（3.5 页）
+### Section 5: Experiments（3.5 页）— v6.0 8 环境 + EAAG
 
 **NeurIPS 实验的原则**：每个 experiment 回答一个 question，用 figure/table + 1 段文字说明。
 
 **5.1 Setup（0.3 页）**
-- 环境：HotpotQA（multi-hop QA）, APPS Introductory（代码生成, 2000 题）, WebShop（Web 购物导航）— 3 个有效环境 + ALFWorld（边界结果, ❌ NO-GO）
+- **主实验 4 环境**：
+  - HotpotQA（multi-hop QA, base=49%, search-based）
+  - APPS Introductory（代码生成, base=58.5%, K-variant generation）
+  - WebShop（Web 购物导航, base=7.2%, LLM-Propose-K rollout）
+  - FEVER（fact verification, base=37%, search-based, 🆕）
+- **诊断 2 环境**：
+  - TWExpress（文本游戏, base=67.5%, rollout-safe — rollout 永远有益）
+  - Plancraft（制造规划, base=29.8%, rollout-harmful — rollout 有害）
+- **Appendix 2 环境**：APPS Interview（rollout-safe ceiling）, CRUXEval（base=85% 偏高）
+- 总计 **8 个环境 × 43 方法 × 3 seeds = 1000+ runs**
   - Ceiling analysis 环境: HumanEval/MBPP (4B), HumanEval/MBPP (0.6B) → 放附录
 - 模型：Qwen3-4B-Instruct (vLLM)，ALFWorld 使用 Qwen3-8B
 - Optimizer T（三种类型）：per-action eval (HotpotQA), K-variant generation + execution verification (APPS, AppWorld⏳, K=5, temp=0.7), LLM-Propose-K + rollout (WebShop, ScienceWorld⏳, K=5, H=3)
@@ -2079,15 +2127,19 @@ AdaptThink) methods achieve.
 - **Table 2**：主结果表（methods × environments × SR/CS/CM/TES），3-seed mean±std，CM = 1/(1−CS) 对齐领域标准
 - **⚠️ 新增竞品 baselines**：CATTS, SEAG, CoRefine, CaTS（可与 Phase 5C 并行推进，在 HotpotQA/APPS/WebShop 3 环境上对比）
 
-**Baselines 分层设计**：
+**Baselines 分层设计 (v6.0)**：
 
-| 层级 | 方法 | 代表什么 | Direction 处理 |
-|------|------|---------|---------------|
-| **Bounds** | base_only, always_trigger, oracle | 下界/上界 | N/A |
-| **Random** | random_50 | 无信息 baseline | N/A |
-| **Prior work (固定方向)** | Entropy-Threshold, CATTS, SEAG, CoRefine, CaTS | 现有 adaptive triggering 方法 | 固定（高 uncertainty → trigger） |
-| **Ablation (方向错误)** | best_sigma_wrong | direction 重要性的 causal evidence | 故意反转 |
-| **Our method** | SCG-FineTune(LR) | Direction-aware gate | 学习 |
+| 层级 | 方法 | 代表什么 | Direction 处理 | 需要 Phase 1? |
+|------|------|---------|---------------|:---:|
+| **Bounds** | base_only, always_trigger, oracle | 下界/上界 | N/A | — |
+| **Random** | random_50 | 无信息 baseline | N/A | — |
+| **Fixed-dir CB** | CaTS, SEAG, CoRefine, CATTS | 固定方向 calibration 方法 | 固定（高 uncertainty → trigger） | ✅ (CaTS/SEAG/CoRefine) |
+| **Budget CB** | AUQ, s1_budget | 固定分配策略 | 无方向 (AUQ: verbalized conf, s1: step 0 only) | ❌ |
+| **Ablation** | best_sigma_wrong | direction 重要性的 causal evidence | 故意反转 | ✅ |
+| **Ablation** | SCG (手工 feature) | EAAG 去掉 LLM + 去掉 online adapt | 学习（但需领域知识） | ✅ |
+| **Our method** | **EAAG** | LLM environment reasoner + auto direction discovery | **自动学习** | ❌ |
+
+**⚠️ 重要 Cost 注意事项**：CaTS/SEAG/CoRefine/SCG 都依赖 Phase 1 数据（200 ep always_trigger），这是隐性成本。论文主表必须报含 Phase 1 的 total cost，而非仅 exploitation cost。EAAG/AUQ/s1 无需 Phase 1，自带探索或零数据收集。
 
 **Prior work baselines 具体定义**：
 - **Entropy-Threshold**: token_entropy > θ → trigger（代表 CoRefine/ARPO 核心逻辑）
@@ -2098,23 +2150,37 @@ AdaptThink) methods achieve.
 
 **所有竞品共享关键特征**：固定方向假设——假设"高 uncertainty → 应触发"，未验证方向是否跨环境稳定。SCG 是唯一显式做 direction discovery 的方法。
 
-**HotpotQA Phase 3 实际结果（可直接使用）**：
+**v6.0 主表设计（4 主实验环境, 含 Phase 1 total cost）**：
 
-| Method | SR (%) | RR (%) | CS (%) | CM (×) | TES |
-|---|---|---|---|---|---|
-| base_only | 49.0 ± 1.9 | 0.0 ± 0.0 | 100.0 ± 0.0 | ∞ | 0.000 |
-| always_trigger | 97.0 ± 0.4 | 100.0 ± 0.0 | 0.0 ± 0.0 | 1.00× | 0.000 |
-| random_50 | 89.0 ± 0.8 | 51.4 ± 2.3 | 48.6 ± 2.3 | 1.95× | 0.614 |
-| Entropy-Threshold | 67.2 ± ? | ? | ? | ? | ? |
-| **CATTS (K=5)** | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ |
-| **SEAG** | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ |
-| **CoRefine** | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ |
-| **CaTS (calibrated)** | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ |
-| best_sigma_wrong | 58.2 ± 2.5 | 49.9 ± 1.2 | 50.1 ± 1.2 | 2.00× | 0.277 |
-| **scg_finetune_lr** | **96.7 ± 0.6** | **55.9 ± 5.5** | **44.1 ± 5.5** | **1.79×** | **0.609** |
-| oracle | 97.0 ± 0.4 | 33.0 ± 2.3 | 67.0 ± 2.3 | 3.03× | 0.802 |
+```
+Table 2: Main results across 4 environments. SR (↑) and Total Cost (ro/ep, ↓, 含 Phase 1 amortized).
+† = 需要 200 ep Phase 1 数据收集 (amortized cost 已计入 Total Cost)
 
-> **CM (Compute Multiplier)** = 1/(1−CS)。SCG 达到 always_trigger 97% 的 SR 水平，仅需 1.79× less compute（对比：CATTS 报 2.3×, SEAG 报 3.2×）。
+Method          HotpotQA           APPS              WebShop            FEVER
+                SR    Total       SR    Total       SR    Total       SR    Total
+─── Bounds ───
+base_only      49.0%  0.00      58.5%  0.00       7.2%   0.00      37.0%  0.00
+always_trigger 97.0%  1.80      64.5%  2.58      43.0%   5.63      99.8%  1.46
+─── CB (固定方向/分配) ───
+CaTS†          93.2%  2.86      59.0%  2.62      30.5%   8.68      50.2%  6.17
+SEAG†          67.5%  2.60      58.5%  2.59      28.0%   7.91      49.3%  4.58
+CoRefine†      68.2%  2.59      58.5%  2.59      27.5%   7.84      49.8%  4.58
+CATTS          68.3%  1.07      58.5%  0.03      16.0%   0.19      34.2%  0.06
+AUQ            97.0%  1.69      61.3%  1.73      35.7%   5.33      40.7%  1.17
+s1 Budget      97.0%  1.04      63.7%  1.00       7.8%   1.00      46.2%  1.58
+─── Ablation ───
+SCG (手工feat)† 96.8%  2.89     58.8%  2.77      43.0%   7.10      98.0%  2.45
+BSW (错方向)†  58.2%  —         —      —         20.6%   —         63.0%  5.76
+─── Ours ───
+EAAG           95.2%  1.34      66.0%  1.20      43.8%   2.29      49.8%  2.99
+```
+
+**关键 takeaway (论文 §5.4 写法)**:
+1. **EAAG Pareto-dominates SCG†** in 4/7 environments (APPS, WebShop, TWExpress, Plancraft) — 更高 SR + 更低 total cost（因无 Phase 1 成本）
+2. **EAAG Pareto-dominates CaTS/SEAG/CoRefine†** in 5-6/6 environments — fixed-direction 方法系统性失败
+3. **EAAG vs AUQ/s1**: SR 维度 34W 2L（几乎全胜），cost 维度 EAAG 略高（因为 AUQ/s1 不需要数据收集）
+4. **FEVER 特殊**: EAAG (49.8%) ≈ CaTS† (50.2%)，都远超 base (37%)，但远低于 always (99.8%)。这是 online exploration bias 的体现（§6 讨论）
+5. **SCG† 在 FEVER 上 98%** 但需要手工 feature + Phase 1 → 定位为 "oracle feature ablation"
 
 **Table 2 写法指导（含竞品 baselines 后）**：
 - 用水平线分隔四组：Bounds / Prior Work (固定方向) / Ablation / Ours

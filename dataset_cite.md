@@ -117,18 +117,110 @@ arXiv: [2203.07540](https://arxiv.org/abs/2203.07540)
 
 ---
 
+## 5. FEVER (Fact Extraction and VERification)
+
+### Origin Paper
+
+**Thorne, J., Vlachos, A., Christodoulopoulos, C., & Mittal, A. (2018).**
+*FEVER: a Large-scale Dataset for Fact Extraction and VERification.*
+**NAACL 2018**, pages 809-819.
+arXiv: [1803.05355](https://arxiv.org/abs/1803.05355)
+
+- **机构**: University of Sheffield, Amazon Research Cambridge
+- **规模**: 185K claims, 基于 Wikipedia 的 fact verification
+- **任务**: 给定 claim，判断 SUPPORTS / REFUTES / NOT ENOUGH INFO
+- **特点**: 需要 evidence retrieval + entailment reasoning
+- **引用数**: 2,000+
+
+### 使用 FEVER 的代表性论文
+
+| Paper | Venue | ArXiv | Citations | 与本项目关联 |
+|-------|-------|-------|:---------:|------------|
+| **ReAct** (Yao et al.) | ICLR 2023 | [2210.03629](https://arxiv.org/abs/2210.03629) | 1,800+ | FEVER 是 ReAct 的评估环境之一；与 HotpotQA 同为 search-based QA |
+| **FEVER Shared Task** (Thorne et al.) | EMNLP 2018 Workshop | [1811.10971](https://arxiv.org/abs/1811.10971) | 500+ | 标准评测协议；定义 evidence extraction + label classification pipeline |
+| **KGAT** (Liu et al.) | ACL 2020 | [1910.09796](https://arxiv.org/abs/1910.09796) | 400+ | Knowledge Graph Attention Network for fact verification |
+| **DREAM** (Zhong et al.) | ACL 2020 | [1904.03838](https://arxiv.org/abs/1904.03838) | 200+ | Evidence retrieval + claim verification 的 graph reasoning 方法 |
+| **ProoFVer** (Krishna et al.) | NAACL 2022 | [2108.11357](https://arxiv.org/abs/2108.11357) | 100+ | Natural logic proof generation for fact verification |
+
+---
+
+## 6. DS-1000 (Data Science Code Generation)
+
+### Origin Paper
+
+**Lai, Y., Li, C., Wang, Y., Zhang, T., Zhong, R., Zettlemoyer, L., Yih, W., Fried, D., Wang, S., & Yu, T. (2023).**
+*DS-1000: A Natural and Reliable Benchmark for Data Science Code Generation.*
+**ICML 2023**.
+arXiv: [2211.11501](https://arxiv.org/abs/2211.11501)
+
+- **机构**: University of Hong Kong, Carnegie Mellon, Meta AI, University of Washington
+- **规模**: 1,000 个 data science 问题
+- **特点**: 7 个 Python 库（Numpy, Pandas, Scipy, Sklearn, Matplotlib, TensorFlow, PyTorch）；每题有自动测试；从 StackOverflow 改写避免数据泄露
+- **评估方式**: 执行 test harness 验证（`test_execution(solution)`）
+- **引用数**: 300+
+
+### 使用 DS-1000 的代表性论文
+
+| Paper | Venue | ArXiv | Citations | 与本项目关联 |
+|-------|-------|-------|:---------:|------------|
+| **CodeRL** (Le et al.) | NeurIPS 2022 | [2207.01780](https://arxiv.org/abs/2207.01780) | 642+ | RL for code generation; DS-1000 风格的 data science 评估 |
+| **StarCoder** (Li et al.) | TMLR 2023 | [2305.06161](https://arxiv.org/abs/2305.06161) | 1,000+ | 大规模代码模型; 在 DS-1000 上评测 |
+| **WizardCoder** (Luo et al.) | ICLR 2024 | [2306.08568](https://arxiv.org/abs/2306.08568) | 500+ | Instruction tuning for code; DS-1000 作为主要 benchmark |
+| **Self-Repair** (Olausson et al.) | NeurIPS 2023 | [2306.09896](https://arxiv.org/abs/2306.09896) | 100+ | 代码自我修复; 与我们的 generate→test→revise 循环相关 |
+| **CodeChain** (Le et al.) | ICML 2024 | [2310.08992](https://arxiv.org/abs/2310.08992) | 50+ | Chain-of-thought for code; 在 DS-1000 上评测 |
+
+---
+
+## 7. CRUXEval (Code Reasoning, Understanding and Execution)
+
+### Origin Paper
+
+**Gu, A., Rozière, B., Leather, H., Solar-Lezama, A., Synnaeve, G., & Wise, S. (2024).**
+*CRUXEval: A Benchmark for Code Reasoning, Understanding and Execution.*
+**ICML 2024**.
+arXiv: [2401.03065](https://arxiv.org/abs/2401.03065)
+
+- **机构**: Meta AI, University of Edinburgh, MIT
+- **规模**: 800 个 Python 函数 × 2 子任务 = 1,600 题
+- **子任务**: CRUXEval-I (给代码+输出预测输入), CRUXEval-O (给代码+输入预测输出)
+- **特点**: 测试代码执行推理能力（理解 vs 生成）；GPT-4 在 CRUXEval-O 上 ~75%
+- **引用数**: 100+
+
+### 使用 CRUXEval 的代表性论文
+
+| Paper | Venue | ArXiv | Citations | 与本项目关联 |
+|-------|-------|-------|:---------:|------------|
+| **SemCoder** (Ding et al.) | NeurIPS 2024 | [2406.01006](https://arxiv.org/abs/2406.01006) | 50+ | Semantic code generation; CRUXEval 作为 reasoning 评测 |
+| **OpenCodeInterpreter** (Zheng et al.) | ACL 2024 | [2402.14658](https://arxiv.org/abs/2402.14658) | 100+ | 交互式代码生成; 与我们的多步代码推理相关 |
+| **Code Llama** (Rozière et al.) | arXiv 2023 | [2308.12950](https://arxiv.org/abs/2308.12950) | 2,000+ | Meta 代码模型; CRUXEval 用于评测代码理解 |
+
+---
+
 ## 跨数据集观察
 
 多篇论文横跨多个数据集，反映其作为基础 agent 框架的角色：
 
-| Paper | HotpotQA | APPS/Code | WebShop | TextWorld |
-|-------|:--------:|:---------:|:-------:|:---------:|
-| **ReAct** (2210.03629) | ✅ | — | ✅ | ✅ (ALFWorld) |
-| **Reflexion** (2303.11366) | ✅ | ✅ | ✅ | ✅ (ALFWorld) |
-| **LATS** (2310.04406) | ✅ | ✅ (HumanEval) | ✅ | — |
-| **AgentBench** (2308.03688) | — | ✅ | ✅ | ✅ |
+| Paper | HotpotQA | APPS/Code | WebShop | TextWorld | FEVER | DS-1000 | CRUXEval |
+|-------|:--------:|:---------:|:-------:|:---------:|:-----:|:-------:|:--------:|
+| **ReAct** (2210.03629) | ✅ | — | ✅ | ✅ (ALFWorld) | ✅ | — | — |
+| **Reflexion** (2303.11366) | ✅ | ✅ | ✅ | ✅ (ALFWorld) | — | — | — |
+| **LATS** (2310.04406) | ✅ | ✅ (HumanEval) | ✅ | — | — | — | — |
+| **AgentBench** (2308.03688) | — | ✅ | ✅ | ✅ | — | — | — |
+| **Self-Repair** (2306.09896) | — | ✅ | — | — | — | ✅ | — |
+| **Code Llama** (2308.12950) | — | ✅ | — | — | — | ✅ | ✅ |
 
-这说明我们选择的 4 个环境（HotpotQA, APPS, WebShop, TWExpress）覆盖了 LLM agent 评估的主要类别（QA, Code, Web, Text Game），与领域主流 benchmark 高度对齐。
+我们的 7 个环境（HotpotQA, APPS Intro+Interview, WebShop, TWExpress, FEVER, DS-1000, CRUXEval）覆盖了 LLM agent 评估的主要类别：
+
+| 类别 | 环境 | 论文定位 |
+|------|------|---------|
+| QA / 多跳推理 | HotpotQA | 主实验 |
+| 事实验证 | **FEVER** | 主实验（新增） |
+| 代码生成（算法） | APPS Intro | 主实验 |
+| 代码生成（面试） | **APPS Interview** | 诊断（新增） |
+| 代码生成（数据科学） | **DS-1000** | 待定（新增） |
+| 代码推理 | **CRUXEval** | 诊断（新增） |
+| Web 交互 | WebShop | 主实验 |
+| 文本游戏 | TWExpress | 诊断 |
 
 ---
 
@@ -171,6 +263,33 @@ arXiv: [2203.07540](https://arxiv.org/abs/2203.07540)
   year      = {2023},
   pages     = {169--177},
   note      = {arXiv:2208.01174}
+}
+
+% === Phase 6.1 New Dataset Origin Papers ===
+
+@inproceedings{thorne2018fever,
+  author    = {Thorne, James and Vlachos, Andreas and Christodoulopoulos, Christos and Mittal, Arpit},
+  title     = {{FEVER}: a Large-scale Dataset for Fact Extraction and {VER}ification},
+  booktitle = {Proceedings of the 2018 Conference of the North American Chapter of the Association for Computational Linguistics (NAACL)},
+  year      = {2018},
+  pages     = {809--819},
+  note      = {arXiv:1803.05355}
+}
+
+@inproceedings{lai2023ds1000,
+  author    = {Lai, Yuhang and Li, Chengxi and Wang, Yiming and Zhang, Tianyi and Zhong, Ruiqi and Zettlemoyer, Luke and Yih, Wen-tau and Fried, Daniel and Wang, Sida and Yu, Tao},
+  title     = {{DS-1000}: A Natural and Reliable Benchmark for Data Science Code Generation},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  year      = {2023},
+  note      = {arXiv:2211.11501}
+}
+
+@inproceedings{gu2024cruxeval,
+  author    = {Gu, Alex and Rozi{\`e}re, Baptiste and Leather, Hugh and Solar-Lezama, Armando and Synnaeve, Gabriel and Wise, Sida},
+  title     = {{CRUXEval}: A Benchmark for Code Reasoning, Understanding and Execution},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  year      = {2024},
+  note      = {arXiv:2401.03065}
 }
 
 % === Key Papers Using These Datasets ===

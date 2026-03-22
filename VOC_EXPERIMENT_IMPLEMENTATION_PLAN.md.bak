@@ -285,7 +285,8 @@ APPS Interview: step_count, step_ratio, has_error
 **Optimistic exploration 尝试**: 测试了 3 个 optimistic variant，全部失败 (SR 35-39%)
 - 原因: 50 ep 中每个 (step, state_category) group 只被访问 3-5 次，强制触发 3 次后数据仍不足
 
-**状态**: ✅ 图已生成 → `planning/paper_figures/fig6_fever_bias.png`
+**状态**: ✅ 数据已有，需整理成分析段落 + 图
+**TODO**: `python plots/generate_fever_bias_analysis.py`
 
 ### 3.7 Direction Reversal 信号热力图 (§5 E1 核心图)
 
@@ -293,13 +294,16 @@ APPS Interview: step_count, step_ratio, has_error
 
 **设计**: 8×N heatmap, 行=环境, 列=信号, 颜色=ρ (红=正, 蓝=负, 白=0)
 
-**关键 pattern**:
+**数据**: 已有 (Step 1 signal discovery results)
+
+**关键 pattern 要标注**:
 - entropy: HotpotQA/FEVER 负 vs APPS Interview 正
 - step_count: 大部分负，CRUXEval 正
 - num_available_actions: WebShop 极强正 (+0.444)
 - APPS 几乎全白 (弱信号)
 
-**状态**: ✅ 图已生成 → `planning/paper_figures/fig1_signal_heatmap.png`
+**状态**: ✅ 数据已有，需生成图
+**TODO**: `python plots/generate_signal_heatmap.py`
 
 ---
 
@@ -313,31 +317,28 @@ APPS Interview: step_count, step_ratio, has_error
 - [x] 6 环境 CB 6 methods × 3 seeds (含 Issue 3 修复)
 - [x] 6 环境 BSW fix × 3 seeds
 - [x] FEVER Path E 64/75, APPS Intv 54/75
+- [ ] FEVER Path E 剩余 11 tasks
+- [ ] APPS Interview Path E 剩余 21 tasks
+- [ ] CRUXEval Path E 0/75 (appendix, 低优先)
 - [x] Optimistic exploration test (FEVER, 失败)
 - [x] DS-1000 放弃 (test harness 无法修复)
-- [ ] FEVER Path E 剩余 11 tasks → Job 23292522
-- [ ] APPS Interview Path E 剩余 21 tasks → Job 23292522
-- [ ] CRUXEval Path E 0/75 → Job 23292522 (appendix, 低优先)
 
 ### 4.2 Analysis 图表
 
-- [x] §5 E1: Direction reversal 信号热力图 → `fig1_signal_heatmap.png/pdf`
-- [x] §5 E2: Pareto frontier 图 × 6 环境 → `fig2_pareto.png/pdf`
-- [x] §5 E1: BSW 错误方向代价散点图 → `fig3_bsw_cost.png/pdf`
-- [x] §5 E1/E3: Feature usage heatmap → `fig4_feature_heatmap.png/pdf`
-- [x] §5 E3: LLM ablation 柱状图 → `fig5_llm_ablation.png/pdf`
-- [x] §6.1: FEVER exploration bias 分析图 → `fig6_fever_bias.png/pdf`
-- [ ] §5 E3: Gate trigger rate vs step 可视化 (需从 decision_log 提取)
+- [ ] §5 E1: Direction reversal 信号热力图 (§3.7)
+- [ ] §5 E1: Feature usage heatmap (§3.1)
+- [ ] §5 E1: BSW 错误方向代价散点图 (§3.3)
+- [ ] §5 E2: Pareto frontier 图 × 6 环境 (§3.4)
+- [ ] §5 E3: LLM ablation 柱状图 (§3.5)
+- [ ] §5 E3: Gate trigger rate vs step 可视化 (§3.2)
+- [ ] §6.1: FEVER exploration bias 分析图 (§3.6)
 
-All figures at: `planning/paper_figures/` (PNG 200dpi + PDF vector)
-生成脚本: `planning/paper_figures/generate_all_figures.py`
+### 4.3 恢复命令
 
-### 4.3 GPU Jobs
-
-```
-Job 23292522: Path E 剩余 ~107 tasks (FEVER 11 + APPS Intv 21 + CRUXEval 75)
-  sbatch --array=3-5,8-9,11-14,16-17,90-92,131,133-149,225-299%8 \
-      scripts/phase6/run_env_extend_methods.sbatch
+```bash
+# Path E 剩余 (跳过 DS-1000)
+sbatch --array=3-5,8-9,11-14,16-17,90-92,131,133-149,225-299%8 \
+    scripts/phase6/run_env_extend_methods.sbatch
 ```
 
 ---

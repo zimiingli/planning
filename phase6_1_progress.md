@@ -1,7 +1,7 @@
 # Phase 6.1: Self-Evolving Improvements — Progress Report
 
-**Date**: 2026-03-18 (updated)
-**Plan**: `planning/phase6_1_self_evolving_plan.md`
+**Date**: 2026-03-20 (updated: 新环境扩展实验进度)
+**Plan**: `planning/phase6_1_self_evolving_plan.md` + `planning/phase6_1_environment_extend_plan.md`
 
 ---
 
@@ -14,6 +14,43 @@
 | **D** | 100cal openrouter (数据量验证) | 15 | 🔄 12 done, 3 running (TWExpress) |
 | **BabyAI** | SE_few5_filter_local × BabyAI | 3 | ✅ 3 done |
 | **3** | Multi-Cycle Full Search | TBD | ⬜ 待实现 |
+
+---
+
+## 新环境扩展 (Phase 6.1 Environment Extension, 2026-03-20)
+
+### 进度总览
+
+4 个新环境 (FEVER, APPS Interview, DS-1000, CRUXEval) 全部 GO，Step 0-2 基本完成。
+
+| 阶段 | Job | Tasks | 完成 | 状态 |
+|------|-----|:-----:|:----:|:---:|
+| Step 0 (GO/NO-GO) | 23228574+23228661 | 4 | 4/4 ✅ | 全部 GO |
+| Step 1 (Signal) | 23228761 | 4 | 4/4 ✅ | |
+| Step 2 (Core 6) | 23232914 | 72 | 67/72 ✅ | |
+| BSW fix + DS-1000 rerun | 23259059 | 27 | 27/27 ✅ | DS-1000 有新 bug (Issue 4) |
+| CB (FEVER+APPS Intv) | 23259060 | 36 | 36/36 ✅ | catts/seag/corefine/cats 不触发 (Issue 3) |
+| **CB rerun (Issue 3 fix)** | **23263520** | **48** | **🔄 排队** | **FEVER+APPS Intv 重跑 + CRUXEval 首跑** |
+| Local methods (25×4×3) | 23259061 | 300 | 🔄 ~20/300 | FEVER Path E 进行中 |
+| OpenRouter methods (6×4×3) | 23259062 | 72 | 🔄 0/72 | 排队 |
+
+### 已确认问题
+
+| Issue | 描述 | 影响 | 修复 |
+|:-----:|------|------|:----:|
+| 1 | BSW 退化为 always (config 缺 wrong_direction) | BSW ×4 env | ✅ 已修复+重跑 |
+| 2 | DS-1000 oracle leak (reference_code 在候选中) | DS-1000 always/bsw/oracle | ✅ 代码已修复 |
+| 3 | CB 不触发 (phase1_data_path=null) | catts/seag/corefine/cats ×2 env | ✅ config 已修复, Job 23263520 重跑中 |
+| 4 | DS-1000 修复后 base=100% (新 bug) | DS-1000 全部 rerun 数据 | ❌ 待调查 |
+
+### 关键结果快照
+
+```
+FEVER:    SCG 98.0% >> s1 46.2% >> auq 40.7% >> base 37.0%     BSW 63.0% (-36.8pp)
+APPS Intv: SCG 79.5%  > s1 69.0%  > auq 64.7%  > base 60.5%    (rollout-safe)
+CRUXEval: SCG 99.5%  = always 99.5% > base 85.0%                (rollout-safe, base high)
+DS-1000:  ❌ rerun 数据不可用 (Issue 4)
+```
 
 ---
 
