@@ -1048,42 +1048,35 @@ GPU/API 时间: ~4-8 小时 (取决于 API 速率)
 ```
 
 **产出**:
-1. **ρ comparison table**:
+1. **ρ comparison table (实际结果)**:
 ```
-Variant          ρ(entropy, U)    base SR    always SR    Two-Source Type
-InfoPoor         −0.35 (预期)      35%         90%          Type I 主导
-Original         −0.041 (已有)     49%         97%          Mixed
-InfoRich         +0.10 (预期)      75%         98%          Type D 偏多
+Variant          ρ(entropy, U)    ρ(step_count, U)    base SR    always SR    EAAG SR
+InfoPoor         +0.119           −0.608              44.0%      98.5%        94.0%
+Original         −0.041           −0.494              49.0%      97.0%        95.2%
+InfoRich         +0.311           −0.147              82.0%      100.0%       88.3%
 ```
 
-2. **Figure**: 3 组 scatter plot (InfoPoor / Original / InfoRich), 每组 X=entropy Y=utility, 回归线斜率变化
-   - **文件名**: `fig_controlled_direction_reversal.pdf`
+2. **Figure**: 2-panel figure (信号相关性 + 任务性能)
+   - **文件夹**: `planning/experiment/fig_controlled_reversal/`
+   - **文件**: `output.pdf`, `data.csv`, `generate.py`
 
-3. **核心 claim**: "在同一个 QA task 中，仅通过改变信息可用性即可触发 direction reversal — 证明方向是信息结构的函数，不是 task 类型的 artifact"
+3. **核心发现 (与预测对比)**:
+   - ✅ InfoRich entropy ρ = +0.311 → 信息充足时 entropy 变正 (符合 Type D 预测)
+   - ❌ InfoPoor entropy ρ = +0.119 → 预测更负，实际变正 (不符合 Type I 预测)
+   - ✅ 信号 hierarchy 转移: InfoPoor step_count 主导 (−0.608) → InfoRich entropy 主导 (+0.311)
+   - ✅ 支持 **Signal Replacement (Obs 2)**: 信息结构决定哪个信号主导，不只是方向翻转
+   - 论文叙事调整: 从 "same signal direction reversal" → "signal hierarchy shifts with information structure"
 
-**风险评估**:
-- ❌ 风险 1: InfoRich base SR 太高 (~95%) → headroom 不够 → ρ 无意义 → 需要看 always SR 是否也高
-- ❌ 风险 2: InfoPoor 可能导致 agent 完全失败 (base SR ~5%) → ρ 不稳定
-- ✅ 缓解: 先跑 50 ep pilot (不做 3 seeds) 看 base SR 范围，如果在 20%-80% 内则继续
+**风险评估 (实际)**:
+- ✅ base SR 在合理范围: InfoPoor 44%, InfoRich 82% (非极端)
+- ⚠️ InfoRich headroom 仅 18pp (base=82%, always=100%) → EAAG SR=88.3% 低于 Original 95.2%
+- ⚠️ InfoPoor probe data 只有 317 步 (vs Original 1208) → 信号估计噪声较大
 
-**优先级判断**:
-- 🟡 **中优先** — 如果时间充足（NeurIPS DDL 前还有 2+ 周），做这个实验显著增强论文
-- 如果时间紧张 → 用已有 quasi-controlled evidence 替代:
-  - FEVER ≈ HotpotQA (同族，方向一致) → 同类 task 方向一致
-  - APPS Intro (ρ≈0) vs APPS Interview (ρ=+0.317) → 同 task 不同难度方向变化
-  - 这些不是 controlled experiment 但提供了 convergent evidence
-
-**TODO**:
+**TODO (全部完成)**:
 1. ✅ 修改 HotpotQA 环境代码 → `frvc/envs/hotpotqa_env.py` (添加 `variant` 参数)
-   - InfoPoor: `_do_search()` 只返回首句
-   - InfoRich: `reset()` 注入全部 gold evidence
-2. ✅ 创建配置文件 → `configs/phase6_hotpotqa_infopoor.yaml`, `configs/phase6_hotpotqa_inforich.yaml`
-3. ✅ 提交 GPU Job:
-   - ~~Job 23297277~~ FAILED (base_only 不在 p6 method choices)
-   - **Job 23304286** (8 tasks: step0 用 p5, EAAG 用 p6)
-   - sbatch: `scripts/phase6/run_controlled_reversal.sbatch`
-   - 修复: 添加 hotpotqa_infopoor/inforich 到 p5 env choices; 重构 yaml 为嵌套格式
-4. ⏳ 等待结果 → 生成 scatter plot + ρ comparison table
+2. ✅ 创建配置文件 → `configs/phase6_hotpotqa_{infopoor,inforich}.yaml`
+3. ✅ GPU Job 23304305 全部 8 tasks COMPLETED (2026-03-23)
+4. ✅ 结果已分析，figure 已生成 → `planning/experiment/fig_controlled_reversal/`
 
 ---
 
@@ -1102,7 +1095,7 @@ InfoRich         +0.10 (预期)      75%         98%          Type D 偏多
 - [x] FEVER Path E: 11/11 完成 ✅ (Job 23292522 6个 + Job 23297275 5个)
 - [x] APPS Interview Path E: 9/21 完成, 剩余 8 个跳过 (48G OOM, appendix 环境已有足够数据)
 - [x] CRUXEval Path E 75/75 → Job 23292522 全部完成 ✅
-- [ ] Controlled InfoPoor/InfoRich (§3.9.1) → ~~Job 23297277 FAILED~~ → ~~Job 23304286 (%4)~~ → **Job 23304305** (8 tasks, %6)
+- [x] Controlled InfoPoor/InfoRich (§3.9.1) → Job 23304305 全部 COMPLETED ✅
 
 ### 4.2 Analysis 图表
 
@@ -1130,7 +1123,7 @@ InfoRich         +0.10 (预期)      75%         98%          Type D 偏多
 - [x] 🟢 §6: 环境信息结构分类表 → `tab_env_info_structure.tex` (§3.8.6)
 
 **需要新 GPU run (已提交)**:
-- [ ] 🟡 §5.4: Controlled InfoPoor/InfoRich → **Job 23304305** (8 tasks, %6 concurrency)
+- [x] 🟡 §5.4: Controlled InfoPoor/InfoRich → Job 23304305 COMPLETED ✅ → `planning/experiment/fig_controlled_reversal/`
 - [ ] 🟡 §5.6: MLP/Hidden-state correct-direction SR (精确值) → 补 §3.8.8 数据 (未提交)
 
 All figures at: `planning/paper_figures/` (PNG 200dpi + PDF vector)
@@ -1274,7 +1267,7 @@ Job 23304305 (2026-03-23): §3.9.1 Controlled InfoPoor/InfoRich — 修复版 v2
   fig_stratified: Stratified reversal (5 env × 3 strata)    ✅     fig_stratified_reversal.png/pdf
   fig_matched: Matched-pair ΔU (4 env × 3 bins)             ✅     fig_matched_pair_opposite_meaning.png/pdf
   fig_coverage: Coverage proxy vs ρ scatter                  ✅     fig_coverage_vs_rho.png/pdf
-  [opt] fig_controlled: InfoPoor/InfoRich scatter            ⏳     需 GPU run (§3.9.1)
+  fig_controlled: InfoPoor/InfoRich 2-panel                  ✅     planning/experiment/fig_controlled_reversal/output.pdf
 
 正文 Tables (5 个):                                           状态    文件
   tab1: Env setup (8 env × base/always/optimizer)            手写    (论文 LaTeX 中)

@@ -11,3 +11,7 @@ WebShop,single_entropy,0.502
 WebShop,best_single,0.895
 WebShop,multi_signal_lr,0.924
 WebShop,hidden_state_lr,0.994
+Plancraft,single_entropy,0.5
+Plancraft,best_single,0.736
+Plancraft,multi_signal_lr,0.736
+Plancraft,hidden_state_lr,0.951

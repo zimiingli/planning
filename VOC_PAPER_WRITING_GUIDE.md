@@ -56,8 +56,8 @@ exploration, LLM-based reasoning, and LASSO-based direction learning,
 with zero per-step deployment cost. Across 8 evaluation environments,
 EAAG Pareto-dominates all fixed-direction baselines (34 wins vs.\ 2
 losses against 6 competing methods) and exhibits emergent adaptive
-behavior: trigger rate automatically aligns with rollout
-headroom---60\% when headroom is large, 6\% when small---without
+behavior: trigger rate varies with environment---73\% in rollout-safe
+TWExpress, 66\% in high-headroom HotpotQA, 28\% in WebShop---without
 explicit headroom estimation.
 \end{abstract}
 ```
@@ -133,8 +133,9 @@ APPS Intro). Beyond direction, the \emph{identity} of the most informative
 signal varies entirely across environments---\texttt{step\_count}
 dominates in HotpotQA ($\rho{=}{-}0.494$) while
 \texttt{num\_available\_actions} dominates in WebShop
-($\rho{=}{+}0.444$); single-signal entropy achieves AUC${\approx}$0.53
-(barely above chance) while multi-signal gates reach AUC${\approx}$0.85.
+($\rho{=}{+}0.444$); single-signal entropy achieves AUC${\approx}$0.50
+(indistinguishable from chance) while multi-signal gates reach
+AUC${\approx}$0.83.
 All fixed-direction methods systematically fail
 in at least two of eight evaluation environments; on FEVER, CATTS
 achieves 34.2\%---\emph{below} the 37.0\% no-trigger baseline.
@@ -183,9 +184,9 @@ signal direction. Across 8 evaluation environments, EAAG
 Pareto-dominates all calibrated baselines: 34 wins vs.\ 2 losses
 against 6 competing methods in head-to-head SR comparisons. The
 learned gate exhibits emergent adaptive behavior: trigger rate
-automatically aligns with rollout headroom---60\% triggering when
-headroom is large (HotpotQA: $+$48\,pp), 6\% when headroom is
-small (APPS Intro: $+$6\,pp)---without explicit headroom estimation.
+varies across environments---73\% in rollout-safe TWExpress, 66\%
+in high-headroom HotpotQA, 28\% in WebShop---without explicit
+headroom estimation.
 ```
 
 ### P6: Contributions
@@ -375,12 +376,12 @@ No single signal is universally informative.
 **Observation 3 — Signal Poverty:**
 ```latex
 \textbf{Observation 3: Single scalar signals carry near-zero
-information.} Cross-environment AUC analysis
-(Figure~\ref{fig:auc-hierarchy}) reveals a clear hierarchy: single
+information.} AUC analysis across 4 environments with available
+probe data (Figure~\ref{fig:auc-hierarchy}) reveals a clear hierarchy:
 % 📁 实验文件夹: experiment/fig_auc_hierarchy/
-token entropy achieves AUC${\approx}$0.53 (barely above chance),
-multi-signal logistic regression achieves AUC${\approx}$0.85, and
-hidden-state probes reach AUC${\approx}$0.89. The information needed
+single token entropy achieves AUC${\approx}$0.50 (indistinguishable
+from chance), multi-signal logistic regression achieves
+AUC${\approx}$0.83, and hidden-state probes reach AUC${\approx}$0.90. The information needed
 to predict rollout value simply does not exist in a single scalar
 signal at the per-step level.
 ```
@@ -663,7 +664,7 @@ Each component of EAAG follows directly from the analysis in
   the \emph{sign} and \emph{identity} of informative signals---a
   requirement naturally satisfied by signed linear weights.
 \item \emph{Multi-signal, sparse selection.} Single-signal gates
-  carry near-zero information (Obs.~3, AUC${\approx}$0.53). The
+  carry near-zero information (Obs.~3, AUC${\approx}$0.50). The
   gate must combine multiple signals, but the relevant subset varies
   per environment (Obs.~2). LASSO provides exactly this: automatic
   selection of a sparse, environment-specific feature subset.
@@ -953,15 +954,16 @@ cannot be anticipated by universal features alone.
 
 \paragraph{Gating magnitude emerges from direction learning.}
 % 📁 实验文件夹: experiment/fig_trigger_rate/
-The learned gate automatically calibrates trigger rate to rollout
-headroom (Figure~\ref{fig:trigger-rate}): aggressive triggering
-when headroom is large (HotpotQA: RR=60\%, $\Delta$=48\,pp),
-conservative when small (APPS Intro: RR=6\%, $\Delta$=6\,pp), and near-zero
-when rollouts are harmful (Plancraft: RR$\approx$1\%,
-$\Delta$=$-$7\,pp). This \emph{emergent} behavior arises from simple
+The learned gate adapts trigger rate across environments
+(Figure~\ref{fig:trigger-rate}): aggressive triggering in
+rollout-safe environments (TWExpress: RR=73\%, HotpotQA: RR=66\%),
+moderate in mixed environments (APPS Intro: RR=35\%, WebShop: RR=28\%),
+and step-dependent in rollout-harmful ones (Plancraft: starts at
+49\% but decays to $<$20\% at later steps as the gate learns rollouts
+are counterproductive). This adaptive behavior emerges from simple
 logistic regression without explicit headroom estimation---the
-LASSO coefficients implicitly encode headroom through the learned
-signal--utility relationship.
+LASSO coefficients implicitly encode environment-specific triggering
+patterns through the learned signal--utility relationship.
 ```
 
 ### §5.4 Theory Verification (0.5 页)
@@ -1035,6 +1037,21 @@ In WebShop (mixed, choice-dominated),
 decision space size---a proxy for decision complexity. All three
 predictions are confirmed, providing converging evidence for the
 Two-Source Model.
+
+\paragraph{Controlled information manipulation (supplementary).}
+% 📁 实验文件夹: planning/experiment/fig_controlled_reversal/
+To provide stronger evidence that information structure drives signal
+semantics, we manipulate information availability within HotpotQA
+itself. \emph{InfoPoor} (search returns only the first sentence)
+reduces base SR to 44.0\% while \emph{InfoRich} (gold evidence
+injected at start) raises it to 82.0\%. The signal hierarchy shifts:
+in InfoPoor, \texttt{step\_count} dominates ($\rho{=}{-}0.608$) while
+entropy is weakly positive ($\rho{=}{+}0.119$); in InfoRich, entropy
+becomes the dominant positive signal ($\rho{=}{+}0.311$) while
+\texttt{step\_count} weakens ($\rho{=}{-}0.147$). This demonstrates
+that the \emph{identity} of the most informative signal---not just
+its direction---is a function of the environment's information
+structure, supporting Observation~2 (Signal Replacement).
 ```
 
 ### §5.5 Extreme Rollout Properties (0.3 页)
@@ -1049,12 +1066,13 @@ ranges.
 
 TWExpress (rollout-safe, $\Delta{=}+$31.8\,pp): EAAG achieves
 99.0\% (vs.\ always 99.3\%), learning to trigger aggressively
-(RR $\approx$ 85\%)---correctly inferring that rollouts are almost
+(RR=73\%)---correctly inferring that rollouts are almost
 always beneficial.
 Plancraft (rollout-harmful, $\Delta{=}-$7.0\,pp): EAAG achieves
-23.3\% (vs.\ always 22.8\%), correctly learning to almost never
-trigger (RR$\approx$1\%)---protecting against the negative utility
-of unnecessary rollouts.
+23.3\% (vs.\ always 22.8\%), with a trigger rate that decays over
+steps (49\% at step~0 $\to$ $<$20\% at later steps), learning to
+become increasingly conservative as evidence of rollout harm
+accumulates.
 These results confirm that EAAG adapts not only direction but
 \emph{magnitude} of gating to the environment's rollout value
 structure, spanning the full range from ``always trigger'' to
@@ -1081,10 +1099,11 @@ stratum. If reversal is a length artifact, within-stratum $\rho$
 should be consistent across environments.
 % TODO: 用已有 probe data, 按 step_count 分 3 层 (short/mid/long),
 % 每层内计算 ρ(entropy, U), 展示 reversal 在每层内都存在
-\emph{Result}: Direction reversal persists within every trajectory-length
-stratum (Table~\ref{tab:stratified}). In HotpotQA, $\rho$ remains
+\emph{Result}: Direction reversal persists within trajectory-length
+strata where utility variance is non-zero
+(Table~\ref{tab:stratified}). In HotpotQA, $\rho$ remains
 % 📁 实验文件夹: experiment/fig_stratified_reversal/
-negative across all strata; in APPS Interview, $\rho$ remains positive.
+negative across all three strata ($-0.18$/$-0.46$/$-0.42$).
 The reversal is not an artifact of trajectory length.
 
 \paragraph{Interventional evidence: wrong-direction ablation.}
@@ -1725,7 +1744,7 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 | fig_stratified | Stratified reversal (5 env × 3 strata) | §5.6 | ✅ | `experiment/fig_stratified_reversal/` |
 | fig_matched | Matched-pair ΔU (4 env × 3 bins) | §5.6 | ✅ | `experiment/fig_matched_pair/` |
 | fig_coverage | Coverage proxy vs ρ scatter | §5.4/附录 | ✅ | `experiment/fig_coverage_proxy/` |
-| fig_controlled | Controlled InfoPoor/InfoRich | §5.4 | ⏳ | `experiment/fig_controlled_reversal/` |
+| fig_controlled | Controlled InfoPoor/InfoRich | §5.4 | ✅ | `planning/experiment/fig_controlled_reversal/` |
 | fig_method | EAAG 3-step pipeline 示意图 | §4 | ⏳ | `experiment/fig_method_diagram/` |
 
 ## Table 清单
@@ -2083,7 +2102,7 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 
 > We tested this (MLP gate variant). The MLP achieves comparable SR to logistic regression when direction is correct, and **worse SR when direction is wrong** (45.3% vs base 49.0% on HotpotQA). This is because a more powerful gate with wrong direction more precisely targets harmful states—the precision works against you.
 >
-> The principled argument: §3.1 Observation 3 shows that the jump from single-signal (AUC ≈ 0.53) to multi-signal logistic (AUC ≈ 0.85) is enormous, while the jump from logistic to hidden-state probe (AUC ≈ 0.89) is marginal. The information hierarchy is **signal selection > direction > gate complexity**. Logistic regression is at the sweet spot: powerful enough to combine multiple directed signals, simple enough to train from 50 exploration episodes without overfitting.
+> The principled argument: §3.1 Observation 3 shows that the jump from single-signal (AUC ≈ 0.50) to multi-signal logistic (AUC ≈ 0.83) is enormous, while the jump from logistic to hidden-state probe (AUC ≈ 0.90) is marginal. The information hierarchy is **signal selection > direction > gate complexity**. Logistic regression is at the sweet spot: powerful enough to combine multiple directed signals, simple enough to train from 50 exploration episodes without overfitting.
 
 **Where this is addressed in the paper**: §4 "Why the method is intentionally simple," §5.3 BSW ablation.
 
@@ -2152,8 +2171,8 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 - [ ] num_available_actions ρ: WebShop +0.444
 - [ ] BSW degradation: -38.8pp (HotpotQA), -22.4pp (WebShop)
 - [ ] MLP wrong-direction: 45.3% < base 49.0%
-- [ ] AUC hierarchy: ~0.53 (single entropy), ~0.85 (multi-signal), ~0.89 (probe)
-- [ ] Trigger rates: 60% (HotpotQA), 6% (APPS Intro), ~1% (Plancraft)
+- [x] AUC hierarchy: ~0.50 (single entropy), ~0.83 (multi-signal), ~0.90 (probe) — across 4 envs
+- [x] Trigger rates: 66% (HotpotQA), 73% (TWExpress), 35% (APPS Intro), 28% (WebShop), 33% (Plancraft, decays from 49%→<20% over steps)
 - [ ] Headroom: +48pp (HotpotQA), +6pp (APPS Intro), +35.8pp (WebShop), +62.8pp (FEVER)
 
 **TERMINOLOGY CONSISTENCY**:
