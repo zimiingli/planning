@@ -303,6 +303,682 @@ APPS Interview: step_count, step_ratio, has_error
 
 ---
 
+## 3.8 v7.0 新增 Analysis（已有数据，无需新 GPU run）🆕🆕🆕
+
+> **来源**：v7.0 Writing Guide FLARE-Style Structural Upgrade (§1.8)
+> **原则**：以下 analysis 全部基于已有实验数据，只需写分析脚本 + 生成图表
+
+### 3.8.1 🔴 AUC Hierarchy 柱状图 (Observation 3 / Proposition 2 核心证据)
+
+**论文位置**: §3.1 Observation 3 (Signal Poverty) + §3.2 Proposition 2 (Signal Poverty Bound)
+
+**目的**: 展示单信号 → 多信号 → hidden state 的 AUC 阶梯式提升，证明 "单信号范式有信息论天花板"
+
+**数据来源**: Phase 5 Cross-Environment AUC Analysis (phase5_interim_report.md §4.5.4)
+
+```
+已有数据（5-fold CV AUC, seed 42, utility_threshold=0.05）:
+
+                        HotpotQA   APPS    WebShop   Avg
+Single token_entropy     0.502     0.557    0.533    0.531
+Single confidence        0.502     0.557    0.467    0.508
+Best individual signal   0.782     0.778    0.895    0.818
+All scalar (LR, 3-6f)   0.851     0.761    0.924    0.845
+Hidden state (LR)        0.869     0.794    0.994    0.886
+```
+
+**Figure 设计**:
+- **类型**: Grouped bar chart (3 环境 × 5 方法层级)
+- **X 轴**: 3 个环境 (HotpotQA, APPS, WebShop), grouped
+- **Y 轴**: AUC (0.4 → 1.0)
+- **每组 5 条柱**:
+  - Single entropy (浅灰) → 0.50-0.56
+  - Single best (灰) → 0.78-0.90
+  - Multi-signal LR (蓝) → 0.76-0.92
+  - Hidden state LR (红) → 0.79-0.99
+- **虚线**: AUC = 0.5 (random baseline)
+- **标注**: 每组上方标注 "×1.6" "×1.7" 等倍数
+- **Legend**: 4 层级 + random baseline
+- **文件名**: `fig_auc_hierarchy.pdf`
+
+**附加**: 在柱状图旁或下方加一个 mini-table 报告 avg AUC:
+```
+Signal Level          Avg AUC    vs Random
+Single entropy         0.531      +0.031 (≈random)
+Multi-signal LR        0.845      +0.345
+Hidden state           0.886      +0.386
+```
+
+**分析脚本需要做什么**:
+1. 从 phase5_interim_report.md 提取上述数值（或从原始 probe 实验结果 JSON/log 中读取）
+2. 生成 grouped bar chart
+3. 输出 PDF + PNG
+
+**TODO**: `python plots/generate_auc_hierarchy.py`
+**状态**: ⏳ 数据已有，需写脚本生成图
+**优先级**: 🔴 高 — Proposition 2 和 Observation 3 的核心视觉证据
+
+---
+
+### 3.8.2 🔴 P1 Temporal Shift 验证 (Two-Source Model Prediction 1)
+
+**论文位置**: §3.2 Testable Prediction P1 验证 / §5.4 Ablation
+
+**目的**: 验证 Two-Source Model 的核心预测 —— 在同一环境内，early steps（p_I 更高，信息更缺乏）的 ρ(entropy, U) 应比 late steps 更负
+
+**理论预测**:
+```
+Two-Source Model 预测:
+  ρ(entropy, U | early steps) < ρ(entropy, U | late steps)
+
+直觉: early steps → agent 还没收集信息 → Type I 主导 → ρ 更负
+      late steps → agent 已有信息 → Type D 比例上升 → ρ 变正/变弱
+```
+
+**数据来源**: 各环境 Phase 1 probe 数据（step_records）
+- 每条记录包含: (env, episode_id, step_t, token_entropy, utility_U, ...)
+- HotpotQA: ~1208 data points (Phase 1)
+- APPS: ~590 data points
+- WebShop: ~2000+ data points (高 step count)
+- FEVER: ~282 data points
+- TWExpress: data points from probe phase
+- Plancraft: data points from probe phase
+
+**数据文件位置（需确认）**:
+- 选项 A: `experiments/phase1/*/step_records.jsonl`
+- 选项 B: `experiments/phase5/*/probe_data.csv`
+- 选项 C: 从 EAAG/SCG 的 explore phase 中的 decision_log 提取
+- **⚠️ 需先确认数据位置**: 运行 `find /path/to/experiments -name "*step_record*" -o -name "*probe*" -o -name "*decision_log*" | head -20`
+
+**分析方法**:
+```python
+import pandas as pd
+from scipy.stats import spearmanr
+
+for env in ['hotpotqa', 'apps', 'webshop', 'fever', 'twexpress', 'plancraft']:
+    data = load_probe_data(env)  # (step, entropy, utility)
+
+    # Split by step position
+    median_step = data['step'].median()
+    early = data[data['step'] <= median_step]
+    late = data[data['step'] > median_step]
+
+    # Alternative: fixed split (step 1-3 vs 4+)
+    early_fixed = data[data['step'] <= 3]
+    late_fixed = data[data['step'] > 3]
+
+    rho_early, p_early = spearmanr(early['entropy'], early['utility'])
+    rho_late, p_late = spearmanr(late['entropy'], late['utility'])
+
+    print(f"{env}: ρ_early={rho_early:.3f} (p={p_early:.3f}), "
+          f"ρ_late={rho_late:.3f} (p={p_late:.3f}), "
+          f"Δρ={rho_late - rho_early:+.3f}")
+```
+
+**预期结果**:
+```
+环境         ρ_early    ρ_late    Δρ (late−early)   P1 验证?
+HotpotQA     −0.45      −0.15      +0.30            ✅ (early更负)
+FEVER        −0.70      −0.30      +0.40            ✅ (early更负)
+APPS         ≈0         ≈0         ≈0               ✅ (弱信号全程)
+WebShop      −0.10      +0.15      +0.25            ✅ (early负→late正)
+TWExpress    −0.40      −0.10      +0.30            ✅ (early更负)
+Plancraft    ≈0         ≈0         ≈0               ⚠️ (弱信号)
+```
+
+**Figure 设计**:
+- **类型**: Grouped bar chart (paired bars per environment)
+- **X 轴**: 6 个环境
+- **Y 轴**: ρ(entropy, U) (−0.8 → +0.4)
+- **每组 2 条柱**:
+  - Early steps (深色/实心)
+  - Late steps (浅色/斜线)
+- **零线**: 虚线 ρ = 0
+- **箭头**: 从 early 到 late 的方向箭头（↑ = P1 成立）
+- **标注**: Δρ 值标在每组上方
+- **统计**: 每组柱上方标注 p-value（ρ_early vs ρ_late 的 Fisher z-test）
+- **文件名**: `fig_p1_temporal_shift.pdf`
+
+**备选 Figure**: 如果环境太多，做 2×3 子图 grid，每个子图是一个环境的 scatter plot:
+- X = entropy, Y = utility, 颜色 = early(蓝)/late(红)
+- 分别拟合回归线，斜率差异可视化
+
+**TODO**: `python analysis/verify_p1_temporal_shift.py`
+**状态**: ⏳ 需确认数据位置 + 写分析脚本
+**优先级**: 🔴 高 — Two-Source Model 最直接的可验证预测
+
+---
+
+### 3.8.3 🟡 Gate Trigger Rate vs Step 可视化 (已有 TODO，升级设计)
+
+**论文位置**: §5.4 E3 Ablation — Gate Behavior
+
+**目的**: 展示 EAAG 在不同环境学到了不同的 step-dependent 触发模式
+
+**数据来源**: EAAG exploit phase 的 decision_log
+- 每条记录: (env, episode_id, step_t, gate_decision, gate_probability)
+- 需要从每个环境的 se_online_decay_local 实验结果中提取
+
+**分析方法**:
+```python
+for env in environments:
+    log = load_decision_log(env, method='se_online_decay_local')
+    # Group by step, compute mean trigger rate
+    trigger_by_step = log.groupby('step')['gate_decision'].mean()
+    # Also compute 95% CI via bootstrap or binomial CI
+```
+
+**Figure 设计**:
+- **类型**: 2×3 子图 grid (6 环境)
+- **每个子图**:
+  - X = step (0 → max_step)
+  - Y = trigger probability (0 → 1.0)
+  - 蓝线 = EAAG trigger rate
+  - 灰色虚线 = overall trigger rate (常数线)
+  - 浅蓝 shading = 95% CI
+- **标注**: 每个子图标注环境名 + overall RR
+- **预期 pattern**:
+  - HotpotQA: early high, late low (step_count coef 负)
+  - FEVER: early high, late low (step_count coef 负)
+  - WebShop: spike when num_available_actions 大
+  - APPS: 全程低 (RR=6%, 保守)
+  - TWExpress: 全程高 (rollout-safe)
+  - Plancraft: 全程极低 (rollout-harmful, RR=1%)
+- **文件名**: `fig_trigger_rate_by_step.pdf`
+
+**叙事价值**:
+- 直观展示 adaptive behavior（不同环境不同 pattern）
+- 与 P1 temporal shift 互补（P1 看 signal 方向随 step 变化，这里看 gate 行为随 step 变化）
+- 证明 gate 不是 "一刀切"，而是 step-dependent 的精细控制
+
+**TODO**: `python analysis/generate_trigger_rate_by_step.py`
+**状态**: ⏳ 需从 decision_log 提取数据 (原 §3.2 TODO)
+**优先级**: 🟡 中 — 支撑 adaptive behavior story
+
+---
+
+### 3.8.4 🟡 BSW 代价 vs |ρ| 相关性分析 (Proposition 1 定量验证)
+
+**论文位置**: §3.2 Proposition 1 紧跟段 / §5.2 E1
+
+**目的**: 验证 "信号越强 (|ρ| 越大)，wrong-direction 代价越大"——Proposition 1 的 empirical corollary
+
+**数据来源**: §3.3 已有数据 + 新增 BSW 环境
+
+```
+已有数据:
+
+环境           |ρ| (最强信号)  BSW SR   always SR  BSW退化(pp)  rollout-safe?
+FEVER          0.619          63.0%    99.8%      −36.8       ❌
+HotpotQA       0.494          58.2%    97.0%      −38.8       ❌
+APPS Intv      0.339          79.5%    79.5%       0.0        ✅ (rollout-safe)
+CRUXEval       0.184          87.5%    99.5%      −12.0       ❌
+WebShop        0.444          20.6%    43.0%      −22.4       ❌
+```
+
+**分析方法**:
+```python
+import numpy as np
+from scipy.stats import spearmanr, pearsonr
+
+# 排除 rollout-safe 环境 (APPS Interview)
+data = [
+    ('FEVER',     0.619, -36.8),
+    ('HotpotQA',  0.494, -38.8),
+    ('WebShop',   0.444, -22.4),
+    ('CRUXEval',  0.184, -12.0),
+]
+rho_vals = [d[1] for d in data]
+bsw_cost = [d[2] for d in data]
+
+r, p = pearsonr(rho_vals, bsw_cost)  # 预期: 负相关 (|ρ|↑ → 退化更大)
+# 或者用 |bsw_cost| vs |ρ|: 正相关
+```
+
+**Figure 设计**:
+- **类型**: 散点图 + 回归线
+- **X 轴**: |ρ| of strongest signal (0 → 0.7)
+- **Y 轴**: BSW SR degradation in pp (0 → −40)
+- **每个点**: 一个环境，标注环境名
+- **回归线**: 线性拟合 + R² 标注
+- **特殊标注**: APPS Interview 用空心圆（rollout-safe，排除在回归外）
+- **标注**: "Stronger signals → larger wrong-direction penalty"
+- **文件名**: `fig_bsw_cost_vs_rho.pdf`
+
+**预期**: |ρ| 与 |degradation| 正相关 (R² > 0.5)
+- 最强信号环境 (FEVER |ρ|=0.619) → 最大退化 (−36.8pp)
+- 最弱信号环境 (CRUXEval |ρ|=0.184) → 最小退化 (−12.0pp)
+
+**TODO**: `python analysis/generate_bsw_cost_correlation.py`
+**状态**: ⏳ 数据已有 (§3.3)，需计算相关性 + 生成散点图
+**优先级**: 🟡 中 — Proposition 1 的 quantitative validation
+
+---
+
+### 3.8.5 🟡 方法分类等价表 (FLARE Table 5 对标)
+
+**论文位置**: §3.3 Implications / §5.1 Setup
+
+**目的**: 用 4 个维度把所有方法分类，一眼看出 EAAG 的独特性
+
+**数据来源**: §1.2 方法表 + §2.5 Win Rate + test_time_planning_taxonomy.md
+
+**Table 设计**: 见 VOC_PAPER_WRITING_GUIDE.md §1.8.4 完整设计
+
+**需要整理**:
+1. 从 Win Rate 数据 (§2.5) 填充 "SR Win/Loss" 列
+2. 确认 RL-based methods (AdaptThink, Thinkless) 无直接对比数据 → 标 N/A
+3. 从 taxonomy 确认每个方法的 Signal Type / Direction / Granularity
+
+**输出**: LaTeX table code (直接放入论文)
+
+**TODO**: 手动整理 → LaTeX
+**状态**: ⏳ 纯整理工作
+**优先级**: 🟡 中 — §3.3 或 §5.1 的重要表格
+
+---
+
+### 3.8.6 🟢 环境信息结构分类 (Prescriptive Framework)
+
+**论文位置**: §3.3 Implications / §6 Discussion
+
+**目的**: 给每个环境标注 3 维信息结构特征，验证与 Two-Source 类型一致
+
+**数据来源**: 环境设计知识 + §2.4 Signal Discovery 数据
+
+```
+环境           Info-Sufficiency   Reversibility    Feedback-Delay   Two-Source Type     ρ(entropy,U)
+HotpotQA       Info-Poor          Irreversible     Immediate        Information-Poverty  −0.041
+FEVER          Info-Poor          Irreversible     Immediate        Information-Poverty  −0.119
+APPS Intro     Info-Rich          Irreversible     Delayed          Decision-Difficulty  +0.012
+APPS Intv      Info-Rich          Irreversible     Delayed          Decision-Difficulty  +0.317
+WebShop        Mixed              Reversible       Immediate        Mixed               −0.019
+TWExpress      Info-Poor          Irreversible     Immediate        Information-Poverty  −0.290
+Plancraft      Info-Rich          Irreversible     Delayed          弱信号(harmful)      −0.016
+CRUXEval       Info-Rich          Irreversible     Delayed          弱信号              −0.048
+```
+
+**验证**: Info-Poor 环境 → Type I 主导 → entropy ρ 负 ✅ (HotpotQA, FEVER, TWExpress)
+         Info-Rich 环境 → Type D 主导 → entropy ρ ≈0 或正 ✅ (APPS Intv +0.317)
+
+**输出**: LaTeX table (8 行 × 6 列)
+**TODO**: 手动整理 → LaTeX
+**状态**: ⏳ 纯概念整理
+**优先级**: 🟢 低 — §6 Discussion 的 prescriptive takeaway
+
+---
+
+### 3.8.7 🔴 Stratified + Matched-Pair Analysis: Direction Reversal 因果性验证 (§5.6 核心)
+
+**论文位置**: §5.6 Robustness of Direction Reversal
+
+**目的**: 两层验证——(A) 控制 confounder 后 reversal 仍存在，(B) 在 matched states 下直接展示 "same entropy, opposite meaning"
+
+**数据来源**: 已有 probe 数据 (同 §3.8.2 P1 Temporal Shift)
+
+**⚠️ 为什么需要两层**: 外部 review 指出 BSW ablation 只证明 "direction matters for gate policy"，没证明 "entropy semantics 是 environment-dependent 的 real phenomenon"。Stratified analysis 控制 confounder；Matched-pair 直接展示 "在相同条件下高 entropy 在不同环境意味着相反的事"——这是 "Same Signal, Opposite Meaning" 的最直观证据。
+
+---
+
+#### Part A: Stratified Analysis (控制 confounder)
+
+**核心问题**: direction reversal 会不会是 trajectory length / difficulty 造成的 artifact？
+
+**分析方法**:
+```python
+from scipy.stats import spearmanr
+
+for env in ['hotpotqa', 'apps', 'apps_intv', 'fever', 'webshop', 'twexpress']:
+    data = load_probe_data(env)
+
+    # 方法 1: 按 trajectory length 分层
+    data['length_bin'] = pd.qcut(data['episode_length'], 3, labels=['short','mid','long'])
+
+    for bin_name in ['short', 'mid', 'long']:
+        subset = data[data['length_bin'] == bin_name]
+        rho, p = spearmanr(subset['entropy'], subset['utility'])
+        print(f"{env} [{bin_name}]: ρ={rho:.3f}, p={p:.3f}, n={len(subset)}")
+
+    # 方法 2: 按 step_count 分层 (proxy for difficulty/progress)
+    data['step_bin'] = pd.qcut(data['step_count'], 3, labels=['early','mid','late'])
+
+    for bin_name in ['early', 'mid', 'late']:
+        subset = data[data['step_bin'] == bin_name]
+        rho, p = spearmanr(subset['entropy'], subset['utility'])
+        print(f"{env} [{bin_name}]: ρ={rho:.3f}, p={p:.3f}, n={len(subset)}")
+```
+
+**预期结果**:
+```
+环境          short    mid      long     reversal 在每层都存在?
+HotpotQA     −0.05   −0.03    −0.02    ✅ 始终负
+FEVER        −0.15   −0.10    −0.08    ✅ 始终负
+APPS Intv    +0.25   +0.30    +0.35    ✅ 始终正
+APPS         ≈0      ≈0       ≈0       ✅ 始终≈0 (弱信号)
+WebShop      ≈0      ≈0       ≈0       ✅ entropy 始终弱 (主信号是 num_actions)
+```
+
+**Figure 设计 (Part A)**:
+- **类型**: Grouped bar chart (6 env × 3 strata)
+- **X 轴**: 6 environments, grouped
+- **Y 轴**: ρ(entropy, U) within stratum
+- **每组 3 条柱**: short (浅色) / mid (中色) / long (深色)
+- **核心 message**: 每组内 3 条柱符号一致 → reversal 不是 length/difficulty artifact
+- **文件名**: `fig_stratified_reversal.pdf`
+
+---
+
+#### Part B: Matched-Pair Analysis (within-state "same signal, opposite meaning" 展示) 🔥
+
+**核心问题**: 在难度/进度 matched 的 states 下，高 entropy 在不同环境是否真的意味着相反的事？
+
+**这是论文标题 "Same Signal, Opposite Meaning" 的最直观证据。**
+
+**分析方法**:
+```python
+import numpy as np
+
+results = {}
+for env in ['hotpotqa', 'apps_intv', 'fever', 'apps']:
+    data = load_probe_data(env)
+
+    # Step 1: 按 difficulty proxy 分层 (step_count 三分位)
+    data['difficulty_bin'] = pd.qcut(data['step_count'], 3, labels=['easy','med','hard'])
+
+    deltas = []
+    for diff_bin in ['easy', 'med', 'hard']:
+        matched = data[data['difficulty_bin'] == diff_bin]
+
+        # Step 2: 在 matched states 内, 按 entropy 分 high/low
+        median_entropy = matched['entropy'].median()
+        high_ent = matched[matched['entropy'] >= median_entropy]
+        low_ent = matched[matched['entropy'] < median_entropy]
+
+        # Step 3: 比较 mean utility
+        delta_U = high_ent['utility'].mean() - low_ent['utility'].mean()
+        deltas.append(delta_U)
+
+        print(f"{env} [{diff_bin}]: "
+              f"U(high_ent)={high_ent['utility'].mean():.3f}, "
+              f"U(low_ent)={low_ent['utility'].mean():.3f}, "
+              f"ΔU={delta_U:+.3f}")
+
+    results[env] = deltas
+```
+
+**预期结果**:
+```
+在 difficulty-matched states 内, 高 entropy 的 utility 差:
+
+环境          easy     med      hard     方向
+HotpotQA     −0.08   −0.05    −0.03    全负 → 高entropy=信息匮乏=rollout无用
+FEVER        −0.12   −0.09    −0.06    全负 → 同上
+APPS Intv    +0.05   +0.08    +0.10    全正 → 高entropy=决策困难=rollout有价值
+APPS         ≈0      ≈0       ≈0       ≈0   → 弱信号
+
+→ 在相同难度下, 高 entropy 在 HotpotQA 意味着 "rollout 无用",
+  在 APPS Interview 意味着 "rollout 有价值"
+→ 这就是 "Same Signal, Opposite Meaning" 的直接证据
+```
+
+**Figure 设计 (Part B)**:
+- **类型**: 2×2 子图 (4 个代表环境)
+- **每个子图**:
+  - X 轴: difficulty bin (easy / med / hard)
+  - Y 轴: ΔU = U(high_entropy) − U(low_entropy)
+  - 柱状图 + error bar (bootstrap 95% CI)
+  - 零线虚线
+  - 环境名 + 方向标注 ("Type I: ΔU < 0" 或 "Type D: ΔU > 0")
+- **核心 message**: HotpotQA/FEVER 柱子全在零线下方, APPS Intv 全在上方
+- **标题**: "Same entropy level, opposite utility effect across environments"
+- **文件名**: `fig_matched_pair_opposite_meaning.pdf`
+
+**备选 Figure**: 如果子图太多, 做一个 **heatmap**:
+- X 轴: 4 environments
+- Y 轴: 3 difficulty bins
+- 颜色: ΔU (红=正, 蓝=负, 白=0)
+- 一眼看出 "红蓝分明" = opposite meaning
+
+---
+
+**TODO**: `python analysis/stratified_and_matched_pair.py`
+**状态**: ⏳ 数据已有，需写脚本 (~半天)
+**优先级**: 🔴 高 — Part A 堵 artifact 攻击, Part B 提供标题级别的直观证据
+**产出**: 2 个 figures (`fig_stratified_reversal.pdf` + `fig_matched_pair_opposite_meaning.pdf`)
+
+---
+
+### 3.8.8 🔴 Gate Capacity Ablation (§5.6 核心)
+
+**论文位置**: §5.6 Robustness → Gate complexity ablation
+
+**目的**: 证明 "direction >> capacity"——用更复杂的 gate 不会提升性能，但用错误方向的复杂 gate 更糟
+
+**数据来源**: 已有 Phase 2/2.5 数据 + Phase 5 AUC 数据
+
+```
+已有数据 (HotpotQA):
+
+Gate               Direction    SR       AUC     来源
+Logistic (5 feat)  Correct      95.2%    0.851   Phase 6 EAAG
+MLP (5 feat)       Correct      ~95%     0.869   Phase 2 MLP variant
+Hidden state LR    Correct      ~95%     0.869   Phase 5 probe
+Logistic (5 feat)  Wrong        62.0%    —       Phase 2 BSW-LR
+MLP (5 feat)       Wrong        45.3%    —       Phase 2.5 BSW-MLP
+Base (no gate)     —            49.0%    0.500   baseline
+```
+
+**需要确认**:
+- MLP correct-direction SR: 从 Phase 2 数据中提取（scg_mlp 变体）
+- Hidden state LR correct-direction SR: 从 Phase 5 hidden state probe 数据中提取
+- 如果缺失 → 需要跑少量补充实验 (每个 200 ep × 1 seed)
+
+**Figure 设计**:
+- **类型**: 表格 (Table, 不是 figure) — 放在 §5.6 或 §5.3 的 ablation 中
+- 结构如 writing guide 中 `tab:capacity` 的设计
+- 核心 message: 所有 correct-direction gates ≈ 95%，所有 wrong-direction gates 大幅下降
+
+**TODO**: 整理已有数据成表；如果 MLP/hidden-state correct-direction SR 缺失，补跑
+**状态**: ⏳ 大部分数据已有，可能需要少量补跑
+**优先级**: 🔴 高 — 直接回应 "为什么不用更复杂的 gate" 的 reviewer 攻击
+
+---
+
+### 3.8.9 🟡 Observable Proxy for p_I: Information Coverage (§5.4 / Appendix D)
+
+**论文位置**: §5.4 Theory Verification 或 Appendix D
+
+**目的**: 为 Two-Source Model 的 latent variable p_I 提供 observable proxy，让理论从 "post-hoc narrative" 升级为 "empirically grounded model"
+
+**Proxy 定义**:
+```
+Information Coverage c_t = 可观测的"信息充分度"指标
+
+环境       c_t 定义                                          可从已有数据提取?
+HotpotQA   evidence_count / total_gold_evidence              ✅ (evidence_count 已有)
+FEVER      step_count / max_steps (proxy: 更多步=更多搜索)    ✅ (step_count 已有)
+APPS       1.0 for all steps (code 是 self-contained)        ✅ (常数)
+WebShop    num_available_actions / max_actions (proxy)        ✅ (num_available_actions 已有)
+TWExpress  step_count / max_steps                            ✅ (step_count 已有)
+```
+
+**分析方法**:
+```python
+# Analysis 1: Within-environment — 低 coverage 的 ρ 是否更负?
+for env in environments:
+    data = load_probe_data(env)
+    coverage = compute_coverage(data, env)  # 按上表定义
+    low_cov = data[coverage < coverage.median()]
+    high_cov = data[coverage >= coverage.median()]
+    rho_low = spearmanr(low_cov['entropy'], low_cov['utility'])
+    rho_high = spearmanr(high_cov['entropy'], high_cov['utility'])
+    # 预期: rho_low < rho_high (低 coverage = 高 p_I = 更负 ρ)
+
+# Analysis 2: Cross-environment — mean coverage 是否与 ρ 方向相关?
+for env in environments:
+    mean_c = compute_mean_coverage(env)
+    rho_env = get_entropy_utility_rho(env)
+    # 画 scatter: x = mean_c, y = rho_env
+    # 预期: 正相关 (高 coverage = 低 p_I = 更正 ρ)
+```
+
+**预期结果**:
+- Analysis 1: 在 HotpotQA 中，低 evidence_count 的 ρ 更负 (Type I 主导)
+- Analysis 2: 散点图中 APPS (high coverage, ρ≈0) 和 FEVER (low coverage, ρ=−0.119) 分布在预期位置
+
+**Figure 设计**:
+- **类型**: 散点图 (cross-environment)
+- **X 轴**: Mean information coverage (0 → 1)
+- **Y 轴**: ρ(entropy, U)
+- **每个点**: 一个环境，标注名称
+- **回归线**: 如果正相关显著 → 直接验证 "p_I ∝ (1 - coverage)"
+- **文件名**: `fig_coverage_vs_rho.pdf`
+
+**TODO**: `python analysis/information_coverage_proxy.py`
+**状态**: ⏳ 数据已有 (evidence_count, step_count, num_available_actions 都在 probe 数据中)
+**优先级**: 🟡 中高 — 让 Two-Source Model 从 narrative 升级为 empirically grounded
+
+---
+
+### 3.8.10 🟡 Statistical Significance 汇总表 (§5.2 / Appendix E)
+
+**论文位置**: §5.2 Main Results 或 Appendix E
+
+**目的**: 回应 "34W/2L 是弱证据" — 用 formal statistical tests 替代 win/loss counting
+
+**分析方法**:
+```python
+# 对每个 (EAAG vs CB) 对比:
+from scipy.stats import chi2_contingency  # McNemar
+from statsmodels.stats.tost import TOST   # equivalence
+
+for cb in ['CaTS', 'SEAG', 'CoRefine', 'CATTS', 'AUQ', 's1']:
+    for env in ['hotpotqa', 'apps', 'webshop', 'fever', 'twexpress', 'plancraft']:
+        # McNemar test: EAAG vs CB, paired by episode
+        # 已有 3-seed data (200 ep/seed)
+        # H0: SR(EAAG) = SR(CB)
+        p_mcnemar = mcnemar_test(eaag_results, cb_results)
+
+        # Effect size: ΔSR = SR(EAAG) - SR(CB)
+        delta_sr = eaag_sr - cb_sr
+
+        # 95% CI via bootstrap
+        ci = bootstrap_ci(eaag_results, cb_results, n_boot=10000)
+```
+
+**产出**:
+```
+Table (Appendix E): Statistical significance of EAAG vs each CB
+
+CB       Env        ΔSR (pp)   95% CI          McNemar p    Significant?
+CaTS†    HotpotQA   +2.0       [−0.5, +4.5]    0.12         —
+CaTS†    APPS       +7.0       [+3.2, +10.8]   0.003        ✅
+CaTS†    WebShop    +13.3      [+8.1, +18.5]   <0.001       ✅
+...
+```
+
+**TODO**: `python analysis/statistical_significance_table.py`
+**状态**: ⏳ 需要从 3-seed per-episode 数据计算
+**优先级**: 🟡 中 — 替代 win/loss 的更强证据
+
+---
+
+## 3.9 v7.0 新增实验（需要新 GPU run）🆕🆕🆕
+
+### 3.9.1 🟡 Controlled InfoPoor/InfoRich 实验 (Causal Evidence for Direction Reversal)
+
+**论文位置**: §5.4 Ablation 或 Appendix D
+
+**目的**: 在同一个 task family (HotpotQA) 内通过操控 information structure 触发 direction reversal，提供因果证据（不是跨 task 的 observational evidence）
+
+**理论预测**:
+```
+Two-Source Model 预测:
+  InfoPoor (p_I 高) → ρ(entropy, U) 强负
+  InfoRich (p_I 低) → ρ(entropy, U) 弱正或 ≈0
+  关键: 同一个 task，不同的信息结构 → 方向反转
+```
+
+**实验设计**:
+
+```
+环境变体 A: HotpotQA-InfoPoor
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  修改: retrieval 阶段只返回 1 个 evidence paragraph (随机选)
+  效果: agent 缺信息 → 更多 Type I 状态 → 高 entropy = "不知道该搜什么"
+  预期: ρ(entropy, U) 强负 (≈−0.3 to −0.5)
+  预期 base SR: 降低 (信息少 → 更难)
+
+环境变体 B: HotpotQA-InfoRich
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  修改: 第一步就把所有 gold evidence paragraphs 给 agent
+  效果: agent 有充足信息 → 更多 Type D 状态 → 高 entropy = "有多种合理回答"
+  预期: ρ(entropy, U) 弱正或 ≈0 (+0.05 to +0.15)
+  预期 base SR: 提高 (信息充足 → 更容易)
+
+对照: HotpotQA-Original (原始设置)
+  已有数据: ρ = −0.041 (entropy), base SR = 49.0%
+```
+
+**代码修改量**:
+- 修改 HotpotQA 环境的 `get_observation()` 或 `retrieve_evidence()` 方法
+- InfoPoor: 限制 retrieval 返回的 paragraph 数量为 1
+- InfoRich: 在 episode 开始时直接把 gold evidence 注入 context
+- 预估代码改动: ~50 行 (在 environment wrapper 层面)
+
+**实验量**:
+```
+2 variants × 200 episodes × 3 seeds = 1,200 episodes
++ Phase 1 probe 数据: 2 variants × 200 episodes = 400 episodes (always_trigger for signal discovery)
+总计: ~1,600 episodes
+
+每个 episode ≈ 5 steps × 2 API calls ≈ 10 API calls
+总 API calls: ~16,000
+GPU/API 时间: ~4-8 小时 (取决于 API 速率)
+```
+
+**需要跑的方法**:
+```
+每个 variant (InfoPoor / InfoRich):
+  - base_only (200 ep × 3 seeds) → base SR
+  - always_trigger (200 ep × 1 seed) → oracle SR + probe data for ρ
+  - EAAG (200 ep × 3 seeds) → adaptive SR (optional, 如果时间够)
+```
+
+**产出**:
+1. **ρ comparison table**:
+```
+Variant          ρ(entropy, U)    base SR    always SR    Two-Source Type
+InfoPoor         −0.35 (预期)      35%         90%          Type I 主导
+Original         −0.041 (已有)     49%         97%          Mixed
+InfoRich         +0.10 (预期)      75%         98%          Type D 偏多
+```
+
+2. **Figure**: 3 组 scatter plot (InfoPoor / Original / InfoRich), 每组 X=entropy Y=utility, 回归线斜率变化
+   - **文件名**: `fig_controlled_direction_reversal.pdf`
+
+3. **核心 claim**: "在同一个 QA task 中，仅通过改变信息可用性即可触发 direction reversal — 证明方向是信息结构的函数，不是 task 类型的 artifact"
+
+**风险评估**:
+- ❌ 风险 1: InfoRich base SR 太高 (~95%) → headroom 不够 → ρ 无意义 → 需要看 always SR 是否也高
+- ❌ 风险 2: InfoPoor 可能导致 agent 完全失败 (base SR ~5%) → ρ 不稳定
+- ✅ 缓解: 先跑 50 ep pilot (不做 3 seeds) 看 base SR 范围，如果在 20%-80% 内则继续
+
+**优先级判断**:
+- 🟡 **中优先** — 如果时间充足（NeurIPS DDL 前还有 2+ 周），做这个实验显著增强论文
+- 如果时间紧张 → 用已有 quasi-controlled evidence 替代:
+  - FEVER ≈ HotpotQA (同族，方向一致) → 同类 task 方向一致
+  - APPS Intro (ρ≈0) vs APPS Interview (ρ=+0.317) → 同 task 不同难度方向变化
+  - 这些不是 controlled experiment 但提供了 convergent evidence
+
+**TODO**:
+1. 修改 HotpotQA 环境代码 (InfoPoor/InfoRich variants)
+2. 先跑 50 ep pilot 检查 base SR 范围
+3. 如果可行 → 跑完整实验 (1,600 ep)
+4. 生成 scatter plot + ρ comparison table
+
+---
+
 ## 4. 实验完成状态 Checklist
 
 ### 4.1 数据收集
@@ -321,13 +997,32 @@ APPS Interview: step_count, step_ratio, has_error
 
 ### 4.2 Analysis 图表
 
+**已完成**:
 - [x] §5 E1: Direction reversal 信号热力图 → `fig1_signal_heatmap.png/pdf`
 - [x] §5 E2: Pareto frontier 图 × 6 环境 → `fig2_pareto.png/pdf`
 - [x] §5 E1: BSW 错误方向代价散点图 → `fig3_bsw_cost.png/pdf`
 - [x] §5 E1/E3: Feature usage heatmap → `fig4_feature_heatmap.png/pdf`
 - [x] §5 E3: LLM ablation 柱状图 → `fig5_llm_ablation.png/pdf`
 - [x] §6.1: FEVER exploration bias 分析图 → `fig6_fever_bias.png/pdf`
-- [ ] §5 E3: Gate trigger rate vs step 可视化 (需从 decision_log 提取)
+
+**v7.0 新增 (已有数据，需写脚本)**:
+- [ ] 🔴 §3.1: AUC hierarchy 柱状图 → `fig_auc_hierarchy.pdf` (§3.8.1)
+- [ ] 🔴 §3.2: P1 Temporal Shift 验证 → `fig_p1_temporal_shift.pdf` (§3.8.2)
+- [ ] 🟡 §5.4: Gate trigger rate vs step → `fig_trigger_rate_by_step.pdf` (§3.8.3)
+- [ ] 🟡 §3.2: BSW 代价 vs |ρ| 相关性 → `fig_bsw_cost_vs_rho.pdf` (§3.8.4)
+- [ ] 🟡 §3.3: 方法分类等价表 (FLARE Table 5) → LaTeX table (§3.8.5)
+- [ ] 🟢 §6: 环境信息结构分类表 → LaTeX table (§3.8.6)
+
+**v7.1 Reviewer 防御实验 (已有数据，需写脚本)**:
+- [ ] 🔴 §5.6: Stratified analysis (控制 confounder) → `fig_stratified_reversal.pdf` (§3.8.7 Part A)
+- [ ] 🔴 §5.6: Matched-pair analysis ("same signal, opposite meaning" 直观证据) → `fig_matched_pair_opposite_meaning.pdf` (§3.8.7 Part B)
+- [ ] 🔴 §5.6: Gate capacity ablation table → `tab:capacity` LaTeX (§3.8.8)
+- [ ] 🟡 §5.4/App D: Information coverage proxy → `fig_coverage_vs_rho.pdf` (§3.8.9)
+- [ ] 🟡 §5.2/App E: Statistical significance 汇总表 → `tab:significance` LaTeX (§3.8.10)
+
+**v7.0 新增 (需要新 GPU run)**:
+- [ ] 🟡 §5.4: Controlled InfoPoor/InfoRich → `fig_controlled_direction_reversal.pdf` (§3.9.1)
+- [ ] 🟡 §5.6: MLP/Hidden-state correct-direction SR (如果缺失) → 补 §3.8.8 数据
 
 All figures at: `planning/paper_figures/` (PNG 200dpi + PDF vector)
 生成脚本: `planning/paper_figures/generate_all_figures.py`
@@ -344,35 +1039,114 @@ Job 23292522: Path E 剩余 ~107 tasks (FEVER 11 + APPS Intv 21 + CRUXEval 75)
 
 ## 5. 论文 Experiment Section 大纲
 
+### v7.0 升级版（对标 FLARE §3 三段式 + §5 实验）
+
 ```
+═══════════════════════════════════════════════════════════════
+§3 Signal-Utility Landscape (2.0 页) — FLARE-Style 三段式
+═══════════════════════════════════════════════════════════════
+
+§3.1 Empirical Landscape (0.7 页) — 纯数据，4 个 Observations
+  Obs 1: Direction Reversal
+    → Figure: 信号热力图 (8 env × N signals) [fig1, 已有]
+    → Table: 8 env 的 ρ(entropy, U)
+  Obs 2: Signal Replacement
+    → Feature usage heatmap (7 env × features) [fig4, 已有]
+  Obs 3: Signal Poverty 🆕
+    → Figure: AUC hierarchy 柱状图 [fig_auc_hierarchy, §3.8.1 新增]
+    → Data: single 0.53 → multi 0.85 → hidden 0.89 (3 env)
+  Obs 4: Systematic CB Failure
+    → Table: CB Win/Loss (34W 2L / 38)
+
+§3.2 Formal Analysis (0.8 页) — Two-Source Model + Propositions
+  Two-Source Model (Eq. 1 + p* + 环境映射)
+  Proposition 3: Necessity of Direction Discovery (3 行 formal statement)
+  → Prop 1/2 降为 empirical claims (不做 full formal proposition)
+  3 Testable Predictions (P1/P2/P3)
+
+§3.3 Implications (0.5 页) — Bridge to method
+  方法分类等价表 (FLARE Table 5) [§3.8.5 新增]
+  环境信息结构分类 [§3.8.6]
+  过渡句 → §4 Method
+
+═══════════════════════════════════════════════════════════════
+§5 Experiments (2.5 页)
+═══════════════════════════════════════════════════════════════
+
 §5.1 Setup (0.3 页)
-  - 8 环境 + EAAG 方法 + baseline 分层
+  - 8 环境 + EAAG + baseline 分层 (Table)
   - Total Cost 定义 (含 Phase 1 amortized)
+  - 公平对比声明 ("same T, same agent, only gate differs")
 
-§5.2 E1: Direction Reversal Finding (0.8 页)
-  - Figure: 信号热力图 (8 env × N signals)
-  - Figure: Feature usage heatmap (7 env × selected features)
-  - BSW wrong-direction ablation + 代价 vs |ρ| 散点图
-  - 新发现: 同族方向一致 (FEVER≈HotpotQA), 同环境不同难度方向变 (APPS)
-
-§5.3 E2: Main Comparison (0.8 页)
+§5.2 E1: Main Comparison (0.8 页)
   - Table: 主表 (6 env × methods, SR + Total Cost)
-  - Figure: Pareto frontier (4 主实验子图)
+  - Figure: Pareto frontier (4 主实验子图) [fig2, 已有]
   - EAAG 34W/2L vs 6 CB
   - EAAG Pareto-dominates SCG† 4/7, CaTS† 6/6
 
-§5.4 E3: Ablation (0.5 页)
-  - LLM ablation: EAAG vs principled_v2
-  - Online adaptation: se_online_decay vs self_evolving
-  - SCG†: 手工 feature + Phase 1 的 oracle upper bound
-  - Gate behavior: trigger rate vs step 可视化
+§5.3 E2: Ablation & Analysis (0.6 页)
+  - BSW wrong-direction ablation [fig3, 已有]
+  - LLM ablation: EAAG vs principled_v2 [fig5, 已有]
+  - Gate trigger rate vs step 🆕 [fig_trigger_rate_by_step, §3.8.3]
 
-§5.5 E4: Diagnostic (0.3 页)
-  - TWExpress: rollout-safe → EAAG 99.0% (积极触发)
-  - Plancraft: rollout-harmful → EAAG ro=0.27 (学会不触发)
+§5.4 E3: Theory Verification (0.5 页) 🆕 v7.0 新增
+  - P1 Temporal Shift 验证 🆕 [fig_p1_temporal_shift, §3.8.2]
+  - P2 同族方向一致 (FEVER≈HotpotQA) — 已有数据
+  - P3 Signal identity alignment — 已有数据
+  - Information coverage proxy 🆕 [fig_coverage_vs_rho, §3.8.9]
+  - [Optional] Controlled InfoPoor/InfoRich 🆕 [fig_controlled, §3.9.1]
 
-§6 Analysis (1.0 页)
-  §6.1 Exploration bias (FEVER case study)
-  §6.2 Two-Source Theory verification
-  §6.3 Limitations + Future work
+§5.5 Diagnostic (0.3 页) — TWExpress + Plancraft
+
+§5.6 Robustness (0.5 页) 🆕🆕 v7.1 Reviewer 防御
+  - Stratified analysis (控制 length/difficulty confounder) [fig_stratified, §3.8.7A]
+  - Matched-pair analysis ("same entropy, opposite meaning") [fig_matched_pair, §3.8.7B]
+  - Gate capacity ablation (direction >> complexity) [tab:capacity, §3.8.8]
+  - Statistical significance (McNemar + TOST) [tab:significance, §3.8.10]
+
+═══════════════════════════════════════════════════════════════
+§6 Discussion (1.0 页)
+═══════════════════════════════════════════════════════════════
+
+§6.1 Community Insight
+  "Uncertainty semantics = f(environment information structure)"
+  Prescriptive framework: Info-Sufficiency × Reversibility × Feedback-Delay
+
+§6.2 Exploration Bias (FEVER case study) [fig6, 已有]
+
+§6.3 Limitations + Future Work
+  - Single backbone (Qwen3-4B)
+  - Two-Source Model 是 first-order approximation
+  - Future: from binary U → rollout content learning
+```
+
+### v7.0 Figure 清单（论文全部图表）
+
+```
+正文 Figures (9-11 个):
+  fig1: 信号热力图 (8 env × signals)                         [§3.1, 已有 ✅]
+  fig2: Pareto frontier (4 env)                               [§5.2, 已有 ✅]
+  fig3: BSW 错误方向退化                                       [§5.3, 已有 ✅]
+  fig4: Feature usage heatmap (7 env)                         [§3.1, 已有 ✅]
+  fig_auc: AUC hierarchy (3 env × 4 levels)                  [§3.1, 🆕 §3.8.1]
+  fig_p1: P1 temporal shift (6 env, early vs late ρ)         [§5.4, 🆕 §3.8.2]
+  fig_trigger: Trigger rate vs step (6 env)                  [§5.3, 🆕 §3.8.3]
+  fig_fever: FEVER exploration bias                           [§6.2, 已有 ✅]
+  fig_stratified: Stratified reversal (6 env × 3 strata)    [§5.6, 🆕 §3.8.7A]
+  fig_matched: Matched-pair ΔU (4 env × 3 difficulty bins)   [§5.6, 🆕 §3.8.7B] 🔥标题级证据
+  [opt] fig_controlled: InfoPoor/InfoRich scatter             [§5.4, 🆕 §3.9.1]
+  [opt] fig_coverage: Coverage proxy vs ρ scatter             [§5.4, 🆕 §3.8.9]
+
+正文 Tables (3-4 个):
+  tab1: Env setup (8 env × base/always/optimizer)       [§5.1]
+  tab2: Main results (6 env × methods, SR + Cost)       [§5.2]
+  tab3: Method classification (FLARE Table 5 style)     [§3.3, 🆕 §3.8.5]
+  [opt] tab4: Info structure taxonomy (8 env × 3 dims)  [§6.1, 🆕 §3.8.6]
+
+附录 Figures/Tables:
+  LLM ablation 柱状图                                    [已有 ✅]
+  BSW 代价 vs |ρ| 散点图                                 [🆕 §3.8.4]
+  Appendix env results (APPS Intv, CRUXEval)
+  CMDP λ* convergence
+  Proposition proofs
 ```
