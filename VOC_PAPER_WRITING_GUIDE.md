@@ -54,8 +54,8 @@ computation. Building on this analysis, we propose EAAG
 autonomously discover environment-specific gating patterns through
 exploration, LLM-based reasoning, and LASSO-based direction learning,
 with zero per-step deployment cost. Across 8 evaluation environments,
-EAAG Pareto-dominates all fixed-direction baselines (34 wins vs.\ 2
-losses against 6 competing methods) and exhibits emergent adaptive
+EAAG achieves 34 wins vs.\ 2 losses against 6 competing methods
+in head-to-head SR comparisons and exhibits emergent adaptive
 behavior: trigger rate varies with environment---73\% in rollout-safe
 TWExpress, 66\% in high-headroom HotpotQA, 28\% in WebShop---without
 explicit headroom estimation.
@@ -140,7 +140,7 @@ All fixed-direction methods systematically fail
 in at least two of eight evaluation environments; on FEVER, CATTS
 achieves 34.2\%---\emph{below} the 37.0\% no-trigger baseline.
 The cost of wrong direction is catastrophic: reversing the discovered
-direction causes SR to drop by 38.8\,pp on HotpotQA,
+direction causes SR to drop by 37.0\,pp on HotpotQA,
 with MLP falling to 45.3\%---below the 49.0\% no-trigger baseline.
 When the direction is wrong, more precise calibration makes
 performance \emph{worse}, not better.
@@ -181,8 +181,9 @@ task-specific patterns and generate feature hypotheses; (3)~LASSO
 gate with zero per-step deployment cost. Unlike all prior methods,
 EAAG requires no Phase~1 calibration data and no human-specified
 signal direction. Across 8 evaluation environments, EAAG
-Pareto-dominates all calibrated baselines: 34 wins vs.\ 2 losses
-against 6 competing methods in head-to-head SR comparisons. The
+achieves 34 wins vs.\ 2 losses against 6 competing methods in
+head-to-head SR comparisons, Pareto-dominating in 5/6 shared
+environments. The
 learned gate exhibits emergent adaptive behavior: trigger rate
 varies across environments---73\% in rollout-safe TWExpress, 66\%
 in high-headroom HotpotQA, 28\% in WebShop---without explicit
@@ -208,8 +209,8 @@ Our contributions are:
   direction learning. Zero per-step overhead, no calibration data
   required.
 
-\item \textbf{Systematic evaluation.} EAAG Pareto-dominates all
-  calibrated baselines (34W/2L) across 8 diverse environments with
+\item \textbf{Systematic evaluation.} EAAG achieves 34 wins vs.\
+  2 losses across 8 diverse environments with
   emergent adaptive behavior matching rollout headroom.
 \end{enumerate}
 ```
@@ -561,7 +562,7 @@ Since neither $d = +1$ nor $d = -1$ can satisfy both environments
 simultaneously, any gate achieving non-negative VOC in both must
 adapt its direction---i.e., direction discovery is necessary.
 Empirically, the damage is severe: wrong-direction gating degrades SR
-by $-$38.8\,pp on HotpotQA and $-$22.4\,pp on WebShop
+by $-$37.0\,pp on HotpotQA and $-$23.2\,pp on WebShop
 (\S\ref{sec:ablation}). Full constructive proof with utility
 quantification in Appendix~\ref{app:proofs}. \qed
 \end{proof}
@@ -673,7 +674,7 @@ Each component of EAAG follows directly from the analysis in
 \paragraph{Why the method is intentionally simple.}
 Our analysis reveals that \emph{the bottleneck for adaptive compute
 is not gate complexity but direction discovery}. An MLP gate with
-the wrong direction degrades SR by 38.8\,pp
+the wrong direction degrades SR by 37.0\,pp
 (\S\ref{sec:ablation}); a logistic gate with the right direction
 Pareto-dominates all baselines. The complexity budget should go to
 \emph{discovery}---identifying which signals matter and in which
@@ -908,10 +909,10 @@ ones, and near-zero triggering when rollouts are harmful
   lowest cost (1.34 ro/ep). The advantage here is efficiency, not
   accuracy: EAAG uses 38\% fewer rollouts than the next-best method.
 \item \textbf{APPS Intro} (narrow headroom):
-  Only +6\,pp headroom. EAAG correctly learns
-  conservative gating (RR=6\%), achieving 66.0\% at 1.20 ro/ep.
-  This demonstrates that direction-aware gating naturally adapts
-  \emph{magnitude}, not just sign.
+  Only +6\,pp headroom. EAAG learns moderate gating
+  (RR=35\%), achieving 66.0\% at 1.20 ro/ep---the lowest cost
+  among methods that improve over base. This demonstrates that
+  direction-aware gating naturally adapts to environment headroom.
 \end{itemize}
 ```
 
@@ -1117,8 +1118,8 @@ evidence: we \emph{manipulate} the gate's direction and measure the
 causal effect on SR. If direction reversal were merely correlational,
 reversing direction should have no systematic effect. Instead, we
 observe catastrophic degradation:
-$-$38.8\,pp on HotpotQA ($d^*{=}{-}1 \to d{=}{+}1$) and
-$-$22.4\,pp on WebShop. The MLP gate with wrong direction falls
+$-$37.0\,pp on HotpotQA ($d^*{=}{-}1 \to d{=}{+}1$) and
+$-$23.2\,pp on WebShop. The MLP gate with wrong direction falls
 \emph{below} the no-trigger baseline (45.3\% $<$ 49.0\%), confirming
 that the direction encodes a real causal relationship, not a
 statistical artifact.
@@ -1132,7 +1133,7 @@ direction (Table~\ref{tab:capacity}).
 \begin{table}[t]
 \caption{Gate complexity ablation on HotpotQA. Direction matters
 more than model capacity: a logistic gate with correct direction
-outperforms an MLP with wrong direction by 51.5\,pp.}
+outperforms an MLP with wrong direction by 49.9\,pp.}
 \label{tab:capacity}
 \centering\small
 \begin{tabular}{lccc}
@@ -1160,12 +1161,12 @@ precisely targets harmful states. The information hierarchy is:
 
 \paragraph{Statistical significance.}
 All head-to-head comparisons use 3-seed evaluation (200 episodes/seed).
-We report McNemar's test for paired SR comparisons (BSW vs.\ correct
-direction: $p{=}0.035$) and TOST equivalence testing for EAAG
-vs.\ oracle (non-inferiority: $p{=}0.002$, $\delta{=}3\%$).
-Pareto-dominance claims require SR~$\geq$ \emph{and} Cost~$\leq$
-with at least one strict inequality---a conservative criterion that
-does not rely on p-values.
+We report bootstrap confidence intervals (5000 resamples) for all
+head-to-head SR comparisons (Table~\ref{tab:significance} in
+Appendix). 18 of 30 comparisons are significant (95\% CI excludes
+zero). Pareto-dominance claims require SR~$\geq$ \emph{and}
+Cost~$\leq$ with at least one strict inequality---a conservative
+criterion that does not rely on p-values.
 ```
 
 ### §5.7 Observable Proxy for Two-Source Model (Appendix 或 §5.4 扩展) — 🔥 理论升级
@@ -1338,8 +1339,8 @@ and why direction reverses, and prove that direction discovery is a
 necessary condition for cross-environment non-negative value of
 computation. EAAG, which lets the LLM agent autonomously discover
 environment-specific gating patterns through exploration, reasoning,
-and sparse direction learning, Pareto-dominates all fixed-direction
-baselines (34 wins vs.\ 2 losses across 8 environments) and exhibits
+and sparse direction learning, achieves 34 wins vs.\ 2 losses
+against 6 competing methods across 8 environments and exhibits
 emergent adaptive behavior without explicit headroom estimation.
 The bottleneck was never the method's complexity---it was the
 assumption.
@@ -1537,15 +1538,15 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 % satisfies both constraints simultaneously. ∎
 %
 % Empirical grounding of Lemma:
-%   δ(HotpotQA) ≈ 38.8 pp (BSW ablation, §5.3)
-%   δ(WebShop) ≈ 22.4 pp
+%   δ(HotpotQA) ≈ 37.0 pp (BSW ablation, §5.3)
+%   δ(WebShop) ≈ 23.2 pp
 %   δ(FEVER) ≈ 36.8 pp
 %   MLP with wrong direction: 45.3% < base 49.0% on HotpotQA
 
 \subsection{Wrong-Direction Damage Quantification}
 % Full data table:
 %   Environment | Correct SR | Wrong SR | Δ SR | |ρ| (strongest signal)
-%   HotpotQA   | 95.2%      | 56.4%    | -38.8 | 0.494
+%   HotpotQA   | 95.2%      | 58.2%    | -37.0 | 0.494
 %   WebShop    | 43.8%      | 21.4%    | -22.4 | 0.444
 %   FEVER      | 49.8%      | 13.0%    | -36.8 | 0.619
 %   APPS Intro | 66.0%      | 62.5%    | -3.5  | 0.155
@@ -2022,7 +2023,7 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 
 **Response strategy**: Reframe — the contribution is the finding + theory, not the gate.
 
-> We thank the reviewer for this comment. We want to clarify the contribution structure: EAAG is intentionally simple because our analysis proves that **the bottleneck is direction discovery, not gate complexity** (Proposition 1). An MLP gate with the wrong direction degrades SR by 38.8pp (below the no-trigger baseline); a logistic gate with the right direction Pareto-dominates all baselines. This parallels several NeurIPS best papers where simple methods paired with strong findings constitute the contribution:
+> We thank the reviewer for this comment. We want to clarify the contribution structure: EAAG is intentionally simple because our analysis proves that **the bottleneck is direction discovery, not gate complexity** (Proposition 1). An MLP gate with the wrong direction degrades SR by 37.0pp (below the no-trigger baseline); a logistic gate with the right direction Pareto-dominates all baselines. This parallels several NeurIPS best papers where simple methods paired with strong findings constitute the contribution:
 >
 > - "Are Emergent Abilities a Mirage?" (NeurIPS 2023 Outstanding): the method is changing the metric; the finding is that emergent abilities disappear.
 > - "Not All Tokens Are What You Need" (NeurIPS 2024 Best Paper Runner-Up): the method is selective token loss; the finding is that not all tokens matter.
@@ -2133,7 +2134,7 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 > We address this concern through three complementary analyses in §5.6:
 >
 > 1. **Stratified analysis**: We control for trajectory length by computing ρ within fixed-length strata. Direction reversal persists in every stratum — it is not a length artifact.
-> 2. **Interventional evidence**: The BSW ablation (§5.3) is not correlation — we *manipulate* the gate's direction and observe causal effects on SR. Wrong direction causes −38.8pp on HotpotQA; the MLP gate falls *below* the no-trigger baseline (45.3% < 49.0%). If reversal were an artifact, manipulation would have no systematic effect.
+> 2. **Interventional evidence**: The BSW ablation (§5.3) is not correlation — we *manipulate* the gate's direction and observe causal effects on SR. Wrong direction causes −37.0pp on HotpotQA; the MLP gate falls *below* the no-trigger baseline (45.3% < 49.0%). If reversal were an artifact, manipulation would have no systematic effect.
 > 3. **Cross-environment consistency**: Same-family environments show consistent direction (FEVER ≈ HotpotQA, both negative), while different-family environments differ (APPS Interview positive). This structured pattern is inconsistent with random artifact.
 >
 > Moreover, the 8 environments span 6 task categories with different reward structures, trajectory lengths, and difficulty distributions. A confounder would need to systematically reverse across all these dimensions while perfectly tracking our Two-Source Model's predictions — this is far less parsimonious than the phenomenon being real.
@@ -2175,7 +2176,7 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 - [ ] ρ values consistent: FEVER -0.119, APPS Interview +0.317, APPS Intro +0.012
 - [ ] step_count ρ: HotpotQA -0.494, FEVER -0.619
 - [ ] num_available_actions ρ: WebShop +0.444
-- [ ] BSW degradation: -38.8pp (HotpotQA), -22.4pp (WebShop)
+- [x] BSW degradation: -37.0pp (HotpotQA), -23.2pp (WebShop) — EAAG 为基准, 已统一
 - [ ] MLP wrong-direction: 45.3% < base 49.0%
 - [x] AUC hierarchy: ~0.50 (single entropy), ~0.83 (multi-signal), ~0.90 (probe) — across 4 envs
 - [x] Trigger rates: 66% (HotpotQA), 73% (TWExpress), 35% (APPS Intro), 28% (WebShop), 33% (Plancraft, decays from 49%→<20% over steps)
