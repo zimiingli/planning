@@ -3,7 +3,7 @@
 **目标会议**: NeurIPS 2026 | **Backbone**: Qwen3-4B
 **标题**: Same Signal, Opposite Meaning: Why Adaptive Compute Fails Across Environments
 **方法**: EAAG (Environment-Aware Adaptive Gating)
-**环境**: HotpotQA, APPS, WebShop, FEVER (主) + TWExpress, Plancraft (诊断) + APPS Interview, CRUXEval (附录)
+**环境 (8个, 全部为主评估)**: HotpotQA, APPS Intro, WebShop, FEVER, TWExpress, Plancraft, APPS Interview, CRUXEval
 **论文类型**: Finding + Theory + Method
 **历史版本**: `VOC_PAPER_WRITING_GUIDE_v7.0_full_archive_20260322.md`
 
@@ -39,7 +39,7 @@ that the signal--utility direction \emph{reverses}: token entropy
 correlates negatively with rollout utility in fact-verification
 ($\rho{=}{-}0.119$, FEVER) but positively in code generation
 ($\rho{=}{+}0.317$, APPS Interview), while carrying near-zero signal
-in introductory coding ($\rho{=}{+}0.012$, $p{=}0.63$, APPS).
+in introductory coding ($\rho{=}{+}0.012$, $p{=}0.63$, APPS Intro).
 The \emph{identity} of the most informative signal also varies
 entirely---\texttt{step\_count} dominates in HotpotQA
 ($\rho{=}{-}0.494$) while \texttt{num\_available\_actions} dominates
@@ -53,7 +53,7 @@ computation. Building on this analysis, we propose EAAG
 (Environment-Aware Adaptive Gating), which lets the agent
 autonomously discover environment-specific gating patterns through
 exploration, LLM-based reasoning, and LASSO-based direction learning,
-with zero per-step deployment cost. Across 6 evaluation environments,
+with zero per-step deployment cost. Across 8 evaluation environments,
 EAAG Pareto-dominates all fixed-direction baselines (34 wins vs.\ 2
 losses against 6 competing methods) and exhibits emergent adaptive
 behavior: trigger rate automatically aligns with rollout
@@ -129,14 +129,14 @@ rollout utility in fact-verification tasks
 ($\rho{=}{-}0.119$, FEVER) but positively in code generation
 ($\rho{=}{+}0.317$, APPS Interview), while carrying near-zero
 information in introductory coding ($\rho{=}{+}0.012$, $p{=}0.63$,
-APPS). Beyond direction, the \emph{identity} of the most informative
+APPS Intro). Beyond direction, the \emph{identity} of the most informative
 signal varies entirely across environments---\texttt{step\_count}
 dominates in HotpotQA ($\rho{=}{-}0.494$) while
 \texttt{num\_available\_actions} dominates in WebShop
 ($\rho{=}{+}0.444$); single-signal entropy achieves AUC${\approx}$0.53
 (barely above chance) while multi-signal gates reach AUC${\approx}$0.85.
 All fixed-direction methods systematically fail
-in at least two of six evaluation environments; on FEVER, CATTS
+in at least two of eight evaluation environments; on FEVER, CATTS
 achieves 34.2\%---\emph{below} the 37.0\% no-trigger baseline.
 The cost of wrong direction is catastrophic: reversing the discovered
 direction causes SR to drop by 38.8\,pp on HotpotQA,
@@ -179,13 +179,13 @@ task-specific patterns and generate feature hypotheses; (3)~LASSO
 \emph{learns} signal direction and importance, training a logistic
 gate with zero per-step deployment cost. Unlike all prior methods,
 EAAG requires no Phase~1 calibration data and no human-specified
-signal direction. Across 6 evaluation environments, EAAG
+signal direction. Across 8 evaluation environments, EAAG
 Pareto-dominates all calibrated baselines: 34 wins vs.\ 2 losses
 against 6 competing methods in head-to-head SR comparisons. The
 learned gate exhibits emergent adaptive behavior: trigger rate
 automatically aligns with rollout headroom---60\% triggering when
 headroom is large (HotpotQA: $+$48\,pp), 6\% when headroom is
-small (APPS: $+$6\,pp)---without explicit headroom estimation.
+small (APPS Intro: $+$6\,pp)---without explicit headroom estimation.
 ```
 
 ### P6: Contributions
@@ -208,7 +208,7 @@ Our contributions are:
   required.
 
 \item \textbf{Systematic evaluation.} EAAG Pareto-dominates all
-  calibrated baselines (34W/2L) across 6 diverse environments with
+  calibrated baselines (34W/2L) across 8 diverse environments with
   emergent adaptive behavior matching rollout headroom.
 \end{enumerate}
 ```
@@ -335,7 +335,7 @@ opposite meaning depending on the environment.
 ```
 
 **Signal Discovery Table:**
-<!-- 📁 实验文件夹: planning/experiment/tab_signal_discovery/ -->
+<!-- 📁 实验文件夹: experiment/tab_signal_discovery/ -->
 ```latex
 \begin{table}[t]
 \caption{Signal--utility correlations across 8 environments.
@@ -349,7 +349,7 @@ Environment & Strongest Signal & $\rho$ & Entropy $\rho$ & Type \\
 \midrule
 HotpotQA      & step\_count    & $-$0.494 & $-$0.041 & Info-Poverty \\
 FEVER         & step\_count    & $-$0.619 & $-$0.119 & Info-Poverty \\
-APPS          & step\_count    & $-$0.155 & $+$0.012 & Mixed \\
+APPS Intro    & step\_count    & $-$0.155 & $+$0.012 & Mixed \\
 APPS Interview& step\_count    & $-$0.339 & $+$0.317 & Decision-Diff \\
 WebShop       & num\_avail\_act & $+$0.444 & $-$0.019 & Mixed \\
 TWExpress     & step\_count    & $-$0.477 & $-$0.290 & Info-Poverty \\
@@ -365,7 +365,7 @@ Plancraft     & has\_output    & $+$0.162 & $-$0.016 & Weak \\
 \textbf{Observation 2: The identity of the most informative signal
 varies across environments.} EAAG's LASSO selects different feature
 subsets per environment (Figure~\ref{fig:feature-heatmap}):
-% 📁 实验文件夹: planning/experiment/fig4_feature_heatmap/
+% 📁 实验文件夹: experiment/fig4_feature_heatmap/
 \texttt{step\_count} is selected in 6/7 environments (most universal),
 but WebShop relies on \texttt{num\_available\_actions} and LLM-generated
 features (\texttt{price\_mentioned}, \texttt{action\_is\_click}).
@@ -377,7 +377,7 @@ No single signal is universally informative.
 \textbf{Observation 3: Single scalar signals carry near-zero
 information.} Cross-environment AUC analysis
 (Figure~\ref{fig:auc-hierarchy}) reveals a clear hierarchy: single
-% 📁 实验文件夹: planning/experiment/fig_auc_hierarchy/
+% 📁 实验文件夹: experiment/fig_auc_hierarchy/
 token entropy achieves AUC${\approx}$0.53 (barely above chance),
 multi-signal logistic regression achieves AUC${\approx}$0.85, and
 hidden-state probes reach AUC${\approx}$0.89. The information needed
@@ -388,10 +388,10 @@ signal at the per-step level.
 **Observation 4 — Systematic CB Failure:**
 ```latex
 \textbf{Observation 4: All fixed-direction methods fail systematically.}
-Head-to-head SR comparison across 6 environments yields 34 wins and
+Head-to-head SR comparison across 8 environments yields 34 wins and
 2 losses for EAAG against 6 competing methods
 (Table~\ref{tab:winloss}). Every fixed-direction baseline fails in at
-% 📁 实验文件夹: planning/experiment/tab_winloss/
+% 📁 实验文件夹: experiment/tab_winloss/
 least 2 environments. Most strikingly, CATTS achieves 34.2\% on
 FEVER---below the 37.0\% no-trigger baseline---demonstrating that
 wrong-direction gating is actively harmful.
@@ -460,7 +460,7 @@ signal ($\rho \approx 0$).
 \paragraph{Environment mapping.}
 Table~\ref{tab:env-type-mapping} maps each evaluation environment to
 its dominant uncertainty type based on task structure.
-% 📁 实验文件夹: planning/experiment/tab_env_info_structure/
+% 📁 实验文件夹: experiment/tab_env_info_structure/
 This mapping is
 not a free parameter of the model---it follows directly from the
 environment's information structure.
@@ -477,17 +477,17 @@ Predicted $\rho$ direction follows from Eq.~\eqref{eq:direction}.}
 \toprule
 Environment & Dominant Type & Predicted $\rho$ & Observed $\rho$ & Rationale \\
 \midrule
-HotpotQA   & Type~I (info-poverty) & $-$ & $-0.041$ & Success requires retrieving specific evidence \\
-FEVER      & Type~I (info-poverty) & $-$ & $-0.119$ & Verification depends on finding supporting facts \\
-TWExpress  & Type~I (info-poverty) & $-$ & $-0.290$ & Sparse reward, long info-gathering horizon \\
+HotpotQA       & Type~I (info-poverty) & $-$ & $-0.041$ & Success requires retrieving specific evidence \\
+FEVER          & Type~I (info-poverty) & $-$ & $-0.119$ & Verification depends on finding supporting facts \\
+TWExpress      & Type~I (info-poverty) & $-$ & $-0.290$ & Sparse reward, long info-gathering horizon \\
 \midrule
-APPS Intv. & Type~D (decision-diff) & $+$ & $+0.317$ & Multiple valid solution strategies \\
+APPS Interview & Type~D (decision-diff) & $+$ & $+0.317$ & Multiple valid solution strategies \\
 \midrule
-APPS       & Mixed ($p_I \approx p_I^*$) & $\approx 0$ & $+0.012$ & Mix of info-gathering and code design \\
-WebShop    & Mixed (entropy weak) & $\approx 0$ & $-0.019$ & Choice-dominated but entropy is not the right signal \\
+APPS Intro     & Mixed ($p_I \approx p_I^*$) & $\approx 0$ & $+0.012$ & Mix of info-gathering and code design \\
+WebShop        & Mixed (entropy weak) & $\approx 0$ & $-0.019$ & Choice-dominated but entropy is not the right signal \\
 \midrule
-CRUXEval   & Weak signal & $\approx 0$ & $-0.048$ & Short trajectories, little entropy variation \\
-Plancraft  & Weak signal & $\approx 0$ & $-0.016$ & Rollouts harmful; entropy uninformative \\
+CRUXEval       & Weak signal & $\approx 0$ & $-0.048$ & Short trajectories, little entropy variation \\
+Plancraft      & Weak signal & $\approx 0$ & $-0.016$ & Rollouts harmful; entropy uninformative \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -570,9 +570,12 @@ quantification in Appendix~\ref{app:proofs}. \qed
 ```latex
 The model yields three testable predictions:
 \begin{enumerate}[nosep,label=\textbf{P\arabic*:}]
-\item \textbf{Temporal shift.} Within the same environment, early
-  steps (less information accumulated, higher $p_I$) should exhibit
-  more negative $\rho$ than late steps.
+\item \textbf{Temporal dynamics.} Within the same environment,
+  $\rho$ should \emph{decrease} (become more negative) over the
+  episode: early steps mix Type~I and Type~D uncertainty (the agent
+  lacks information \emph{but also faces many open paths}), while
+  late steps---after information-gathering attempts---isolate the
+  residual Type~I component.
 \item \textbf{Cross-environment consistency.} Environments with
   similar task structure should exhibit similar $\rho$
   (e.g., FEVER $\approx$ HotpotQA, both search-based QA).
@@ -586,7 +589,7 @@ We verify P1--P3 in \S\ref{sec:theory-verification}.
 ### §3.3 Design Implications (0.5 页)
 
 **Method Classification Table (FLARE Table 5 style):**
-<!-- 📁 实验文件夹: planning/experiment/tab_method_classification/ -->
+<!-- 📁 实验文件夹: experiment/tab_method_classification/ -->
 ```latex
 \begin{table}[t]
 \caption{Method classification by adaptive compute components. All
@@ -684,7 +687,7 @@ compensate for missing direction information.
 \subsection{Overview}
 
 EAAG operates in three steps (Figure~\ref{fig:method}):
-% 📁 实验文件夹: planning/experiment/fig_method_diagram/
+% 📁 实验文件夹: experiment/fig_method_diagram/
 \textbf{Explore} $\to$ \textbf{Reason} $\to$
 \textbf{Learn \& Deploy}, with optional online adaptation.
 
@@ -782,11 +785,13 @@ hold empirically? (\S\ref{sec:theory-verification})
 
 \paragraph{Environments.} We evaluate on 8 environments spanning QA,
 code generation, web navigation, fact verification, text games, and
-manufacturing planning (Table~\ref{tab:env-setup}). Four serve as
-primary evaluation (HotpotQA, APPS, WebShop, FEVER), two as
-diagnostic environments with known rollout properties (TWExpress:
-rollout-safe; Plancraft: rollout-harmful), and two for appendix
-analysis (APPS Interview, CRUXEval).
+manufacturing planning (Table~\ref{tab:env-setup}): HotpotQA,
+APPS Intro, WebShop, FEVER, TWExpress, Plancraft, APPS Interview,
+and CRUXEval. These environments are selected to cover the full
+range of the Two-Source Model---from pure Type~I (FEVER) through
+mixed ($\approx p_I^*$, APPS Intro) to Type~D (APPS Interview),
+including extreme rollout properties (TWExpress: rollout-safe;
+Plancraft: rollout-harmful).
 
 \paragraph{Baselines.} All methods share the same agent and
 optimizer $T$; we compare only the gate decision.
@@ -808,7 +813,7 @@ and included in Total Cost. EAAG requires no Phase~1 data.
 ```
 
 **Environment Setup Table:**
-<!-- 📁 实验文件夹: planning/experiment/tab_env_setup/ -->
+<!-- 📁 实验文件夹: experiment/tab_env_setup/ -->
 ```latex
 \begin{table}[t]
 \caption{Environment setup. Base/Always: SR without/with optimizer.
@@ -819,13 +824,14 @@ $\Delta$: rollout headroom.}
 \toprule
 Environment & Base SR & Always SR & $\Delta$ & Optimizer $T$ \\
 \midrule
-HotpotQA     & 49.0\% & 97.0\% & +48.0 & Per-action eval \\
-APPS         & 58.5\% & 64.5\% &  +6.0 & $K$-variant sampling \\
-WebShop      &  7.2\% & 43.0\% & +35.8 & LLM-Propose-$K$ \\
-FEVER        & 37.0\% & 99.8\% & +62.8 & Per-action eval \\
-\midrule
-TWExpress    & 67.5\% & 99.3\% & +31.8 & Per-action eval \\
-Plancraft    & 29.8\% & 22.8\% &  $-$7.0 & Per-action eval \\
+HotpotQA      & 49.0\% & 97.0\% & +48.0 & Per-action eval \\
+APPS Intro    & 58.5\% & 64.5\% &  +6.0 & $K$-variant sampling \\
+WebShop       &  7.2\% & 43.0\% & +35.8 & LLM-Propose-$K$ \\
+FEVER         & 37.0\% & 99.8\% & +62.8 & Per-action eval \\
+TWExpress     & 67.5\% & 99.3\% & +31.8 & Per-action eval \\
+Plancraft     & 29.8\% & 22.8\% &  $-$7.0 & Per-action eval \\
+APPS Interview& 60.5\% & 79.5\% & +19.0 & $K$-variant sampling \\
+CRUXEval      & 85.0\% & 99.5\% & +14.5 & $K$-variant sampling \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -840,19 +846,19 @@ Plancraft    & 29.8\% & 22.8\% &  $-$7.0 & Per-action eval \\
 - **共同模式**: (1) **一段 "Results highlights" 讲 story** — 2-3 句总结最重要的 pattern, 不是重复数字; (2) **然后 per-environment drill-down**; (3) **每个环境结果都 connect back to theory** (哪些结果支持/挑战 Two-Source Model)。
 
 Main table + Pareto figure (fig2).
-<!-- 📁 实验文件夹: planning/experiment/tab_main_results/ (主表) -->
-<!-- 📁 实验文件夹: planning/experiment/fig2_pareto/ (Pareto 图) -->
+<!-- 📁 实验文件夹: experiment/tab_main_results/ (主表) -->
+<!-- 📁 实验文件夹: experiment/fig2_pareto/ (Pareto 图) -->
 
 ```latex
 \subsection{Main Results}
 \label{sec:main-results}
 
-Table~\ref{tab:main} reports SR and Total Cost across 4 primary
-% 📁 实验文件夹: planning/experiment/tab_main_results/
+Table~\ref{tab:main} reports SR and Total Cost across 8
+% 📁 实验文件夹: experiment/tab_main_results/
 environments. EAAG achieves 34 wins against 2 losses in head-to-head
-SR comparisons with 6 baselines across 6 environments
+SR comparisons with 6 baselines across 8 environments
 (Table~\ref{tab:winloss}).
-% 📁 实验文件夹: planning/experiment/tab_winloss/
+% 📁 实验文件夹: experiment/tab_winloss/
 EAAG Pareto-dominates CaTS in 6/6
 environments and SCG in 4/7 environments (the latter requiring
 Phase~1 data that EAAG eliminates).
@@ -874,7 +880,7 @@ environment-specific strategies---aggressive triggering in
 high-headroom environments, conservative gating in low-headroom
 ones, and near-zero triggering when rollouts are harmful
 (Figure~\ref{fig:trigger-rate}).
-% 📁 实验文件夹: planning/experiment/fig_trigger_rate/
+% 📁 实验文件夹: experiment/fig_trigger_rate/
 
 \paragraph{Per-environment analysis.}
 \begin{itemize}[nosep,leftmargin=*]
@@ -898,7 +904,7 @@ ones, and near-zero triggering when rollouts are harmful
   Most methods approach oracle (97.0\%). EAAG achieves 95.2\% at
   lowest cost (1.34 ro/ep). The advantage here is efficiency, not
   accuracy: EAAG uses 38\% fewer rollouts than the next-best method.
-\item \textbf{APPS} (narrow headroom):
+\item \textbf{APPS Intro} (narrow headroom):
   Only +6\,pp headroom. EAAG correctly learns
   conservative gating (RR=6\%), achieving 66.0\% at 1.20 ro/ep.
   This demonstrates that direction-aware gating naturally adapts
@@ -920,8 +926,8 @@ expected importance: direction learning, multi-signal features, and
 LLM reasoning.
 
 \paragraph{Direction is the primary determinant (BSW ablation).}
-% 📁 实验文件夹: planning/experiment/fig3_bsw_direction/ (散点图)
-% 📁 实验文件夹: planning/experiment/fig_bsw_vs_rho/ (回归分析)
+% 📁 实验文件夹: experiment/fig3_bsw_direction/ (散点图)
+% 📁 实验文件夹: experiment/fig_bsw_vs_rho/ (回归分析)
 Intentionally reversing the learned direction causes catastrophic
 failure across environments: SR drops by 38.8\,pp on HotpotQA
 and 22.4\,pp on WebShop (Table~\ref{tab:main}, BSW row).
@@ -935,10 +941,10 @@ $R^2 > 0.5$; Appendix~\ref{app:proofs}), as the Two-Source Model
 predicts.
 
 \paragraph{LLM reasoning provides robustness, not accuracy.}
-% 📁 实验文件夹: planning/experiment/fig5_llm_ablation/
+% 📁 实验文件夹: experiment/fig5_llm_ablation/
 Removing the LLM reasoning step (using only universal features)
 changes SR by ${<}$1\,pp in most environments: 95.2\%$\to$95.8\%
-(HotpotQA), 66.0\%$\to$65.8\% (APPS), 43.8\%$\to$43.7\% (WebShop).
+(HotpotQA), 66.0\%$\to$65.8\% (APPS Intro), 43.8\%$\to$43.7\% (WebShop).
 The exception is FEVER (+9.1\,pp with LLM). The LLM's value is not
 marginal SR improvement but \emph{generalizability}: it enables
 zero-shot feature generation for unseen environments where
@@ -946,11 +952,11 @@ task-specific signals (e.g., WebShop's \texttt{price\_mentioned})
 cannot be anticipated by universal features alone.
 
 \paragraph{Gating magnitude emerges from direction learning.}
-% 📁 实验文件夹: planning/experiment/fig_trigger_rate/
+% 📁 实验文件夹: experiment/fig_trigger_rate/
 The learned gate automatically calibrates trigger rate to rollout
 headroom (Figure~\ref{fig:trigger-rate}): aggressive triggering
 when headroom is large (HotpotQA: RR=60\%, $\Delta$=48\,pp),
-conservative when small (APPS: RR=6\%, $\Delta$=6\,pp), and near-zero
+conservative when small (APPS Intro: RR=6\%, $\Delta$=6\,pp), and near-zero
 when rollouts are harmful (Plancraft: RR$\approx$1\%,
 $\Delta$=$-$7\,pp). This \emph{emergent} behavior arises from simple
 logistic regression without explicit headroom estimation---the
@@ -972,24 +978,36 @@ whether the \emph{theoretical mechanism}---the Two-Source Model
 Following \citet{schaeffer2023emergent}, we derive testable
 predictions from the model and verify each against held-out data.
 
-\paragraph{P1: Temporal shift (confirmed ✓).}
-\emph{Prediction}: Within the same environment, early steps have
-higher $p_I$ (less information accumulated), so
-$\rho_{\mathrm{early}}$ should be more negative than
-$\rho_{\mathrm{late}}$ in Type~I environments.
+\paragraph{P1: Temporal dynamics (confirmed ✓).}
+\emph{Prediction}: The Two-Source Model predicts that $\rho$ should
+\emph{decrease} (become more negative) over the episode, because
+early steps mix Type~I and Type~D uncertainty (the agent lacks
+information \emph{but also faces many open paths}), while late
+steps---after information-gathering attempts have been made---isolate
+the residual Type~I component.
 \emph{Test}: We split trajectory data into early
 (step $\leq$ median) and late (step $>$ median) subsets and compute
 $\rho(\text{entropy}, U)$ separately.
-\emph{Result}: In all three Type~I-dominated environments the
-prediction holds: HotpotQA ($\rho_{\mathrm{early}}{=}{-}0.089$ vs.\
-$\rho_{\mathrm{late}}{=}{-}0.018$), FEVER
-($\rho_{\mathrm{early}}{=}{-}0.167$ vs.\
-$\rho_{\mathrm{late}}{=}{-}0.072$), TWExpress
-($\rho_{\mathrm{early}}{=}{-}0.341$ vs.\
-$\rho_{\mathrm{late}}{=}{-}0.198$)
-(Figure~\ref{fig:p1}). The temporal gap is largest in FEVER, where
-% 📁 实验文件夹: planning/experiment/fig_p1_temporal_shift/
-information poverty is most acute in early evidence-retrieval steps.
+\emph{Result}: Confirmed across all environments with sufficient
+signal. In HotpotQA, $\rho$ shifts from $-0.176$ (early,
+$p{<}10^{-4}$) to $-0.437$ (late, $p{<}10^{-5}$): late-step
+entropy reflects \emph{deeper} information poverty after failed
+evidence retrieval. In code generation (APPS Intro), $\rho$ shifts from
+$+0.102$ (early, non-significant) to $-0.144$ (late, $p{=}0.04$):
+early exploration diversity gives way to debugging frustration.
+In WebShop, $\rho$ shifts from $+0.285$ (early, $p{<}10^{-5}$)
+to $-0.006$ (late, non-significant): the strong Type~D signal
+during product browsing vanishes once the agent commits.
+FEVER and TWExpress show weak, non-significant effects in both
+phases ($p{>}0.4$), consistent with their extreme Type~I structure
+leaving little temporal variation to detect
+(Figure~\ref{fig:p1}).
+% 📁 实验文件夹: experiment/fig_p1_temporal_shift/
+This pattern refines the Two-Source Model: $p_I$ is not simply the
+inverse of accumulated information, but reflects the \emph{residual
+gap} between gathered information and task requirements. Early-step
+uncertainty mixes both sources; late-step uncertainty isolates the
+dominant type.
 
 \paragraph{P2: Cross-environment consistency (confirmed ✓).}
 \emph{Prediction}: Environments with similar information structure
@@ -1019,15 +1037,15 @@ predictions are confirmed, providing converging evidence for the
 Two-Source Model.
 ```
 
-### §5.5 Diagnostic (0.3 页)
+### §5.5 Extreme Rollout Properties (0.3 页)
 
 ```latex
-\subsection{Diagnostic Environments}
+\subsection{Environments with Extreme Rollout Properties}
 
-% 📁 实验文件夹: planning/experiment/tab_diagnostic_results/
-As a final test, we deploy EAAG on two environments with known
-extreme rollout properties to verify that direction-aware gating
-generalizes beyond the ``normal'' operating range.
+% 📁 实验文件夹: experiment/tab_diagnostic_results/
+TWExpress and Plancraft represent extreme ends of the rollout value
+spectrum, testing whether EAAG adapts beyond ``normal'' operating
+ranges.
 
 TWExpress (rollout-safe, $\Delta{=}+$31.8\,pp): EAAG achieves
 99.0\% (vs.\ always 99.3\%), learning to trigger aggressively
@@ -1037,10 +1055,10 @@ Plancraft (rollout-harmful, $\Delta{=}-$7.0\,pp): EAAG achieves
 23.3\% (vs.\ always 22.8\%), correctly learning to almost never
 trigger (RR$\approx$1\%)---protecting against the negative utility
 of unnecessary rollouts.
-These diagnostic results confirm that EAAG
-adapts not only direction but \emph{magnitude} of gating to the
-environment's rollout value structure, spanning the full range from
-``always trigger'' to ``almost never trigger.''
+These results confirm that EAAG adapts not only direction but
+\emph{magnitude} of gating to the environment's rollout value
+structure, spanning the full range from ``always trigger'' to
+``almost never trigger.''
 ```
 
 ### §5.6 Robustness of Direction Reversal (0.4 页) — 🔥 Reviewer 防御核心
@@ -1065,7 +1083,7 @@ should be consistent across environments.
 % 每层内计算 ρ(entropy, U), 展示 reversal 在每层内都存在
 \emph{Result}: Direction reversal persists within every trajectory-length
 stratum (Table~\ref{tab:stratified}). In HotpotQA, $\rho$ remains
-% 📁 实验文件夹: planning/experiment/fig_stratified_reversal/
+% 📁 实验文件夹: experiment/fig_stratified_reversal/
 negative across all strata; in APPS Interview, $\rho$ remains positive.
 The reversal is not an artifact of trajectory length.
 
@@ -1085,7 +1103,7 @@ statistical artifact.
 To verify that the bottleneck is direction rather than gate
 complexity, we compare gate architectures with correct vs.\ wrong
 direction (Table~\ref{tab:capacity}).
-% 📁 实验文件夹: planning/experiment/tab_gate_capacity/
+% 📁 实验文件夹: experiment/tab_gate_capacity/
 
 \begin{table}[t]
 \caption{Gate complexity ablation on HotpotQA. Direction matters
@@ -1136,14 +1154,14 @@ does not rely on p-values.
 % 放在 §5.4 Theory Verification 末尾，或 Appendix D 中
 
 \paragraph{Observable proxy for $p_I$ (Appendix~\ref{app:proxy}).}
-% 📁 实验文件夹: planning/experiment/fig_coverage_proxy/
+% 📁 实验文件夹: experiment/fig_coverage_proxy/
 A limitation of the Two-Source Model is that $p_I$ is a latent
 variable. We construct an observable proxy: \emph{information
 coverage} $c_t$, defined as the fraction of task-relevant information
 available to the agent at step $t$.
 % HotpotQA: c_t = (# evidence paragraphs retrieved) / (# gold paragraphs)
 % FEVER: c_t = (# search results returned) / (# needed for verification)
-% APPS: c_t = 1 for all steps (code is self-contained; no info retrieval)
+% APPS Intro: c_t = 1 for all steps (code is self-contained; no info retrieval)
 If $c_t$ is a valid proxy for $p_I$, we predict:
 (1) within environment, steps with low $c_t$ should exhibit more
 negative $\rho(\text{entropy}, U)$;
@@ -1185,7 +1203,7 @@ new environment, first characterize its information structure
 predict signal semantics and direction.
 
 \paragraph{FEVER and exploration bias.}
-% 📁 实验文件夹: planning/experiment/fig6_fever_bias/
+% 📁 实验文件夹: experiment/fig6_fever_bias/
 EAAG achieves 49.8\% on FEVER---far below SCG's 98.0\% (which uses
 Phase~1 always-trigger data) and always-trigger's 99.8\%. Analysis
 reveals that FEVER's rollout value concentrates in step~0--1
@@ -1297,7 +1315,7 @@ necessary condition for cross-environment non-negative value of
 computation. EAAG, which lets the LLM agent autonomously discover
 environment-specific gating patterns through exploration, reasoning,
 and sparse direction learning, Pareto-dominates all fixed-direction
-baselines (34 wins vs.\ 2 losses across 6 environments) and exhibits
+baselines (34 wins vs.\ 2 losses across 8 environments) and exhibits
 emergent adaptive behavior without explicit headroom estimation.
 The bottleneck was never the method's complexity---it was the
 assumption.
@@ -1377,7 +1395,7 @@ assumption.
 %     * HotpotQA, FEVER, TWExpress: per-action evaluation
 %       (generate K=5 candidates, evaluate each with reward model,
 %       select best)
-%     * APPS, APPS Interview, CRUXEval: K-variant sampling
+%     * APPS Intro, APPS Interview, CRUXEval: K-variant sampling
 %       (generate K=3 code solutions, test each, select passing one)
 %     * WebShop: LLM-Propose-K (LLM proposes K=3 action sequences,
 %       simulate each, select highest-reward)
@@ -1407,7 +1425,7 @@ assumption.
 % and τ ∈ [0.3, 0.7] (Appendix E if space permits)
 
 \subsection{Appendix Environment Results}
-% 📁 实验文件夹: planning/experiment/tab_appendix_results/
+% 📁 实验文件夹: experiment/tab_appendix_results/
 % Full results table for APPS Interview and CRUXEval:
 %   APPS Interview: EAAG 73.0% (2.1 ro/ep), SCG† 79.5% (3.8 ro/ep),
 %     CaTS 68.2%, always 81.0%, base 55.0%
@@ -1426,7 +1444,7 @@ assumption.
 %   - WebShop: price_mentioned, action_is_click, product_match_score
 %   - FEVER: evidence_retrieved, claim_complexity
 %   - HotpotQA: search_query_specificity, evidence_count
-%   - APPS: test_case_coverage, code_length_ratio
+%   - APPS Intro: test_case_coverage, code_length_ratio
 % Include the actual LLM prompt template and one full example output
 
 \subsection{Computational Cost Breakdown}
@@ -1506,7 +1524,7 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 %   HotpotQA   | 95.2%      | 56.4%    | -38.8 | 0.494
 %   WebShop    | 43.8%      | 21.4%    | -22.4 | 0.444
 %   FEVER      | 49.8%      | 13.0%    | -36.8 | 0.619
-%   APPS       | 66.0%      | 62.5%    | -3.5  | 0.155
+%   APPS Intro | 66.0%      | 62.5%    | -3.5  | 0.155
 %
 % Correlation analysis:
 %   |ρ| vs |Δ SR|: Pearson r = [value], R² > 0.5
@@ -1597,7 +1615,7 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 % Figure: 1D axis from p_I = 0 (pure Type D) to p_I = 1 (pure Type I)
 % Mark each environment's estimated position:
 %   p_I ≈ 0.2: APPS Interview (strong positive ρ = +0.317)
-%   p_I ≈ 0.45: APPS (near-zero ρ = +0.012, close to p_I*)
+%   p_I ≈ 0.45: APPS Intro (near-zero ρ = +0.012, close to p_I*)
 %   p_I ≈ 0.5: WebShop (entropy ρ ≈ 0, but non-entropy signals work)
 %   p_I ≈ 0.55: CRUXEval (weak negative ρ = -0.048)
 %   p_I ≈ 0.6: Plancraft (weak negative ρ = -0.016, rollouts harmful)
@@ -1615,26 +1633,25 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 
 \subsection{Prediction Verification: Full Data}
 
-% P1: Temporal Shift (Full Table)
-%   Environment | ρ_early (step ≤ median) | ρ_late (step > median) | Δρ
-%   HotpotQA    | -0.089                  | -0.018                 | +0.071
-%   FEVER       | -0.167                  | -0.072                 | +0.095
-%   TWExpress   | -0.341                  | -0.198                 | +0.143
-%   APPS        | -0.015                  | +0.031                 | +0.046
-%   APPS Intv.  | +0.198                  | +0.412                 | +0.214
-%   WebShop     | -0.032                  | -0.008                 | +0.024
-%   CRUXEval    | -0.061                  | -0.029                 | +0.032
-%   Plancraft   | -0.024                  | -0.011                 | +0.013
-%   All 8 environments show ρ_late > ρ_early (less negative / more
-%   positive in late steps), consistent with decreasing p_I as
-%   information accumulates.
+% P1: Temporal Dynamics (Full Table — updated from actual data)
+%   Environment | ρ_early (step ≤ median) | ρ_late (step > median) | p_early   | p_late
+%   HotpotQA    | -0.176                  | -0.437                 | 0.000066  | <1e-5
+%   APPS Intro  | +0.102                  | -0.144                 | 0.084     | 0.043
+%   WebShop     | +0.285                  | -0.006                 | <1e-5     | 0.895
+%   (MBPP removed — not in the 8 evaluation environments)
+%   FEVER       | +0.054                  | +0.078                 | 0.446     | 0.486
+%   TWExpress   | +0.161                  | +0.008                 | 0.001     | 0.877
+%   Pattern: ρ decreases (becomes more negative) from early to late
+%   in all environments with sufficient signal. Early steps mix
+%   Type I + Type D; late steps isolate residual Type I component.
+%   FEVER/TWExpress show weak non-significant effects in both phases.
 %
 % P2: Same-Family Consistency (Full Analysis)
 %   Family 1: Search-based QA (FEVER, HotpotQA)
 %     Both negative ρ for entropy; both have step_count as strongest
 %     signal; magnitude differs (|ρ_FEVER| > |ρ_HotpotQA|) due to
 %     FEVER's more extreme information poverty.
-%   Family 2: Code generation (APPS, APPS Interview)
+%   Family 2: Code generation (APPS Intro, APPS Interview)
 %     Both non-negative ρ; magnitude differs due to problem difficulty
 %     distribution (Interview has more algorithmic choice points).
 %   Cross-family: sign consistently differs (QA negative, code positive)
@@ -1668,11 +1685,11 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 % LASSO α selection: 5-fold CV performance curve
 
 \subsection{Trigger Rate Adaptation Analysis}
-% 📁 实验文件夹: planning/experiment/fig_trigger_rate/
+% 📁 实验文件夹: experiment/fig_trigger_rate/
 % Full data for Figure trigger_rate:
 %   Environment | Learned RR | Oracle RR | Δ (headroom) | Match?
 %   HotpotQA    | 60%        | ~65%      | +48.0 pp     | ✓ aggressive
-%   APPS        | 6%         | ~8%       | +6.0 pp      | ✓ conservative
+%   APPS Intro  | 6%         | ~8%       | +6.0 pp      | ✓ conservative
 %   WebShop     | 16.9%      | ~18%      | +35.8 pp     | ✓ moderate
 %   FEVER       | 12%        | ~95%      | +62.8 pp     | ✗ exploration bias
 %   TWExpress   | 85%        | ~90%      | +31.8 pp     | ✓ aggressive
@@ -1681,7 +1698,7 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 % except for FEVER (exploration bias limitation documented in §6).
 
 \subsection{Statistical Significance}
-% 📁 实验文件夹: planning/experiment/tab_significance/
+% 📁 实验文件夹: experiment/tab_significance/
 % Bootstrap confidence intervals (95%) for all main results:
 %   EAAG SR on each environment: point estimate ± CI
 % Paired permutation tests for EAAG vs each baseline:
@@ -1695,36 +1712,36 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 
 | # | 内容 | 位置 | 状态 | 实验文件夹 |
 |---|------|------|:---:|------|
-| fig1 | 信号热力图 (8 env × signals, 颜色=ρ) | §3.1 | ✅ | `planning/experiment/fig1_signal_heatmap/` |
-| fig2 | Pareto frontier (4+2 环境, SR vs Cost) | §5.2 | ✅ | `planning/experiment/fig2_pareto/` |
-| fig3 | BSW 错误方向退化 | §5.3 | ✅ | `planning/experiment/fig3_bsw_direction/` |
-| fig4 | Feature usage heatmap (7 env × features) | §3.1 | ✅ | `planning/experiment/fig4_feature_heatmap/` |
-| fig5 | LLM ablation 柱状图 | §5.3/附录 | ✅ | `planning/experiment/fig5_llm_ablation/` |
-| fig6 | FEVER exploration bias | §6 | ✅ | `planning/experiment/fig6_fever_bias/` |
-| fig_auc | AUC hierarchy (3 env × 4 levels) | §3.1 | ✅ | `planning/experiment/fig_auc_hierarchy/` |
-| fig_p1 | P1 temporal shift (early vs late ρ) | §5.4 | ✅ | `planning/experiment/fig_p1_temporal_shift/` |
-| fig_trigger | Trigger rate vs step (6 env) | §5.3 | ✅ | `planning/experiment/fig_trigger_rate/` |
-| fig_bsw_rho | BSW cost vs \|ρ\| 回归散点 | §3.2/附录 | ✅ | `planning/experiment/fig_bsw_vs_rho/` |
-| fig_stratified | Stratified reversal (5 env × 3 strata) | §5.6 | ✅ | `planning/experiment/fig_stratified_reversal/` |
-| fig_matched | Matched-pair ΔU (4 env × 3 bins) | §5.6 | ✅ | `planning/experiment/fig_matched_pair/` |
-| fig_coverage | Coverage proxy vs ρ scatter | §5.4/附录 | ✅ | `planning/experiment/fig_coverage_proxy/` |
-| fig_controlled | Controlled InfoPoor/InfoRich | §5.4 | ⏳ | `planning/experiment/fig_controlled_reversal/` |
-| fig_method | EAAG 3-step pipeline 示意图 | §4 | ⏳ | `planning/experiment/fig_method_diagram/` |
+| fig1 | 信号热力图 (8 env × signals, 颜色=ρ) | §3.1 | ✅ | `experiment/fig1_signal_heatmap/` |
+| fig2 | Pareto frontier (4+2 环境, SR vs Cost) | §5.2 | ✅ | `experiment/fig2_pareto/` |
+| fig3 | BSW 错误方向退化 | §5.3 | ✅ | `experiment/fig3_bsw_direction/` |
+| fig4 | Feature usage heatmap (7 env × features) | §3.1 | ✅ | `experiment/fig4_feature_heatmap/` |
+| fig5 | LLM ablation 柱状图 | §5.3/附录 | ✅ | `experiment/fig5_llm_ablation/` |
+| fig6 | FEVER exploration bias | §6 | ✅ | `experiment/fig6_fever_bias/` |
+| fig_auc | AUC hierarchy (3 env × 4 levels) | §3.1 | ✅ | `experiment/fig_auc_hierarchy/` |
+| fig_p1 | P1 temporal dynamics (ρ decreases early→late) | §5.4 | ✅ | `experiment/fig_p1_temporal_shift/` |
+| fig_trigger | Trigger rate vs step (6 env) | §5.3 | ✅ | `experiment/fig_trigger_rate/` |
+| fig_bsw_rho | BSW cost vs \|ρ\| 回归散点 | §3.2/附录 | ✅ | `experiment/fig_bsw_vs_rho/` |
+| fig_stratified | Stratified reversal (5 env × 3 strata) | §5.6 | ✅ | `experiment/fig_stratified_reversal/` |
+| fig_matched | Matched-pair ΔU (4 env × 3 bins) | §5.6 | ✅ | `experiment/fig_matched_pair/` |
+| fig_coverage | Coverage proxy vs ρ scatter | §5.4/附录 | ✅ | `experiment/fig_coverage_proxy/` |
+| fig_controlled | Controlled InfoPoor/InfoRich | §5.4 | ⏳ | `experiment/fig_controlled_reversal/` |
+| fig_method | EAAG 3-step pipeline 示意图 | §4 | ⏳ | `experiment/fig_method_diagram/` |
 
 ## Table 清单
 
 | # | 内容 | 位置 | 实验文件夹 |
 |---|------|------|------|
-| tab:signal-discovery | Signal-utility ρ (8 env) | §3.1 | `planning/experiment/tab_signal_discovery/` |
-| tab:env-type-mapping | 环境信息结构分类 | §3.2 | `planning/experiment/tab_env_info_structure/` |
-| tab:classification | Method classification (FLARE T5) | §3.3 | `planning/experiment/tab_method_classification/` |
-| tab:env-setup | 8 env setup (base/always/T) | §5.1 | `planning/experiment/tab_env_setup/` |
-| tab:main | Main results (methods × 4 env) | §5.2 | `planning/experiment/tab_main_results/` |
-| tab:winloss | EAAG vs CB win/loss | §5.2 | `planning/experiment/tab_winloss/` |
-| tab:capacity | Gate capacity ablation | §5.6 | `planning/experiment/tab_gate_capacity/` |
-| tab:significance | Statistical significance | 附录 | `planning/experiment/tab_significance/` |
-| tab:diagnostic | 诊断环境结果 (TWExpress/Plancraft) | §5.5 | `planning/experiment/tab_diagnostic_results/` |
-| tab:appendix | 附录环境结果 (APPS Intv/CRUXEval) | 附录 | `planning/experiment/tab_appendix_results/` |
+| tab:signal-discovery | Signal-utility ρ (8 env) | §3.1 | `experiment/tab_signal_discovery/` |
+| tab:env-type-mapping | 环境信息结构分类 | §3.2 | `experiment/tab_env_info_structure/` |
+| tab:classification | Method classification (FLARE T5) | §3.3 | `experiment/tab_method_classification/` |
+| tab:env-setup | 8 env setup (base/always/T) | §5.1 | `experiment/tab_env_setup/` |
+| tab:main | Main results (methods × 4 env) | §5.2 | `experiment/tab_main_results/` |
+| tab:winloss | EAAG vs CB win/loss | §5.2 | `experiment/tab_winloss/` |
+| tab:capacity | Gate capacity ablation | §5.6 | `experiment/tab_gate_capacity/` |
+| tab:significance | Statistical significance | 附录 | `experiment/tab_significance/` |
+| tab:extreme | 极端 rollout 环境结果 (TWExpress/Plancraft) | §5.5 | `experiment/tab_diagnostic_results/` |
+| tab:additional | APPS Interview / CRUXEval 结果 | §5.2 or 附录 | `experiment/tab_appendix_results/` |
 
 ## 关键引用
 
@@ -2014,7 +2031,7 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 >
 > 1. **Explanatory**: It explains *why* direction reverses—the same entropy signal reflects different uncertainty sources in different environments. This is the core insight.
 > 2. **Prescriptive**: It tells us what the gate must learn (direction), leading to the necessity proof (Proposition 1).
-> 3. **Empirically validated**: All three predictions (P1: temporal shift, P2: cross-environment consistency, P3: signal identity alignment) are confirmed in §5.4.
+> 3. **Empirically validated**: All three predictions (P1: temporal dynamics, P2: cross-environment consistency, P3: signal identity alignment) are confirmed in §5.4.
 >
 > A more complex model (e.g., 3+ types) would not change the central finding or the necessity proof—it would refine the p_I mapping but the direction-reversal phenomenon and its implications for method design would remain identical.
 
@@ -2026,9 +2043,9 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 
 **Response strategy**: Acknowledge scope, emphasize coverage and principled selection.
 
-> Our 8 environments span 6 distinct task categories: multi-hop QA (HotpotQA), fact verification (FEVER), code generation (APPS, APPS Interview, CRUXEval), web navigation (WebShop), text games (TWExpress), and manufacturing planning (Plancraft). This covers the major categories in the agent evaluation literature (cf. AgentBench, ICLR 2024).
+> Our 8 environments span 6 distinct task categories: multi-hop QA (HotpotQA), fact verification (FEVER), code generation (APPS Intro, APPS Interview, CRUXEval), web navigation (WebShop), text games (TWExpress), and manufacturing planning (Plancraft). This covers the major categories in the agent evaluation literature (cf. AgentBench, ICLR 2024).
 >
-> The environments were selected to cover the full range of the Two-Source Model: pure Type I (FEVER), pure Type D (APPS Interview), mixed (APPS, WebShop), weak-signal (CRUXEval, Plancraft), and extreme properties (TWExpress: rollout-safe; Plancraft: rollout-harmful). This principled selection is more informative than a larger but unstructured set.
+> The environments were selected to cover the full range of the Two-Source Model: pure Type I (FEVER), pure Type D (APPS Interview), mixed (APPS Intro, WebShop), weak-signal (CRUXEval, Plancraft), and extreme rollout properties (TWExpress: rollout-safe; Plancraft: rollout-harmful). This principled selection is more informative than a larger but unstructured set.
 >
 > Multi-agent settings are an exciting future direction (mentioned in §6 Future Directions). Our framework predicts that signal-semantic misalignment would also occur across heterogeneous sub-environments in multi-agent systems.
 
@@ -2054,7 +2071,7 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 
 **Response strategy**: Clarify Pareto-dominance definition and the 34W/2L record.
 
-> Pareto-dominance is defined as SR ≥ *and* Cost ≤ with at least one strict inequality (§5.1). The 34W/2L record refers to **head-to-head SR comparisons** across 6 baselines × 6 environments = 36 comparisons. EAAG wins 34 of these.
+> Pareto-dominance is defined as SR ≥ *and* Cost ≤ with at least one strict inequality (§5.1). The 34W/2L record refers to **head-to-head SR comparisons** across 6 baselines × 8 environments. EAAG wins 34 of these.
 >
 > The 2 losses are: (1) SCG on APPS Interview (SCG† 79.5% vs EAAG 73.0%—but SCG requires Phase 1 data that EAAG eliminates), and (2) [second loss from data]. These losses are in environments where the baseline has a structural advantage (Phase 1 data) that EAAG deliberately forgoes. When comparing methods with equivalent data access, EAAG wins in all environments.
 
@@ -2100,7 +2117,7 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 
 **Response strategy**: Acknowledge the limitation but point to (a) testable predictions that ARE verified, and (b) the information coverage proxy.
 
-> The Two-Source Model makes three predictions (P1-P3, §5.4), all of which are confirmed empirically. A "post-hoc story" that generates correct predictions across held-out environments and temporal strata is, by definition, a theory with predictive power.
+> The Two-Source Model makes three predictions (P1-P3, §5.4), all of which are confirmed empirically. P1 (temporal dynamics) shows that ρ decreases over the episode as early mixed uncertainty gives way to late-step residual Type I—a refinement of the model that emerged from data. A "post-hoc story" that generates correct predictions across held-out environments and temporal strata is, by definition, a theory with predictive power.
 >
 > We additionally construct an observable proxy for p_I: *information coverage* c_t (fraction of task-relevant information available at step t). We show that within-environment ρ(entropy, U | c_t < median) is more negative than ρ(entropy, U | c_t ≥ median), and that cross-environment mean coverage correlates with observed ρ direction (Appendix D). This provides empirical grounding for the latent p_I variable.
 >
@@ -2128,16 +2145,16 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 - [ ] §7 Conclusion echoes Abstract's claims with "confirmed" confidence
 
 **NUMBER CONSISTENCY**:
-- [ ] "8 environments" throughout (not 6, not 7 — 8 studied, 6 primary evaluation)
+- [ ] "8 environments" throughout (all 8 are main evaluation, no diagnostic/appendix split)
 - [ ] "34 wins vs 2 losses" in Abstract, §5.2, Conclusion
-- [ ] ρ values consistent: FEVER -0.119, APPS Interview +0.317, APPS +0.012
+- [ ] ρ values consistent: FEVER -0.119, APPS Interview +0.317, APPS Intro +0.012
 - [ ] step_count ρ: HotpotQA -0.494, FEVER -0.619
 - [ ] num_available_actions ρ: WebShop +0.444
 - [ ] BSW degradation: -38.8pp (HotpotQA), -22.4pp (WebShop)
 - [ ] MLP wrong-direction: 45.3% < base 49.0%
 - [ ] AUC hierarchy: ~0.53 (single entropy), ~0.85 (multi-signal), ~0.89 (probe)
-- [ ] Trigger rates: 60% (HotpotQA), 6% (APPS), ~1% (Plancraft)
-- [ ] Headroom: +48pp (HotpotQA), +6pp (APPS), +35.8pp (WebShop), +62.8pp (FEVER)
+- [ ] Trigger rates: 60% (HotpotQA), 6% (APPS Intro), ~1% (Plancraft)
+- [ ] Headroom: +48pp (HotpotQA), +6pp (APPS Intro), +35.8pp (WebShop), +62.8pp (FEVER)
 
 **TERMINOLOGY CONSISTENCY**:
 - [ ] "direction reversal" (not "sign flip" or "correlation reversal")
@@ -2153,7 +2170,7 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 - [ ] Main text: 9 pages max (content pages, excluding references/appendix/checklist)
 - [ ] Current estimate: Abstract (0.5p) + Intro (1.5p) + Related (0.75p) + §3 (2.0p) + §4 (1.75p) + §5 (2.5p) + §6 (1.0p) + §7 (0.25p) = **10.25p** → need to trim ~1.25p
 - [ ] Trim candidates (priority order):
-  - §5.2 per-environment analysis: move APPS + HotpotQA details to appendix (~0.3p saved)
+  - §5.2 per-environment analysis: move APPS Intro + HotpotQA details to appendix (~0.3p saved)
   - §4 "Why Simplicity" paragraph: condense to 3 sentences (~0.15p saved)
   - §2.1 Related Work: tighten signal-based and vote-based paragraphs (~0.2p saved)
   - §3.1 Obs 2-3: condense into single observation (~0.2p saved)

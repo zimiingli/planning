@@ -42,7 +42,11 @@
       "Skill(claude-scientific-writer:markitdown)",
       "Read(//Users/liziming/.claude/plugins/cache/claude-scientific-writer/claude-scientific-writer/2ae9407efbb2/skills/research-lookup/**)",
       "Read(//tmp/**)",
-      "Bash(SCRIPT=\"/Users/liziming/.claude/plugins/cache/claude-scientific-writer/claude-scientific-writer/2ae9407efbb2/skills/research-lookup/research_lookup.py\")"
+      "Bash(SCRIPT=\"/Users/liziming/.claude/plugins/cache/claude-scientific-writer/claude-scientific-writer/2ae9407efbb2/skills/research-lookup/research_lookup.py\")",
+      "Bash(for dir:*)",
+      "Bash(do echo:*)",
+      "Read(//Users/liziming/Desktop/project/text_planning/research_analysis/**)",
+      "Bash(done)"
     ]
   }
 }
