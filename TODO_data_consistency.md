@@ -1,177 +1,173 @@
 # TODO: 实验数据与论文观点一致性修复清单
 
 **生成日期**: 2026-03-23
+**二轮核查**: 2026-03-23
 **基于**: `VOC_PAPER_WRITING_GUIDE.md` vs `experiment/` 文件夹逐项核对
 
 ---
 
-## ~~P0~~ — 全部已修复
+## ~~P0~~ — 全部已修复（数据层面）
 
 ### ~~1.~~ [x] fig1_signal_heatmap vs tab_signal_discovery: HotpotQA 数值矛盾 → **已修复 (2026-03-23)**
 
-**位置**: §3.1 Observation 1, Abstract, §1 P3
+**根因**: `csv_fig1()` 用 Source A (phase1, 1208 records, seed 42), 论文用 Source B (phase5, 1117 records, 3 seeds)。
 
-**问题**: 两个数据文件对 HotpotQA 给出完全不同的 Spearman ρ 值，其余 7 个环境一致。
-
-| 指标 | fig1_signal_heatmap (计算值) | tab_signal_discovery (硬编码) | 论文使用 |
-|---|---|---|---|
-| HotpotQA token_entropy | **-0.3272** | -0.041 | -0.041 |
-| HotpotQA step_count | **-0.0234** | -0.494 | -0.494 |
-
-`fig_coverage_proxy` 中 HotpotQA entropy_rho=-0.3272 也与 fig1 一致，说明两份独立计算都指向 -0.327。
-
-**影响范围**:
-- Abstract: "step_count dominates in HotpotQA (ρ=−0.494)"
-- §3.1 tab:signal-discovery 表格整行
-- §3.1 Observation 1 叙述
-- §3.2 Environment mapping 表格 (HotpotQA observed ρ)
-- §5.4 P2 cross-environment consistency 论证
-
-**根因**: `generate_all_csvs.py::csv_fig1()` 从 Source A (phase1, 1208 records, seed 42) 计算 ρ, 但论文使用 Source B (phase5 calibration, 1117 records, 3 seeds)。两份数据来自不同 phase 实验。
-
-**决定**: 以 **Source B (phase5)** 为准 — 论文全部分析基于 phase5 数据，3 seeds 更稳健。
-
-**修复**:
-- [x] `fig1_signal_heatmap/data.csv`: HotpotQA entropy −0.3272 → −0.0407, step_count −0.0234 → −0.4944
-- [x] `fig_coverage_proxy/data.csv`: HotpotQA entropy_rho −0.3272 → −0.0407
-- [x] 重新生成 `fig1_signal_heatmap/output.pdf` 和 `fig_coverage_proxy/output.pdf`
-- [x] 论文 tab:signal-discovery 原已正确 (使用 Source B 值)，无需修改
+**修复**: fig1 和 fig_coverage_proxy 已统一为 Source B 值。二轮验证:
+- fig1: HotpotQA entropy=-0.0407, step_count=-0.4944 ✅
+- fig_coverage_proxy: entropy_rho=-0.0407, n_records=1117 ✅
+- tab_signal_discovery: entropy_rho=-0.041, step_count=-0.494 ✅
 
 ---
 
 ### ~~2.~~ [x] P1 temporal 对 TWExpress 的描述与数据矛盾 → **已修复 (2026-03-23)**
 
-**位置**: §5.4 P1 verification 段落
-
-**问题**: 论文写 "FEVER and TWExpress show weak, non-significant effects in both phases (p>0.4)"
-
-fig_p1_temporal_shift 实际数据:
-
-| 环境 | Phase | ρ | p-value | 显著? |
-|---|---|---|---|---|
-| FEVER | early | +0.054 | 0.446 | No ✅ |
-| FEVER | late | +0.078 | 0.486 | No ✅ |
-| TWExpress | early | **+0.161** | **0.001** | **Yes ❌** |
-| TWExpress | late | +0.008 | 0.877 | No ✅ |
-
-TWExpress early phase p=0.001，**高度显著**，不是 "p>0.4"。
-
-**修复**:
-- [x] §5.4 P1 段落: 分开讨论 FEVER (弱/不显著) 和 TWExpress (early 显著 +0.161, p=0.001, late 消失)
-- [x] Appendix D P1 表注释: 更新 TWExpress 描述
+**修复**: §5.4 line 1006-1011 现在分开讨论 FEVER（不显著 p>0.4）和 TWExpress（early 显著 ρ=+0.161, p=0.001, late 消失 p=0.877）。二轮验证与 fig_p1_temporal_shift 数据一致 ✅
 
 ---
 
-### ~~3.~~ [x] "APPS Intro: RR=6%" 与 trigger rate 数据矛盾 → **已修复 (2026-03-23, 见 TODO_paper_data_audit #2)**
+### ~~3.~~ [x] "APPS Intro: RR=6%" 与 trigger rate 数据矛盾 → **部分修复 (2026-03-23)**
 
-**位置**: §5.2 per-environment analysis (APPS Intro bullet)
-
-**问题**: 论文写 "EAAG correctly learns conservative gating (RR=6%)"
-
-fig_trigger_rate 中 apps 的 per-step trigger rates:
-- step 0: 40.5% (n=489)
-- step 1: 25.1% (n=255)
-- step 2: 12.1% (n=182)
-- step 3: 37.1% (n=175)
-- step 4: 54.1% (n=170)
-
-加权平均 ≈ 33%，远高于 6%。
-
-**修复**: 实际 APPS Intro exploitation step-level RR=35%. 已更新 Abstract, §1, §5.3, §5.5.
+**修复状态**: §5.3 (line 963) 已改为 RR=35% ✅, 但 **§5.2 (line 912) 仍写 RR=6%** ❌ → 见新增 P1-A
 
 ---
 
-### ~~4.~~ [x] "Pareto-dominates CaTS in 6/6 environments" 无法验证 → **已修复 (2026-03-23)**
+### ~~4.~~ [x] "Pareto-dominates CaTS in 6/6 environments" → **已修复 (2026-03-23)**
 
-**位置**: §5.2 Main Results 开头
-
-**问题**:
-- tab_main_results 中 CaTS 只有 **4 个环境** 的数据 (HotpotQA, APPS, WebShop, FEVER)
-- tab_diagnostic_results 和 tab_appendix_results 中 **没有 CaTS** 数据
-- FEVER: EAAG SR=49.8% **<** CaTS SR=50.2%（EAAG cost 更低但 SR 更低），不构成 Pareto dominance
-
-**修复**: CaTS 有 6 环境数据 (含 FEVER 在 phase6/fever/fever/cats/)。FEVER EAAG 49.8% < CaTS 50.2% (差 0.4pp) 不构成 Pareto dominance → 改为 "5/6, exception is FEVER within noise at half the cost"。
+**修复**: §5.2 (line 863) 改为 "5/6" ✅, 但 **Abstract 和 §1 P5 仍写 "Pareto-dominates all"** → 见新增 P1-D
 
 ---
 
-## P1 — 中度问题（建议在提交前修正）
+## P1 — 需修复（二轮核查发现的文本残留 + 新问题）
 
-### ~~5.~~ [x] AUC hierarchy "≈" 描述掩盖了环境间差异 → **已确认可接受 (2026-03-23)**
+### A. [ ] §5.2 APPS Intro 仍写 RR=6%（原 P0-3 未完全修复）
 
-**位置**: §3.1 Observation 3
+**位置**: VOC_PAPER_WRITING_GUIDE.md line 912
 
-**问题**: 论文写 "single entropy AUC≈0.50, multi-signal AUC≈0.83, hidden-state AUC≈0.90"
+**现状**:
+```latex
+% line 912 (§5.2):
+conservative gating (RR=6\%), achieving 66.0\% at 1.20 ro/ep.
+```
+```latex
+% line 963 (§5.3, 已修复):
+moderate in mixed environments (APPS Intro: RR=35\%, WebShop: RR=28\%),
+```
 
-实际范围 (fig_auc_hierarchy):
+同一文档内 §5.2 说 6%, §5.3 说 35%, 自相矛盾。fig_trigger_rate 加权平均验证为 ~35%。
 
-| Level | Min | Max | Mean | 论文 |
-|---|---|---|---|---|
-| single_entropy | 0.500 | **0.557** | 0.515 | ≈0.50 |
-| multi_signal_lr | **0.736** | 0.924 | 0.818 | ≈0.83 |
-| hidden_state_lr | **0.794** | 0.994 | 0.902 | ≈0.90 |
-
-APPS 的 single_entropy=0.557、Plancraft 的 multi_signal=0.736、APPS 的 hidden_state=0.794 都显著偏离 "≈" 值。
-
-**决定**: 保留 "≈" 表述 (已更新为 ≈0.50/≈0.83/≈0.90)。具体数值和范围在 fig_auc_hierarchy 中展示，论文正文用近似值足够。APPS multi_signal=0.736 和 APPS hidden=0.794 偏低，但 4 环境平均值支撑近似声明。
-
----
-
-### ~~6.~~ [x] BSW degradation "38.8pp" 对比基准不清 → **已修复 (2026-03-23)**
-
-**位置**: §5.3 BSW ablation 段落
-
-**问题**: "SR drops by 38.8pp on HotpotQA" — 38.8pp = always_trigger(97.0) - BSW(58.2)，但上下文说的是 "reversing the learned direction"，暗示比较对象是 EAAG(95.2)，差值实为 37.0pp。
-
-fig3_bsw_direction: `degradation_pp` 列使用 `always_sr - bsw_sr`。
-
-**修复**: 改为明确标出 BSW SR 和 EAAG SR: "BSW achieves 58.2% vs. EAAG's 95.2% (−37.0pp) on HotpotQA and 20.6% vs. 43.8% (−23.2pp) on WebShop"。以 EAAG 为基准更合理 (BSW = EAAG with flipped direction)。
+**行动项**:
+- [ ] Line 912: `RR=6\%` → `RR=35\%`
+- [ ] 同时检查该 bullet 的叙述: "conservative gating" 在 RR=35% 时是否仍合适（35% 属于中等，非 conservative）
 
 ---
 
-### ~~7.~~ [x] Appendix 注释中 APPS Interview 数值与数据不匹配 → **已修复 (2026-03-23)**
+### B. [ ] §1 P3、§4、§5.6 仍用 38.8pp（BSW 基准不统一）
 
-**位置**: Appendix B (commented LaTeX)
+**位置**: lines 143, 676, 1120
 
-**问题**: 论文注释写 "base 55.0%, always 81.0%"
+**现状**: §5.3 (line 935-937) 已修复为 EAAG 基准 (−37.0pp, −23.2pp) ✅
 
-实际数据:
-- tab_env_setup: APPS Intv base=**60.5%**, always=**79.5%**
+但其他 3 处仍使用 always_trigger 基准 38.8pp:
 
-**修复**: 注释 "base 55.0%, always 81.0%" → "base 60.5%, always 79.5%"
+| 位置 | Line | 当前文本 |
+|---|---|---|
+| §1 P3 | 143 | `direction causes SR to drop by 38.8\,pp on HotpotQA` |
+| §4 Design | 676 | `the wrong direction degrades SR by 38.8\,pp` |
+| §5.6 Robustness | 1120 | `$-$38.8\,pp on HotpotQA` |
+
+**行动项**:
+- [ ] 决定统一基准: EAAG (37.0pp) 或 always_trigger (38.8pp)
+  - 建议: §5.3 的 EAAG 基准更合理 (BSW = EAAG with flipped direction)
+- [ ] 若统一为 EAAG 基准:
+  - Line 143: 38.8 → 37.0, 并补充 "vs. EAAG's 95.2%"
+  - Line 676: 38.8 → 37.0
+  - Line 1120: 38.8 → 37.0, 22.4 → 23.2
+- [ ] 或: 保留 38.8pp 但统一标注 "(vs. always\_trigger)" 以消除歧义
+
+---
+
+### C. [ ] tab:capacity 表标题算术错误
+
+**位置**: VOC_PAPER_WRITING_GUIDE.md line 1135
+
+**现状**:
+```latex
+\caption{... a logistic gate with correct direction outperforms an MLP with wrong direction by 51.5\,pp.}
+```
+
+**实际**: Logistic correct (95.2%) − MLP wrong (45.3%) = **49.9pp**, 不是 51.5pp
+
+tab_gate_capacity 数据: Logistic Correct SR=95.2, MLP Wrong SR=45.3, 差值=49.9
+
+**行动项**:
+- [ ] Line 1135: `51.5\,pp` → `49.9\,pp`
+
+---
+
+### D. [ ] Abstract 和 §1 P5 仍写 "Pareto-dominates all"
+
+**位置**: lines 57, 184
+
+**现状**: §5.2 (line 863) 已修正为 "5/6" ✅, 但:
+- Line 57 (Abstract): `EAAG Pareto-dominates all fixed-direction baselines (34 wins vs.\ 2 losses...`
+- Line 184 (§1 P5): `Pareto-dominates all calibrated baselines: 34 wins vs.\ 2 losses...`
+
+FEVER 上 CaTS SR=50.2% > EAAG SR=49.8%, 严格不构成 Pareto dominance。
+
+**行动项**:
+- [ ] 方案 A (推荐): 将 "Pareto-dominates" 与 "34W/2L" 分开陈述，例如:
+  `EAAG achieves 34 wins vs. 2 losses in head-to-head SR comparisons against 6 competing methods, and Pareto-dominates in 5/6 shared environments (exception: FEVER, within 0.4pp at half the cost).`
+- [ ] 方案 B (最小改动): `Pareto-dominates all` → `Pareto-dominates nearly all` 并在括号中注明
+- [ ] 同步检查 line 211 (Contribution #3) 和 line 1341 (Conclusion) 中的 Pareto 声明
+
+---
+
+### E. [ ] fig_controlled_reversal: n_probe=1208 与 Source B 不一致
+
+**位置**: experiment/fig_controlled_reversal/data.csv
+
+**现状**:
+```csv
+Original,49.0,97.0,-0.041,-0.494,95.2,1208
+```
+- entropy_rho=-0.041 和 step_count_rho=-0.494 已对齐到 Source B ✅
+- 但 n_probe=**1208** 是 Source A 的样本量, Source B 应为 **1117**
+
+**行动项**:
+- [ ] 确认 controlled reversal 实验是否独立于 Source A/B（有自己的数据收集）
+  - 若独立: 1208 是正确的, 无需修改, 但 rho 值应该从这 1208 条数据计算而非引用 Source B
+  - 若引用 Source B: n_probe 应改为 1117
+- [ ] 建议: 在 README.md 中注明数据来源
+
+---
+
+### F. [ ] §5.6 McNemar/TOST p-values 无数据支撑
+
+**位置**: VOC_PAPER_WRITING_GUIDE.md lines 1163-1165
+
+**现状**:
+```latex
+We report McNemar's test for paired SR comparisons (BSW vs.\ correct
+direction: $p{=}0.035$) and TOST equivalence testing for EAAG
+vs.\ oracle (non-inferiority: $p{=}0.002$, $\delta{=}3\%$).
+```
+
+tab_significance 使用 **bootstrap CI** (5000 resamples), 不包含 McNemar 或 TOST 结果。p=0.035 和 p=0.002 在数据中无出处。
+
+**行动项**:
+- [ ] 方案 A: 实际计算 McNemar 和 TOST 并录入数据
+- [ ] 方案 B: 改为引用现有 bootstrap CI 结果, 例如:
+  `We report bootstrap confidence intervals (5000 resamples) for all head-to-head comparisons (Table~\ref{tab:significance}). EAAG vs. BSW: ΔSR = +37.0pp, 95% CI [...]. Pareto-dominance claims use a conservative criterion (SR ≥ and Cost ≤ with at least one strict inequality).`
 
 ---
 
 ## P2 — 待完成项
 
-### ~~8.~~ [x] fig_coverage_proxy 对应的论文文本仍为 TODO → **已有文本 (见 §5.4)**
-
-**位置**: §5.7 Observable Proxy
-
-**问题**: 数据已有 (5 环境的 mean_coverage 和 entropy_rho)，但论文文本仍是 `% TODO` 模板。
-
-数据摘要:
-
-| 环境 | mean_coverage | entropy_rho |
-|---|---|---|
-| HotpotQA | 0.455 | -0.327 |
-| FEVER | 0.059 | -0.119 |
-| APPS | 1.000 | +0.012 |
-| WebShop | 0.319 | -0.019 |
-| TWExpress | 0.921 | -0.290 |
-| APPS Intv | 1.000 | +0.318 |
-
-**修复**:
-- [x] §5.4 已有 coverage proxy paragraph (Appendix ref)
-- [x] HotpotQA entropy_rho 已统一为 −0.0407 (Source B)
-- [x] scatter plot 已生成: `fig_coverage_proxy/output.pdf`
-
----
-
 ### 9. [ ] fig_method_diagram 缺少实际内容
 
 **位置**: §4 Method Overview
 
-**问题**: 文件夹仅含 README.md，无数据/图片。论文 §4 引用 `Figure~\ref{fig:method}`。
+**问题**: 文件夹仅含 README.md, 无数据/图片。论文 §4 引用 `Figure~\ref{fig:method}`。
 
 **行动项**:
 - [ ] 制作 EAAG 三步流程图 (Explore → Reason → Learn & Deploy)
@@ -179,46 +175,46 @@ fig3_bsw_direction: `degradation_pp` 列使用 `always_sr - bsw_sr`。
 
 ---
 
-### ~~10.~~ [x] Trigger rate 百分比需要加权计算验证 → **已验证 (2026-03-23)**
+## P3 — 完整性检查（非阻塞）
 
-**位置**: §5.3, §5.2, Abstract
+### ~~11.~~ [x] tab_significance 覆盖范围确认
 
-**涉及声明**:
-- "73% in rollout-safe TWExpress"
-- "66% in high-headroom HotpotQA"
-- "28% in WebShop"
-- "35% in APPS Intro"
-
-**问题**: fig_trigger_rate 提供 per-step 粒度数据。论文中的百分比应为加权平均 `Σ(trigger_rate × n) / Σ(n)`，但未包含在 CSV 中。
-
-**验证结果**: 加权平均与 stats.json 吻合: HotpotQA=66%, APPS=35%, WebShop=28%, FEVER=49%, TWExpress=73%, Plancraft=33%. 论文已使用这些数字。
-
----
-
-## P3 — 完整性检查（非阻塞，提交前完成即可）
-
-### 11. [x] tab_significance 覆盖范围确认
-
-- [x] 30 行数据覆盖 5 envs × 6 CB methods (FEVER 无 CB 数据除外)
-- [ ] §5.6 提到的 McNemar's test 和 TOST 是 hypothetical 建议，当前 tab_significance 使用 bootstrap CI — 保持现有方法
+- [x] 30 行数据覆盖 5 envs × 6 CB methods
+- 注意: FEVER 环境无 CB 对比数据 (EAAG 和 CB 都在 ~50%, 无对比意义)
 
 ### 12. [ ] fig_matched_pair 在论文中的引用完整性
 
 - [ ] 确认 §5.6 是否完整引用了 matched-pair 分析结果
-- [ ] 4 个环境 × 3 个 difficulty bin 的数据是否都被讨论
+- [ ] 数据: 4 环境 (HotpotQA, TWExpress, APPS Intv, APPS) × 3 difficulty bins
+- [ ] HotpotQA delta_u 全部为负 (−0.08/−0.43/−0.39) — 支持 "高 entropy → 低 utility" 的 Type I 模式
+- [ ] TWExpress Easy 为正 (+0.33) 但 Mid/Hard 为负 — 说明 early-step Type D 混合
 
-### ~~13.~~ [x] fig_bsw_vs_rho 的 R² > 0.5 声明 → **已验证 (2026-03-23)**
-
-**位置**: §5.3 "magnitude of degradation correlates with signal strength (|ρ| vs |ΔSR|, R² > 0.5)"
-
-- [x] R²=0.803 (4 non-safe points), r=0.896, p=0.104 → > 0.5 确认
-- [x] p=0.104 因为只有 4 个点，论文已标注 "R² > 0.5" 未声称 statistical significance
+### ~~13.~~ [x] fig_bsw_vs_rho 的 R² > 0.5 声明 → R²=0.803 已验证 ✅
 
 ### 14. [ ] APPS Intv 在 fig4_feature_heatmap 中只选中 3 个 features
 
 - [ ] APPS Intv: 仅 has_error=1, step_count=1, step_ratio=1 被选中（token_entropy=0）
-- [ ] 论文 Observation 2 说 "step_count selected in 6/7" — APPS Intv 确实选了，一致
-- [ ] 但 APPS Intv token_entropy 未被选中，这与 tab_signal_discovery 中 APPS Intv entropy_rho=+0.317 (strongest positive) 看似矛盾，需确认 LASSO 为何没选 entropy
+- [ ] 但 tab_signal_discovery 中 APPS Intv entropy_rho=+0.317 (最强正相关)
+- [ ] 可能解释: step_count 和 step_ratio 与 entropy 共线性高, LASSO 选择了更稀疏的表示
+- [ ] 建议: 若论文讨论了此现象可忽略; 若未讨论, 在 Appendix 中加一句解释
+
+---
+
+## 已关闭项汇总
+
+| # | 问题 | 修复日期 | 状态 |
+|---|---|---|---|
+| 1 | fig1 vs tab HotpotQA 数据矛盾 | 2026-03-23 | ✅ Source B 统一 |
+| 2 | TWExpress P1 描述错误 | 2026-03-23 | ✅ 分开讨论 |
+| 3 | APPS Intro RR=6% (数据层) | 2026-03-23 | ✅ 确认 35%, §5.3 已改 |
+| 4 | Pareto CaTS 6/6 (§5.2) | 2026-03-23 | ✅ 改为 5/6 |
+| 5 | AUC ≈ 值范围 | 2026-03-23 | ✅ 近似可接受 |
+| 6 | BSW 38.8pp 基准 (§5.3) | 2026-03-23 | ✅ 改为 EAAG 基准 37.0pp |
+| 7 | Appendix APPS Intv 注释值 | 2026-03-23 | ✅ 改为 60.5/79.5 |
+| 8 | fig_coverage_proxy 文本 | 2026-03-23 | ✅ §5.4 已有文本 |
+| 10 | Trigger rate 加权平均 | 2026-03-23 | ✅ 66/35/28/49/73/33 |
+| 11 | tab_significance 覆盖 | 2026-03-23 | ✅ 30 行 5env×6CB |
+| 13 | R² > 0.5 | 2026-03-23 | ✅ R²=0.803 |
 
 ---
 
@@ -228,26 +224,31 @@ fig3_bsw_direction: `degradation_pp` 列使用 `always_sr - bsw_sr`。
 |---|---|---|
 | fig1_signal_heatmap | §3.1 | ✅ 已修复 (Source B) |
 | fig2_pareto | §5.2 | ✅ |
-| fig3_bsw_direction | §5.3 | ✅ 已修复 (EAAG 为基准) |
+| fig3_bsw_direction | §5.3 | ✅ 已修复 (EAAG 基准) |
 | fig4_feature_heatmap | §3.1 Obs 2 | ✅ |
 | fig5_llm_ablation | §5.3 | ✅ |
 | fig6_fever_bias | §6 | ✅ |
-| fig_auc_hierarchy | §3.1 Obs 3 | ✅ 已确认 ≈ 值可接受 |
-| fig_bsw_vs_rho | §5.3/附录 | ✅ R²=0.80 已验证 |
-| fig_controlled_reversal | §5.4 | ✅ |
+| fig_auc_hierarchy | §3.1 Obs 3 | ✅ ≈ 值可接受 |
+| fig_bsw_vs_rho | §5.3/附录 | ✅ R²=0.80 |
+| fig_controlled_reversal | §5.4 | ⚠️ n_probe=1208 待确认 |
 | fig_coverage_proxy | §5.4/App D | ✅ 已修复 (Source B) |
-| fig_matched_pair | §5.6 | ✅ |
+| fig_matched_pair | §5.6 | ✅ 数据存在, 引用待查 |
 | fig_method_diagram | §4 | ⏳ 无内容 |
-| fig_p1_temporal_shift | §5.4 | ✅ 已修复 TWExpress 描述 |
+| fig_p1_temporal_shift | §5.4 | ✅ 已修复 TWExpress |
 | fig_stratified_reversal | §5.6 | ✅ |
 | fig_trigger_rate | §5.3 | ✅ 加权平均已验证 |
-| tab_signal_discovery | §3.1 | ✅ 已修复 (Source B) |
+| tab_signal_discovery | §3.1 | ✅ |
 | tab_env_info_structure | §3.2 | ✅ |
 | tab_env_setup | §5.1 | ✅ |
-| tab_main_results | §5.2 | ✅ 已修复 (Pareto 5/6) |
+| tab_main_results | §5.2 | ⚠️ Pareto "all" 待修文本 |
 | tab_method_classification | §3.3 | ✅ |
-| tab_gate_capacity | §5.6 | ✅ |
-| tab_winloss | §5.2 | ✅ |
+| tab_gate_capacity | §5.6 | ❌ 表标题 51.5→49.9 |
+| tab_winloss | §5.2 | ✅ 34W/2L 精确 |
 | tab_diagnostic_results | §5.5 | ✅ |
-| tab_appendix_results | 附录 B | ✅ 已修复注释值 |
-| tab_significance | 附录 E | ✅ 30 行已确认 |
+| tab_appendix_results | 附录 B | ✅ |
+| tab_significance | 附录 E | ⚠️ McNemar/TOST 无数据 |
+
+---
+
+**当前开放项统计**: P1 × 6 (A-F) + P2 × 1 (#9) + P3 × 2 (#12, #14) = **9 项**
+**其中需立即修复**: A (RR 6%→35%) 和 C (51.5→49.9) 为明确数据错误
