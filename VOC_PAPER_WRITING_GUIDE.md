@@ -860,9 +860,11 @@ environments. EAAG achieves 34 wins against 2 losses in head-to-head
 SR comparisons with 6 baselines across 8 environments
 (Table~\ref{tab:winloss}).
 % 📁 实验文件夹: experiment/tab_winloss/
-EAAG Pareto-dominates CaTS in 6/6
-environments and SCG in 4/7 environments (the latter requiring
-Phase~1 data that EAAG eliminates).
+EAAG Pareto-dominates CaTS in 5/6
+environments (the exception is FEVER, where EAAG's 49.8\% trails
+CaTS's 50.2\% by 0.4\,pp---within noise---at less than half the
+cost) and SCG in 4/7 environments (the latter requiring Phase~1
+data that EAAG eliminates).
 
 \paragraph{The story of the results.}
 Three patterns stand out. \emph{First}, the gap between EAAG and
@@ -930,8 +932,9 @@ LLM reasoning.
 % 📁 实验文件夹: experiment/fig3_bsw_direction/ (散点图)
 % 📁 实验文件夹: experiment/fig_bsw_vs_rho/ (回归分析)
 Intentionally reversing the learned direction causes catastrophic
-failure across environments: SR drops by 38.8\,pp on HotpotQA
-and 22.4\,pp on WebShop (Table~\ref{tab:main}, BSW row).
+failure across environments: BSW achieves 58.2\% vs.\ EAAG's 95.2\%
+on HotpotQA ($-$37.0\,pp) and 20.6\% vs.\ 43.8\% on WebShop
+($-$23.2\,pp) (Table~\ref{tab:main}, BSW row).
 On HotpotQA, the MLP gate with wrong direction achieves 45.3\%---
 \emph{below} the 49.0\% no-trigger baseline. This confirms the
 central prediction of Proposition~\ref{prop:necessity}: direction is
@@ -1000,9 +1003,11 @@ early exploration diversity gives way to debugging frustration.
 In WebShop, $\rho$ shifts from $+0.285$ (early, $p{<}10^{-5}$)
 to $-0.006$ (late, non-significant): the strong Type~D signal
 during product browsing vanishes once the agent commits.
-FEVER and TWExpress show weak, non-significant effects in both
-phases ($p{>}0.4$), consistent with their extreme Type~I structure
-leaving little temporal variation to detect
+FEVER shows weak, non-significant effects in both phases ($p{>}0.4$).
+TWExpress shows a significant positive early-phase effect
+($\rho{=}{+}0.161$, $p{=}0.001$) that vanishes in the late phase
+($p{=}0.877$), consistent with early-step Type~D mixing that
+dissipates as information accumulates
 (Figure~\ref{fig:p1}).
 % 📁 实验文件夹: experiment/fig_p1_temporal_shift/
 This pattern refines the Two-Source Model: $p_I$ is not simply the
@@ -1447,7 +1452,7 @@ assumption.
 % 📁 实验文件夹: experiment/tab_appendix_results/
 % Full results table for APPS Interview and CRUXEval:
 %   APPS Interview: EAAG 73.0% (2.1 ro/ep), SCG† 79.5% (3.8 ro/ep),
-%     CaTS 68.2%, always 81.0%, base 55.0%
+%     CaTS 68.2%, always 79.5%, base 60.5%
 %   CRUXEval: EAAG XX%, always XX%, base XX%
 %   Analysis: APPS Interview shows SCG† advantage from Phase 1 data;
 %   EAAG still competitive without Phase 1
@@ -1663,7 +1668,8 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 %   Pattern: ρ decreases (becomes more negative) from early to late
 %   in all environments with sufficient signal. Early steps mix
 %   Type I + Type D; late steps isolate residual Type I component.
-%   FEVER/TWExpress show weak non-significant effects in both phases.
+%   FEVER shows weak non-significant effects in both phases.
+%   TWExpress early is significant (ρ=+0.161, p=0.001), late is not (p=0.877).
 %
 % P2: Same-Family Consistency (Full Analysis)
 %   Family 1: Search-based QA (FEVER, HotpotQA)

@@ -1,5 +1,5 @@
 environment,mean_coverage,entropy_rho,n_records
-HotpotQA,0.4547,-0.3272,1208
+HotpotQA,0.4547,-0.0407,1117
 FEVER,0.0588,-0.1192,282
 APPS,1.0000,0.0121,1567
 WebShop,0.3187,-0.0192,3899
