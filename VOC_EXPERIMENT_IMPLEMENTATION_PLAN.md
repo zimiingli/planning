@@ -42,8 +42,8 @@
 | 指标 | 定义 | 用途 |
 |------|------|------|
 | **SR** | Success Rate (任务成功率) | 主性能指标 |
-| **Total Cost** (ro/ep) | exploitation ro/ep + Phase 1 amortized ro/ep | 主成本指标 (含隐性成本) |
-| **SR/total_ro** | ΔSR / total_ro | 效率指标 |
+| **Cost** (ro/ep) | deployment exploitation ro/ep (不含 Phase 1 训练成本) | 主成本指标 (运行时效率) |
+| **SR/cost** | ΔSR / cost | 效率指标 |
 | **Pareto dominance** | SR≥ AND cost≤ (至少一个 strict) | 方法对比 |
 
 ---
@@ -54,45 +54,45 @@
 
 ```
 Method          HotpotQA          APPS             WebShop           FEVER
-                SR    Cost(T)     SR    Cost(T)    SR    Cost(T)    SR    Cost(T)
+                SR    Cost        SR    Cost       SR    Cost       SR    Cost
 ─── Bounds ───
 base_only      49.0%  0.00      58.5%  0.00       7.2%  0.00      37.0%  0.00
 always_trigger 97.0%  1.80      64.5%  2.58      43.0%  5.63      99.8%  1.46
 ─── CB ───
-CaTS†          93.2%  2.86      59.0%  2.62      30.5%  8.68      50.2%  6.17
+CaTS†          93.2%  1.06      59.0%  0.04      30.5%  3.05      50.2%  4.71
 AUQ            97.0%  1.69      61.3%  1.73      35.7%  5.33      40.7%  1.17
 s1 Budget      97.0%  1.04      63.7%  1.00       7.8%  1.00      46.2%  1.58
-SEAG†          67.5%  2.60      58.5%  2.59      28.0%  7.91      49.3%  4.58
-CoRefine†      68.2%  2.59      58.5%  2.59      27.5%  7.84      49.8%  4.58
+SEAG†          67.5%  0.80      58.5%  0.01      28.0%  2.28      49.3%  3.12
+CoRefine†      68.2%  0.79      58.5%  0.01      27.5%  2.21      49.8%  3.12
 CATTS          68.3%  1.07      58.5%  0.03      16.0%  0.19      34.2%  0.06
 ─── Ablation ───
-SCG†           96.8%  2.89      58.8%  2.77      43.0%  7.10      98.0%  2.45
-BSW†           58.2%  —          —     —         20.6%  —         63.0%  5.76
+SCG†           96.8%  1.09      58.8%  0.19      43.0%  1.47      98.0%  0.99
+BSW            58.2%  —          —     —         20.6%  —         63.0%  4.30
 ─── Ours ───
 EAAG           95.2%  1.34      66.0%  1.20      43.8%  2.29      49.8%  2.99
 
-† = 含 Phase 1 (200 ep always_trigger) amortized cost
-Cost(T) = Total ro/ep = exploit ro/ep + (Phase 1 ro/ep if applicable)
+† = 需要 Phase 1 数据 (200 ep always_trigger)，Phase 1 成本不计入 Cost
+Cost = deployment exploit ro/ep (运行时每 episode 平均 rollout 次数)
 ```
 
 ### 2.2 诊断环境数据
 
 ```
 Method          TWExpress         Plancraft
-                SR    Cost(T)     SR    Cost(T)
+                SR    Cost        SR    Cost
 base_only      67.5%  0.00      29.8%  0.00
 always_trigger 99.3%  3.45      22.8%  6.99
 EAAG           99.0%  2.84      23.3%  3.69
-SCG†           97.0%  4.83      21.5%  10.32
+SCG†           97.0%  1.38      21.5%  3.33
 ```
 
 ### 2.3 Appendix 环境数据
 
 ```
 Method          APPS Interview    CRUXEval
-                SR    Cost(T)     SR    Cost(T)
+                SR    Cost        SR    Cost
 base_only      60.5%  0.00      85.0%  0.00
-EAAG           73.0%  1.35       —     —
+EAAG           73.0%  1.35      98.5%  1.24
 SCG†           79.5%  3.19      99.5%  2.80
 AUQ            64.7%  1.08      99.0%  1.75
 ```
@@ -222,10 +222,10 @@ APPS Interview: step_count, step_ratio, has_error
 
 ### 3.4 Pareto Frontier 图 (§5 E2 核心图)
 
-**目的**: SR vs Total Cost 的 Pareto 图，最直观的方法对比
+**目的**: SR vs Cost 的 Pareto 图，最直观的方法对比
 
 **设计**: 6 个子图（4 主实验 + 2 诊断），每图显示所有方法的散点
-- X = Total Cost (ro/ep, 含 Phase 1)
+- X = Cost (deployment ro/ep)
 - Y = SR
 - 颜色: EAAG=红, CB=蓝/绿, SCG=灰, bounds=虚线
 - EAAG 应在大部分环境位于 Pareto frontier 上或接近
@@ -1207,11 +1207,11 @@ Job 23304305 (2026-03-23): §3.9.1 Controlled InfoPoor/InfoRich — 修复版 v2
 
 §5.1 Setup (0.3 页)
   - 8 环境 + EAAG + baseline 分层 (Table)
-  - Total Cost 定义 (含 Phase 1 amortized)
+  - Cost 定义 (deployment exploit ro/ep, 不含 Phase 1)
   - 公平对比声明 ("same T, same agent, only gate differs")
 
 §5.2 E1: Main Comparison (0.8 页)
-  - Table: 主表 (6 env × methods, SR + Total Cost)
+  - Table: 主表 (8 env × methods, SR + Cost)
   - Figure: Pareto frontier (4 主实验子图) [fig2, 已有]
   - EAAG 34W/2L vs 6 CB
   - EAAG Pareto-dominates SCG† 4/7, CaTS† 6/6

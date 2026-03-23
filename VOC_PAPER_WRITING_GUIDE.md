@@ -804,14 +804,21 @@ s1\_budget---all assume high uncertainty $\to$ trigger.
 data), BSW (intentionally reversed direction).
 (4)~\emph{Ours}: EAAG.
 
-\paragraph{Metrics.} SR (success rate, $\uparrow$) and Total Cost
-(rollouts per episode including amortized Phase~1 cost, $\downarrow$).
+\paragraph{Metrics.} SR (success rate, $\uparrow$) and Cost
+(rollouts per episode during deployment, $\downarrow$).
 A method Pareto-dominates another if $\text{SR} \geq$ and
 $\text{Cost} \leq$ with at least one strict inequality.
+Cost measures only the \emph{deployment} rollout budget---calibration
+or exploration overhead is excluded for all methods, ensuring a fair
+comparison of runtime efficiency.
 
-\paragraph{Cost fairness.} CaTS, SEAG, CoRefine, and SCG require
-Phase~1 data (200 episodes of always\_trigger); this cost is amortized
-and included in Total Cost. EAAG requires no Phase~1 data.
+\paragraph{Phase~1 requirements.} CaTS, SEAG, CoRefine, and SCG
+require Phase~1 calibration data (200 episodes of always\_trigger)
+before deployment. EAAG requires no Phase~1 data---it learns
+online during deployment itself. This distinction is noted in
+Table~\ref{tab:main} ($\dagger$ marks Phase~1-dependent methods)
+but is \emph{not} reflected in the Cost column, which reports
+deployment cost only.
 ```
 
 **Environment Setup Table:**
@@ -855,7 +862,7 @@ Main table + Pareto figure (fig2).
 \subsection{Main Results}
 \label{sec:main-results}
 
-Table~\ref{tab:main} reports SR and Total Cost across 8
+Table~\ref{tab:main} reports SR and deployment Cost across 8
 % 📁 实验文件夹: experiment/tab_main_results/
 environments. EAAG achieves 34 wins against 2 losses in head-to-head
 SR comparisons with 6 baselines across 8 environments
@@ -2121,7 +2128,7 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 
 > EAAG's exploration cost is 50 episodes × average cost per episode. Phase 1-requiring baselines (CaTS, SEAG, CoRefine, SCG) need 200 always-trigger episodes at full optimizer cost. EAAG's 50 episodes use random gating (ε = 0.5), so average per-episode optimizer cost is ~50% of always-trigger. Net comparison: EAAG ~25 equivalent always-trigger episodes vs baselines' 200—an 8× reduction in setup cost.
 >
-> Moreover, EAAG's exploration cost is amortized: once direction is learned, no further exploration is needed unless the environment shifts. We include amortized costs in all reported Total Cost numbers (§5.1 "Cost fairness").
+> Moreover, EAAG's exploration cost is amortized: once direction is learned, no further exploration is needed unless the environment shifts. Our reported Cost metric measures deployment-only rollout budget (§5.1), so neither EAAG's exploration cost nor baselines' Phase 1 calibration cost is included—ensuring a fair runtime comparison.
 
 **Where this is addressed in the paper**: §5.1 Cost fairness paragraph, §6 Limitations item (4), Appendix B.5 Computational Cost Breakdown.
 
