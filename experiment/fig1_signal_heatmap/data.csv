@@ -30,3 +30,14 @@ CRUXEval,is_finish_proposed,0.0000
 CRUXEval,state_category,0.0000
 CRUXEval,subtask_type,0.0000
 CRUXEval,action_type,0.0000
+Plancraft,step_count,-0.0077
+Plancraft,token_entropy,-0.0159
+Plancraft,crafting_progress,-0.0171
+Plancraft,inventory_size,0.0617
+Plancraft,grid_items,-0.0469
+Plancraft,has_output,0.1621
+Plancraft,optimal_path_length,0.0250
+Plancraft,evidence_count,-0.0077
+Plancraft,is_finish_proposed,0.0000
+Plancraft,state_category,0.0000
+Plancraft,action_type,0.0000

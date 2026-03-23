@@ -14,3 +14,6 @@ TWExpress,Late,-0.0334,0.593747,258
 APPS Intv,Early,0.0463,0.514828,200
 APPS Intv,Mid,nan,nan,116
 APPS Intv,Late,nan,nan,123
+FEVER,Early,0.0542,0.445926,200
+FEVER,Mid,0.0735,0.563749,64
+FEVER,Late,nan,nan,18
