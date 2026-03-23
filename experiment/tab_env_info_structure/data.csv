@@ -1,0 +1,9 @@
+environment,info_sufficiency,reversibility,feedback_delay,two_source_type,entropy_rho
+HotpotQA,Info-Poor,Irreversible,Immediate,Info-Poverty,-0.041
+FEVER,Info-Poor,Irreversible,Immediate,Info-Poverty,-0.119
+APPS Intro,Info-Rich,Irreversible,Delayed,Decision-Difficulty,0.012
+APPS Intv,Info-Rich,Irreversible,Delayed,Decision-Difficulty,0.317
+WebShop,Mixed,Reversible,Immediate,Mixed,-0.019
+TWExpress,Info-Poor,Irreversible,Immediate,Info-Poverty,-0.29
+Plancraft,Info-Rich,Irreversible,Delayed,Weak (harmful),-0.016
+CRUXEval,Info-Rich,Irreversible,Delayed,Weak,-0.048

@@ -1,0 +1,190 @@
+environment,feature,selected
+HotpotQA,entropy_sq,1
+HotpotQA,evidence_count,1
+HotpotQA,h_pca_0,0
+HotpotQA,h_pca_1,0
+HotpotQA,h_pca_10,0
+HotpotQA,h_pca_9,0
+HotpotQA,has_error,0
+HotpotQA,is_finish,1
+HotpotQA,llm_action_is_click,0
+HotpotQA,llm_action_look_around,0
+HotpotQA,llm_action_type,0
+HotpotQA,llm_already_open,0
+HotpotQA,llm_closed_ratio,0
+HotpotQA,llm_has_claim,0
+HotpotQA,llm_instruction_keyword_count,0
+HotpotQA,llm_price_mentioned,0
+HotpotQA,llm_query_length,1
+HotpotQA,llm_step_early,0
+HotpotQA,llm_text_length,0
+HotpotQA,llm_text_length_normalized,0
+HotpotQA,num_available_actions,0
+HotpotQA,num_numbers,1
+HotpotQA,state_length,1
+HotpotQA,step_count,1
+HotpotQA,step_ratio,1
+HotpotQA,step_x_entropy,1
+HotpotQA,token_entropy,1
+APPS,entropy_sq,1
+APPS,evidence_count,0
+APPS,h_pca_0,0
+APPS,h_pca_1,0
+APPS,h_pca_10,0
+APPS,h_pca_9,1
+APPS,has_error,1
+APPS,is_finish,0
+APPS,llm_action_is_click,0
+APPS,llm_action_look_around,0
+APPS,llm_action_type,1
+APPS,llm_already_open,0
+APPS,llm_closed_ratio,0
+APPS,llm_has_claim,0
+APPS,llm_instruction_keyword_count,0
+APPS,llm_price_mentioned,0
+APPS,llm_query_length,0
+APPS,llm_step_early,0
+APPS,llm_text_length,0
+APPS,llm_text_length_normalized,0
+APPS,num_available_actions,0
+APPS,num_numbers,1
+APPS,state_length,1
+APPS,step_count,1
+APPS,step_ratio,1
+APPS,step_x_entropy,1
+APPS,token_entropy,1
+WebShop,entropy_sq,0
+WebShop,evidence_count,0
+WebShop,h_pca_0,0
+WebShop,h_pca_1,0
+WebShop,h_pca_10,0
+WebShop,h_pca_9,0
+WebShop,has_error,0
+WebShop,is_finish,1
+WebShop,llm_action_is_click,1
+WebShop,llm_action_look_around,0
+WebShop,llm_action_type,0
+WebShop,llm_already_open,0
+WebShop,llm_closed_ratio,0
+WebShop,llm_has_claim,0
+WebShop,llm_instruction_keyword_count,1
+WebShop,llm_price_mentioned,1
+WebShop,llm_query_length,0
+WebShop,llm_step_early,1
+WebShop,llm_text_length,0
+WebShop,llm_text_length_normalized,0
+WebShop,num_available_actions,1
+WebShop,num_numbers,1
+WebShop,state_length,1
+WebShop,step_count,0
+WebShop,step_ratio,0
+WebShop,step_x_entropy,1
+WebShop,token_entropy,1
+FEVER,entropy_sq,1
+FEVER,evidence_count,0
+FEVER,h_pca_0,0
+FEVER,h_pca_1,1
+FEVER,h_pca_10,0
+FEVER,h_pca_9,1
+FEVER,has_error,0
+FEVER,is_finish,0
+FEVER,llm_action_is_click,0
+FEVER,llm_action_look_around,0
+FEVER,llm_action_type,0
+FEVER,llm_already_open,0
+FEVER,llm_closed_ratio,0
+FEVER,llm_has_claim,1
+FEVER,llm_instruction_keyword_count,0
+FEVER,llm_price_mentioned,0
+FEVER,llm_query_length,0
+FEVER,llm_step_early,0
+FEVER,llm_text_length,0
+FEVER,llm_text_length_normalized,1
+FEVER,num_available_actions,0
+FEVER,num_numbers,0
+FEVER,state_length,1
+FEVER,step_count,1
+FEVER,step_ratio,1
+FEVER,step_x_entropy,1
+FEVER,token_entropy,1
+TWExpress,entropy_sq,1
+TWExpress,evidence_count,0
+TWExpress,h_pca_0,0
+TWExpress,h_pca_1,0
+TWExpress,h_pca_10,0
+TWExpress,h_pca_9,0
+TWExpress,has_error,0
+TWExpress,is_finish,0
+TWExpress,llm_action_is_click,0
+TWExpress,llm_action_look_around,1
+TWExpress,llm_action_type,0
+TWExpress,llm_already_open,1
+TWExpress,llm_closed_ratio,1
+TWExpress,llm_has_claim,0
+TWExpress,llm_instruction_keyword_count,0
+TWExpress,llm_price_mentioned,0
+TWExpress,llm_query_length,0
+TWExpress,llm_step_early,0
+TWExpress,llm_text_length,1
+TWExpress,llm_text_length_normalized,0
+TWExpress,num_available_actions,0
+TWExpress,num_numbers,1
+TWExpress,state_length,1
+TWExpress,step_count,1
+TWExpress,step_ratio,1
+TWExpress,step_x_entropy,0
+TWExpress,token_entropy,1
+Plancraft,entropy_sq,1
+Plancraft,evidence_count,0
+Plancraft,h_pca_0,1
+Plancraft,h_pca_1,0
+Plancraft,h_pca_10,1
+Plancraft,h_pca_9,0
+Plancraft,has_error,0
+Plancraft,is_finish,0
+Plancraft,llm_action_is_click,0
+Plancraft,llm_action_look_around,0
+Plancraft,llm_action_type,0
+Plancraft,llm_already_open,0
+Plancraft,llm_closed_ratio,0
+Plancraft,llm_has_claim,0
+Plancraft,llm_instruction_keyword_count,0
+Plancraft,llm_price_mentioned,0
+Plancraft,llm_query_length,0
+Plancraft,llm_step_early,0
+Plancraft,llm_text_length,0
+Plancraft,llm_text_length_normalized,0
+Plancraft,num_available_actions,1
+Plancraft,num_numbers,1
+Plancraft,state_length,1
+Plancraft,step_count,1
+Plancraft,step_ratio,1
+Plancraft,step_x_entropy,1
+Plancraft,token_entropy,1
+APPS Intv,entropy_sq,0
+APPS Intv,evidence_count,0
+APPS Intv,h_pca_0,0
+APPS Intv,h_pca_1,0
+APPS Intv,h_pca_10,0
+APPS Intv,h_pca_9,0
+APPS Intv,has_error,1
+APPS Intv,is_finish,0
+APPS Intv,llm_action_is_click,0
+APPS Intv,llm_action_look_around,0
+APPS Intv,llm_action_type,0
+APPS Intv,llm_already_open,0
+APPS Intv,llm_closed_ratio,0
+APPS Intv,llm_has_claim,0
+APPS Intv,llm_instruction_keyword_count,0
+APPS Intv,llm_price_mentioned,0
+APPS Intv,llm_query_length,0
+APPS Intv,llm_step_early,0
+APPS Intv,llm_text_length,0
+APPS Intv,llm_text_length_normalized,0
+APPS Intv,num_available_actions,0
+APPS Intv,num_numbers,0
+APPS Intv,state_length,0
+APPS Intv,step_count,1
+APPS Intv,step_ratio,1
+APPS Intv,step_x_entropy,0
+APPS Intv,token_entropy,0

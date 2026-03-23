@@ -335,6 +335,7 @@ opposite meaning depending on the environment.
 ```
 
 **Signal Discovery Table:**
+<!-- 📁 实验文件夹: planning/experiment/tab_signal_discovery/ -->
 ```latex
 \begin{table}[t]
 \caption{Signal--utility correlations across 8 environments.
@@ -364,6 +365,7 @@ Plancraft     & has\_output    & $+$0.162 & $-$0.016 & Weak \\
 \textbf{Observation 2: The identity of the most informative signal
 varies across environments.} EAAG's LASSO selects different feature
 subsets per environment (Figure~\ref{fig:feature-heatmap}):
+% 📁 实验文件夹: planning/experiment/fig4_feature_heatmap/
 \texttt{step\_count} is selected in 6/7 environments (most universal),
 but WebShop relies on \texttt{num\_available\_actions} and LLM-generated
 features (\texttt{price\_mentioned}, \texttt{action\_is\_click}).
@@ -375,6 +377,7 @@ No single signal is universally informative.
 \textbf{Observation 3: Single scalar signals carry near-zero
 information.} Cross-environment AUC analysis
 (Figure~\ref{fig:auc-hierarchy}) reveals a clear hierarchy: single
+% 📁 实验文件夹: planning/experiment/fig_auc_hierarchy/
 token entropy achieves AUC${\approx}$0.53 (barely above chance),
 multi-signal logistic regression achieves AUC${\approx}$0.85, and
 hidden-state probes reach AUC${\approx}$0.89. The information needed
@@ -388,6 +391,7 @@ signal at the per-step level.
 Head-to-head SR comparison across 6 environments yields 34 wins and
 2 losses for EAAG against 6 competing methods
 (Table~\ref{tab:winloss}). Every fixed-direction baseline fails in at
+% 📁 实验文件夹: planning/experiment/tab_winloss/
 least 2 environments. Most strikingly, CATTS achieves 34.2\% on
 FEVER---below the 37.0\% no-trigger baseline---demonstrating that
 wrong-direction gating is actively harmful.
@@ -455,7 +459,9 @@ signal ($\rho \approx 0$).
 
 \paragraph{Environment mapping.}
 Table~\ref{tab:env-type-mapping} maps each evaluation environment to
-its dominant uncertainty type based on task structure. This mapping is
+its dominant uncertainty type based on task structure.
+% 📁 实验文件夹: planning/experiment/tab_env_info_structure/
+This mapping is
 not a free parameter of the model---it follows directly from the
 environment's information structure.
 
@@ -580,6 +586,7 @@ We verify P1--P3 in \S\ref{sec:theory-verification}.
 ### §3.3 Design Implications (0.5 页)
 
 **Method Classification Table (FLARE Table 5 style):**
+<!-- 📁 实验文件夹: planning/experiment/tab_method_classification/ -->
 ```latex
 \begin{table}[t]
 \caption{Method classification by adaptive compute components. All
@@ -677,6 +684,7 @@ compensate for missing direction information.
 \subsection{Overview}
 
 EAAG operates in three steps (Figure~\ref{fig:method}):
+% 📁 实验文件夹: planning/experiment/fig_method_diagram/
 \textbf{Explore} $\to$ \textbf{Reason} $\to$
 \textbf{Learn \& Deploy}, with optional online adaptation.
 
@@ -800,6 +808,7 @@ and included in Total Cost. EAAG requires no Phase~1 data.
 ```
 
 **Environment Setup Table:**
+<!-- 📁 实验文件夹: planning/experiment/tab_env_setup/ -->
 ```latex
 \begin{table}[t]
 \caption{Environment setup. Base/Always: SR without/with optimizer.
@@ -831,15 +840,20 @@ Plancraft    & 29.8\% & 22.8\% &  $-$7.0 & Per-action eval \\
 - **共同模式**: (1) **一段 "Results highlights" 讲 story** — 2-3 句总结最重要的 pattern, 不是重复数字; (2) **然后 per-environment drill-down**; (3) **每个环境结果都 connect back to theory** (哪些结果支持/挑战 Two-Source Model)。
 
 Main table + Pareto figure (fig2).
+<!-- 📁 实验文件夹: planning/experiment/tab_main_results/ (主表) -->
+<!-- 📁 实验文件夹: planning/experiment/fig2_pareto/ (Pareto 图) -->
 
 ```latex
 \subsection{Main Results}
 \label{sec:main-results}
 
 Table~\ref{tab:main} reports SR and Total Cost across 4 primary
+% 📁 实验文件夹: planning/experiment/tab_main_results/
 environments. EAAG achieves 34 wins against 2 losses in head-to-head
 SR comparisons with 6 baselines across 6 environments
-(Table~\ref{tab:winloss}). EAAG Pareto-dominates CaTS in 6/6
+(Table~\ref{tab:winloss}).
+% 📁 实验文件夹: planning/experiment/tab_winloss/
+EAAG Pareto-dominates CaTS in 6/6
 environments and SCG in 4/7 environments (the latter requiring
 Phase~1 data that EAAG eliminates).
 
@@ -860,6 +874,7 @@ environment-specific strategies---aggressive triggering in
 high-headroom environments, conservative gating in low-headroom
 ones, and near-zero triggering when rollouts are harmful
 (Figure~\ref{fig:trigger-rate}).
+% 📁 实验文件夹: planning/experiment/fig_trigger_rate/
 
 \paragraph{Per-environment analysis.}
 \begin{itemize}[nosep,leftmargin=*]
@@ -905,6 +920,8 @@ expected importance: direction learning, multi-signal features, and
 LLM reasoning.
 
 \paragraph{Direction is the primary determinant (BSW ablation).}
+% 📁 实验文件夹: planning/experiment/fig3_bsw_direction/ (散点图)
+% 📁 实验文件夹: planning/experiment/fig_bsw_vs_rho/ (回归分析)
 Intentionally reversing the learned direction causes catastrophic
 failure across environments: SR drops by 38.8\,pp on HotpotQA
 and 22.4\,pp on WebShop (Table~\ref{tab:main}, BSW row).
@@ -918,6 +935,7 @@ $R^2 > 0.5$; Appendix~\ref{app:proofs}), as the Two-Source Model
 predicts.
 
 \paragraph{LLM reasoning provides robustness, not accuracy.}
+% 📁 实验文件夹: planning/experiment/fig5_llm_ablation/
 Removing the LLM reasoning step (using only universal features)
 changes SR by ${<}$1\,pp in most environments: 95.2\%$\to$95.8\%
 (HotpotQA), 66.0\%$\to$65.8\% (APPS), 43.8\%$\to$43.7\% (WebShop).
@@ -928,6 +946,7 @@ task-specific signals (e.g., WebShop's \texttt{price\_mentioned})
 cannot be anticipated by universal features alone.
 
 \paragraph{Gating magnitude emerges from direction learning.}
+% 📁 实验文件夹: planning/experiment/fig_trigger_rate/
 The learned gate automatically calibrates trigger rate to rollout
 headroom (Figure~\ref{fig:trigger-rate}): aggressive triggering
 when headroom is large (HotpotQA: RR=60\%, $\Delta$=48\,pp),
@@ -969,6 +988,7 @@ $\rho_{\mathrm{late}}{=}{-}0.072$), TWExpress
 ($\rho_{\mathrm{early}}{=}{-}0.341$ vs.\
 $\rho_{\mathrm{late}}{=}{-}0.198$)
 (Figure~\ref{fig:p1}). The temporal gap is largest in FEVER, where
+% 📁 实验文件夹: planning/experiment/fig_p1_temporal_shift/
 information poverty is most acute in early evidence-retrieval steps.
 
 \paragraph{P2: Cross-environment consistency (confirmed ✓).}
@@ -1004,6 +1024,7 @@ Two-Source Model.
 ```latex
 \subsection{Diagnostic Environments}
 
+% 📁 实验文件夹: planning/experiment/tab_diagnostic_results/
 As a final test, we deploy EAAG on two environments with known
 extreme rollout properties to verify that direction-aware gating
 generalizes beyond the ``normal'' operating range.
@@ -1044,6 +1065,7 @@ should be consistent across environments.
 % 每层内计算 ρ(entropy, U), 展示 reversal 在每层内都存在
 \emph{Result}: Direction reversal persists within every trajectory-length
 stratum (Table~\ref{tab:stratified}). In HotpotQA, $\rho$ remains
+% 📁 实验文件夹: planning/experiment/fig_stratified_reversal/
 negative across all strata; in APPS Interview, $\rho$ remains positive.
 The reversal is not an artifact of trajectory length.
 
@@ -1063,6 +1085,7 @@ statistical artifact.
 To verify that the bottleneck is direction rather than gate
 complexity, we compare gate architectures with correct vs.\ wrong
 direction (Table~\ref{tab:capacity}).
+% 📁 实验文件夹: planning/experiment/tab_gate_capacity/
 
 \begin{table}[t]
 \caption{Gate complexity ablation on HotpotQA. Direction matters
@@ -1113,6 +1136,7 @@ does not rely on p-values.
 % 放在 §5.4 Theory Verification 末尾，或 Appendix D 中
 
 \paragraph{Observable proxy for $p_I$ (Appendix~\ref{app:proxy}).}
+% 📁 实验文件夹: planning/experiment/fig_coverage_proxy/
 A limitation of the Two-Source Model is that $p_I$ is a latent
 variable. We construct an observable proxy: \emph{information
 coverage} $c_t$, defined as the fraction of task-relevant information
@@ -1161,6 +1185,7 @@ new environment, first characterize its information structure
 predict signal semantics and direction.
 
 \paragraph{FEVER and exploration bias.}
+% 📁 实验文件夹: planning/experiment/fig6_fever_bias/
 EAAG achieves 49.8\% on FEVER---far below SCG's 98.0\% (which uses
 Phase~1 always-trigger data) and always-trigger's 99.8\%. Analysis
 reveals that FEVER's rollout value concentrates in step~0--1
@@ -1382,6 +1407,7 @@ assumption.
 % and τ ∈ [0.3, 0.7] (Appendix E if space permits)
 
 \subsection{Appendix Environment Results}
+% 📁 实验文件夹: planning/experiment/tab_appendix_results/
 % Full results table for APPS Interview and CRUXEval:
 %   APPS Interview: EAAG 73.0% (2.1 ro/ep), SCG† 79.5% (3.8 ro/ep),
 %     CaTS 68.2%, always 81.0%, base 55.0%
@@ -1642,6 +1668,7 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 % LASSO α selection: 5-fold CV performance curve
 
 \subsection{Trigger Rate Adaptation Analysis}
+% 📁 实验文件夹: planning/experiment/fig_trigger_rate/
 % Full data for Figure trigger_rate:
 %   Environment | Learned RR | Oracle RR | Δ (headroom) | Match?
 %   HotpotQA    | 60%        | ~65%      | +48.0 pp     | ✓ aggressive
@@ -1654,6 +1681,7 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 % except for FEVER (exploration bias limitation documented in §6).
 
 \subsection{Statistical Significance}
+% 📁 实验文件夹: planning/experiment/tab_significance/
 % Bootstrap confidence intervals (95%) for all main results:
 %   EAAG SR on each environment: point estimate ± CI
 % Paired permutation tests for EAAG vs each baseline:
@@ -1665,27 +1693,38 @@ $\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
 
 ## Figure 清单
 
-| # | 内容 | 位置 | 状态 |
-|---|------|------|:---:|
-| fig1 | 信号热力图 (8 env × signals, 颜色=ρ) | §3.1 | ✅ |
-| fig2 | Pareto frontier (4 主环境子图, SR vs Cost) | §5.2 | ✅ |
-| fig3 | BSW 错误方向退化 | §5.3 | ✅ |
-| fig4 | Feature usage heatmap (7 env × features) | §3.1 | ✅ |
-| fig_auc | AUC hierarchy (3 env × 4 levels) | §3.1 | ⏳ |
-| fig_p1 | P1 temporal shift (early vs late ρ) | §5.4 | ⏳ |
-| fig_trigger | Trigger rate vs step (6 env) | §5.3 | ⏳ |
-| fig_fever | FEVER exploration bias | §6 | ✅ |
-| fig_method | EAAG 3-step pipeline 示意图 | §4 | ⏳ |
+| # | 内容 | 位置 | 状态 | 实验文件夹 |
+|---|------|------|:---:|------|
+| fig1 | 信号热力图 (8 env × signals, 颜色=ρ) | §3.1 | ✅ | `planning/experiment/fig1_signal_heatmap/` |
+| fig2 | Pareto frontier (4+2 环境, SR vs Cost) | §5.2 | ✅ | `planning/experiment/fig2_pareto/` |
+| fig3 | BSW 错误方向退化 | §5.3 | ✅ | `planning/experiment/fig3_bsw_direction/` |
+| fig4 | Feature usage heatmap (7 env × features) | §3.1 | ✅ | `planning/experiment/fig4_feature_heatmap/` |
+| fig5 | LLM ablation 柱状图 | §5.3/附录 | ✅ | `planning/experiment/fig5_llm_ablation/` |
+| fig6 | FEVER exploration bias | §6 | ✅ | `planning/experiment/fig6_fever_bias/` |
+| fig_auc | AUC hierarchy (3 env × 4 levels) | §3.1 | ✅ | `planning/experiment/fig_auc_hierarchy/` |
+| fig_p1 | P1 temporal shift (early vs late ρ) | §5.4 | ✅ | `planning/experiment/fig_p1_temporal_shift/` |
+| fig_trigger | Trigger rate vs step (6 env) | §5.3 | ✅ | `planning/experiment/fig_trigger_rate/` |
+| fig_bsw_rho | BSW cost vs \|ρ\| 回归散点 | §3.2/附录 | ✅ | `planning/experiment/fig_bsw_vs_rho/` |
+| fig_stratified | Stratified reversal (5 env × 3 strata) | §5.6 | ✅ | `planning/experiment/fig_stratified_reversal/` |
+| fig_matched | Matched-pair ΔU (4 env × 3 bins) | §5.6 | ✅ | `planning/experiment/fig_matched_pair/` |
+| fig_coverage | Coverage proxy vs ρ scatter | §5.4/附录 | ✅ | `planning/experiment/fig_coverage_proxy/` |
+| fig_controlled | Controlled InfoPoor/InfoRich | §5.4 | ⏳ | `planning/experiment/fig_controlled_reversal/` |
+| fig_method | EAAG 3-step pipeline 示意图 | §4 | ⏳ | `planning/experiment/fig_method_diagram/` |
 
 ## Table 清单
 
-| # | 内容 | 位置 |
-|---|------|------|
-| tab:env-setup | 8 env setup (base/always/T) | §5.1 |
-| tab:signal-discovery | Signal-utility ρ (8 env) | §3.1 |
-| tab:main | Main results (methods × 4 env) | §5.2 |
-| tab:classification | Method classification (FLARE T5) | §3.3 |
-| tab:winloss | EAAG vs CB win/loss | §5.2 |
+| # | 内容 | 位置 | 实验文件夹 |
+|---|------|------|------|
+| tab:signal-discovery | Signal-utility ρ (8 env) | §3.1 | `planning/experiment/tab_signal_discovery/` |
+| tab:env-type-mapping | 环境信息结构分类 | §3.2 | `planning/experiment/tab_env_info_structure/` |
+| tab:classification | Method classification (FLARE T5) | §3.3 | `planning/experiment/tab_method_classification/` |
+| tab:env-setup | 8 env setup (base/always/T) | §5.1 | `planning/experiment/tab_env_setup/` |
+| tab:main | Main results (methods × 4 env) | §5.2 | `planning/experiment/tab_main_results/` |
+| tab:winloss | EAAG vs CB win/loss | §5.2 | `planning/experiment/tab_winloss/` |
+| tab:capacity | Gate capacity ablation | §5.6 | `planning/experiment/tab_gate_capacity/` |
+| tab:significance | Statistical significance | 附录 | `planning/experiment/tab_significance/` |
+| tab:diagnostic | 诊断环境结果 (TWExpress/Plancraft) | §5.5 | `planning/experiment/tab_diagnostic_results/` |
+| tab:appendix | 附录环境结果 (APPS Intv/CRUXEval) | 附录 | `planning/experiment/tab_appendix_results/` |
 
 ## 关键引用
 

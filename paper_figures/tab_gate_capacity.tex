@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering
+\caption{Gate Capacity Ablation on HotpotQA. All correct-direction gates achieve similar SR ($\approx$95\%),
+while wrong-direction gates degrade substantially---more so with higher capacity.
+Direction matters far more than gate complexity.}
+\label{tab:capacity}
+\begin{tabular}{llcc}
+\toprule
+\textbf{Gate} & \textbf{Direction} & \textbf{SR (\%)} & \textbf{AUC} \\
+\midrule
+Base (no gate) & --- & 49.0 & 0.500 \\
+\midrule
+Logistic (5 feat) & Correct & \textbf{95.2} & 0.851 \\
+MLP (5 feat) & Correct & $\sim$95 & 0.869 \\
+Hidden state LR & Correct & $\sim$95 & 0.869 \\
+\midrule
+Logistic (5 feat) & Wrong & 62.0 & --- \\
+MLP (5 feat) & Wrong & 45.3 & --- \\
+\bottomrule
+\end{tabular}
+\end{table}

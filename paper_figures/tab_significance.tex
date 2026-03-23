@@ -1,0 +1,44 @@
+\begin{table}[t]
+\centering
+\caption{Statistical significance of EAAG vs each CB method. $\Delta$SR is EAAG $-$ CB in percentage points.
+95\% CI computed via bootstrap (5000 resamples). Significant when CI excludes zero.}
+\label{tab:significance}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llrcc}
+\toprule
+\textbf{Environment} & \textbf{CB} & \textbf{$\Delta$SR (pp)} & \textbf{95\% CI} & \textbf{Sig.?} \\
+\midrule
+  HotpotQA & CaTS & +2.0 & [-0.5, +4.7] & --- \\
+  HotpotQA & SEAG & +27.7 & [+23.7, +31.8] & $\checkmark$ \\
+  HotpotQA & CoRefine & +27.0 & [+23.0, +31.2] & $\checkmark$ \\
+  HotpotQA & CATTS & +26.8 & [+22.7, +31.0] & $\checkmark$ \\
+  HotpotQA & AUQ & -1.8 & [-4.0, +0.3] & --- \\
+  HotpotQA & s1 & -1.8 & [-4.0, +0.3] & --- \\
+  APPS & CaTS & +7.8 & [+2.2, +13.3] & $\checkmark$ \\
+  APPS & SEAG & +7.5 & [+1.8, +12.8] & $\checkmark$ \\
+  APPS & CoRefine & +7.8 & [+2.2, +13.3] & $\checkmark$ \\
+  APPS & CATTS & +7.5 & [+1.8, +12.8] & $\checkmark$ \\
+  APPS & AUQ & +4.7 & [-1.0, +10.2] & --- \\
+  APPS & s1 & +2.3 & [-3.0, +7.8] & --- \\
+  WebShop & CaTS & +36.3 & [+32.0, +40.8] & $\checkmark$ \\
+  WebShop & SEAG & +36.5 & [+32.0, +41.0] & $\checkmark$ \\
+  WebShop & CoRefine & +36.7 & [+32.2, +41.2] & $\checkmark$ \\
+  WebShop & CATTS & +36.5 & [+32.2, +41.0] & $\checkmark$ \\
+  WebShop & AUQ & +8.2 & [+2.7, +13.7] & $\checkmark$ \\
+  WebShop & s1 & +36.0 & [+31.5, +40.5] & $\checkmark$ \\
+  TWExpress & CaTS & +2.3 & [+0.7, +4.0] & $\checkmark$ \\
+  TWExpress & SEAG & +1.7 & [+0.2, +3.2] & $\checkmark$ \\
+  TWExpress & CoRefine & +1.5 & [+0.0, +3.0] & --- \\
+  TWExpress & CATTS & +1.5 & [+0.0, +3.0] & --- \\
+  TWExpress & AUQ & +3.5 & [+1.7, +5.3] & $\checkmark$ \\
+  TWExpress & s1 & +4.0 & [+2.2, +6.0] & $\checkmark$ \\
+  Plancraft & CaTS & +1.0 & [-3.7, +5.8] & --- \\
+  Plancraft & SEAG & -1.5 & [-6.3, +3.5] & --- \\
+  Plancraft & CoRefine & +0.5 & [-4.3, +5.5] & --- \\
+  Plancraft & CATTS & -1.7 & [-6.5, +3.3] & --- \\
+  Plancraft & AUQ & -0.8 & [-5.7, +4.0] & --- \\
+  Plancraft & s1 & +5.0 & [+0.3, +9.7] & $\checkmark$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}

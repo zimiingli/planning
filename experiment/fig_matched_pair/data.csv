@@ -1,0 +1,13 @@
+environment,difficulty_bin,delta_u,n_high_entropy,n_low_entropy
+HotpotQA,Easy,-0.0802,255,254
+HotpotQA,Medium,-0.4331,159,158
+HotpotQA,Hard,-0.3948,191,191
+TWExpress,Easy,0.3333,168,168
+TWExpress,Medium,-0.2941,102,102
+TWExpress,Hard,-0.0078,129,129
+APPS Intv,Easy,0.0256,100,100
+APPS Intv,Medium,0.0000,58,58
+APPS Intv,Hard,0.0000,62,61
+APPS,Easy,0.0009,301,299
+APPS,Medium,-0.0907,275,275
+APPS,Hard,0.0160,209,208

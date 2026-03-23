@@ -1,0 +1,13 @@
+environment,signal_level,auc
+HotpotQA,single_entropy,0.502
+HotpotQA,best_single,0.782
+HotpotQA,multi_signal_lr,0.851
+HotpotQA,hidden_state_lr,0.869
+APPS,single_entropy,0.557
+APPS,best_single,0.778
+APPS,multi_signal_lr,0.761
+APPS,hidden_state_lr,0.794
+WebShop,single_entropy,0.502
+WebShop,best_single,0.895
+WebShop,multi_signal_lr,0.924
+WebShop,hidden_state_lr,0.994
