@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html><head><style>
+html { background: #ffffff; }
+body { width: 720pt; height: 405pt; margin: 0; padding: 0; font-family: Arial, sans-serif; display: flex; background: #1C2833; }
+.wrap { margin: 0; width: 100%; height: 100%; position: relative; }
+.header { background: #0D3B4C; padding: 14pt 40pt; }
+.header h2 { color: #2AA198; font-size: 18pt; margin: 0; }
+.content { margin: 12pt 40pt; }
+.section-row { display: flex; gap: 8pt; margin: 0 0 6pt 0; align-items: stretch; }
+.sec-label { width: 140pt; background: #2AA198; padding: 6pt 10pt; border-radius: 4pt; display: flex; align-items: center; }
+.sec-label p { color: #FFFFFF; font-size: 9pt; margin: 0; }
+.sec-content { flex: 1; background: #243342; padding: 6pt 10pt; border-radius: 4pt; }
+.sec-content p { color: #ECEFF1; font-size: 8pt; margin: 0; line-height: 1.4; }
+.sec-heart .sec-label { background: #E6A817; }
+.sec-heart .sec-label p { color: #1C2833; }
+.sec-exp .sec-label { background: #2E86AB; }
+.bottom-note { color: #AAB7B8; font-size: 8pt; margin: 8pt 0 0 0; }
+</style></head>
+<body><div class="wrap">
+<div class="header"><h2>Paper Structure (9 pages + 6p appendix)</h2></div>
+<div class="content">
+  <div class="section-row">
+    <div class="sec-label"><p><b>S1 Introduction (1.5p)</b></p></div>
+    <div class="sec-content"><p>Background &rarr; Hidden assumption &rarr; Assumption is wrong (3 rho values) &rarr; Two-Source Model &rarr; Method+Results &rarr; Contributions (3)</p></div>
+  </div>
+  <div class="section-row">
+    <div class="sec-label"><p><b>S2 Related Work (0.75p)</b></p></div>
+    <div class="sec-content"><p>Signal-based / Vote-based / RL-based methods (all fixed direction). Orthogonal work. Concurrent work statement.</p></div>
+  </div>
+  <div class="section-row sec-heart">
+    <div class="sec-label"><p><b>S3 Signal-Utility (2.0p)</b></p></div>
+    <div class="sec-content"><p><b>HEART.</b> S3.1: 4 Observations (reversal / identity shift / single signal ~ random / CB failure). S3.2: Two-Source Model + Proposition + 3 predictions. S3.3: Design implications.</p></div>
+  </div>
+  <div class="section-row">
+    <div class="sec-label"><p><b>S4 Method: EAAG (1.5p)</b></p></div>
+    <div class="sec-content"><p>Design principles (from S3) &rarr; Why simplicity &rarr; Explore / Reason / Learn &amp; Deploy &rarr; Online adaptation &rarr; WebShop example</p></div>
+  </div>
+  <div class="section-row sec-exp">
+    <div class="sec-label"><p><b>S5 Experiments (2.5p)</b></p></div>
+    <div class="sec-content"><p>Setup &rarr; Main results (34W/2L) &rarr; Ablation (direction >> signal >> LLM) &rarr; Theory verification (P1-P3 confirmed) &rarr; Extreme envs &rarr; Robustness (reviewer defense)</p></div>
+  </div>
+  <div class="section-row">
+    <div class="sec-label"><p><b>S6 Discussion (0.75p)</b></p></div>
+    <div class="sec-content"><p>Community insight &rarr; FEVER limitation (honest) &rarr; Future directions (taxonomy / adaptive exploration / multi-agent) &rarr; Limitations (4) &rarr; Broader impact</p></div>
+  </div>
+  <div class="section-row">
+    <div class="sec-label"><p><b>S7 Conclusion (0.25p)</b></p></div>
+    <div class="sec-content"><p>"The bottleneck was never the method's complexity - it was the assumption."</p></div>
+  </div>
+  <div class="section-row">
+    <div class="sec-label"><p><b>Appendix (~6p)</b></p></div>
+    <div class="sec-content"><p>A: Extended related work. B: Experimental details (APPS Intv / CRUXEval). C: Proofs. D: Two-Source Model derivation. E: Additional analyses.</p></div>
+  </div>
+  <p class="bottom-note">15 figures (14 complete, 1 pending: method diagram) | 10 tables</p>
+</div>
+</div></body></html>

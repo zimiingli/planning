@@ -10,7 +10,7 @@ Scatter plot of mean information coverage (observable proxy for latent p_I) vs r
 
 ## Data Status
 
-Complete with caveat. Trend r=-0.62. TWExpress is an outlier (high coverage=0.92 but negative rho=-0.29) because step_count/max_steps is a poor coverage proxy for text adventure games.
+Complete with caveat. Trend r=+0.75 (excl TWExpress outlier, 6 envs), r=+0.27 (all 7 envs). TWExpress is an outlier (high coverage=0.92 but negative rho=-0.29) because step_count/max_steps is a poor coverage proxy for text adventure games. Note: earlier version incorrectly stated r=-0.62; the correct sign is positive (high coverage → high rho), consistent with the Two-Source Model prediction.
 
 ## Data Source
 

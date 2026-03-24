@@ -897,7 +897,7 @@ ones, and near-zero triggering when rollouts are harmful
 \begin{itemize}[nosep,leftmargin=*]
 \item \textbf{WebShop} (strongest differentiation):
   EAAG achieves 43.8\% SR ($\approx$ oracle
-  43.0\%) at 2.29 ro/ep---vs.\ CaTS 30.5\% at 8.68 ro/ep. The gate
+  43.0\%) at 2.29 ro/ep---vs.\ CaTS 30.5\% at 3.05 ro/ep. The gate
   triggers selectively (16.9\% of steps) with 75.1\% precision.
   This is where LLM-generated features
   (\texttt{price\_mentioned}, \texttt{action\_is\_click}) contribute
@@ -955,9 +955,13 @@ predicts.
 \paragraph{LLM reasoning provides robustness, not accuracy.}
 % 📁 实验文件夹: experiment/fig5_llm_ablation/
 Removing the LLM reasoning step (using only universal features)
-changes SR by ${<}$1\,pp in most environments: 95.2\%$\to$95.8\%
-(HotpotQA), 66.0\%$\to$65.8\% (APPS Intro), 43.8\%$\to$43.7\% (WebShop).
-The exception is FEVER (+9.1\,pp with LLM). The LLM's value is not
+changes SR by ${<}$1\,pp in 4 of 6 environments: 95.2\%$\to$95.8\%
+(HotpotQA), 66.0\%$\to$65.8\% (APPS Intro), 43.8\%$\to$43.7\% (WebShop),
+99.0\%$\to$99.2\% (TWExpress).
+Two environments show larger effects: FEVER (+9.1\,pp with LLM,
+where LLM-generated features capture step-0 criticality) and
+Plancraft ($-$3.9\,pp, where LLM features introduce noise in a
+rollout-harmful environment). The LLM's value is not
 marginal SR improvement but \emph{generalizability}: it enables
 zero-shot feature generation for unseen environments where
 task-specific signals (e.g., WebShop's \texttt{price\_mentioned})
@@ -1059,12 +1063,17 @@ itself. \emph{InfoPoor} (search returns only the first sentence)
 reduces base SR to 44.0\% while \emph{InfoRich} (gold evidence
 injected at start) raises it to 82.0\%. The signal hierarchy shifts:
 in InfoPoor, \texttt{step\_count} dominates ($\rho{=}{-}0.608$) while
-entropy is weakly positive ($\rho{=}{+}0.119$); in InfoRich, entropy
-becomes the dominant positive signal ($\rho{=}{+}0.311$) while
-\texttt{step\_count} weakens ($\rho{=}{-}0.147$). This demonstrates
-that the \emph{identity} of the most informative signal---not just
-its direction---is a function of the environment's information
-structure, supporting Observation~2 (Signal Replacement).
+entropy carries a weak positive signal ($\rho{=}{+}0.119$,
+$n{=}317$---note: the Two-Source Model predicts entropy should be
+negative in info-poor settings, but the small sample and mixed
+early-step Type~D component may explain the weakly positive sign;
+the key finding is that \texttt{step\_count} overtakes entropy as the
+dominant signal); in InfoRich, entropy becomes the dominant positive
+signal ($\rho{=}{+}0.311$) while \texttt{step\_count} weakens
+($\rho{=}{-}0.147$). This demonstrates that the \emph{identity} of
+the most informative signal---not just its direction---is a function
+of the environment's information structure, supporting Observation~2
+(Signal Replacement).
 ```
 
 ### §5.5 Extreme Rollout Properties (0.3 页)
@@ -1191,20 +1200,28 @@ A limitation of the Two-Source Model is that $p_I$ is a latent
 variable. We construct an observable proxy: \emph{information
 coverage} $c_t$, defined as the fraction of task-relevant information
 available to the agent at step $t$.
-% HotpotQA: c_t = (# evidence paragraphs retrieved) / (# gold paragraphs)
-% FEVER: c_t = (# search results returned) / (# needed for verification)
-% APPS Intro: c_t = 1 for all steps (code is self-contained; no info retrieval)
+% HotpotQA: c_t = evidence_count / 3
+% FEVER: c_t = step_count / 7
+% WebShop: c_t = num_available_actions / 30
+% APPS / APPS Intv: c_t = 1.0 (code is self-contained; no info retrieval)
+% TWExpress: c_t = step_count / 9 (poor proxy — see below)
 If $c_t$ is a valid proxy for $p_I$, we predict:
 (1) within environment, steps with low $c_t$ should exhibit more
 negative $\rho(\text{entropy}, U)$;
-(2) across environments, mean $\bar{c}$ should correlate with
-observed $\rho$.
+(2) across environments, mean $\bar{c}$ should \emph{positively}
+correlate with observed $\rho$ (high coverage $\to$ low $p_I$
+$\to$ more positive $\rho$).
 
-% TODO: 实验数据
-% HotpotQA: c_t 可以用 evidence_count / total_gold_evidence 近似
-% FEVER: c_t 可以用 step_count 作 proxy (step 0 = 0 coverage, later = higher)
-% 画 scatter: x = mean(c_t), y = ρ(entropy, U), 每个环境一个点
-% 预期: 负相关 (低 coverage = 高 p_I = 负 ρ)
+\emph{Result}: Excluding TWExpress (where step-count-based coverage
+is a poor proxy for a text adventure game), the correlation is
+$r{=}{+}0.75$ ($p{=}0.086$, 6 environments), directionally
+consistent with the model's prediction. TWExpress is an outlier
+(high $\bar{c}{=}0.92$ but negative $\rho{=}{-}0.29$) because
+\texttt{step\_count/max\_steps} does not capture information
+availability in sparse-reward text games. Including all 7
+environments weakens the correlation ($r{=}{+}0.27$, $p{=}0.56$),
+confirming that the proxy's quality depends on domain-appropriate
+coverage operationalization---a limitation we acknowledge.
 ```
 
 **Transition 设计笔记 (§5→§6):** §5 验证了 EAAG 在实验上全面胜出 + 理论预测全部 confirmed。§6 要 zoom out: (1) 对 community 的 insight — 不只是我们的方法好, 而是 uncertainty semantics 这个概念本身对所有人有价值; (2) honest limitations; (3) future directions。这是 NeurIPS best paper 的 standard close: method works → here is the broader implication → here is what we don't know yet.

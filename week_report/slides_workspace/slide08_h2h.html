@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html><head><style>
+html { background: #ffffff; }
+body { width: 720pt; height: 405pt; margin: 0; padding: 0; font-family: Arial, sans-serif; display: flex; background: #1C2833; }
+.wrap { margin: 0; width: 100%; height: 100%; position: relative; }
+.header { background: #0D3B4C; padding: 14pt 40pt; }
+.header h2 { color: #2AA198; font-size: 18pt; margin: 0; }
+.content { margin: 10pt 40pt; display: flex; gap: 14pt; }
+.left { flex: 1.2; }
+.right { flex: 0.8; }
+h3 { color: #E6A817; font-size: 11pt; margin: 0 0 6pt 0; }
+.win-box { background: #243342; border-radius: 6pt; padding: 14pt; text-align: center; margin: 0 0 10pt 0; border: 2pt solid #2AA198; }
+.win-big { color: #2AA198; font-size: 34pt; margin: 0; }
+.win-label { color: #AAB7B8; font-size: 9pt; margin: 4pt 0 0 0; }
+.highlight-row { display: flex; gap: 8pt; margin: 0 0 8pt 0; }
+.h-card { flex: 1; background: #243342; padding: 8pt; border-radius: 4pt; text-align: center; }
+.h-card p { margin: 0; }
+.h-val { color: #E6A817; font-size: 15pt; }
+.h-lbl { color: #AAB7B8; font-size: 7pt; margin: 2pt 0 0 0; }
+.env-note { background: #243342; border-left: 3pt solid #2AA198; padding: 6pt 10pt; border-radius: 0 4pt 4pt 0; margin: 0 0 6pt 0; }
+.env-note p { color: #ECEFF1; font-size: 8pt; margin: 0 0 2pt 0; line-height: 1.4; }
+</style></head>
+<body><div class="wrap">
+<div class="header"><h2>Head-to-Head Summary</h2></div>
+<div class="content">
+<div class="left">
+  <h3>Per-Environment Highlights</h3>
+  <div class="env-note">
+    <p><b>WebShop</b> (strongest): EAAG 43.8/2.29 vs CaTS 30.5/8.68. LLM features critical. 75.1% gate precision.</p>
+  </div>
+  <div class="env-note">
+    <p><b>FEVER</b> (direction mismatch): All fixed-direction CBs ~50%. CATTS 34.2% &lt; base 37.0%. Wrong direction is harmful.</p>
+  </div>
+  <div class="env-note">
+    <p><b>HotpotQA</b> (ceiling): EAAG 95.2/1.34 near oracle 97.0. Lowest cost among top methods.</p>
+  </div>
+  <div class="env-note">
+    <p><b>TWExpress</b> (rollout-safe): EAAG 99.0% wins vs CaTS 96.7%, CATTS 97.5%. RR=73% (aggressive, correct).</p>
+  </div>
+  <div class="env-note">
+    <p><b>Plancraft</b> (rollout-harmful): EAAG 23.3 vs CaTS 22.3 (Win). s1_budget 18.3% worst (&lt; base 29.8%).</p>
+  </div>
+  <div class="env-note">
+    <p><b>APPS Intro</b> (narrow headroom): EAAG 66.0/1.20 vs CaTS 59.0/2.62. Adapts to +6pp headroom.</p>
+  </div>
+</div>
+<div class="right">
+  <div class="win-box">
+    <p class="win-big"><b>34W / 2L</b></p>
+    <p class="win-label">vs 6 baselines x 8 envs</p>
+  </div>
+  <div class="highlight-row">
+    <div class="h-card">
+      <p class="h-val"><b>5/6</b></p>
+      <p class="h-lbl">Pareto-dom CaTS</p>
+    </div>
+    <div class="h-card">
+      <p class="h-val"><b>0</b></p>
+      <p class="h-lbl">Phase 1 data needed</p>
+    </div>
+  </div>
+  <div class="highlight-row">
+    <div class="h-card">
+      <p class="h-val"><b>75.1%</b></p>
+      <p class="h-lbl">Gate precision (WebShop)</p>
+    </div>
+    <div class="h-card">
+      <p class="h-val"><b>&lt;1s</b></p>
+      <p class="h-lbl">Gate training time</p>
+    </div>
+  </div>
+  <div class="highlight-row">
+    <div class="h-card">
+      <p class="h-val"><b>73%</b></p>
+      <p class="h-lbl">Trigger rate TWExpress</p>
+    </div>
+    <div class="h-card">
+      <p class="h-val"><b>~0%</b></p>
+      <p class="h-lbl">Trigger rate Plancraft</p>
+    </div>
+  </div>
+</div>
+</div>
+</div></body></html>

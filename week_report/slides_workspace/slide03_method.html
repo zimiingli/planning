@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html><head><style>
+html { background: #ffffff; }
+body { width: 720pt; height: 405pt; margin: 0; padding: 0; font-family: Arial, sans-serif; display: flex; background: #1C2833; }
+.wrap { margin: 0; width: 100%; height: 100%; position: relative; }
+.header { background: #0D3B4C; padding: 14pt 40pt; }
+.header h2 { color: #2AA198; font-size: 18pt; margin: 0; }
+.content { margin: 16pt 40pt; }
+.pipeline { display: flex; gap: 12pt; margin: 0 0 14pt 0; }
+.step { flex: 1; background: #243342; border-radius: 6pt; padding: 12pt 14pt; border-top: 3pt solid #2AA198; }
+.step-num { color: #2AA198; font-size: 20pt; margin: 0 0 4pt 0; }
+.step-title { color: #ECEFF1; font-size: 12pt; margin: 0 0 6pt 0; }
+.step p { color: #AAB7B8; font-size: 9pt; margin: 0 0 3pt 0; line-height: 1.4; }
+.arrow { display: flex; align-items: center; color: #2AA198; font-size: 18pt; }
+.bottom-row { display: flex; gap: 14pt; }
+.feature-box { flex: 1; background: #243342; border-left: 4pt solid #E6A817; padding: 10pt 14pt; border-radius: 0 4pt 4pt 0; }
+.feature-box h4 { color: #E6A817; font-size: 11pt; margin: 0 0 6pt 0; }
+.feature-box p { color: #ECEFF1; font-size: 9pt; margin: 0 0 3pt 0; line-height: 1.4; }
+.insight-box { flex: 1; background: #243342; border-left: 4pt solid #2AA198; padding: 10pt 14pt; border-radius: 0 4pt 4pt 0; }
+.insight-box h4 { color: #2AA198; font-size: 11pt; margin: 0 0 6pt 0; }
+.insight-box p { color: #ECEFF1; font-size: 9pt; margin: 0 0 3pt 0; line-height: 1.4; }
+</style></head>
+<body><div class="wrap">
+<div class="header"><h2>Method: EAAG (Environment-Aware Adaptive Gating)</h2></div>
+<div class="content">
+<div class="pipeline">
+  <div class="step">
+    <p class="step-num"><b>1</b></p>
+    <p class="step-title"><b>Explore</b></p>
+    <p>50 episodes, randomized gating (epsilon = 0.5)</p>
+    <p>Collect (state, utility) pairs</p>
+    <p>Unbiased signal estimation</p>
+  </div>
+  <div class="arrow"><p>&rarr;</p></div>
+  <div class="step">
+    <p class="step-num"><b>2</b></p>
+    <p class="step-title"><b>Reason</b></p>
+    <p>LLM analyzes exploration data</p>
+    <p>Generates environment profile</p>
+    <p>Proposes task-specific features</p>
+  </div>
+  <div class="arrow"><p>&rarr;</p></div>
+  <div class="step">
+    <p class="step-num"><b>3</b></p>
+    <p class="step-title"><b>Learn &amp; Deploy</b></p>
+    <p>LASSO feature selection</p>
+    <p>Logistic regression gate</p>
+    <p>Training &lt;1s, zero deploy cost</p>
+  </div>
+</div>
+<div class="bottom-row">
+  <div class="feature-box">
+    <h4>Feature Pool</h4>
+    <p><b>Universal:</b> step_count, token_entropy, state_length, action_entropy, num_available_actions, has_output</p>
+    <p><b>LLM-generated:</b> price_mentioned, action_is_click (WebShop); evidence_count (HotpotQA)</p>
+    <p>LASSO selects from union of both pools</p>
+  </div>
+  <div class="insight-box">
+    <h4>Why Intentionally Simple</h4>
+    <p><b>Bottleneck = direction discovery, not gate complexity</b></p>
+    <p>MLP wrong direction: -37.0 pp (HotpotQA)</p>
+    <p>Logistic correct direction: Pareto-dominates all</p>
+    <p><b>direction >> signals >> gate complexity</b></p>
+  </div>
+</div>
+</div>
+</div></body></html>

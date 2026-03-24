@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html><head><style>
+html { background: #ffffff; }
+body { width: 720pt; height: 405pt; margin: 0; padding: 0; font-family: Arial, sans-serif; display: flex; background: #1C2833; }
+.wrap { margin: 0; width: 100%; height: 100%; position: relative; }
+.header { background: #0D3B4C; padding: 14pt 40pt; }
+.header h2 { color: #2AA198; font-size: 18pt; margin: 0; }
+.content { margin: 20pt 40pt; display: flex; gap: 20pt; }
+.left { flex: 1; }
+.right { flex: 1; }
+.box { background: #243342; border-left: 5pt solid #E6A817; padding: 14pt 16pt; margin: 0 0 14pt 0; border-radius: 0 4pt 4pt 0; }
+.box p { color: #ECEFF1; font-size: 11pt; margin: 0 0 4pt 0; line-height: 1.5; }
+.box-teal { background: #243342; border-left: 5pt solid #2AA198; padding: 14pt 16pt; margin: 0 0 14pt 0; border-radius: 0 4pt 4pt 0; }
+.box-teal p { color: #ECEFF1; font-size: 11pt; margin: 0 0 4pt 0; line-height: 1.5; }
+h3 { color: #2AA198; font-size: 13pt; margin: 0 0 8pt 0; }
+.stat { color: #E6A817; font-size: 22pt; margin: 0; }
+.stat-label { color: #AAB7B8; font-size: 9pt; margin: 0 0 10pt 0; }
+.stats-row { display: flex; gap: 16pt; margin: 12pt 0 0 0; }
+.stat-card { background: #243342; padding: 10pt 14pt; border-radius: 4pt; flex: 1; text-align: center; }
+</style></head>
+<body><div class="wrap">
+<div class="header"><h2>Core Insight</h2></div>
+<div class="content">
+<div class="left">
+  <div class="box">
+    <p><b>The same uncertainty signal reverses direction across environments.</b></p>
+    <p>Token entropy correlates <b>negatively</b> with rollout utility in FEVER (rho = -0.119) but <b>positively</b> in APPS Interview (rho = +0.317).</p>
+  </div>
+  <div class="box-teal">
+    <h3>Two-Source Uncertainty Model</h3>
+    <p><b>Type I (Info-Poverty):</b> Agent lacks info; rollouts cannot help. High entropy = bad.</p>
+    <p><b>Type D (Decision-Diff):</b> Agent has info but faces choices; rollouts explore alternatives. High entropy = good.</p>
+  </div>
+  <p style="color: #AAB7B8; font-size: 9pt; margin: 4pt 0 0 0;">Instance of Simpson's Paradox in signal-utility space</p>
+</div>
+<div class="right">
+  <div class="box-teal">
+    <h3>Proposition (Necessity)</h3>
+    <p>Direction discovery is a <b>necessary condition</b> for cross-environment non-negative value of computation. No fixed-direction gate can satisfy both Type I and Type D environments.</p>
+  </div>
+  <div class="stats-row">
+    <div class="stat-card">
+      <p class="stat">34W / 2L</p>
+      <p class="stat-label">Head-to-Head</p>
+    </div>
+    <div class="stat-card">
+      <p class="stat">-37 pp</p>
+      <p class="stat-label">Wrong Direction Cost</p>
+    </div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-card">
+      <p class="stat">8</p>
+      <p class="stat-label">Environments</p>
+    </div>
+    <div class="stat-card">
+      <p class="stat">6</p>
+      <p class="stat-label">Baselines Beat</p>
+    </div>
+  </div>
+</div>
+</div>
+</div></body></html>

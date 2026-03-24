@@ -46,7 +46,13 @@
       "Bash(for dir:*)",
       "Bash(do echo:*)",
       "Read(//Users/liziming/Desktop/project/text_planning/research_analysis/**)",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(node build.js)",
+      "Bash(NODE_PATH=/opt/homebrew/lib/node_modules node build.js)",
+      "Bash(npm install:*)",
+      "Bash(pdftoppm:*)",
+      "Bash(soffice --headless --convert-to pdf week_report_2026-03-23.pptx)",
+      "Skill(claude-scientific-writer:peer-review)"
     ]
   }
 }
