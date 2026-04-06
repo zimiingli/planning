@@ -18,10 +18,19 @@
 \citation{yao2023tree,hao2023reasoning,snell2024scaling}
 \citation{snell2024scaling,wang2026flare}
 \citation{yao2023tree,zhou2024lats}
-\citation{catts2026,seag2025,cats2025,corefine2026,adaptthink2025,thinkless2025,s1_2025,han2025tokenbudget}
+\citation{seag2025,cats2025,corefine2026}
+\citation{s1_2025,han2025tokenbudget}
+\citation{catts2026}
+\citation{adaptthink2025,thinkless2025}
 \citation{tao2025revisiting,heo2025llmuncertainty}
+\citation{yang2018hotpotqa}
+\citation{hendrycks2021apps}
+\citation{yao2022webshop}
+\citation{thorne2018fever}
+\citation{jansen2023twexpress}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
 \newlabel{sec:intro}{{1}{1}{Introduction}{section.1}{}}
+\citation{simpson1951interpretation,kdd2023simpson}
 \citation{seag2025,cats2025,corefine2026,thinkjustenough2025,s1_2025,han2025tokenbudget}
 \citation{adaptthink2025,thinkless2025,aggarwal2025l1}
 \citation{diffadapt2025,zhu2025llmalreadyknows}
@@ -32,13 +41,13 @@
 \citation{zhou2024lats}
 \citation{hao2023reasoning}
 \citation{wang2026flare}
-\citation{tao2025revisiting,heo2025llmuncertainty}
-\citation{yadkori2024believe}
-\citation{russell1991right,desabbata2024metareasoning}
 \@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{section.2}\protected@file@percent }
 \newlabel{sec:related}{{2}{2}{Related Work}{section.2}{}}
 \@writefile{toc}{\contentsline {paragraph}{Adaptive test-time compute.}{2}{section*.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Test-time scaling and search.}{2}{section*.2}\protected@file@percent }
+\citation{tao2025revisiting,heo2025llmuncertainty}
+\citation{yadkori2024believe}
+\citation{russell1991right,desabbata2024metareasoning}
 \@writefile{toc}{\contentsline {paragraph}{Uncertainty estimation and metareasoning.}{3}{section*.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {3}Why Fixed-Direction Gating Fails}{3}{section.3}\protected@file@percent }
 \newlabel{sec:signal-landscape}{{3}{3}{Why Fixed-Direction Gating Fails}{section.3}{}}
@@ -48,22 +57,22 @@
 \@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Signal--utility correlations across 8 environments and 3 backbones. $\rho $: Spearman correlation of token entropy with optimizer utility $U$. $^*$: significant at $p{<}0.05$. Direction varies across \emph  {both} environments and model backbones.\relax }}{3}{table.caption.4}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
 \newlabel{tab:signal-discovery}{{1}{3}{Signal--utility correlations across 8 environments and 3 backbones. $\rho $: Spearman correlation of token entropy with optimizer utility $U$. $^*$: significant at $p{<}0.05$. Direction varies across \emph {both} environments and model backbones.\relax }{table.caption.4}{}}
-\citation{simpson1951interpretation,pearl2014understanding}
-\citation{hullermeier2021aleatoric,der2009aleatory}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Why Does Direction Reverse? A Two-Source Model}{4}{subsection.3.2}\protected@file@percent }
 \newlabel{sec:toy-model}{{3.2}{4}{Why Does Direction Reverse? A Two-Source Model}{subsection.3.2}{}}
 \@writefile{toc}{\contentsline {paragraph}{Intuition.}{4}{section*.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Model.}{4}{section*.6}\protected@file@percent }
 \newlabel{eq:direction}{{2}{4}{Model}{equation.3.2}{}}
 \@writefile{toc}{\contentsline {paragraph}{Environment mapping.}{4}{section*.7}\protected@file@percent }
+\citation{simpson1951interpretation,DBLP:books/acm/22/Pearl22n}
+\citation{der2009aleatory}
 \@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Environment-to-type mapping. The dominant uncertainty type is shaped by the environment's information structure and modulated by the model backbone. Predicted $\rho $ direction follows from Eq.\nobreakspace  {}\eqref  {eq:direction}; observed values are from Qwen3-4B. Multi-backbone $\rho $ values differ (Table\nobreakspace  {}\ref {tab:signal-discovery}).\relax }}{5}{table.caption.8}\protected@file@percent }
 \newlabel{tab:env-type-mapping}{{2}{5}{Environment-to-type mapping. The dominant uncertainty type is shaped by the environment's information structure and modulated by the model backbone. Predicted $\rho $ direction follows from Eq.~\eqref {eq:direction}; observed values are from Qwen3-4B. Multi-backbone $\rho $ values differ (Table~\ref {tab:signal-discovery}).\relax }{table.caption.8}{}}
 \@writefile{toc}{\contentsline {paragraph}{Theoretical grounding.}{5}{section*.9}\protected@file@percent }
 \newlabel{prop:necessity}{{1}{5}{Necessity of Direction Discovery}{proposition.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Implications for Method Design}{5}{subsection.3.3}\protected@file@percent }
-\newlabel{sec:implications}{{3.3}{5}{Implications for Method Design}{subsection.3.3}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Method classification by adaptive compute components. All prior methods share \{Single signal, Fixed direction, Problem-level\}. EAAG is the only method with \{Multi-signal, Learned direction, Step-level, Environment-aware\}.\relax }}{5}{table.caption.10}\protected@file@percent }
 \newlabel{tab:classification}{{3}{5}{Method classification by adaptive compute components. All prior methods share \{Single signal, Fixed direction, Problem-level\}. EAAG is the only method with \{Multi-signal, Learned direction, Step-level, Environment-aware\}.\relax }{table.caption.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Implications for Method Design}{5}{subsection.3.3}\protected@file@percent }
+\newlabel{sec:implications}{{3.3}{5}{Implications for Method Design}{subsection.3.3}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4}Method: Environment-Aware Adaptive Gating}{5}{section.4}\protected@file@percent }
 \newlabel{sec:method}{{4}{5}{Method: Environment-Aware Adaptive Gating}{section.4}{}}
 \@writefile{toc}{\contentsline {paragraph}{Design rationale.}{5}{section*.11}\protected@file@percent }
@@ -79,10 +88,10 @@
 \@writefile{toc}{\contentsline {paragraph}{Environments.}{6}{section*.12}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Baselines.}{6}{section*.13}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Metrics.}{6}{section*.14}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Main Results}{6}{subsection.5.2}\protected@file@percent }
-\newlabel{sec:main-results}{{5.2}{6}{Main Results}{subsection.5.2}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Environment setup. Base/Always: SR without/with optimizer. $\Delta $: rollout headroom.\relax }}{7}{table.caption.15}\protected@file@percent }
 \newlabel{tab:env-setup}{{4}{7}{Environment setup. Base/Always: SR without/with optimizer. $\Delta $: rollout headroom.\relax }{table.caption.15}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Main Results}{7}{subsection.5.2}\protected@file@percent }
+\newlabel{sec:main-results}{{5.2}{7}{Main Results}{subsection.5.2}{}}
 \@writefile{toc}{\contentsline {paragraph}{Cross-environment patterns.}{7}{section*.16}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Ablation Studies}{7}{subsection.5.3}\protected@file@percent }
 \newlabel{sec:ablation}{{5.3}{7}{Ablation Studies}{subsection.5.3}{}}
@@ -95,55 +104,59 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Robustness of Direction Reversal}{8}{subsection.5.5}\protected@file@percent }
 \newlabel{sec:robustness}{{5.5}{8}{Robustness of Direction Reversal}{subsection.5.5}{}}
 \@writefile{toc}{\contentsline {paragraph}{Stratified analysis: controlling for trajectory length.}{8}{section*.20}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Interventional evidence.}{8}{section*.21}\protected@file@percent }
 \bibdata{references}
 \bibcite{yadkori2024believe}{{1}{2024}{{Abbasi~Yadkori et~al.}}{{Abbasi~Yadkori, Kuzborskij, and Gy{\"o}rgy}}}
 \bibcite{aggarwal2025l1}{{2}{2025}{{Aggarwal and Welleck}}{{}}}
-\bibcite{kdd2023simpson}{{3}{2023}{{Anonymous}}{{}}}
-\bibcite{diffadapt2025}{{4}{2025}{{Anonymous}}{{}}}
-\bibcite{corefine2026}{{5}{2026}{{Anonymous}}{{}}}
-\bibcite{desabbata2024metareasoning}{{6}{2024}{{De~Sabbata et~al.}}{{De~Sabbata, Sumers, AlKhamissi, Bosselut, and Griffiths}}}
-\bibcite{der2009aleatory}{{7}{2009}{{Der~Kiureghian and Ditlevsen}}{{}}}
-\bibcite{arpo2025}{{8}{2026}{{Du}}{{}}}
-\bibcite{elhoushi2024layerskip}{{9}{2024}{{Elhoushi et~al.}}{{Elhoushi, Shrivastava, Liskovich, Hosmer, Wasti, Lai, Mahmoud, Acber, Agarwal, Roman et~al.}}}
+\bibcite{der2009aleatory}{{3}{2009}{{Der~Kiureghian and Ditlevsen}}{{}}}
+\bibcite{arpo2025}{{4}{2025}{{Dong et~al.}}{{Dong, Mao, Ma, Bao, Chen, Wang, Chen, Du, Wang, Zhang, Zhou, Zhu, Wen, and Dou}}}
+\bibcite{elhoushi2024layerskip}{{5}{2024}{{Elhoushi et~al.}}{{Elhoushi, Shrivastava, Liskovich, Hosmer, Wasti, Lai, Mahmoud, Acun, Agarwal, Roman, Aly, Chen, and Wu}}}
+\bibcite{thinkless2025}{{6}{2025}{{Fang et~al.}}{{Fang, Ma, and Wang}}}
+\bibcite{graves2016act}{{7}{2016}{{Graves}}{{}}}
+\bibcite{han2025tokenbudget}{{8}{2025}{{Han et~al.}}{{Han, Wang, Fang, Zhao, Ma, and Chen}}}
 \@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Gate complexity ablation on HotpotQA. Direction matters more than model capacity: a logistic gate with correct direction outperforms an MLP with wrong direction by 49.9\,pp.\relax }}{9}{table.caption.23}\protected@file@percent }
 \newlabel{tab:capacity}{{5}{9}{Gate complexity ablation on HotpotQA. Direction matters more than model capacity: a logistic gate with correct direction outperforms an MLP with wrong direction by 49.9\,pp.\relax }{table.caption.23}{}}
+\@writefile{toc}{\contentsline {paragraph}{Interventional evidence.}{9}{section*.21}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Gate complexity ablation: direction $\gg $ capacity.}{9}{section*.22}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {6}Limitations}{9}{section.6}\protected@file@percent }
 \newlabel{sec:discussion}{{6}{9}{Limitations}{section.6}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{9}{section.7}\protected@file@percent }
-\bibcite{thinkless2025}{{10}{2025}{{Fang et~al.}}{{Fang, Ma, and Wang}}}
-\bibcite{graves2016act}{{11}{2016}{{Graves}}{{}}}
-\bibcite{han2025tokenbudget}{{12}{2025}{{Han et~al.}}{{Han, Wang, Fang, Zhao, Ma, and Chen}}}
-\bibcite{hao2023reasoning}{{13}{2023}{{Hao et~al.}}{{Hao, Gu, Ma, Hong, Wang, Wang, and Hu}}}
-\bibcite{heo2025llmuncertainty}{{14}{2025}{{Heo et~al.}}{{Heo, Xiong, Heinze-Deml, and Narain}}}
-\bibcite{horvitz1987reasoning}{{15}{1987}{{Horvitz}}{{}}}
-\bibcite{cats2025}{{16}{2025}{{Huang et~al.}}{{}}}
-\bibcite{hullermeier2021aleatoric}{{17}{2021}{{H{\"u}llermeier and Waegeman}}{{}}}
-\bibcite{kadavath2022knowwhat}{{18}{2022}{{Kadavath et~al.}}{{Kadavath, Conerly, Askell, Henighan, Drain, Perez, Schiefer, Hatfield-Dodds, DasSarma, Tran-Johnson et~al.}}}
-\bibcite{catts2026}{{19}{2026}{{Lee et~al.}}{{Lee, Erdogan, John, Krishnapillai, Mahoney, Keutzer, and Gholami}}}
-\bibcite{seag2025}{{20}{2025}{{Lee et~al.}}{{Lee, Park, Kim, and Ok}}}
-\bibcite{lieder2020resource}{{21}{2020}{{Lieder and Griffiths}}{{}}}
-\bibcite{auq2026}{{22}{2026}{{Ling et~al.}}{{}}}
-\bibcite{s1_2025}{{23}{2025}{{Muennighoff et~al.}}{{Muennighoff, Yang et~al.}}}
-\bibcite{paglieri2025learning}{{24}{2025}{{Paglieri et~al.}}{{Paglieri, Cupi{\'a}{\l }, Cook et~al.}}}
-\bibcite{pearl2014understanding}{{25}{2014}{{Pearl}}{{}}}
-\bibcite{raposo2024mixtureofdepths}{{26}{2024}{{Raposo et~al.}}{{Raposo, Ritter, Richards, Lillicrap, Humphreys, and Santoro}}}
-\bibcite{russell1991right}{{27}{1991}{{Russell and Wefald}}{{}}}
+\bibcite{hao2023reasoning}{{9}{2023}{{Hao et~al.}}{{Hao, Gu, Ma, Hong, Wang, Wang, and Hu}}}
+\bibcite{yao2022webshop}{{10}{2021{a}}{{Hendrycks et~al.}}{{Hendrycks, Basart, Kadavath, Mazeika, Arora, Guo, Burns, Puranik, He, Song, and Steinhardt}}}
+\bibcite{hendrycks2021apps}{{11}{2021{b}}{{Hendrycks et~al.}}{{Hendrycks, Basart, Kadavath, Mazeika, Zou, Song, and Steinhardt}}}
+\bibcite{heo2025llmuncertainty}{{12}{2025}{{Heo et~al.}}{{Heo, Xiong, Heinze{-}Deml, and Narain}}}
+\bibcite{horvitz1987reasoning}{{13}{1987}{{Horvitz}}{{}}}
+\bibcite{cats2025}{{14}{2026}{{Huang et~al.}}{{Huang, Huang, Leng, Liu, and Huang}}}
+\bibcite{jansen2023twexpress}{{15}{2023}{{Jansen and C{\^o}t{\'e}}}{{}}}
+\bibcite{corefine2026}{{16}{2026}{{Jin et~al.}}{{Jin, Tanno, Diethe, and Teare}}}
+\bibcite{kadavath2022knowwhat}{{17}{2022}{{Kadavath et~al.}}{{Kadavath, Conerly, Askell, Henighan, Drain, Perez, Schiefer, Hatfield{-}Dodds, DasSarma, Tran{-}Johnson, Johnston, Showk, Jones, Elhage, Hume, Chen, Bai, Bowman, Fort, Ganguli, Hernandez, Jacobson, Kernion, Kravec, Lovitt, Ndousse, Olsson, Ringer, Amodei, Brown, Clark, Joseph, Mann, McCandlish, Olah, and Kaplan}}}
+\bibcite{catts2026}{{18}{2026}{{Lee et~al.}}{{Lee, Erdogan, John, Krishnapillai, Mahoney, Keutzer, and Gholami}}}
+\bibcite{seag2025}{{19}{2025}{{Lee et~al.}}{{Lee, Park, Kim, and Ok}}}
+\bibcite{lieder2020resource}{{20}{2020}{{Lieder and Griffiths}}{{}}}
+\bibcite{diffadapt2025}{{21}{2025}{{Liu et~al.}}{{Liu, Hu, Chu, and Choi}}}
+\bibcite{s1_2025}{{22}{2025}{{Muennighoff et~al.}}{{Muennighoff, Yang, Shi, Li, Fei{-}Fei, Hajishirzi, Zettlemoyer, Liang, Cand{\`{e}}s, and Hashimoto}}}
+\bibcite{paglieri2025learning}{{23}{2025}{{Paglieri et~al.}}{{Paglieri, Cupial, Cook, Piterbarg, Tuyls, Grefenstette, Foerster, Parker{-}Holder, and Rockt{\"{a}}schel}}}
+\bibcite{DBLP:books/acm/22/Pearl22n}{{24}{2022}{{Pearl}}{{}}}
+\bibcite{raposo2024mixtureofdepths}{{25}{2024}{{Raposo et~al.}}{{Raposo, Ritter, Richards, Lillicrap, Humphreys, and Santoro}}}
+\bibcite{russell1991right}{{26}{1991}{{Russell and Wefald}}{{}}}
+\bibcite{desabbata2024metareasoning}{{27}{2024}{{Sabbata et~al.}}{{Sabbata, Sumers, and Griffiths}}}
 \bibcite{schaeffer2023emergent}{{28}{2023}{{Schaeffer et~al.}}{{Schaeffer, Miranda, and Koyejo}}}
 \bibcite{thinkjustenough2025}{{29}{2025}{{Sharma and Chopra}}{{}}}
 \bibcite{shazeer2017moe}{{30}{2017}{{Shazeer et~al.}}{{Shazeer, Mirhoseini, Maziarz, Davis, Le, Hinton, and Dean}}}
-\bibcite{shinn2023reflexion}{{31}{2023}{{Shinn et~al.}}{{Shinn, Cassano, Berman, Gopinath, Narasimhan, and Yao}}}
+\bibcite{shinn2023reflexion}{{31}{2023}{{Shinn et~al.}}{{Shinn, Cassano, Gopinath, Narasimhan, and Yao}}}
 \bibcite{simpson1951interpretation}{{32}{1951}{{Simpson}}{{}}}
 \bibcite{snell2024scaling}{{33}{2024}{{Snell et~al.}}{{Snell, Lee, Xu, and Kumar}}}
 \bibcite{tao2025revisiting}{{34}{2025}{{Tao et~al.}}{{Tao, Yeh, Dong, Huang, Torr, and Xu}}}
-\bibcite{teerapittayanon2016branchynet}{{35}{2016}{{Teerapittayanon et~al.}}{{Teerapittayanon, McDanel, and Kung}}}
-\bibcite{wang2026flare}{{36}{2026}{{Wang et~al.}}{{}}}
-\bibcite{yao2023tree}{{37}{2023{a}}{{Yao et~al.}}{{Yao, Yu, Zhao, Shafran, Griffiths, Cao, and Narasimhan}}}
-\bibcite{yao2023react}{{38}{2023{b}}{{Yao et~al.}}{{Yao, Zhao, Yu, Du, Shafran, Narasimhan, and Cao}}}
-\bibcite{adaptthink2025}{{39}{2025}{{Zhang et~al.}}{{Zhang, Lin, Hou, Feng, and Li}}}
-\bibcite{zhou2024lats}{{40}{2024}{{Zhou et~al.}}{{Zhou, Yan, Shlapentokh-Rothman, Wang, and Wang}}}
-\bibcite{zhu2025llmalreadyknows}{{41}{2025}{{Zhu et~al.}}{{Zhu, Liu, Lin, Tong, Zhong, and Shao}}}
+\bibcite{teerapittayanon2016branchynet}{{35}{2017}{{Teerapittayanon et~al.}}{{Teerapittayanon, McDanel, and Kung}}}
+\bibcite{thorne2018fever}{{36}{2018}{{Thorne et~al.}}{{Thorne, Vlachos, Christodoulopoulos, and Mittal}}}
+\bibcite{kdd2023simpson}{{37}{2023}{{Wang et~al.}}{{Wang, He, Xu, Li, and Chu}}}
+\bibcite{wang2026flare}{{38}{2026}{{Wang et~al.}}{{Wang, Wu, Wang, Tang, Li, Yin, Ma, Li, Sun, Chen, and Ye}}}
+\bibcite{yang2018hotpotqa}{{39}{2018}{{Yang et~al.}}{{Yang, Qi, Zhang, Bengio, Cohen, Salakhutdinov, and Manning}}}
+\bibcite{yao2023tree}{{40}{2023{a}}{{Yao et~al.}}{{Yao, Yu, Zhao, Shafran, Griffiths, Cao, and Narasimhan}}}
+\bibcite{yao2023react}{{41}{2023{b}}{{Yao et~al.}}{{Yao, Zhao, Yu, Du, Shafran, Narasimhan, and Cao}}}
+\bibcite{adaptthink2025}{{42}{2025}{{Zhang et~al.}}{{Zhang, Lin, Hou, Feng, and Li}}}
+\bibcite{auq2026}{{43}{2026}{{Zhang et~al.}}{{Zhang, Choubey, Huang, Xiong, and Wu}}}
+\bibcite{zhou2024lats}{{44}{2024}{{Zhou et~al.}}{{Zhou, Yan, Shlapentokh{-}Rothman, Wang, and Wang}}}
+\bibcite{zhu2025llmalreadyknows}{{45}{2025}{{Zhu et~al.}}{{Zhu, Liu, Lin, Tong, Zhong, and Shao}}}
 \citation{seag2025,cats2025,corefine2026,thinkjustenough2025,s1_2025,han2025tokenbudget}
 \citation{adaptthink2025,thinkless2025,aggarwal2025l1}
 \citation{diffadapt2025,zhu2025llmalreadyknows}
@@ -154,22 +167,20 @@
 \citation{graves2016act}
 \citation{teerapittayanon2016branchynet,elhoushi2024layerskip}
 \citation{shazeer2017moe,raposo2024mixtureofdepths}
+\citation{kadavath2022knowwhat}
+\citation{tao2025revisiting}
+\citation{heo2025llmuncertainty}
+\citation{yadkori2024believe}
 \@writefile{toc}{\contentsline {section}{\numberline {A}Extended Related Work}{11}{appendix.A}\protected@file@percent }
 \newlabel{app:related}{{A}{11}{Extended Related Work}{appendix.A}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Adaptive Compute: Reasoning vs.\ Agent Settings}{11}{subsection.A.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Detailed Baseline Comparison}{11}{subsection.A.2}\protected@file@percent }
 \newlabel{app:method-comparison}{{A.2}{11}{Detailed Baseline Comparison}{subsection.A.2}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Detailed comparison of baselines. All methods assume a fixed signal--utility direction. Phase\nobreakspace  {}1 methods require a separate calibration dataset; EAAG requires only exploration episodes.\relax }}{11}{table.caption.25}\protected@file@percent }
-\newlabel{tab:baseline-detail}{{6}{11}{Detailed comparison of baselines. All methods assume a fixed signal--utility direction. Phase~1 methods require a separate calibration dataset; EAAG requires only exploration episodes.\relax }{table.caption.25}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Adaptive Computation in Neural Networks}{11}{subsection.A.3}\protected@file@percent }
-\citation{kadavath2022knowwhat}
-\citation{tao2025revisiting}
-\citation{heo2025llmuncertainty}
-\citation{yadkori2024believe}
 \citation{russell1991right,horvitz1987reasoning}
 \citation{lieder2020resource}
 \citation{desabbata2024metareasoning}
-\citation{simpson1951interpretation,pearl2014understanding}
+\citation{simpson1951interpretation,DBLP:books/acm/22/Pearl22n}
 \citation{kdd2023simpson}
 \citation{catts2026}
 \citation{corefine2026}
@@ -177,6 +188,8 @@
 \citation{thinkless2025}
 \citation{diffadapt2025}
 \citation{auq2026}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Detailed comparison of baselines. All methods assume a fixed signal--utility direction. Phase\nobreakspace  {}1 methods require a separate calibration dataset; EAAG requires only exploration episodes.\relax }}{12}{table.caption.25}\protected@file@percent }
+\newlabel{tab:baseline-detail}{{6}{12}{Detailed comparison of baselines. All methods assume a fixed signal--utility direction. Phase~1 methods require a separate calibration dataset; EAAG requires only exploration episodes.\relax }{table.caption.25}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {A.4}LLM Confidence Estimation and Calibration}{12}{subsection.A.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {A.5}Metareasoning and Value of Computation}{12}{subsection.A.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {A.6}Simpson's Paradox in Machine Learning}{12}{subsection.A.6}\protected@file@percent }
@@ -184,7 +197,6 @@
 \@writefile{toc}{\contentsline {section}{\numberline {B}Experimental Details}{12}{appendix.B}\protected@file@percent }
 \newlabel{app:experiments}{{B}{12}{Experimental Details}{appendix.B}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {B.1}Environment Specifications}{12}{subsection.B.1}\protected@file@percent }
-\citation{russell1991right}
 \@writefile{toc}{\contentsline {subsection}{\numberline {B.2}Hyperparameter Configuration}{13}{subsection.B.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{EAAG hyperparameters.}{13}{section*.26}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Baseline hyperparameters.}{13}{section*.27}\protected@file@percent }
@@ -196,7 +208,8 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {C.1}Proof of Proposition\nobreakspace  {}\ref {prop:necessity} (Necessity of Direction Discovery)}{13}{subsection.C.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {C.2}Wrong-Direction Damage Quantification}{13}{subsection.C.2}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Wrong-direction damage scales with signal strength.\relax }}{13}{table.caption.28}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {C.3}VOC Non-Negativity Scope}{13}{subsection.C.3}\protected@file@percent }
+\citation{russell1991right}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C.3}VOC Non-Negativity Scope}{14}{subsection.C.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {D}Two-Source Model: Full Derivation and Verification}{14}{appendix.D}\protected@file@percent }
 \newlabel{app:model}{{D}{14}{Two-Source Model: Full Derivation and Verification}{appendix.D}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {D.1}Full Derivation}{14}{subsection.D.1}\protected@file@percent }
@@ -205,7 +218,7 @@
 \@writefile{toc}{\contentsline {section}{\numberline {E}Multi-Backbone Verification}{14}{appendix.E}\protected@file@percent }
 \newlabel{app:multi-backbone}{{E}{14}{Multi-Backbone Verification}{appendix.E}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {E.1}Signal Direction: Environment $\times $ Model Interaction}{14}{subsection.E.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.2}Fixed-Direction Baselines Fail Across Backbones}{14}{subsection.E.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.2}Fixed-Direction Baselines Fail Across Backbones}{15}{subsection.E.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {F}Additional Analyses}{15}{appendix.F}\protected@file@percent }
 \newlabel{app:additional}{{F}{15}{Additional Analyses}{appendix.F}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {F.1}Hyperparameter Sensitivity}{15}{subsection.F.1}\protected@file@percent }

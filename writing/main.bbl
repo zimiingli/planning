@@ -1,4 +1,4 @@
-\begin{thebibliography}{41}
+\begin{thebibliography}{45}
 \providecommand{\natexlab}[1]{#1}
 
 \bibitem[{Abbasi~Yadkori et~al.(2024)Abbasi~Yadkori, Kuzborskij, and
@@ -9,270 +9,306 @@ Yasin Abbasi~Yadkori, Ilja Kuzborskij, and Andr{\'a}s Gy{\"o}rgy. 2024.
 
 \bibitem[{Aggarwal and Welleck(2025)}]{aggarwal2025l1}
 Pranjal Aggarwal and Sean Welleck. 2025.
-\newblock {L1}: Controlling how long a reasoning model thinks with
+\newblock {L1:} controlling how long {A} reasoning model thinks with
   reinforcement learning.
-\newblock \emph{arXiv preprint arXiv:2503.04697}.
-
-\bibitem[{Anonymous(2023)}]{kdd2023simpson}
-Anonymous. 2023.
-\newblock Learning to discover various {Simpson's} paradoxes.
-\newblock \emph{Proceedings of the ACM SIGKDD Conference on Knowledge Discovery
-  and Data Mining}.
-
-\bibitem[{Anonymous(2025)}]{diffadapt2025}
-Anonymous. 2025.
-\newblock Diffadapt: Difficulty-adaptive reasoning for token-efficient {LLM}
-  inference.
-\newblock \emph{arXiv preprint arXiv:2510.19669}.
-
-\bibitem[{Anonymous(2026)}]{corefine2026}
-Anonymous. 2026.
-\newblock Corefine: Confidence-guided self-refinement for adaptive test-time
-  compute.
-\newblock \emph{arXiv preprint arXiv:2602.08948}.
-
-\bibitem[{De~Sabbata et~al.(2024)De~Sabbata, Sumers, AlKhamissi, Bosselut, and
-  Griffiths}]{desabbata2024metareasoning}
-C.~Nicol{\`o} De~Sabbata, Theodore~R. Sumers, Badr AlKhamissi, Antoine
-  Bosselut, and Thomas~L. Griffiths. 2024.
-\newblock Rational metareasoning for large language models.
-\newblock In \emph{Advances in Neural Information Processing Systems}.
+\newblock \emph{CoRR}.
 
 \bibitem[{Der~Kiureghian and Ditlevsen(2009)}]{der2009aleatory}
 Armen Der~Kiureghian and Ove Ditlevsen. 2009.
-\newblock Aleatory or epistemic? {Does} it matter?
-\newblock \emph{Structural Safety}, 31(2):105--112.
+\newblock Aleatory or epistemic? does it matter?
+\newblock \emph{Structural safety}.
 
-\bibitem[{Du(2026)}]{arpo2025}
-others Du. 2026.
+\bibitem[{Dong et~al.(2025)Dong, Mao, Ma, Bao, Chen, Wang, Chen, Du, Wang,
+  Zhang, Zhou, Zhu, Wen, and Dou}]{arpo2025}
+Guanting Dong, Hangyu Mao, Kai Ma, Licheng Bao, Yifei Chen, Zhongyuan Wang,
+  Zhongxia Chen, Jiazhen Du, Huiyang Wang, Fuzheng Zhang, Guorui Zhou, Yutao
+  Zhu, Ji{-}Rong Wen, and Zhicheng Dou. 2025.
 \newblock Agentic reinforced policy optimization.
-\newblock In \emph{Proceedings of the International Conference on Learning
-  Representations}.
+\newblock \emph{CoRR}.
 
 \bibitem[{Elhoushi et~al.(2024)Elhoushi, Shrivastava, Liskovich, Hosmer, Wasti,
-  Lai, Mahmoud, Acber, Agarwal, Roman et~al.}]{elhoushi2024layerskip}
+  Lai, Mahmoud, Acun, Agarwal, Roman, Aly, Chen, and
+  Wu}]{elhoushi2024layerskip}
 Mostafa Elhoushi, Akshat Shrivastava, Diana Liskovich, Basil Hosmer, Bram
-  Wasti, Liangzhen Lai, Anas Mahmoud, Bilge Acber, Saurabh Agarwal, Ahmed
-  Roman, and 1 others. 2024.
-\newblock {LayerSkip}: Enabling early-exit inference and self-speculative
+  Wasti, Liangzhen Lai, Anas Mahmoud, Bilge Acun, Saurabh Agarwal, Ahmed Roman,
+  Ahmed~A Aly, Beidi Chen, and Carole{-}Jean Wu. 2024.
+\newblock Layerskip: Enabling early exit inference and self-speculative
   decoding.
-\newblock \emph{arXiv preprint arXiv:2404.16710}.
+\newblock In \emph{ACL}.
 
 \bibitem[{Fang et~al.(2025)Fang, Ma, and Wang}]{thinkless2025}
 Gongfan Fang, Xinyin Ma, and Xinchao Wang. 2025.
 \newblock Thinkless: {LLM} learns when to think.
-\newblock In \emph{Advances in Neural Information Processing Systems}.
+\newblock \emph{CoRR}.
 
 \bibitem[{Graves(2016)}]{graves2016act}
 Alex Graves. 2016.
 \newblock Adaptive computation time for recurrent neural networks.
-\newblock \emph{arXiv preprint arXiv:1603.08983}.
+\newblock \emph{CoRR}.
 
 \bibitem[{Han et~al.(2025)Han, Wang, Fang, Zhao, Ma, and
   Chen}]{han2025tokenbudget}
 Tingxu Han, Zhenting Wang, Chunrong Fang, Shiyu Zhao, Shiqing Ma, and Zhenyu
   Chen. 2025.
 \newblock Token-budget-aware {LLM} reasoning.
-\newblock In \emph{Findings of the Association for Computational Linguistics:
-  ACL 2025}.
+\newblock In \emph{ACL}.
 
 \bibitem[{Hao et~al.(2023)Hao, Gu, Ma, Hong, Wang, Wang, and
   Hu}]{hao2023reasoning}
 Shibo Hao, Yi~Gu, Haodi Ma, Joshua~Jiahua Hong, Zhen Wang, Daisy~Zhe Wang, and
   Zhiting Hu. 2023.
 \newblock Reasoning with language model is planning with world model.
-\newblock In \emph{Proceedings of the 2023 Conference on Empirical Methods in
-  Natural Language Processing}.
+\newblock In \emph{EMNLP}.
 
-\bibitem[{Heo et~al.(2025)Heo, Xiong, Heinze-Deml, and
+\bibitem[{Hendrycks et~al.(2021{\natexlab{a}})Hendrycks, Basart, Kadavath,
+  Mazeika, Arora, Guo, Burns, Puranik, He, Song, and
+  Steinhardt}]{yao2022webshop}
+Dan Hendrycks, Steven Basart, Saurav Kadavath, Mantas Mazeika, Akul Arora,
+  Ethan Guo, Collin Burns, Samir Puranik, Horace He, Dawn Song, and Jacob
+  Steinhardt. 2021{\natexlab{a}}.
+\newblock Measuring coding challenge competence with {APPS}.
+\newblock In \emph{NeurIPs}.
+
+\bibitem[{Hendrycks et~al.(2021{\natexlab{b}})Hendrycks, Basart, Kadavath,
+  Mazeika, Zou, Song, and Steinhardt}]{hendrycks2021apps}
+Dan Hendrycks, Steven Basart, Saurav Kadavath, Mantas Mazeika, Andy Zou, Dawn
+  Song, and Jacob Steinhardt. 2021{\natexlab{b}}.
+\newblock Measuring coding challenge competence with {APPS}.
+\newblock In \emph{Advances in Neural Information Processing Systems (Datasets
+  and Benchmarks Track)}.
+
+\bibitem[{Heo et~al.(2025)Heo, Xiong, Heinze{-}Deml, and
   Narain}]{heo2025llmuncertainty}
-Juyeon Heo, Miao Xiong, Christina Heinze-Deml, and Jaya Narain. 2025.
-\newblock Do {LLMs} estimate uncertainty well in instruction-following?
-\newblock In \emph{Proceedings of the International Conference on Learning
-  Representations}.
+Juyeon Heo, Miao Xiong, Christina Heinze{-}Deml, and Jaya Narain. 2025.
+\newblock Do llms estimate uncertainty well in instruction-following?
+\newblock In \emph{ICLR}.
 
 \bibitem[{Horvitz(1987)}]{horvitz1987reasoning}
-Eric~J. Horvitz. 1987.
+Eric Horvitz. 1987.
 \newblock Reasoning about beliefs and actions under computational resource
   constraints.
-\newblock \emph{Proceedings of the Workshop on Uncertainty in Artificial
-  Intelligence}, pages 429--444.
+\newblock In \emph{UAI}.
 
-\bibitem[{Huang et~al.(2025)}]{cats2025}
-Chengsong Huang and 1 others. 2025.
-\newblock Calibrated test-time scaling for efficient {LLM} inference.
-\newblock \emph{arXiv preprint arXiv:2503.00031}.
+\bibitem[{Huang et~al.(2026)Huang, Huang, Leng, Liu, and Huang}]{cats2025}
+Chengsong Huang, Langlin Huang, Jixuan Leng, Jiacheng Liu, and Jiaxin Huang.
+  2026.
+\newblock Cats: Calibrated test-time scaling for efficient llm reasoning.
+\newblock In \emph{ICLR}.
 
-\bibitem[{H{\"u}llermeier and Waegeman(2021)}]{hullermeier2021aleatoric}
-Eyke H{\"u}llermeier and Willem Waegeman. 2021.
-\newblock \href {https://doi.org/10.1007/s10994-021-05946-3} {Aleatoric and
-  epistemic uncertainty in machine learning}.
-\newblock \emph{Machine Learning}, 110:457--506.
+\bibitem[{Jansen and C{\^o}t{\'e}(2023)}]{jansen2023twexpress}
+Peter Jansen and Marc-Alexandre C{\^o}t{\'e}. 2023.
+\newblock Textworldexpress: Simulating text games at one million steps per
+  second.
+\newblock In \emph{EACL}.
+
+\bibitem[{Jin et~al.(2026)Jin, Tanno, Diethe, and Teare}]{corefine2026}
+Chen Jin, Ryutaro Tanno, Tom Diethe, and Philip Teare. 2026.
+\newblock Corefine: Confidence-guided self-refinement for adaptive test-time
+  compute.
+\newblock \emph{CoRR}.
 
 \bibitem[{Kadavath et~al.(2022)Kadavath, Conerly, Askell, Henighan, Drain,
-  Perez, Schiefer, Hatfield-Dodds, DasSarma, Tran-Johnson
-  et~al.}]{kadavath2022knowwhat}
+  Perez, Schiefer, Hatfield{-}Dodds, DasSarma, Tran{-}Johnson, Johnston, Showk,
+  Jones, Elhage, Hume, Chen, Bai, Bowman, Fort, Ganguli, Hernandez, Jacobson,
+  Kernion, Kravec, Lovitt, Ndousse, Olsson, Ringer, Amodei, Brown, Clark,
+  Joseph, Mann, McCandlish, Olah, and Kaplan}]{kadavath2022knowwhat}
 Saurav Kadavath, Tom Conerly, Amanda Askell, Tom Henighan, Dawn Drain, Ethan
-  Perez, Nicholas Schiefer, Zac Hatfield-Dodds, Nova DasSarma, Eli
-  Tran-Johnson, and 1 others. 2022.
+  Perez, Nicholas Schiefer, Zac Hatfield{-}Dodds, Nova DasSarma, Eli
+  Tran{-}Johnson, Scott Johnston, Sheer~El Showk, Andy Jones, Nelson Elhage,
+  Tristan Hume, Anna Chen, Yuntao Bai, Sam Bowman, Stanislav Fort, and 17
+  others. 2022.
 \newblock Language models (mostly) know what they know.
-\newblock \emph{arXiv preprint arXiv:2207.05221}.
+\newblock \emph{CoRR}.
 
 \bibitem[{Lee et~al.(2026)Lee, Erdogan, John, Krishnapillai, Mahoney, Keutzer,
   and Gholami}]{catts2026}
 Nicholas Lee, Lutfi~Eren Erdogan, Chris~Joseph John, Surya Krishnapillai,
   Michael~W. Mahoney, Kurt Keutzer, and Amir Gholami. 2026.
-\newblock Agentic test-time scaling for {WebAgents}.
-\newblock \emph{arXiv preprint arXiv:2602.12276}.
+\newblock Agentic test-time scaling for webagents.
+\newblock \emph{CoRR}.
 
 \bibitem[{Lee et~al.(2025)Lee, Park, Kim, and Ok}]{seag2025}
 Sungjae Lee, Hyejin Park, Jaechang Kim, and Jungseul Ok. 2025.
 \newblock Semantic exploration with adaptive gating for efficient problem
   solving with language models.
-\newblock In \emph{Proceedings of the 63rd Annual Meeting of the Association
-  for Computational Linguistics}.
+\newblock In \emph{ACL}.
 
 \bibitem[{Lieder and Griffiths(2020)}]{lieder2020resource}
-Falk Lieder and Thomas~L. Griffiths. 2020.
-\newblock \href {https://doi.org/10.1017/S0140525X1900061X} {Resource-rational
-  analysis: Understanding human cognition as the optimal use of limited
-  computational resources}.
-\newblock \emph{Behavioral and Brain Sciences}, 43:e1.
+Falk Lieder and Thomas~L Griffiths. 2020.
+\newblock Resource-rational analysis: Understanding human cognition as the
+  optimal use of limited computational resources.
+\newblock \emph{Behavioral and brain sciences}.
 
-\bibitem[{Ling et~al.(2026)}]{auq2026}
-Zhen Ling and 1 others. 2026.
-\newblock Agentic uncertainty quantification.
-\newblock \emph{arXiv preprint arXiv:2601.15703}.
+\bibitem[{Liu et~al.(2025)Liu, Hu, Chu, and Choi}]{diffadapt2025}
+Xiang Liu, Xuming Hu, Xiaowen Chu, and Eunsol Choi. 2025.
+\newblock Diffadapt: Difficulty-adaptive reasoning for token-efficient {LLM}
+  inference.
+\newblock \emph{CoRR}.
 
-\bibitem[{Muennighoff et~al.(2025)Muennighoff, Yang et~al.}]{s1_2025}
-Niklas Muennighoff, Zitong Yang, and 1 others. 2025.
+\bibitem[{Muennighoff et~al.(2025)Muennighoff, Yang, Shi, Li, Fei{-}Fei,
+  Hajishirzi, Zettlemoyer, Liang, Cand{\`{e}}s, and Hashimoto}]{s1_2025}
+Niklas Muennighoff, Zitong Yang, Weijia Shi, Xiang~Lisa Li, Li~Fei{-}Fei,
+  Hannaneh Hajishirzi, Luke Zettlemoyer, Percy Liang, Emmanuel~J. Cand{\`{e}}s,
+  and Tatsunori Hashimoto. 2025.
 \newblock s1: Simple test-time scaling.
-\newblock In \emph{Proceedings of the 2025 Conference on Empirical Methods in
-  Natural Language Processing}.
+\newblock In \emph{EMNLP}.
 
-\bibitem[{Paglieri et~al.(2025)Paglieri, Cupi{\'a}{\l}, Cook
-  et~al.}]{paglieri2025learning}
-Davide Paglieri, Bart{\l}omiej Cupi{\'a}{\l}, Jonathan Cook, and 1 others.
-  2025.
+\bibitem[{Paglieri et~al.(2025)Paglieri, Cupial, Cook, Piterbarg, Tuyls,
+  Grefenstette, Foerster, Parker{-}Holder, and
+  Rockt{\"{a}}schel}]{paglieri2025learning}
+Davide Paglieri, Bartlomiej Cupial, Jonathan Cook, Ulyana Piterbarg, Jens
+  Tuyls, Edward Grefenstette, Jakob~Nicolaus Foerster, Jack Parker{-}Holder,
+  and Tim Rockt{\"{a}}schel. 2025.
 \newblock Learning when to plan: Efficiently allocating test-time compute for
   {LLM} agents.
-\newblock \emph{arXiv preprint arXiv:2509.03581}.
+\newblock \emph{CoRR}.
 
-\bibitem[{Pearl(2014)}]{pearl2014understanding}
-Judea Pearl. 2014.
-\newblock \href {https://doi.org/10.1080/00031305.2014.876829} {Comment:
-  Understanding {Simpson's} paradox}.
-\newblock \emph{The American Statistician}, 68(1):8--13.
+\bibitem[{Pearl(2022)}]{DBLP:books/acm/22/Pearl22n}
+Judea Pearl. 2022.
+\newblock Comment: Understanding simpson's paradox.
+\newblock In \emph{Probabilistic and Causal Inference: The Works of Judea
+  Pearl}.
 
 \bibitem[{Raposo et~al.(2024)Raposo, Ritter, Richards, Lillicrap, Humphreys,
   and Santoro}]{raposo2024mixtureofdepths}
-David Raposo, Sam Ritter, Blake Richards, Timothy Lillicrap, Peter~C.
-  Humphreys, and Adam Santoro. 2024.
+David Raposo, Samuel Ritter, Blake~A. Richards, Timothy~P. Lillicrap,
+  Peter~Conway Humphreys, and Adam Santoro. 2024.
 \newblock Mixture-of-depths: Dynamically allocating compute in
   transformer-based language models.
-\newblock \emph{arXiv preprint arXiv:2404.02258}.
+\newblock \emph{CoRR}.
 
 \bibitem[{Russell and Wefald(1991)}]{russell1991right}
-Stuart Russell and Eric Wefald. 1991.
-\newblock \emph{Do the Right Thing: Studies in Limited Rationality}.
-\newblock MIT Press.
+Stuart~J. Russell and Eric Wefald. 1991.
+\newblock \emph{Do the right thing - studies in limited rationality}.
+\newblock {MIT} Press.
+
+\bibitem[{Sabbata et~al.(2024)Sabbata, Sumers, and
+  Griffiths}]{desabbata2024metareasoning}
+Nicol{\`{o}}~De Sabbata, Theodore~R. Sumers, and Thomas~L. Griffiths. 2024.
+\newblock Rational metareasoning for large language models.
+\newblock \emph{CoRR}.
 
 \bibitem[{Schaeffer et~al.(2023)Schaeffer, Miranda, and
   Koyejo}]{schaeffer2023emergent}
 Rylan Schaeffer, Brando Miranda, and Sanmi Koyejo. 2023.
 \newblock Are emergent abilities of large language models a mirage?
-\newblock In \emph{Advances in Neural Information Processing Systems}.
+\newblock In \emph{NeurIPs}.
 
 \bibitem[{Sharma and Chopra(2025)}]{thinkjustenough2025}
 Aman Sharma and Paras Chopra. 2025.
 \newblock Think just enough: Sequence-level entropy as a confidence signal for
   {LLM} reasoning.
-\newblock \emph{arXiv preprint arXiv:2510.08146}.
+\newblock \emph{CoRR}.
 
 \bibitem[{Shazeer et~al.(2017)Shazeer, Mirhoseini, Maziarz, Davis, Le, Hinton,
   and Dean}]{shazeer2017moe}
-Noam Shazeer, Azalia Mirhoseini, Krzysztof Maziarz, Andy Davis, Quoc Le,
-  Geoffrey Hinton, and Jeff Dean. 2017.
+Noam Shazeer, Azalia Mirhoseini, Krzysztof Maziarz, Andy Davis, Quoc~V. Le,
+  Geoffrey~E. Hinton, and Jeff Dean. 2017.
 \newblock Outrageously large neural networks: The sparsely-gated
   mixture-of-experts layer.
-\newblock In \emph{International Conference on Learning Representations}.
+\newblock In \emph{ICLR}.
 
-\bibitem[{Shinn et~al.(2023)Shinn, Cassano, Berman, Gopinath, Narasimhan, and
+\bibitem[{Shinn et~al.(2023)Shinn, Cassano, Gopinath, Narasimhan, and
   Yao}]{shinn2023reflexion}
-Noah Shinn, Federico Cassano, Edward Berman, Ashwin Gopinath, Karthik
-  Narasimhan, and Shunyu Yao. 2023.
-\newblock Reflexion: Language agents with verbal reinforcement learning.
-\newblock In \emph{Advances in Neural Information Processing Systems}.
+Noah Shinn, Federico Cassano, Ashwin Gopinath, Karthik Narasimhan, and Shunyu
+  Yao. 2023.
+\newblock Reflexion: language agents with verbal reinforcement learning.
+\newblock In \emph{NeurIPs}.
 
 \bibitem[{Simpson(1951)}]{simpson1951interpretation}
-Edward~H. Simpson. 1951.
+Edward~H Simpson. 1951.
 \newblock The interpretation of interaction in contingency tables.
-\newblock \emph{Journal of the Royal Statistical Society: Series B},
-  13(2):238--241.
+\newblock \emph{Journal of the Royal Statistical Society: Series B
+  (Methodological)}.
 
 \bibitem[{Snell et~al.(2024)Snell, Lee, Xu, and Kumar}]{snell2024scaling}
 Charlie Snell, Jaehoon Lee, Kelvin Xu, and Aviral Kumar. 2024.
 \newblock Scaling {LLM} test-time compute optimally can be more effective than
   scaling model parameters.
-\newblock \emph{arXiv preprint arXiv:2408.03314}.
+\newblock \emph{CoRR}.
 
 \bibitem[{Tao et~al.(2025)Tao, Yeh, Dong, Huang, Torr, and
   Xu}]{tao2025revisiting}
-Linwei Tao, Yi-Fan Yeh, Minjing Dong, Tao Huang, Philip Torr, and Chang Xu.
+Linwei Tao, Yi{-}Fan Yeh, Minjing Dong, Tao Huang, Philip Torr, and Chang Xu.
   2025.
 \newblock Revisiting uncertainty estimation and calibration of large language
   models.
-\newblock \emph{arXiv preprint arXiv:2505.23854}.
+\newblock \emph{CoRR}.
 
-\bibitem[{Teerapittayanon et~al.(2016)Teerapittayanon, McDanel, and
+\bibitem[{Teerapittayanon et~al.(2017)Teerapittayanon, McDanel, and
   Kung}]{teerapittayanon2016branchynet}
-Surat Teerapittayanon, Bradley McDanel, and H.~T. Kung. 2016.
-\newblock {BranchyNet}: Fast inference via early exiting from deep neural
+Surat Teerapittayanon, Bradley McDanel, and H.~T. Kung. 2017.
+\newblock Branchynet: Fast inference via early exiting from deep neural
   networks.
-\newblock In \emph{Proceedings of the International Conference on Pattern
-  Recognition}.
+\newblock \emph{CoRR}.
 
-\bibitem[{Wang et~al.(2026)}]{wang2026flare}
-Zehong Wang and 1 others. 2026.
-\newblock Why reasoning fails to plan.
-\newblock \emph{arXiv preprint arXiv:2601.22311}.
+\bibitem[{Thorne et~al.(2018)Thorne, Vlachos, Christodoulopoulos, and
+  Mittal}]{thorne2018fever}
+James Thorne, Andreas Vlachos, Christos Christodoulopoulos, and Arpit Mittal.
+  2018.
+\newblock Fever: a large-scale dataset for fact extraction and verification.
+\newblock In \emph{NAACL}, pages 809--819.
+
+\bibitem[{Wang et~al.(2023)Wang, He, Xu, Li, and Chu}]{kdd2023simpson}
+Jingwei Wang, Jianshan He, Weidi Xu, Ruopeng Li, and Wei Chu. 2023.
+\newblock Learning to discover various simpson's paradoxes.
+\newblock In \emph{KDD}.
+
+\bibitem[{Wang et~al.(2026)Wang, Wu, Wang, Tang, Li, Yin, Ma, Li, Sun, Chen,
+  and Ye}]{wang2026flare}
+Zehong Wang, Fang Wu, Hongru Wang, Xiangru Tang, Bolian Li, Zhenfei Yin, Yijun
+  Ma, Yiyang Li, Weixiang Sun, Xiusi Chen, and Yanfang Ye. 2026.
+\newblock Why reasoning fails to plan: {A} planning-centric analysis of
+  long-horizon decision making in {LLM} agents.
+\newblock \emph{CoRR}.
+
+\bibitem[{Yang et~al.(2018)Yang, Qi, Zhang, Bengio, Cohen, Salakhutdinov, and
+  Manning}]{yang2018hotpotqa}
+Zhilin Yang, Peng Qi, Saizheng Zhang, Yoshua Bengio, William~W. Cohen, Ruslan
+  Salakhutdinov, and Christopher~D. Manning. 2018.
+\newblock Hotpotqa: {A} dataset for diverse, explainable multi-hop question
+  answering.
+\newblock In \emph{EMNLP}.
 
 \bibitem[{Yao et~al.(2023{\natexlab{a}})Yao, Yu, Zhao, Shafran, Griffiths, Cao,
   and Narasimhan}]{yao2023tree}
-Shunyu Yao, Dian Yu, Jeffrey Zhao, Izhak Shafran, Thomas~L. Griffiths, Yuan
-  Cao, and Karthik Narasimhan. 2023{\natexlab{a}}.
+Shunyu Yao, Dian Yu, Jeffrey Zhao, Izhak Shafran, Tom Griffiths, Yuan Cao, and
+  Karthik Narasimhan. 2023{\natexlab{a}}.
 \newblock Tree of thoughts: Deliberate problem solving with large language
   models.
-\newblock In \emph{Advances in Neural Information Processing Systems}.
+\newblock In \emph{NeurIPs}.
 
 \bibitem[{Yao et~al.(2023{\natexlab{b}})Yao, Zhao, Yu, Du, Shafran, Narasimhan,
   and Cao}]{yao2023react}
-Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan,
-  and Yuan Cao. 2023{\natexlab{b}}.
-\newblock {ReAct}: Synergizing reasoning and acting in language models.
-\newblock In \emph{International Conference on Learning Representations}.
+Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik~R.
+  Narasimhan, and Yuan Cao. 2023{\natexlab{b}}.
+\newblock React: Synergizing reasoning and acting in language models.
+\newblock In \emph{ICLR}.
 
 \bibitem[{Zhang et~al.(2025)Zhang, Lin, Hou, Feng, and Li}]{adaptthink2025}
 Jiajie Zhang, Nianyi Lin, Lei Hou, Ling Feng, and Juanzi Li. 2025.
 \newblock Adaptthink: Reasoning models can learn when to think.
-\newblock In \emph{Proceedings of the 2025 Conference on Empirical Methods in
-  Natural Language Processing}.
+\newblock In \emph{EMNLP}.
 
-\bibitem[{Zhou et~al.(2024)Zhou, Yan, Shlapentokh-Rothman, Wang, and
+\bibitem[{Zhang et~al.(2026)Zhang, Choubey, Huang, Xiong, and Wu}]{auq2026}
+Jiaxin Zhang, Prafulla~Kumar Choubey, Kung{-}Hsiang Huang, Caiming Xiong, and
+  Chien{-}Sheng Wu. 2026.
+\newblock Agentic uncertainty quantification.
+\newblock \emph{CoRR}.
+
+\bibitem[{Zhou et~al.(2024)Zhou, Yan, Shlapentokh{-}Rothman, Wang, and
   Wang}]{zhou2024lats}
-Andy Zhou, Kai Yan, Michal Shlapentokh-Rothman, Haohan Wang, and Yu-Xiong Wang.
-  2024.
-\newblock Language agent tree search unifies reasoning acting and planning in
+Andy Zhou, Kai Yan, Michal Shlapentokh{-}Rothman, Haohan Wang, and Yu{-}Xiong
+  Wang. 2024.
+\newblock Language agent tree search unifies reasoning, acting, and planning in
   language models.
-\newblock In \emph{Proceedings of the International Conference on Machine
-  Learning}.
+\newblock In \emph{ICML}.
 
 \bibitem[{Zhu et~al.(2025)Zhu, Liu, Lin, Tong, Zhong, and
   Shao}]{zhu2025llmalreadyknows}
 Yubo Zhu, Dongrui Liu, Zecheng Lin, Wei Tong, Sheng Zhong, and Jing Shao. 2025.
-\newblock The {LLM} already knows: Estimating {LLM}-perceived question
-  difficulty via hidden representations.
-\newblock In \emph{Proceedings of the 2025 Conference on Empirical Methods in
-  Natural Language Processing}.
+\newblock The {LLM} already knows: Estimating llm-perceived question difficulty
+  via hidden representations.
+\newblock In \emph{EMNLP}.
 
 \end{thebibliography}

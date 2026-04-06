@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.1.24)  6 APR 2026 10:41
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.1.24)  6 APR 2026 18:17
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -530,14 +530,19 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 37.
 (/usr/local/texlive/2023/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-(./sections/abstract.tex) (./sections/introduction.tex
-Underfull \hbox (badness 2573) in paragraph at lines 36--46
-\OT1/ptm/m/n/10.95 quently fail when trans-ferred to oth-ers ([][]Tao
+(./sections/abstract.tex
+Underfull \hbox (badness 1609) in paragraph at lines 5--19
+\OT1/ptm/m/n/10 pose EAAG (Environment-Aware Adap-tive
+ []
+
+) (./sections/introduction.tex
+Underfull \hbox (badness 1502) in paragraph at lines 49--50
+[]\OT1/ptm/m/n/10.95 We con-duct sys-tem-atic mea-sure-ment across
  []
 
 
-Underfull \hbox (badness 1502) in paragraph at lines 49--59
-[]\OT1/ptm/m/n/10.95 We con-duct sys-tem-atic mea-sure-ment across
+Underfull \hbox (badness 1231) in paragraph at lines 49--50
+\OT1/ptm/m/n/10.95 eight agent en-vi-ron-ments span-ning QA ([][]Yang
  []
 
 [1{/usr/local/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/l
@@ -546,37 +551,43 @@ ocal/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc}
 
 
 ]
-Underfull \hbox (badness 1755) in paragraph at lines 77--88
+Underfull \hbox (badness 1755) in paragraph at lines 68--79
 \OT1/ptm/m/n/10.95 (\OT1/ptm/b/n/10.95 E\OT1/ptm/m/n/10.95 nvironment-\OT1/ptm/
 b/n/10.95 A\OT1/ptm/m/n/10.95 ware \OT1/ptm/b/n/10.95 A\OT1/ptm/m/n/10.95 dapti
 ve \OT1/ptm/b/n/10.95 G\OT1/ptm/m/n/10.95 ating), which
  []
 
 
-Underfull \hbox (badness 3323) in paragraph at lines 77--88
+Underfull \hbox (badness 3323) in paragraph at lines 68--79
 \OT1/ptm/m/n/10.95 dis-cov-ers environment-specific gat-ing pat-terns
  []
 
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 9
-0.
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 8
+1.
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-Underfull \hbox (badness 3098) in paragraph at lines 101--105
+Underfull \hbox (badness 3098) in paragraph at lines 89--93
 \OT1/ptm/m/n/10.95 di-rec-tion learn-ing to dis-cover environment-
  []
 
 ) (./sections/related_work.tex
+Underfull \hbox (badness 1496) in paragraph at lines 8--32
+[][]\OT1/ptm/m/n/10.95 Muen-nighoff et al.[][], [][]2025[][]; [][]Han et al.[][
+], [][]2025[][]).
+ []
+
+
 Underfull \hbox (badness 1694) in paragraph at lines 8--32
 \OT1/ptm/m/n/10.95 through re-in-force-ment learn-ing ([][]Zhang et al.[][],
  []
 
-)
+[2])
 Underfull \hbox (badness 4467) in paragraph at lines 49--44
  []\OT1/ptm/b/n/10.95 Uncertainty es-ti-ma-tion and metar-ea-son-ing.[]
  []
 
-[2] (./sections/signal_utility_landscape.tex
+(./sections/signal_utility_landscape.tex
 LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 4
 9.
 
@@ -636,10 +647,19 @@ Overfull \hbox (168.40182pt too wide) in paragraph at lines 193--210
  [][] 
  []
 
-[4])
+[4]
+Underfull \hbox (badness 1308) in paragraph at lines 222--231
+\OT1/ptm/m/n/10.95 adapted to the meta-decision set-ting: Type I
+ []
+
+)
 Underfull \hbox (badness 1629) in paragraph at lines 256--46
 \OT1/ptm/m/n/10.95 above jointly es-tab-lish three re-quire-ments for
  []
+
+
+Underfull \vbox (badness 1308) has occurred while \output is active []
+
 
 (./sections/method.tex
 LaTeX Font Info:    Trying to load font information for OMS+ptm on input line 1
@@ -738,12 +758,12 @@ Underfull \hbox (badness 2189) in paragraph at lines 136--145
 []\OT1/ptm/b/n/10.95 LLM rea-son-ing pro-vides ro-bust-ness, not
  []
 
-
+[7]
 Underfull \hbox (badness 2005) in paragraph at lines 153--161
 \OT1/ptm/m/n/10.95 ger rate across en-vi-ron-ments with-out ex-plicit
  []
 
-[7]
+
 Underfull \hbox (badness 10000) in paragraph at lines 199--207
  []\OT1/ptm/b/n/10.95 P2: Cross-environment con-sis-tency (con-
  []
@@ -829,84 +849,65 @@ Underfull \hbox (badness 1163) in paragraph at lines 6--54
 \OT1/ptm/m/n/10.95 that di-rec-tion dis-cov-ery is re-quired for cross-
  []
 
-
-Underfull \vbox (badness 2237) has occurred while \output is active []
-
- (./main.bbl
-Underfull \hbox (badness 1460) in paragraph at lines 11--15
-[]\OT1/ptm/m/n/10 Pranjal Ag-gar-wal and Sean Welleck. 2025.  L1:
- []
-
-
-Underfull \hbox (badness 1014) in paragraph at lines 11--15
-\OT1/ptm/m/n/10 Con-trol-ling how long a rea-son-ing model thinks
- []
-
-
-Underfull \hbox (badness 4569) in paragraph at lines 11--15
-\OT1/ptm/m/n/10 with re-in-force-ment learn-ing.  \OT1/ptm/m/it/10 arXiv prepri
-nt
- []
-
-
-Underfull \hbox (badness 1552) in paragraph at lines 42--45
+(./main.bbl
+Underfull \hbox (badness 1552) in paragraph at lines 17--20
 []\OT1/ptm/m/n/10 Armen Der Ki-ureghian and Ove Ditlevsen. 2009.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 54--60
+Underfull \hbox (badness 1189) in paragraph at lines 23--28
+\OT1/ptm/m/n/10 Zhou, Yu-tao Zhu, Ji-Rong Wen, and Zhicheng
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 32--38
 []\OT1/ptm/m/n/10 Mostafa El-houshi, Ak-shat Shri-vas-tava, Di-ana
  []
 
 [9]
-Underfull \hbox (badness 1968) in paragraph at lines 67--70
-[]\OT1/ptm/m/n/10 Alex Graves. 2016.  Adap-tive com-pu-ta-tion time
+Underfull \hbox (badness 10000) in paragraph at lines 99--103
+[]\OT1/ptm/m/n/10 Peter Jansen and Marc-Alexandre C[]ot[]e. 2023.
  []
 
 
-Underfull \hbox (badness 1755) in paragraph at lines 67--70
-\OT1/ptm/m/n/10 for re-cur-rent neu-ral net-works.  \OT1/ptm/m/it/10 arXiv prep
-rint
- []
-
-
-Underfull \hbox (badness 3590) in paragraph at lines 107--111
-[]\OT1/ptm/m/n/10 Eyke H[]ullermeier and Willem Waege-man. 2021.
- []
-
-
-Underfull \hbox (badness 1622) in paragraph at lines 107--111
-[][]\OT1/ptm/m/n/10 Aleatoric and epis-temic un-cer-tainty in ma-chine
- []
-
-
-Underfull \hbox (badness 1584) in paragraph at lines 115--120
+Underfull \hbox (badness 1584) in paragraph at lines 115--122
 \OT1/ptm/m/n/10 Henighan, Dawn Drain, Ethan Perez, Nicholas
  []
 
 
-Underfull \hbox (badness 2237) in paragraph at lines 123--127
-[]\OT1/ptm/m/n/10 Nicholas Lee, Lutfi Eren Er-do-gan, Chris Joseph
+Underfull \hbox (badness 1067) in paragraph at lines 115--122
+\OT1/ptm/m/n/10 Tran-Johnson, Scott John-ston, Sheer El Showk,
  []
 
 
-Underfull \hbox (badness 1642) in paragraph at lines 155--160
-\OT1/ptm/m/n/10 and 1 oth-ers. 2025.  Learn-ing when to plan:
- []
-
-
-Underfull \hbox (badness 2057) in paragraph at lines 187--191
-[]\OT1/ptm/m/n/10 Aman Sharma and Paras Chopra. 2025.  Think
+Underfull \hbox (badness 5288) in paragraph at lines 187--190
+[]\OT1/ptm/m/n/10 Nicol[]o De Sab-bata, Theodore R. Sumers, and
  []
 
 [10]
-Underfull \hbox (badness 3536) in paragraph at lines 242--247
-\OT1/ptm/m/n/10 Thomas L. Grif-fiths, Yuan Cao, and Karthik
+Underfull \hbox (badness 10000) in paragraph at lines 247--251
+[]\OT1/ptm/m/n/10 James Thorne, An-dreas Vla-chos, Chris-tos
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 247--251
+\OT1/ptm/m/n/10 Christodoulopou-los, and Arpit Mit-tal. 2018.
+ []
+
+
+Underfull \hbox (badness 1748) in paragraph at lines 294--298
+\OT1/ptm/m/n/10 Huang, Caim-ing Xiong, and Chien-Sheng Wu.
  []
 
 ) (./sections/appendix.tex
 Underfull \hbox (badness 2486) in paragraph at lines 11--27
 \OT1/ptm/m/n/10.95 meth-ods op-ti-mize single-turn chain-of-thought
+ []
+
+
+Underfull \hbox (badness 1838) in paragraph at lines 11--27
+\OT1/ptm/m/n/10.95 to ex-tend think-ing ([][]Lee et al.[][], [][]2025[][]; [][]
+Huang
  []
 
 
@@ -986,8 +987,8 @@ Underfull \hbox (badness 10000) in paragraph at lines 68--69
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 68--69
-\OT1/ptm/m/n/9 tion ([][]Ling et al.[][],
+Underfull \hbox (badness 5519) in paragraph at lines 68--69
+\OT1/ptm/m/n/9 tion ([][]Zhang et al.[][],
  []
 
 
@@ -1005,17 +1006,15 @@ Overfull \hbox (131.13185pt too wide) in paragraph at lines 53--74
  [][] 
  []
 
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
 [11]
 Underfull \hbox (badness 3492) in paragraph at lines 110--126
 \OT1/ptm/m/n/10.95 Rational metar-ea-son-ing ([][]Rus-sell and We-fald[][],
  []
 
-
-Underfull \hbox (badness 1259) in paragraph at lines 129--140
-\OT1/ptm/m/n/10.95 treat-ment ef-fect es-ti-ma-tion. Our Two-Source
- []
-
-
+[12]
 Underfull \hbox (badness 2790) in paragraph at lines 172--174
 []\OT1/ptm/m/n/10.95 HotpotQA, FEVER, TWEx-press, Plan-
  []
@@ -1033,9 +1032,6 @@ Underfull \hbox (badness 7291) in paragraph at lines 184--190
  []
 
 
-Underfull \vbox (badness 1024) has occurred while \output is active []
-
- [12]
 Underfull \hbox (badness 7685) in paragraph at lines 201--207
 \OT1/ptm/b/n/10.95 [DATA NEEDED: Ta-ble A1.] \OT1/ptm/m/n/10.95 En-vi-ron-
  []
@@ -1087,7 +1083,7 @@ Underfull \hbox (badness 2189) in paragraph at lines 294--301
 \OT1/ptm/m/n/10.95 strength: en-vi-ron-ments with stronger signal--
  []
 
-
+[13]
 Underfull \hbox (badness 10000) in paragraph at lines 304--312
 \OT1/ptm/m/n/10.95 In the clas-si-cal VOC frame-work ([][]Rus-
  []
@@ -1107,7 +1103,7 @@ Underfull \hbox (badness 4048) in paragraph at lines 304--312
 0.95 ) \OMS/cmsy/m/n/10.95 ^^U \OT1/cmr/m/n/10.95 0$
  []
 
-[13]
+
 Underfull \hbox (badness 1082) in paragraph at lines 313--319
 []\OT1/ptm/m/n/10.95 Under evaluator-executor iden-tity, VOC can
  []
@@ -1184,13 +1180,13 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 54F8528D62F1DD64FB82B3559768173D;9743.
  ) 
 Here is how much of TeX's memory you used:
- 13417 strings out of 476025
- 214823 string characters out of 5790017
+ 13436 strings out of 476025
+ 215207 string characters out of 5790017
  1876388 words of memory out of 5000000
- 33476 multiletter control sequences out of 15000+600000
+ 33491 multiletter control sequences out of 15000+600000
  545977 words of font info for 116 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 90i,12n,90p,514b,634s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,12n,90p,775b,632s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb>
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
@@ -1213,10 +1209,10 @@ t/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/t
 ype1/urw/times/utmr8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/t
 imes/utmri8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/zapfding/u
 zdr.pfb>
-Output written on main.pdf (15 pages, 315129 bytes).
+Output written on main.pdf (15 pages, 315765 bytes).
 PDF statistics:
- 724 PDF objects out of 1000 (max. 8388607)
- 654 compressed objects within 7 object streams
- 145 named destinations out of 1000 (max. 500000)
+ 737 PDF objects out of 1000 (max. 8388607)
+ 667 compressed objects within 7 object streams
+ 149 named destinations out of 1000 (max. 500000)
  393 words of extra memory for PDF output out of 10000 (max. 10000000)
 

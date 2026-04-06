@@ -9,44 +9,50 @@ Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
 Database file #1: references.bib
-You've used 41 entries,
+Repeated entry---line 412 of file references.bib
+ : @inproceedings{yadkori2024believe
+ :                                  ,
+I'm skipping whatever remains of this entry
+Warning--missing publisher in DBLP:books/acm/22/Pearl22n
+You've used 45 entries,
             3764 wiz_defined-function locations,
-            917 strings with 13241 characters,
-and the built_in function-call counts, 28455 in all, are:
-= -- 2339
-> -- 1597
-< -- 20
-+ -- 648
-- -- 485
-* -- 1804
-:= -- 4364
-add.period$ -- 164
-call.type$ -- 41
-change.case$ -- 397
-chr.to.int$ -- 44
-cite$ -- 41
-duplicate$ -- 1760
-empty$ -- 1949
-format.name$ -- 599
-if$ -- 6069
-int.to.chr$ -- 2
-int.to.str$ -- 8
-missing$ -- 409
-newline$ -- 209
-num.names$ -- 164
-pop$ -- 1105
+            903 strings with 14224 characters,
+and the built_in function-call counts, 35752 in all, are:
+= -- 2765
+> -- 2491
+< -- 15
++ -- 1023
+- -- 772
+* -- 2489
+:= -- 5446
+add.period$ -- 180
+call.type$ -- 45
+change.case$ -- 532
+chr.to.int$ -- 50
+cite$ -- 46
+duplicate$ -- 2075
+empty$ -- 2169
+format.name$ -- 909
+if$ -- 7441
+int.to.chr$ -- 3
+int.to.str$ -- 2
+missing$ -- 516
+newline$ -- 229
+num.names$ -- 180
+pop$ -- 1491
 preamble$ -- 1
-purify$ -- 323
+purify$ -- 442
 quote$ -- 0
-skip$ -- 1501
+skip$ -- 1796
 stack$ -- 0
-substring$ -- 589
-swap$ -- 817
-text.length$ -- 4
+substring$ -- 535
+swap$ -- 1023
+text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 366
-warning$ -- 0
-while$ -- 135
+type$ -- 402
+warning$ -- 1
+while$ -- 138
 width$ -- 0
-write$ -- 501
+write$ -- 544
+(There was 1 error message)

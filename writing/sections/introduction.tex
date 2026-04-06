@@ -23,21 +23,22 @@ cost~\citep{snell2024scaling, wang2026flare}.
 However, test-time compute is expensive, incurring substantial per-step overhead (e.g., requiring multiple rollouts or candidate evaluations at each decision point)~\citep{yao2023tree, zhou2024lats}. As
 agents are deployed across diverse settings, applying this overhead
 uniformly becomes wasteful when only a fraction of steps benefit.
-This has motivated \emph{selective triggering}: using uncertainty
-signals to decide \emph{when} extra compute is
-worthwhile~\citep{catts2026, seag2025, cats2025, corefine2026,
-adaptthink2025, thinkless2025, s1_2025, han2025tokenbudget}. Across diverse mechanisms, including entropy thresholding,
-calibrated confidence, vote disagreement, and reinforcement
-learning, selective triggering consistently reduces cost while
-preserving or improving task performance within each method's
-evaluation setting.
+This has motivated \emph{adaptive gating}: using uncertainty
+signals to decide \emph{when} extra compute is worthwhile.
+Across diverse mechanisms---entropy
+thresholding~\citep{seag2025, cats2025, corefine2026},
+calibrated confidence~\citep{s1_2025, han2025tokenbudget},
+vote disagreement~\citep{catts2026}, and reinforcement
+learning~\citep{adaptthink2025, thinkless2025}---adaptive gating
+consistently reduces cost while preserving or improving task
+performance within each method's evaluation setting.
 
-Yet methods calibrated for one task type frequently fail when
+Methods calibrated for one task type frequently fail when
 transferred to others~\citep{tao2025revisiting,
 heo2025llmuncertainty}. Vote-based
 gating designed for web agents degrades on fact-verification tasks;
 calibration-based methods that perform well on QA degrade in code
-generation. In several cases, selective triggering \emph{actively
+generation. In several cases, adaptive gating \emph{actively
 harms} performance compared to never invoking the optimizer. This
 raises a central question: \emph{do uncertainty signals have a
 universal relationship with compute value, or does this relationship
