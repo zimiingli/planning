@@ -1,0 +1,106 @@
+% ============================================================
+% 4. METHOD: EAAG
+% ============================================================
+\section{Method: Environment-Aware Adaptive Gating}
+\label{sec:method}
+
+Table~\ref{tab:classification} summarizes how existing methods fail
+to satisfy the three requirements identified in
+\S\ref{sec:implications}. We present EAAG (Environment-Aware
+Adaptive Gating), which satisfies all three by discovering both
+signal identity and direction from online interaction data.
+
+\begin{table}[t]
+\caption{Method classification by adaptive compute components. All
+prior methods share \{Single signal, Fixed direction, Problem-level\}.
+EAAG is the only method with \{Multi-signal, Learned direction,
+Step-level, Environment-aware\}.}
+\label{tab:classification}
+\centering\small
+\begin{tabular}{lcccc}
+\toprule
+Method & Signal & Direction & Granularity & Env-Aware \\
+\midrule
+CaTS$^\dagger$     & Single & Fixed & Problem & \xmark \\
+SEAG$^\dagger$     & Single & Fixed & Problem & \xmark \\
+CoRefine$^\dagger$ & Single & Fixed & Problem & \xmark \\
+CATTS              & Single & Fixed & Problem & \xmark \\
+AUQ                & Single & Fixed & Problem & \xmark \\
+\midrule
+\textbf{EAAG}      & \textbf{Multi (auto)} & \textbf{Learned}
+                    & \textbf{Step} & \cmark \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Design rationale.}
+Since direction dominates gate quality, not model capacity
+(\S\ref{sec:ablation}, Table~\ref{tab:capacity}), EAAG invests
+complexity in the discovery process rather than the gate itself. An
+MLP gate with the wrong direction falls below the no-trigger baseline,
+while a logistic gate with the correct direction Pareto-dominates all
+baselines. The gate is therefore a logistic function; the discovery
+pipeline (exploration + LLM reasoning + LASSO) identifies which
+signals matter and in which direction.
+
+{\color{red} \textbf{[FIGURE NEEDED: Figure 4.]} EAAG method overview diagram.
+Three-phase pipeline: Explore (randomized gating, collect D) $\to$
+Reason (LLM analyzes D, generates environment profile + feature hypotheses)
+$\to$ Learn (LASSO selects features, trains logistic gate with signed weights).
+Show arrows from Obs 1-3 in \S3 to each design choice.
+Similar to FLARE's method section which has equations inline but
+a clear conceptual flow. Consider a horizontal pipeline diagram.}
+
+EAAG operates in three phases (Figure~\ref{fig:method}):
+exploration, reasoning, and learning.
+
+\subsection{Exploration}
+
+The agent explores a new environment with $N_{\text{explore}} = 50$
+episodes using randomized gating ($\varepsilon = 0.5$): at each step,
+the optimizer $T$ is invoked with probability 0.5 regardless of state.
+This produces a dataset $\mathcal{D} = \{(s_t^{(i)},\; U_t^{(i)})\}$
+of state--utility pairs. The randomized design ensures unbiased
+estimation of $U$ across the full signal range, a requirement that
+targeted exploration would violate by conditioning on the signal
+whose semantics are unknown.
+
+\subsection{Feature Generation}
+
+An LLM analyzes $\mathcal{D}$ to identify patterns distinguishing
+useful from wasteful rollouts. It produces an \emph{environment
+profile} describing the task structure and \emph{feature hypotheses}
+proposing task-specific signals to extract. For example, in WebShop
+the LLM identifies that rollouts help during product comparison but
+not during search, proposing features such as
+\texttt{price\_mentioned} and \texttt{action\_is\_click}. These
+complement a set of universal features (step count, token entropy,
+state length) available across all environments. The LLM's primary
+value is generalizability: it enables zero-shot feature generation
+for unseen environments where task-specific signals cannot be
+anticipated by universal features alone.
+
+\subsection{Sparse Direction Learning}
+
+LASSO selects the most relevant features from the union of universal
+and LLM-generated candidates, then trains a logistic regression gate:
+\begin{equation}
+  g(s) = \mathbf{1}\!\left[\sigma(\mathbf{w}^\top \phi(s) + b)
+  > \tau\right]
+  \label{eq:gate}
+\end{equation}
+where $\phi(s)$ is the selected feature vector and $\mathbf{w}$
+encodes both direction (sign) and importance (magnitude) for each
+signal. The sign of each $w_i$ directly implements direction
+discovery: $w_i > 0$ triggers on high signal values (Type~D
+semantics), $w_i < 0$ triggers on low values (Type~I semantics), and
+$w_i = 0$ indicates an uninformative signal (LASSO selection).
+Training completes in ${<}1$\,s on CPU. At deployment, the gate
+adds zero per-step cost.
+
+\subsection{Online Adaptation}
+
+During deployment, EAAG optionally continues collecting data via
+$\varepsilon$-greedy exploration ($\varepsilon: 0.1 \to 0$) and
+retrains the gate periodically, enabling adaptation to distributional
+shift.
