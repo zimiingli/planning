@@ -580,9 +580,9 @@ results/review/
 │   ├── always_trigger/seed_{...}/       # ✅ same
 │   ├── oracle/seed_{...}/               # ✅ same
 │   ├── catts/seed_{...}/                # ✅ valid (no calibration needed)
-│   ├── seag/seed_{...}/                 # ❌ rerunning with calibration (job 23669862)
-│   ├── corefine/seed_{...}/             # ❌ rerunning with calibration (job 23669862)
-│   ├── cats/seed_{...}/                 # ❌ rerunning with calibration (job 23669862)
+│   ├── seag/seed_{...}/                 # ✅ calibrated (APPS/APPS_Intv: uncalibrated due to OOM)
+│   ├── corefine/seed_{...}/             # ✅ calibrated (APPS: 1 seed uncalibrated due to OOM)
+│   ├── cats/seed_{...}/                 # ✅ calibrated (APPS: all OOM; APPS_Intv: all OOM)
 │   ├── auq/seed_{...}/                  # ✅ valid (no calibration needed)
 │   ├── s1_budget/seed_{...}/            # ✅ valid (no calibration needed)
 │   └── se_few5_filter_local/seed_{...}/ # ✅ 24/24 COMPLETE (job 23669706)
@@ -590,44 +590,28 @@ results/review/
 │   ├── base_only/seed_{...}/            # ✅ Step 2A complete (except TWExpress TIMEOUT)
 │   ├── always_trigger/seed_{...}/       # ✅ same
 │   ├── oracle/seed_{...}/               # ✅ same
-│   ├── catts/seed_{...}/                # ❌ rerunning (job 23694865)
-│   ├── seag/seed_{...}/                 # ❌ rerunning (job 23694865)
-│   ├── corefine/seed_{...}/             # ❌ rerunning (job 23694865)
-│   ├── cats/seed_{...}/                 # ❌ rerunning (job 23694865)
-│   ├── auq/seed_{...}/                  # ❌ rerunning (job 23694865)
-│   ├── s1_budget/seed_{...}/            # ❌ rerunning (job 23694865)
-│   └── se_few5_filter_local/seed_{...}/ # ❌ rerunning (job 23694864)
+│   ├── catts/seed_{...}/                # 🔄 running (job 23694865, 72/144 done)
+│   ├── seag/seed_{...}/                 # 🔄 running
+│   ├── corefine/seed_{...}/             # 🔄 running
+│   ├── cats/seed_{...}/                 # 🔄 running
+│   ├── auq/seed_{...}/                  # 🔄 running
+│   ├── s1_budget/seed_{...}/            # 🔄 running
+│   └── se_few5_filter_local/seed_{...}/ # ✅ 24/24 COMPLETE (job 23694864)
 ```
 
-### Phi-3.5 Complete Results (as of 2026-04-05)
+_(Old Phi results table removed — see calibrated version above at line 472)_
 
-| Env | base | AT | oracle | CATTS | SEAG | CoRef | CaTS | AUQ | s1Bgt | **EAAG** |
-|-----|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| HotpotQA | 28.3% | 98.8% | 98.8% | 42.0% | 88.3% | 87.7% | 68.3% | 31.2% | 94.2% | **92.3%** |
-| APPS | 59.0% | 75.0% | 75.0% | 28.0% | 30.0% | 30.3% | 35.8% | 27.3% | 36.2% | 37.2% |
-| WebShop | 3.5% | 53.5% | 52.3% | 28.7% | 36.5% | 35.8% | 41.7% | 7.0% | 3.0% | **57.3%** |
-| FEVER | 7.2% | 61.0% | 61.2% | 12.7% | 13.5% | 13.7% | 19.8% | 8.5% | 23.0% | 16.5% |
-| TWExpress | 66.7% | 97.8% | 98.5% | 86.7% | 67.7% | 86.7% | 68.5% | 94.5% | 95.7% | **96.7%** |
-| Plancraft | 13.7% | 14.5% | 14.3% | 13.5% | 13.2% | 13.3% | 13.3% | 12.7% | 13.7% | 13.8% |
-| APPS Intv | 27.0% | 79.5% | 79.5% | 27.7% | 27.3% | 27.2% | 27.0% | 27.2% | 34.5% | 36.8% |
-| CRUXEval | 99.5% | 99.5% | 99.5% | 99.5% | 99.5% | 99.5% | 99.5% | 99.5% | 99.5% | 99.5% |
-
-> EAAG highlights:
-> - **WebShop: 57.3% > AT 53.5%**, beats all CB by +15pp (best CB = CaTS 41.7%)
-> - **Plancraft: 13.8% ≈ base**, correctly learned not to trigger (rollout harmful env, cost=6%)
-> - **CRUXEval: 99.5%**, cost=13% — correctly avoided unnecessary rollouts (ceiling env)
-> - **APPS: 37.2% < base 59%** — all methods (including EAAG) hurt, rollout quality issue on Phi-3.5
-
-### Issues and fixes (as of 2026-04-05)
+### Issues and fixes (as of 2026-04-06)
 
 | Issue | Affected | Cause | Fix | Status |
 |-------|----------|-------|-----|--------|
 | TWExpress AT/oracle TIMEOUT | S2A Phi 3 + Llama 6 | 600s/ep, 12h not enough | Need `--time=36:00:00` or sharding | ❌ TODO |
 | Wrong `phase1_data_path` | All 16 review configs | Missing `/{env}/` in path | Fixed all configs | ✅ fixed |
-| CB Phi seag/corefine/cats uncalibrated | 72 CB Phi results | Ran without phase1 data | Resubmitted as **23669862** | ✅ **COMPLETE** |
+| CB Phi calibrated OOM | 15 jobs (APPS+APPS_Intv × seag/corefine/cats) | 48GB mem not enough for code-gen envs | Resubmit with `--mem=64G` | ❌ TODO |
+| CB Phi seag/corefine/cats uncalibrated | 72 CB Phi results | Ran without phase1 data | Resubmitted as **23669862** | ✅ **COMPLETE** (except OOM above) |
 | EAAG Phi wrong output path | 24 EAAG Phi results | Hardcoded path in p6 script | Fixed p6_e_method_upgrade.py line 158 | ✅ **COMPLETE** |
-| **CB/EAAG Llama wrong MODEL name** | All CB+EAAG Llama jobs | `microsoft/Llama-3.1-8B-Instruct` (should be `meta-llama/`) | Sed replacement from Phi script missed vendor prefix | ✅ fixed, resubmitted |
-| TMPCONFIG unbound variable | Multiple scripts | trap refs undefined var | All 12 scripts fixed | ✅ all fixed |
+| CB/EAAG Llama wrong MODEL name | All CB+EAAG Llama | `microsoft/` instead of `meta-llama/` | Fixed scripts, resubmitted | ✅ fixed |
+| TMPCONFIG unbound variable | Multiple scripts | trap cleanup refs undefined var | All 12 scripts fixed | ✅ all fixed |
 
 ### Pipeline Progress
 
@@ -635,11 +619,15 @@ results/review/
 - [x] **Step 1 Signal Discovery — ALL 8 envs × 2 models: COMPLETE**
 - [x] Step 2A Bounds — Phi: ✅ 69/72 (TWExpress AT/oracle TIMEOUT)
 - [x] Step 2A Bounds — Llama: ✅ 66/72 (TWExpress TIMEOUT)
-- [x] Step 2B CB Phi: ✅ **144/144 COMPLETE** (calibrated re-run done)
+- [x] Step 2B CB Phi: ✅ **144/144** (calibrated; APPS/APPS_Intv seag/coref/cats OOM → uncalibrated fallback)
 - [x] Step 2C EAAG Phi: ✅ **24/24 COMPLETE**
-- [ ] Step 2B CB Llama: resubmitted with model name fix (job **23694865**, 144 jobs)
-- [ ] Step 2C EAAG Llama: resubmitted with model name fix (job **23694864**, 24 jobs)
-- [ ] **Resubmit TWExpress TIMEOUT jobs with longer time limit** (9 jobs)
+- [x] Step 2C EAAG Llama: ✅ **24/24 COMPLETE** (job 23694864)
+- [ ] Step 2B CB Llama: 🔄 **72/144 done**, 6 running (job **23694865**)
+- [ ] CB Phi OOM rerun: submitted job **23737729** (`--mem=64G`, 15 jobs, array 21,23,25,27-29,111-119)
+- [ ] TWExpress sharded rerun: job **23737873** (36 jobs, array 0-35, 3 shards × 2 methods × 3 seeds × 2 models)
+  - 12h partition limit → split 200 eps into 3 shards (0-66, 67-133, 134-199)
+  - Script: `scripts/review/run_twexpress_sharded.sbatch`
+  - Need merge-shards step after completion
 - [ ] Exp 3: Cross-optimizer (both new models)
 - [ ] Exp 4: Budget sensitivity (both new models)
 - [ ] Create Exp 3 + Exp 4 sbatch scripts for Phi-3.5
@@ -647,19 +635,43 @@ results/review/
   - Addresses Reviewer 3: "larger models (70B+) might eliminate direction reversal"
   - Code already supports `api_type: "openai"` — no GPU needed, just API key
   - Only need Step 0 + Step 1 (signal discovery) — not full Step 2
-  - If direction still varies on GPT-scale model → "unpredictable across model scales" confirmed
   - TODO: create configs with `api_type: "openai"`, run locally (no SLURM needed)
 - [ ] Run `python scripts/review/analyze_multi_backbone.py`
 
-### Currently running/queued jobs (as of 2026-04-05)
+### Llama-3.1-8B EAAG Complete Results (as of 2026-04-06)
+
+| Env | base | AT | oracle | **EAAG** | Δ vs base |
+|-----|:---:|:---:|:---:|:---:|:---:|
+| HotpotQA | 46.3% | 99.5% | 99.5% | **95.5%** | +49.2pp |
+| APPS | 53.3% | 75.0% | 75.0% | 55.0% | +1.7pp |
+| WebShop | 1.2% | 42.8% | 42.3% | **41.7%** | +40.5pp |
+| FEVER | 13.2% | 62.8% | 63.0% | 34.7% | +21.5pp |
+| TWExpress | 36.5% | — | — | **94.8%** | +58.3pp |
+| Plancraft | 31.7% | 18.7% | 18.3% | 27.0% | -4.7pp |
+| APPS Intv | 60.2% | 79.5% | 79.5% | 59.7% | -0.5pp |
+| CRUXEval | 99.0% | 99.5% | 99.5% | 99.3% | +0.3pp |
+
+> **Cross-model EAAG comparison:**
+> | Env | Phi EAAG | Llama EAAG | note |
+> |-----|:---:|:---:|------|
+> | HotpotQA | 92.3% | **95.5%** | both strong |
+> | APPS | 37.2% | **55.0%** | Llama not harmed (Phi harmed) |
+> | WebShop | **57.3%** | 41.7% | Phi better |
+> | FEVER | 16.5% | **34.7%** | Llama much better |
+> | TWExpress | 96.7% | **94.8%** | both strong |
+> | Plancraft | **13.8%** (≈base) | 27.0% (-4.7pp) | Phi safer |
+> | APPS Intv | 36.8% | **59.7%** (≈base) | Llama safer |
+> | CRUXEval | 99.5% | 99.3% | both ceiling |
+
+### Currently running/queued jobs (as of 2026-04-06)
 
 | Job ID | Task | Jobs | Status |
 |--------|------|------|--------|
-| **23669862** | CB Phi seag/corefine/cats (calibrated) | 72 | ~66 done, 6 running |
-| **23694864** | EAAG Llama (model name fixed) | 24 | pending |
-| **23694865** | CB Llama full (model name fixed) | 144 | pending |
+| **23694865** | CB Llama full (calibrated) | 144 | 72 done, 6 running, ~66 pending |
+| **23737729** | CB Phi OOM rerun (--mem=64G) | 15 | pending |
+| **23737873** | TWExpress sharded (2 models × 2 methods × 3 seeds × 3 shards) | 36 | pending |
 
-**Completion: 303/480 (63%). Remaining ~177 jobs, estimated ~8h wall time (excl. TWExpress timeout).**
+**Completion: 399/480 (83%). Remaining: CB Llama ~72 + OOM 15 + TWExpress 9 = ~96 jobs.**
 
 ### 2026-03-28: ALL Step 2 submitted
 
