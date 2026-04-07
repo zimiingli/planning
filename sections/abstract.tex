@@ -2,18 +2,8 @@
 % ABSTRACT
 % ============================================================
 \begin{abstract}
-Large language model (LLM) agents benefit substantially from
-test-time compute, but applying expensive optimization to every
-decision step is wasteful. Exist gating methods address this by using uncertainty
-signals to decide when extra compute is worthwhile. 
-However, these methods share an implicit assumption: a fixed mapping from signal value to compute benefit. 
-We show that this assumption is wrong. Across eight diverse
-agent environments and three model backbones, we find that the
-signal--utility direction \emph{reverses}: the same signal value
-that predicts rollout benefit in one environment predicts rollout
-harm in another. We trace this to a conflation of two uncertainty
-sources, \emph{information poverty} and \emph{decision difficulty},
-and formalize it via a two-source model grounded in Simpson's
-paradox, where subgroup-level trends reverse upon aggregation. 
-We prove that direction discovery is a necessary condition for non-negative value of computation across environments. Motivated by this result, we propose EAAG (Environment-Aware Adaptive Gating), which combines exploration, LLM-based reasoning, and sparse direction learning to discover environment-specific gating patterns. Across eight environments, EAAG outperforms all fixed-direction baselines with zero per-step overhead, and its adaptive gating behavior emerges from direction learning alone.
+Test-time compute improves decision quality for LLM agents, but deciding when it is beneficial remains unresolved. Existing gating methods rely on uncertainty signals, implicitly assuming a fixed relationship between signal value and compute benefit. We show that this assumption is incorrect. 
+Across eight diverse agent environments and three model backbones, we find that the same signal value that predicts rollout benefit in one environment predicts rollout harm in another, indicating a reversal in the signal--utility relationship. 
+We trace this to a conflation of two uncertainty sources, \emph{information poverty} and \emph{decision difficulty}, and formalize it via a two-source model grounded in Simpson's paradox, where subgroup-level trends reverse upon aggregation. We prove that direction discovery is a necessary condition for non-negative value of computation across environments. 
+Motivated by this result, we propose EAAG (Environment-Aware Adaptive Gating), which learns environment-specific signal--utility relationships through direction discovery. Across eight environments, EAAG outperforms all fixed-direction baselines with zero additional per-step overhead, achieving adaptive gating behavior solely by learning signal direction.
 \end{abstract}

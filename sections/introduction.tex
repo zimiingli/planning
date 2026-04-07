@@ -8,85 +8,88 @@
 
 Large language models (LLMs) have rapidly advanced across a wide
 range of tasks, from question answering and code generation to web
-navigation and embodied decision making~\citep{yao2023react,
-shinn2023reflexion, zhou2024lats}. However, many tasks remain beyond the
+navigation and embodied decision making~\cite{yao2023react,
+shinn2023reflexion, zhou2024lats}. Yet, many tasks remain beyond the
 reach of a single forward pass: complex reasoning, multi-step
 planning, and open-ended exploration often require the model to
 evaluate alternatives, verify intermediate results, or search over
-candidate actions~\citep{yao2023tree, hao2023reasoning,
+candidate actions~\cite{yao2023tree, hao2023reasoning,
 snell2024scaling}. This has motivated \emph{test-time compute}, where additional
 computation at inference time improves decision quality. Across
 multiple benchmarks, test-time optimization allows smaller models to
 match or exceed the performance of larger ones at lower total
-cost~\citep{snell2024scaling, wang2026flare}.
+cost~\cite{snell2024scaling, wang2026flare}.
 
-However, test-time compute is expensive, incurring substantial per-step overhead (e.g., requiring multiple rollouts or candidate evaluations at each decision point)~\citep{yao2023tree, zhou2024lats}. As
+While effective, test-time compute is expensive, incurring substantial per-step overhead (e.g., requiring multiple rollouts or candidate evaluations at each decision point)~\cite{yao2023tree, zhou2024lats}. As
 agents are deployed across diverse settings, applying this overhead
 uniformly becomes wasteful when only a fraction of steps benefit.
-This has motivated \emph{selective triggering}: using uncertainty
-signals to decide \emph{when} extra compute is
-worthwhile~\citep{catts2026, seag2025, cats2025, corefine2026,
-adaptthink2025, thinkless2025, s1_2025, han2025tokenbudget}. Across diverse mechanisms, including entropy thresholding,
-calibrated confidence, vote disagreement, and reinforcement
-learning, selective triggering consistently reduces cost while
-preserving or improving task performance within each method's
-evaluation setting.
+This has motivated \emph{adaptive gating}: using uncertainty
+signals to decide \emph{when} extra compute is worthwhile.
+Prior work explores diverse mechanisms, including entropy thresholding~\cite{seag2025, cats2025, corefine2026}, calibrated confidence~\cite{s1_2025, han2025tokenbudget}, vote disagreement~\cite{catts2026}, and reinforcement learning~\cite{adaptthink2025, thinkless2025}. Across these mechanisms, adaptive gating consistently reduces cost while preserving or improving task performance within each method's evaluation setting.
 
-Yet methods calibrated for one task type frequently fail when
-transferred to others~\citep{tao2025revisiting,
-heo2025llmuncertainty}. Vote-based
-gating designed for web agents degrades on fact-verification tasks;
-calibration-based methods that perform well on QA degrade in code
-generation. In several cases, selective triggering \emph{actively
-harms} performance compared to never invoking the optimizer. This
-raises a central question: \emph{do uncertainty signals have a
-universal relationship with compute value, or does this relationship
-depend on the environment?}
+% Yet these gains often fail to transfer: methods calibrated for one task type frequently fail when applied to others~\cite{tao2025revisiting,
+% heo2025llmuncertainty}. Vote-based
+% gating designed for web agents degrades on fact-verification tasks;
+% calibration-based methods that perform well on QA degrade in code
+% generation. In several cases, adaptive gating \emph{actively
+% harms} performance compared to never invoking the optimizer. This
+% raises a central question: \emph{do uncertainty signals have a
+% universal relationship with compute value, or does this relationship
+% depend on the environment?}
+However, these gains often fail to transfer: methods calibrated for one task type frequently degrade on others, and in some cases adaptive gating actively harms performance compared to never invoking the optimizer. 
+This reveals a fundamental limitation: \emph{uncertainty signals can systematically mispredict the value of additional computation, leading to degraded performance}. In particular, the same signal can indicate when extra compute is beneficial in one environment, but harmful in another. As a result, any \emph{fixed-direction} gating strategy is inherently unreliable across diverse settings.
+This raises a central question: \emph{what determines the relationship between uncertainty signals and the value of computation, and can this relationship be learned in a way that generalizes across environments?}
 
 % --- Module 2: Our finding + diagnosis (~30%) ---
 
-We conduct systematic measurement across eight agent environments spanning QA~\cite{yang2018hotpotqa}, code generation~\cite{hendrycks2021apps}, web navigation~\cite{yao2022webshop}, fact verification~\cite{thorne2018fever}, and text games~\cite{jansen2023twexpress}, using three model backbones. The signal–utility direction \emph{reverses} across environments: the same signal that predicts rollout benefit in code generation predicts rollout harm in fact verification, and can further reverse across model backbones within the same environment. Beyond direction, the most informative signal itself varies across environments, with structural features dominating in some while entropy carries no information.
+% We conduct systematic measurement across eight agent environments spanning QA~\cite{yang2018hotpotqa}, code generation~\cite{hendrycks2021apps}, web navigation~\cite{yao2022webshop}, fact verification~\cite{thorne2018fever}, and text games~\cite{jansen2023twexpress}, using three model backbones. The signal–utility direction \emph{reverses} across environments: the same signal that predicts rollout benefit in code generation predicts rollout harm in fact verification, and can further reverse across model backbones within the same environment. Beyond direction, the most informative signal itself varies across environments, with structural features dominating in some while entropy carries no information.
+We conduct systematic measurement across eight agent environments spanning QA~\cite{yang2018hotpotqa}, code generation~\cite{hendrycks2021apps}, web navigation~\cite{yao2022webshop}, fact verification~\cite{thorne2018fever}, and text games~\cite{jansen2023twexpress}, using three model backbones. 
+We observe that the signal–utility relationship \emph{reverses direction} across environments: the same signal that predicts rollout benefit in code generation predicts rollout harm in fact verification, and can further reverse across model backbones within the same environment. Moreover, the most informative signal itself varies across environments, with structural features dominating in some settings while entropy carries little or no information in others.
 
-We trace this reversal to a conflation of two uncertainty sources.
-\emph{Information poverty} arises when the agent lacks sufficient
-data; here rollouts from the same model cannot compensate, and high
-entropy predicts rollout harm. \emph{Decision difficulty} arises
-when the agent faces multiple viable paths; here rollouts explore
-alternatives productively, and high entropy predicts rollout benefit.
-Environments differ in the proportion of these two state types,
-causing the same signal to carry opposite meaning. This is an
-instance of Simpson's paradox~\cite{simpson1951interpretation,kdd2023simpson} in the signal--utility space. We prove
-that this has a sharp consequence: no fixed-direction gate can
-guarantee non-negative value of computation across environments with
-opposing directions (Proposition~\ref{prop:necessity}). Once the
-direction is wrong, more precise calibration makes performance
-\emph{worse}, because the gate more precisely targets harmful states.
+% We trace this reversal to a conflation of two uncertainty sources.
+% \emph{Information poverty} arises when the agent lacks sufficient
+% data; here rollouts from the same model cannot compensate, and high
+% entropy predicts rollout harm. \emph{Decision difficulty} arises
+% when the agent faces multiple viable paths; here rollouts explore
+% alternatives productively, and high entropy predicts rollout benefit.
+% Environments differ in the proportion of these two state types,
+% causing the same signal to carry opposite meaning. This is an
+% instance of Simpson's paradox~\cite{simpson1951interpretation,kdd2023simpson} in the signal--utility space. We prove
+% that this has a sharp consequence: no fixed-direction gate can
+% guarantee non-negative value of computation across environments with
+% opposing directions (Proposition~\ref{prop:necessity}). Once the
+% direction is wrong, more precise calibration makes performance
+% \emph{worse}, because the gate more precisely targets harmful states.
+We trace this reversal to a conflation of two distinct sources of uncertainty. \emph{Information poverty} arises when the agent lacks sufficient information; in such states, rollouts from the same model cannot compensate, and high uncertainty predicts \emph{negative} value of computation. In contrast, \emph{decision difficulty} arises when multiple viable options exist; here, additional computation helps explore alternatives, and high uncertainty predicts \emph{positive} value. For example, code generation often involves multiple valid implementations (decision difficulty), while fact verification may lack sufficient evidence altogether (information poverty).
+Different environments exhibit different mixtures of these two state types. As a result, the same uncertainty signal can carry opposite meanings depending on which source dominates, leading to systematic reversals in signal–utility direction. 
+This phenomenon is closely related to Simpson’s paradox~\cite{simpson1951interpretation,kdd2023simpson}, where aggregated correlations can reverse due to underlying mixtures of distinct state types.
+% This phenomenon can be formalized as an instance of Simpson's paradox in the signal–utility space. 
+We show that this has a sharp consequence: no fixed-direction gating strategy can guarantee non-negative value of computation across environments with opposing signal directions (Proposition~\ref{prop:necessity}). Once the direction is misaligned, improved calibration can \emph{worsen} performance by more precisely selecting harmful states.
 
 % --- Module 3: Method + contributions (~25%) ---
 
+% Motivated by this analysis, we propose \textbf{EAAG}
+% (\textbf{E}nvironment-\textbf{A}ware \textbf{A}daptive
+% \textbf{G}ating), which discovers environment-specific gating
+% patterns through randomized \emph{exploration}, LLM-based
+% \emph{reasoning} about exploration data, and sparse
+% \emph{learning} of signal direction and importance.
+% Since direction is the primary determinant of gate quality, not
+% model capacity, EAAG pairs a rich discovery process with a
+% deliberately simple gate that adds zero per-step deployment cost.
+% EAAG outperforms all fixed-direction baselines across eight
+% environments and three LLM backbones.
 Motivated by this analysis, we propose \textbf{EAAG}
 (\textbf{E}nvironment-\textbf{A}ware \textbf{A}daptive
-\textbf{G}ating), which discovers environment-specific gating
-patterns through randomized \emph{exploration}, LLM-based
-\emph{reasoning} about exploration data, and sparse
-\emph{learning} of signal direction and importance via LASSO.
-Since direction is the primary determinant of gate quality, not
-model capacity, EAAG pairs a rich discovery process with a
-deliberately simple gate that adds zero per-step deployment cost.
-EAAG outperforms all fixed-direction baselines across eight
-environments and three LLM backbones.
+\textbf{G}ating), which focuses on discovering environment-specific signal–utility relationships. 
+Crucially, our analysis shows that the primary challenge is not modeling capacity, but correctly identifying the \emph{direction} and relevance of uncertainty signals. Accordingly, EAAG combines randomized \emph{exploration}, LLM-based \emph{reasoning} over collected data, and sparse \emph{learning} to recover these patterns, while using a simple gating mechanism that incurs zero additional cost at deployment.
+EAAG outperforms all fixed-direction baselines across eight environments and three LLM backbones. Importantly, since signal direction cannot be inferred from uncertainty alone and varies across environments, it must be discovered through interaction data, rather than assumed or calibrated from static signals.
 
 Our main contributions are as follows:
 \begin{itemize}[leftmargin=*,nosep]
-\item \textbf{Empirical finding.} Signal–utility direction reverses across environments and model backbones, and the most informative signal itself differs across environments. All fixed-direction methods fail in at least two of eight environments.
+\item \textbf{Theoretical necessity.} We show that no fixed-direction gating strategy can guarantee non-negative value of computation across environments with opposing signal–utility relationships.
 
-\item \textbf{Theoretical explanation.} A two-source uncertainty
-  model grounded in Simpson's paradox explains when and why direction
-  reverses. Direction discovery is provably necessary for
-  cross-environment non-negative value of computation.
+\item \textbf{Empirical finding.} We demonstrate systematic reversal of signal–utility direction across environments and model backbones, and show that the most informative signals vary across settings.
 
-\item \textbf{Adaptive gating method.} EAAG combines exploration,
-  LLM-based reasoning, and sparse direction learning to discover
-  environment-specific gating patterns with zero per-step deployment
-  cost.
+\item \textbf{Adaptive gating method.} We propose EAAG, which learns signal direction per environment instead of assuming it, matching or beating all fixed-direction baselines across eight environments with zero deployment overhead.
 \end{itemize}
