@@ -6,7 +6,7 @@
 
 \paragraph{Adaptive test-time compute.}
 Adaptive gating methods reduce the overhead of test-time
-optimization by invoking it only when needed. In the
+optimization by invoking it only when deemed beneficial. In the
 \emph{reasoning} setting, signal-based methods use token-level
 confidence or entropy to decide when to extend
 thinking~\citep{seag2025, cats2025, corefine2026,
@@ -22,13 +22,18 @@ In the \emph{agent} setting, vote-based
 methods~\citep{catts2026} sample multiple candidate actions and
 trigger evaluation when disagreement is high, and
 \citet{paglieri2025learning} learn when to invoke a planner at the
-episode level. The vast majority of adaptive compute research
-operates on homogeneous reasoning benchmarks (MATH, GSM8K, GPQA),
-where signal direction happens to be consistent across tasks. Our
-work is the first to systematically study signal semantics across
-heterogeneous \emph{agent} environments, where we find that the
-direction reverses. A detailed per-method comparison is provided in
-Appendix~\ref{app:related}.
+episode level. Across these diverse mechanisms, all methods share a common
+assumption: that uncertainty signals have a fixed,
+environment-independent relationship with compute value. This
+assumption is seldom challenged because the vast majority of
+adaptive compute research operates on homogeneous reasoning
+benchmarks (MATH, GSM8K, GPQA), where signal direction happens
+to be consistent. We show that the assumption is incorrect in
+heterogeneous \emph{agent} environments: signal--utility direction
+reverses across environments, and no fixed-direction strategy can
+guarantee non-negative value of computation
+(Proposition~\ref{prop:necessity}). A detailed per-method
+comparison is provided in Appendix~\ref{app:related}.
 
 \paragraph{Test-time scaling and search.}
 Test-time scaling~\citep{snell2024scaling} studies compute-optimal
