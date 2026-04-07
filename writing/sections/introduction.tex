@@ -25,26 +25,6 @@ agents are deployed across diverse settings, applying this overhead
 uniformly becomes wasteful when only a fraction of steps benefit.
 This has motivated \emph{adaptive gating}: using uncertainty
 signals to decide \emph{when} extra compute is worthwhile.
-<<<<<<< HEAD
-Across diverse mechanisms---entropy
-thresholding~\citep{seag2025, cats2025, corefine2026},
-calibrated confidence~\citep{s1_2025, han2025tokenbudget},
-vote disagreement~\citep{catts2026}, and reinforcement
-learning~\citep{adaptthink2025, thinkless2025}---adaptive gating
-consistently reduces cost while preserving or improving task
-performance within each method's evaluation setting.
-
-Methods calibrated for one task type frequently fail when
-transferred to others~\citep{tao2025revisiting,
-heo2025llmuncertainty}. Vote-based
-gating designed for web agents degrades on fact-verification tasks;
-calibration-based methods that perform well on QA degrade in code
-generation. In several cases, adaptive gating \emph{actively
-harms} performance compared to never invoking the optimizer. This
-raises a central question: \emph{do uncertainty signals have a
-universal relationship with compute value, or does this relationship
-depend on the environment?}
-=======
 Prior work explores diverse mechanisms, including entropy thresholding~\cite{seag2025, cats2025, corefine2026}, calibrated confidence~\cite{s1_2025, han2025tokenbudget}, vote disagreement~\cite{catts2026}, and reinforcement learning~\cite{adaptthink2025, thinkless2025}. Across these mechanisms, adaptive gating consistently reduces cost while preserving or improving task performance within each method's evaluation setting.
 
 % Yet these gains often fail to transfer: methods calibrated for one task type frequently fail when applied to others~\cite{tao2025revisiting,
@@ -59,7 +39,6 @@ Prior work explores diverse mechanisms, including entropy thresholding~\cite{sea
 However, these gains often fail to transfer: methods calibrated for one task type frequently degrade on others, and in some cases adaptive gating actively harms performance compared to never invoking the optimizer. 
 This reveals a fundamental limitation: \emph{uncertainty signals can systematically mispredict the value of additional computation, leading to degraded performance}. In particular, the same signal can indicate when extra compute is beneficial in one environment, but harmful in another. As a result, any \emph{fixed-direction} gating strategy is inherently unreliable across diverse settings.
 This raises a central question: \emph{what determines the relationship between uncertainty signals and the value of computation, and can this relationship be learned in a way that generalizes across environments?}
->>>>>>> 97c15e1ab24de9e06fdf4fb4708a7910ba595ee4
 
 % --- Module 2: Our finding + diagnosis (~30%) ---
 
