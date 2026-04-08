@@ -667,11 +667,22 @@ _(Old Phi results table removed — see calibrated version above at line 472)_
 
 | Job ID | Task | Jobs | Status |
 |--------|------|------|--------|
-| **23694865** | CB Llama full (calibrated) | 144 | 72 done, 6 running, ~66 pending |
-| **23737729** | CB Phi OOM rerun (--mem=64G) | 15 | pending |
-| **23737873** | TWExpress sharded (2 models × 2 methods × 3 seeds × 3 shards) | 36 | pending |
+| **23737729** | CB Phi OOM rerun (--mem=64G, APPS+APPS_Intv) | 15 | running |
+| **23737873** | TWExpress bounds sharded (2 models × 2 methods × 3 seeds × 3 shards) | 36 | pending |
+| **23749957** | CB Llama plancraft+cruxeval (normal) | 36 | pending |
+| **23749958** | CB Llama APPS rerun (--mem=64G) | 18 | pending |
+| **23749959** | CB Llama APPS Interview (--mem=64G) | 18 | pending |
+| **23750380** | CB Llama TWExpress sharded (6 methods × 3 seeds × 3 shards) | 54 | pending |
 
-**Completion: 399/480 (83%). Remaining: CB Llama ~72 + OOM 15 + TWExpress 9 = ~96 jobs.**
+**CB Llama status:**
+- hotpotqa/webshop/fever: ✅ done (54/144 calibrated)
+- APPS: OOM → resubmit `--mem=64G` (job 23749958)
+- APPS Interview: resubmit `--mem=64G` (job 23749959) — may also OOM
+- plancraft/cruxeval: normal resubmit (job 23749957)
+- TWExpress: sharded (job **23750380**, 54 jobs = 6 methods × 3 seeds × 3 shards)
+  - Added `--episode-start` support to `p5_competing_baselines.py`
+  - Script: `scripts/review/run_twexpress_cb_sharded.sbatch`
+  - Shards save to `summary_shard_{start}_{end}.json`, need merge after completion
 
 ### 2026-03-28: ALL Step 2 submitted
 
