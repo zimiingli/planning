@@ -4,13 +4,12 @@
 \section{Method: Environment-Aware Adaptive Gating}
 \label{sec:method}
 
-Table~\ref{tab:classification} summarizes how existing methods fail
-to satisfy the three requirements identified in
-\S\ref{sec:implications}---in particular, none discovers signal
-direction per environment, violating the necessity established
-in Proposition~\ref{prop:necessity}. EAAG (Environment-Aware
-Adaptive Gating) addresses this by discovering both signal identity
-and direction from online interaction data.
+Proposition~\ref{prop:necessity} establishes that direction
+discovery is necessary for cross-environment robustness; no
+existing method performs it (Table~\ref{tab:classification}).
+EAAG (Environment-Aware Adaptive Gating) closes this gap by
+learning both signal identity and direction from online
+interaction data.
 
 \begin{table}[t]
 \caption{Method classification by adaptive compute components. All
@@ -36,20 +35,21 @@ AUQ                & Single & Fixed & Problem & \xmark \\
 \end{table}
 
 \paragraph{Design rationale.}
-Since direction dominates gate quality, not model capacity
-(\S\ref{sec:ablation}, Table~\ref{tab:capacity}), EAAG invests
-complexity in the discovery process rather than the gate itself. An
-MLP gate with the wrong direction falls below the no-trigger baseline,
-while a logistic gate with the correct direction Pareto-dominates all
-baselines. The gate is therefore a logistic function; the discovery
-pipeline (exploration + LLM reasoning + LASSO) identifies which
-signals matter and in which direction.
+The bottleneck in adaptive gating is direction, not model capacity
+(\S\ref{sec:ablation}, Table~\ref{tab:capacity}): an MLP with the
+wrong direction falls \emph{below} the no-trigger baseline, while
+a logistic gate with the correct direction Pareto-dominates all
+baselines. EAAG therefore pairs a rich discovery pipeline
+(exploration + LLM reasoning + LASSO) with a deliberately simple
+gate---a logistic function that encodes both signal identity and
+direction.
 
 {\color{red} \textbf{[FIGURE NEEDED: Figure 4.]} EAAG method overview diagram.
 Three-phase pipeline: Explore (randomized gating, collect D) $\to$
 Reason (LLM analyzes D, generates environment profile + feature hypotheses)
 $\to$ Learn (LASSO selects features, trains logistic gate with signed weights).
-Show arrows from Obs 1-3 in \S3 to each design choice.
+Show arrows from \S3 findings (direction reversal, signal identity, necessity)
+to each design choice.
 Similar to FLARE's method section which has equations inline but
 a clear conceptual flow. Consider a horizontal pipeline diagram.}
 

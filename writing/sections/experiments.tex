@@ -7,12 +7,11 @@
 \subsection{Experimental Setup}
 \label{sec:setup}
 
-We evaluate EAAG along three axes: (1)~Does environment-aware gating
-Pareto-dominate fixed-direction baselines across diverse environments?
-(\S\ref{sec:main-results}) (2)~Which components (direction learning,
-multi-signal features, LLM reasoning) drive the gains?
-(\S\ref{sec:ablation}) (3)~Do the Two-Source Model's predictions
-hold empirically? (\S\ref{sec:theory-verification})
+We evaluate EAAG along three axes: does environment-aware gating
+Pareto-dominate fixed-direction baselines
+(\S\ref{sec:main-results}); which components drive the gains
+(\S\ref{sec:ablation}); and do the Two-Source Model's predictions
+hold on held-out data (\S\ref{sec:theory-verification}).
 
 \paragraph{Environments.} We evaluate on 8 environments spanning QA,
 code generation, web navigation, fact verification, text games, and
@@ -25,14 +24,12 @@ including extreme rollout properties (TWExpress: rollout-safe;
 Plancraft: rollout-harmful).
 
 \paragraph{Baselines.} All methods share the same agent and
-optimizer $T$; we compare only the gate decision.
-(1)~\emph{Bounds}: base\_only, always\_trigger, oracle.
-(2)~\emph{Fixed-direction CB}: CaTS, SEAG, CoRefine, CATTS, AUQ,
-s1\_budget, all assuming high uncertainty $\to$ trigger.
-(3)~\emph{Ablation}: BSW (intentionally reversed direction).
-(4)~\emph{Ours}: EAAG.
-Full environment specifications and hyperparameter details are
-provided in Appendix~\ref{app:experiments}.
+optimizer $T$; only the gating decision differs. Bounds:
+base\_only (never trigger), always\_trigger, oracle.
+Fixed-direction baselines: CaTS, SEAG, CoRefine, CATTS, AUQ,
+s1\_budget---all assuming high uncertainty warrants compute.
+Ablation: BSW (direction intentionally reversed). Full
+specifications in Appendix~\ref{app:experiments}.
 
 \paragraph{Metrics.} SR (success rate, $\uparrow$) and Cost
 (rollouts per episode during deployment, $\downarrow$).
@@ -67,19 +64,16 @@ CRUXEval      & 85.0\% & 99.5\% & +14.5 & $K$-variant sampling \\
 \subsection{Main Results}
 \label{sec:main-results}
 
-\textbf{EAAG outperforms fixed-direction baselines across
-environments and backbones.} As shown in Table~\ref{tab:main}, EAAG
-consistently outperforms all fixed-direction baselines across
-8 environments (Table~\ref{tab:winloss}). The two exceptions occur
-in ceiling-effect environments where EAAG already approaches the
-oracle. EAAG Pareto-dominates the strongest calibration-based
-baseline in most shared environments while requiring no calibration
-data. Statistical significance details are in
-Appendix~\ref{app:additional}.
-
-Importantly, EAAG's behavior is \emph{qualitatively different}
-from baselines: it does not simply improve numbers but exhibits
-environment-adaptive gating strategies, as we analyze below.
+\textbf{EAAG Pareto-dominates fixed-direction baselines.}
+Table~\ref{tab:main} reports SR and cost across 8 environments
+(summary in Table~\ref{tab:winloss}). EAAG matches or exceeds
+every fixed-direction baseline in SR while using fewer rollouts;
+the two exceptions occur in ceiling-effect environments where EAAG
+already approaches the oracle. No calibration data is required
+(statistical details in Appendix~\ref{app:additional}). Beyond
+aggregate numbers, EAAG exhibits \emph{qualitatively different}
+gating behavior: its trigger rate, direction, and signal weights
+all adapt to the environment, as we analyze below.
 
 {\color{blue} \textbf{[DATA NEEDED: Table 3 (tab:main).]} Main results table.
 Full method $\times$ environment grid. Rows = methods (base\_only,
@@ -95,24 +89,21 @@ Plot each method as a point. EAAG should be on or near the Pareto frontier.
 Similar to FLARE Figure 3 (performance-budget trade-off curves).}
 
 \paragraph{Cross-environment patterns.}
-The pattern of results aligns with the Two-Source Model's predictions
-along three axes. First, the gap between EAAG and fixed-direction
-baselines is largest where direction mismatch is most severe: in
-Type~I environments, all ``high uncertainty $\to$ trigger'' baselines
-degrade below the no-trigger baseline because the assumed direction
-is wrong, and no amount of calibration rescues them. Second, EAAG's
-advantage is smallest where direction matters least: in
-high-headroom environments where even imprecise gating works, most
-methods approach the oracle. Third, EAAG adapts not only direction
-but \emph{magnitude} of gating to the environment's rollout value
-structure. In rollout-safe environments (TWExpress,
-$\Delta{=}+$31.8\,pp), EAAG learns aggressive triggering
-(RR=73\%). In rollout-harmful environments (Plancraft,
-$\Delta{=}-$7.0\,pp), trigger rate decays over steps
-(49\% at step~0 $\to$ $<$20\% later), becoming increasingly
-conservative as evidence of rollout harm accumulates. This full
-range, from ``always trigger'' to ``almost never trigger,'' emerges
-from direction learning alone without explicit headroom estimation.
+The results align with the Two-Source Model along three axes.
+The gap between EAAG and baselines is largest where direction
+mismatch is most severe: in Type~I environments, all ``high
+uncertainty $\to$ trigger'' baselines fall below the no-trigger
+baseline because the assumed direction is wrong---no amount of
+calibration rescues them. Conversely, EAAG's advantage is smallest
+in high-headroom environments where most methods approach the
+oracle regardless of direction. Most tellingly, EAAG adapts not
+only direction but \emph{gating magnitude}: aggressive triggering
+in rollout-safe environments (TWExpress, RR\,=\,73\%),
+moderate triggering in mixed environments, and step-dependent
+decay in rollout-harmful ones (Plancraft: 49\% at step~0 $\to$
+$<$20\% later). This full behavioral range---from near-always
+to near-never triggering---emerges from direction learning
+alone, without explicit headroom estimation.
 
 
 \subsection{Ablation Studies}
@@ -130,7 +121,7 @@ wrong direction falling \emph{below} the no-trigger baseline. This
 confirms the central prediction of Proposition~\ref{prop:necessity}:
 direction is not a minor calibration detail but the primary
 determinant of gate quality. The magnitude of degradation correlates
-with signal strength (Appendix~\ref{app:proofs}), as the Two-Source
+with signal strength (Appendix~\ref{app:wrong-direction}), as the Two-Source
 Model predicts.
 
 \textbf{LLM reasoning provides robustness, not marginal accuracy.}
@@ -151,23 +142,22 @@ near-zero in Plancraft. No explicit headroom estimation needed.
 Similar to FLARE Figure 2 which shows dynamics across environments.}
 
 \textbf{Gating magnitude emerges from direction learning alone.}
-The learned gate adapts trigger rate across environments without
-explicit headroom estimation: aggressive triggering in rollout-safe
-environments, moderate in mixed environments, and step-dependent
-decay in rollout-harmful ones. These environment-adaptive gating
-patterns arise from simple logistic regression; the LASSO
-coefficients implicitly encode environment-specific triggering
-patterns through the learned signal--utility relationship.
+The gate's trigger rate varies from 73\% (TWExpress) to $<$20\%
+(late-step Plancraft), with step-dependent decay in
+rollout-harmful environments. These patterns are not explicitly
+programmed: they arise from logistic regression over
+LASSO-selected features, whose signed weights implicitly encode
+each environment's signal--utility structure.
 
 
 \subsection{Two-Source Model Verification}
 \label{sec:theory-verification}
 
-The ablations above confirm EAAG's practical advantage; we now test
-whether the \emph{theoretical mechanism}, the Two-Source Model
-(\S\ref{sec:toy-model}), correctly predicts the observed patterns.
-Following \citet{schaeffer2023emergent}, we derive three testable
-predictions from the model and verify each against held-out data:
+The ablations confirm EAAG's practical advantage; we now test
+whether the Two-Source Model (\S\ref{sec:toy-model}) makes correct
+predictions on held-out data. Following
+\citet{schaeffer2023emergent}, we derive three testable predictions
+and verify each:
 \begin{enumerate}[nosep,label=\textbf{P\arabic*:}]
 \item \textbf{Temporal dynamics.} Within the same environment,
   $\rho$ should \emph{decrease} over the episode: early steps mix
@@ -192,7 +182,7 @@ $\rho$ shifts from $+0.102$ (early, non-significant) to $-0.144$
 debugging frustration. In WebShop, the strong positive early-phase
 signal ($\rho{=}{+}0.285$) vanishes in the late phase. The pattern
 is consistent across all environments with sufficient signal (full
-data in Appendix~\ref{app:model}): early steps mix both uncertainty
+data in Appendix~\ref{app:model-derivation}): early steps mix both uncertainty
 sources, while late steps isolate the dominant type.
 
 \paragraph{P2: Cross-environment consistency (confirmed).}
@@ -219,19 +209,20 @@ Two-Source Model.
 As a supplementary test, we manipulate information availability
 within HotpotQA itself (InfoPoor vs.\ InfoRich conditions) and
 confirm that the identity of the most informative signal shifts
-accordingly, supporting Observation~2. Full results are reported in
+accordingly, consistent with the signal-identity finding in
+\S\ref{sec:empirical-landscape}. Full results are reported in
 Appendix~\ref{app:controlled}.
 
 
 \subsection{Robustness of Direction Reversal}
 \label{sec:robustness}
 
-A natural concern is whether the observed direction reversal is a
-genuine phenomenon or an artifact of confounders. We address this
-through three complementary analyses, plus multi-backbone
-verification (Appendix~\ref{app:multi-backbone}) showing that
-direction depends on the \emph{environment $\times$ model}
-interaction, further ruling out model-specific artifacts.
+Is direction reversal a genuine phenomenon or a confounding
+artifact? We rule this out through three analyses, plus
+multi-backbone verification (Appendix~\ref{app:multi-backbone})
+showing that direction depends on the
+\emph{environment~$\times$~model} interaction, not on either
+factor alone.
 
 \paragraph{Stratified analysis: controlling for trajectory length.}
 Trajectory length varies across environments and correlates with both
