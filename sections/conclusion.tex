@@ -2,20 +2,24 @@
 % 7. CONCLUSION
 % ============================================================
 \section{Conclusion}
-
 All existing adaptive gating methods for LLM agents rest on an
 implicit assumption: that uncertainty signals have a fixed
-relationship with compute value. We show that this assumption is
-incorrect. Across eight environments and three model backbones,
-signal--utility direction reverses, and once direction is
-misaligned, improved calibration \emph{worsens} performance by
-more precisely selecting harmful states. A two-source uncertainty
-model grounded in Simpson's paradox explains when and why reversal
-occurs, and a necessity proof establishes that direction discovery
-is required for cross-environment non-negative value of computation.
-EAAG instantiates this principle through exploration, LLM-based
-reasoning, and sparse direction learning, achieving adaptive gating
-with zero additional per-step overhead. Across all evaluated
-settings, EAAG dominates fixed-direction baselines, with the full
-range of gating behavior---from aggressive triggering to near-total
-suppression---emerging from direction learning alone.
+relationship with compute value. We show that this assumption
+reflects a structural limitation: uncertainty signals are not
+sufficient statistics for the value of computation, because their
+meaning depends on a latent state property (information poverty
+vs.\ decision difficulty) that the signal alone cannot identify.
+Across eight environments and three model backbones, signal--utility
+direction reverses; once misaligned, improved calibration
+\emph{worsens} performance by more precisely selecting harmful
+states. A two-source model grounded in Simpson's paradox explains
+when and why reversal occurs, and a necessity proof establishes
+that direction discovery is unavoidable for cross-environment
+robustness. EAAG instantiates this principle with a minimal
+pipeline that collects unbiased data through randomized
+exploration and recovers per-environment direction through sparse
+linear learning, adding zero per-step overhead at deployment.
+Across all evaluated settings, EAAG dominates fixed-direction
+baselines, with the full range of gating behavior, from aggressive
+triggering to near-total suppression, emerging from direction
+learning alone.
