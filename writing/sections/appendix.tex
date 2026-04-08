@@ -3,6 +3,9 @@
 % ============================================================
 \appendix
 
+% ============================================================
+% A. EXTENDED RELATED WORK
+% ============================================================
 \section{Extended Related Work}
 \label{app:related}
 
@@ -14,23 +17,23 @@ single-turn chain-of-thought generation on homogeneous benchmarks
 (MATH, GSM8K, GPQA).
 Signal-based approaches use token-level confidence or entropy to
 decide when to extend
-thinking~\citep{seag2025, cats2025, corefine2026,
+thinking~\cite{seag2025, cats2025, corefine2026,
 thinkjustenough2025, s1_2025, han2025tokenbudget}.
 RL-based methods learn think/no-think policies through reinforcement
-learning~\citep{adaptthink2025, thinkless2025, aggarwal2025l1}.
+learning~\cite{adaptthink2025, thinkless2025, aggarwal2025l1}.
 Hidden-state probing methods train lightweight classifiers on
 internal representations to estimate task
-difficulty~\citep{diffadapt2025, zhu2025llmalreadyknows}.
+difficulty~\cite{diffadapt2025, zhu2025llmalreadyknows}.
 Because reasoning benchmarks share similar task semantics, signal
 direction happens to be consistent across tasks, and the
 fixed-direction assumption is never tested.
 
 In the \emph{agent} setting, methods operate in multi-step
 interactive environments with external optimizers. Vote-based
-methods~\citep{catts2026} sample multiple candidate actions and
+methods~\cite{catts2026} sample multiple candidate actions and
 trigger evaluation when disagreement is high.
 \citet{paglieri2025learning} learn when to invoke a planner at
-the episode level. Agentic RL methods~\citep{arpo2025} use
+the episode level. Agentic RL methods~\cite{arpo2025} use
 entropy-based adaptive rollout at tool-call steps. All agent-setting
 methods inherit the fixed-direction assumption from the reasoning
 literature without verifying it. Our work is the first to
@@ -65,7 +68,7 @@ CoRefine$^\dagger$ & Conv1D confidence & Low conf.\ $\to$ refine
 s1\_budget & Token budget & Fixed budget $\to$ stop
   & Per-problem & Budget-constrained generation \\
 AUQ & Verbalized uncertainty & High uncert.\ $\to$ reflect
-  & Per-step & Uncertainty-aware memory + reflection~\citep{auq2026} \\
+  & Per-step & Uncertainty-aware memory + reflection~\cite{auq2026} \\
 \midrule
 \textbf{EAAG} & \textbf{Multi (auto)} & \textbf{Learned}
   & \textbf{Per-step} & Explore + reason + LASSO direction learning \\
@@ -76,12 +79,12 @@ AUQ & Verbalized uncertainty & High uncert.\ $\to$ reflect
 \subsection{Adaptive Computation in Neural Networks}
 
 The idea of adapting computation to input difficulty predates LLMs.
-Adaptive Computation Time~\citep{graves2016act} allows RNNs to learn
+Adaptive Computation Time~\cite{graves2016act} allows RNNs to learn
 how many computational steps to take per input. Early exit
-methods~\citep{teerapittayanon2016branchynet, elhoushi2024layerskip}
+methods~\cite{teerapittayanon2016branchynet, elhoushi2024layerskip}
 attach classifiers at intermediate transformer layers and exit early
 for easy inputs. Mixture-of-Experts
-architectures~\citep{shazeer2017moe, raposo2024mixtureofdepths}
+architectures~\cite{shazeer2017moe, raposo2024mixtureofdepths}
 activate only a subset of parameters per token, adapting capacity
 rather than depth. These methods adapt computation within a single
 forward pass. Our work operates at a different granularity: we
@@ -90,6 +93,7 @@ and the key challenge is not input difficulty but the
 \emph{direction} of the signal--utility relationship.
 
 \subsection{LLM Confidence Estimation and Calibration}
+\label{app:calibration}
 
 \citet{kadavath2022knowwhat} show that larger models are
 well-calibrated on multiple-choice tasks and can estimate P(True)
@@ -107,7 +111,7 @@ uncertainty--utility relationship reverses entirely.
 
 \subsection{Metareasoning and Value of Computation}
 
-Rational metareasoning~\citep{russell1991right,
+Rational metareasoning~\cite{russell1991right,
 horvitz1987reasoning} formalizes the value of computation (VOC)
 as a guide for allocating cognitive resources. The classical
 framework assumes VOC~$\geq 0$ because an agent can always ignore
@@ -125,11 +129,12 @@ Direction discovery is therefore a necessary precondition for
 non-negative VOC across environments.
 
 \subsection{Simpson's Paradox in Machine Learning}
+\label{app:simpson}
 
-Simpson's paradox~\citep{simpson1951interpretation,
+Simpson's paradox~\cite{simpson1951interpretation,
 DBLP:books/acm/22/Pearl22n} occurs when a trend present in subgroups
 reverses upon aggregation. In machine learning, this phenomenon has
-been documented in fairness~\citep{kdd2023simpson}, causal
+been documented in fairness~\cite{kdd2023simpson}, causal
 inference, and treatment effect estimation. Our Two-Source Model
 identifies a new instance: within Type~I states, entropy negatively
 predicts utility; within Type~D states, entropy positively predicts
@@ -141,14 +146,14 @@ aggregating heterogeneous uncertainty sources.
 \subsection{Concurrent Work Statement}
 
 Several 2025--2026 papers independently explore adaptive compute.
-CATTS~\citep{catts2026} (Feb 2026) and CoRefine~\citep{corefine2026}
+CATTS~\cite{catts2026} (Feb 2026) and CoRefine~\cite{corefine2026}
 (Feb 2026) are concurrent with no methodological overlap.
-AdaptThink~\citep{adaptthink2025} (May 2025) and
-Thinkless~\citep{thinkless2025} (May 2025) predate our work but
-operate in the reasoning setting. DiffAdapt~\citep{diffadapt2025}
+AdaptThink~\cite{adaptthink2025} (May 2025) and
+Thinkless~\cite{thinkless2025} (May 2025) predate our work but
+operate in the reasoning setting. DiffAdapt~\cite{diffadapt2025}
 (Oct 2025) assumes a universal U-shaped entropy pattern that our
 cross-environment evidence disproves.
-AUQ~\citep{auq2026} (Jan 2026) uses verbalized uncertainty for
+AUQ~\cite{auq2026} (Jan 2026) uses verbalized uncertainty for
 agent reflection but assumes fixed direction.
 Our distinct contribution is threefold: first to (a)~demonstrate
 direction reversal across environments and backbones, (b)~formalize
@@ -157,6 +162,386 @@ and (c)~prove that direction discovery is a necessary condition for
 cross-environment non-negative VOC.
 
 
+% ============================================================
+% B. THEORETICAL MATERIAL
+% ============================================================
+\section{Theoretical Material}
+\label{app:theory}
+
+This appendix collects all theoretical material referenced in
+Section~\ref{sec:signal-landscape}: the proof of
+Proposition~\ref{prop:necessity}, the wrong-direction damage
+quantification, the VOC negativity analysis, and the full derivation
+and per-environment mapping of the Two-Source Model.
+
+\subsection{Proof of Proposition~\ref{prop:necessity}
+  (Necessity of Direction Discovery)}
+\label{app:proof-necessity}
+
+\begin{proposition*}[Restated]
+Suppose there exist two environments $\mathcal{E}_1, \mathcal{E}_2$
+with opposite true directions: $d^*(\mathcal{E}_1) = +1$ and
+$d^*(\mathcal{E}_2) = -1$. Then no fixed-direction gate $g_d$ can
+simultaneously satisfy
+$\mathrm{SR}(g_d, \mathcal{E}_1) \geq \mathrm{SR}(\mathrm{base},
+\mathcal{E}_1)$ and
+$\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
+\mathcal{E}_2)$.
+\end{proposition*}
+
+\begin{proof}
+Define a fixed-direction gate as
+$g_d(s) = \mathbf{1}[d \cdot \sigma(s) > \theta]$
+for $d \in \{+1, -1\}$ and threshold $\theta$.
+
+Define $d^*(\mathcal{E}) = +1$ if
+$\mathrm{Corr}(\sigma(s), U(T,s)) > 0$ in $\mathcal{E}$ (Type~D),
+and $d^*(\mathcal{E}) = -1$ if
+$\mathrm{Corr}(\sigma(s), U(T,s)) < 0$ (Type~I).
+
+\textbf{Lemma (Wrong-direction harm).} If $d \neq d^*(\mathcal{E})$,
+then
+$\mathrm{SR}(g_d, \mathcal{E}) \leq
+ \mathrm{SR}(\mathrm{base}, \mathcal{E}) - \delta(\mathcal{E})$
+where $\delta(\mathcal{E}) > 0$ depends on signal strength
+$|\rho(\mathcal{E})|$.
+
+\emph{Proof of Lemma}: By definition of $d^*$, states with high
+$d \cdot \sigma(s)$ are states where $U < 0$. The gate triggers $T$
+at these states, causing the agent to adopt worse actions. The base
+policy, which never triggers $T$, avoids this systematic harm.
+
+\textbf{Main argument:}
+
+\emph{Case 1}: $d = +1$. In $\mathcal{E}_2$ where $d^* = -1$,
+$d \neq d^*(\mathcal{E}_2)$. By Lemma:
+$\mathrm{SR}(g_{+1}, \mathcal{E}_2) \leq
+ \mathrm{SR}(\mathrm{base}, \mathcal{E}_2) - \delta(\mathcal{E}_2)
+ < \mathrm{SR}(\mathrm{base}, \mathcal{E}_2)$.
+Constraint violated.
+
+\emph{Case 2}: $d = -1$. In $\mathcal{E}_1$ where $d^* = +1$,
+by symmetric argument, constraint violated.
+
+Since $d \in \{+1, -1\}$ and both cases lead to violation, no fixed
+$d$ satisfies both constraints simultaneously.
+\end{proof}
+
+\subsection{Wrong-Direction Damage Quantification}
+\label{app:wrong-direction}
+
+The proof above bounds wrong-direction harm by $\delta(\mathcal{E})$
+but does not specify its magnitude. Table~\ref{tab:wrong-direction}
+reports the empirically observed damage from the BSW ablation,
+showing that $\delta(\mathcal{E})$ scales with signal strength
+$|\rho(\mathcal{E})|$.
+
+\begin{table}[h]
+\centering\small
+\caption{Wrong-direction damage scales with signal strength.}
+\label{tab:wrong-direction}
+\begin{tabular}{lcccc}
+\toprule
+Environment & Correct SR & Wrong SR & $\Delta$ SR & $|\rho|$ (strongest) \\
+\midrule
+HotpotQA   & 95.2\% & 58.2\% & $-$37.0 & 0.494 \\
+WebShop    & 43.8\% & 21.4\% & $-$22.4 & 0.444 \\
+FEVER      & 49.8\% & 13.0\% & $-$36.8 & 0.619 \\
+APPS Intro & 66.0\% & 62.5\% & $-$3.5  & 0.155 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Environments with stronger signal--utility coupling ($|\rho|$)
+suffer larger SR degradation when direction is reversed
+($R^2 > 0.5$). On HotpotQA, the MLP gate with wrong direction
+achieves 45.3\%, \emph{below} the 49.0\% base, demonstrating that
+a more powerful gate with wrong direction is \emph{worse} than a
+simpler gate with wrong direction (logistic: 62.0\%), because it
+more precisely targets harmful states.
+
+\subsection{VOC Non-Negativity Scope}
+\label{app:voc}
+
+In the classical VOC framework~\cite{russell1991right},
+$\mathrm{VOC}(T, s) =
+ \mathbb{E}[\max(V(a_T), V(a_{\mathrm{base}}))]
+ - V(a_{\mathrm{base}}) \geq 0$
+because the agent can \emph{disregard} the computation result if
+unfavorable. Our setting violates this: when the agent uses an
+evaluator/optimizer $T$, the evaluator's assessment \emph{is} the
+agent's decision. The agent cannot separately evaluate the
+evaluator's output because the evaluator \emph{is} the evaluation
+mechanism.
+
+Under evaluator-executor identity, VOC can be negative:
+$\mathrm{VOC}(T, s) =
+ \mathbb{E}[V(a_T(s))] - V(a_{\mathrm{base}}(s))$.
+If $T$ systematically selects worse actions in Type~I states,
+$\mathrm{VOC} < 0$ for those states. This explains why
+wrong-direction gating is not merely wasteful
+($\mathrm{VOC} = 0$) but actively harmful
+($\mathrm{VOC} < 0$).
+
+\subsection{Two-Source Model: Full Derivation}
+\label{app:model-derivation}
+
+At each step $t$, state $s_t$ belongs to one of two latent types:
+$s_t \in \text{Type~I}$ with probability $p_I(\mathcal{E})$,
+$s_t \in \text{Type~D}$ with probability $1 - p_I(\mathcal{E})$.
+
+Conditional utility models:
+\begin{align}
+  U(T, s) \mid s \in \text{Type~I} &= -\alpha \cdot H(s) + \varepsilon_I, \quad \alpha > 0 \\
+  U(T, s) \mid s \in \text{Type~D} &= +\beta \cdot H(s) + \varepsilon_D, \quad \beta > 0
+\end{align}
+
+The marginal correlation:
+\begin{align}
+  \mathrm{sign}(\rho(\mathcal{E})) &= \mathrm{sign}(\beta \cdot (1 - p_I) - \alpha \cdot p_I) \\
+  &= \mathrm{sign}(\beta - (\alpha + \beta) \cdot p_I)
+\end{align}
+
+Reversal threshold: $p_I^* = \beta / (\alpha + \beta)$.
+
+\subsection{Per-Environment Type Mapping}
+\label{app:env-mapping}
+
+Table~\ref{tab:env-type-mapping} maps each evaluation environment
+to its dominant uncertainty type, the direction of $\rho$ predicted
+by Eq.~\eqref{eq:direction}, and the observed $\rho$ on Qwen3-4B.
+Multi-backbone $\rho$ values are reported in
+Table~\ref{tab:signal-discovery} of the main text and in
+Appendix~\ref{app:multi-backbone}. The mapping is primarily
+determined by the environment's information structure, but the
+model backbone modulates the effective $p_I$: the same environment
+can shift across the threshold $p_I^*$ depending on which model
+processes it (e.g., FEVER: $\rho{=}{-}0.156$ on Phi-3.5 vs.\
+$\rho{=}{+}0.428$ on Llama-3.1). Structural signals such as
+\texttt{step\_count} are more robust across backbones than entropy,
+which is why EAAG cannot rely on environment-level heuristics
+alone and must discover direction per (environment, backbone)
+pair from interaction data.
+
+\begin{table}[h]
+\caption{Environment-to-type mapping. Predicted $\rho$ direction
+follows from Eq.~\eqref{eq:direction}; observed values are from
+Qwen3-4B.}
+\label{tab:env-type-mapping}
+\centering\small
+\begin{tabular}{llccl}
+\toprule
+Environment & Dominant Type & Pred.\ $\rho$ & Obs.\ $\rho$ & Rationale \\
+\midrule
+HotpotQA       & Type~I (info-poverty) & $-$ & $-0.041$ & Requires retrieving specific evidence \\
+FEVER          & Type~I (info-poverty) & $-$ & $-0.119$ & Depends on finding supporting facts \\
+TWExpress      & Type~I (info-poverty) & $-$ & $-0.290$ & Sparse reward, long info-gathering \\
+\midrule
+APPS Intv.     & Type~D (decision-diff) & $+$ & $+0.317$ & Multiple valid solution strategies \\
+\midrule
+APPS Intro     & Mixed ($p_I \approx p_I^*$) & $\approx 0$ & $+0.012$ & Mix of info-gathering \& code design \\
+WebShop        & Mixed (entropy weak) & $\approx 0$ & $-0.019$ & Choice-dominated but entropy weak \\
+\midrule
+CRUXEval       & Weak signal & $\approx 0$ & $-0.048$ & Short trajectories, little variation \\
+Plancraft      & Weak signal & $\approx 0$ & $-0.016$ & Rollouts harmful; entropy uninformative \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The mapping confirms the model's core prediction: the sign of the
+entropy--utility correlation is determined by which uncertainty
+source dominates, not by properties of the entropy signal itself.
+
+\subsection{Position on the $p_I$ Axis}
+\label{app:pi-axis}
+
+{\color{red} \textbf{[FIGURE NEEDED: Figure A1.]} 1D axis diagram.
+Horizontal axis from $p_I = 0$ (pure Type~D) to $p_I = 1$ (pure Type~I).
+Mark each environment's estimated position with a labeled point.
+Show the reversal threshold $p_I^*$ as a vertical dashed line.
+Left of $p_I^*$: positive $\rho$ (green). Right: negative $\rho$ (red).
+Provides a visual summary of the entire Two-Source Model.}
+
+Estimated positions on the $p_I$ axis (0 = pure Type~D, 1 = pure
+Type~I):
+\begin{itemize}[nosep,leftmargin=*]
+\item $p_I \approx 0.2$: APPS Interview (strong positive $\rho = +0.317$)
+\item $p_I \approx 0.45$: APPS Intro (near-zero $\rho = +0.012$)
+\item $p_I \approx 0.5$: WebShop (entropy $\rho \approx 0$, but non-entropy signals work)
+\item $p_I \approx 0.55$: CRUXEval (weak negative $\rho = -0.048$)
+\item $p_I \approx 0.6$: Plancraft (weak negative, rollouts harmful)
+\item $p_I \approx 0.7$: HotpotQA (negative $\rho = -0.041$)
+\item $p_I \approx 0.8$: TWExpress (negative $\rho = -0.290$)
+\item $p_I \approx 0.9$: FEVER (strong negative $\rho = -0.119$)
+\end{itemize}
+
+
+% ============================================================
+% C. MULTI-BACKBONE VERIFICATION
+% ============================================================
+\section{Multi-Backbone Verification}
+\label{app:multi-backbone}
+
+We validate our core findings on three backbones from three vendors:
+Qwen3-4B-Instruct (Alibaba, 4B), Phi-3.5-mini-instruct (Microsoft,
+3.8B), and Llama-3.1-8B-Instruct (Meta, 8B) across all 8
+environments.
+
+\subsection{Signal Direction: Environment $\times$ Model Interaction}
+
+The multi-backbone results
+(Table~\ref{tab:signal-discovery} in main text) reveal that 4/5
+environments with $\geq$2 significant signals show cross-model
+direction variation. Structural signals (\texttt{step\_count}) are
+model-invariant while entropy signals are model-dependent.
+
+{\color{blue} \textbf{[DATA NEEDED: Table A6.]} Full multi-backbone results.
+8 environments $\times$ 3 backbones $\times$ multiple signals.
+Extends Table 1 in main text with all signal types, not just entropy.
+Shows that step\_count direction is stable while entropy flips.}
+
+\subsection{Fixed-Direction Baselines Fail Across Backbones}
+
+On Phi-3.5 APPS: all 6 CB methods score \emph{below} base\_only
+(59\% $\to$ 27--36\%), demonstrating that fixed-direction assumption
+is catastrophically wrong when the model changes.
+
+{\color{blue} \textbf{[DATA NEEDED: Table A7.]} Cross-backbone baseline results.
+Methods $\times$ environments for Phi-3.5 and Llama-3.1 backbones.
+Shows that the same baselines that work on Qwen3 fail on other backbones,
+while EAAG adapts successfully.}
+
+
+% ============================================================
+% D. SIGNAL AND FEATURE ANALYSES
+% ============================================================
+\section{Signal and Feature Analyses}
+\label{app:signal-analyses}
+
+This appendix collects all empirical analyses of signal identity,
+signal sufficiency, and the Two-Source Model's predictions
+referenced in Section~\ref{sec:empirical-landscape} and
+Section~\ref{sec:theory-verification}. These are diagnostic results
+about \emph{which signals carry information and how}, kept separate
+from the experimental setup details in
+Appendix~\ref{app:experiments}.
+
+\subsection{Per-Environment Feature Selection}
+\label{app:feature-selection}
+
+This subsection expands on the signal-identity finding referenced
+in Section~\ref{sec:empirical-landscape}: that the most informative
+signal varies across environments, with no single feature
+dominating universally.
+
+Sparse feature selection across environments reveals that different
+environments rely on entirely different signal subsets.
+\texttt{step\_count} is informative in 6 of 7 environments where
+any signal is informative, suggesting that trajectory progress is
+a broadly useful proxy for information accumulation. WebShop is
+the notable exception: its dominant signals are
+\texttt{num\_available\_actions} and task-specific features such
+as \texttt{price\_mentioned} and \texttt{action\_is\_click},
+reflecting its choice-dominated structure where decision-space
+size matters more than information accumulation. Token entropy,
+despite being the standard signal in prior adaptive-compute work,
+is selected in fewer than half of environments. No single signal
+is universally informative, motivating the multi-signal design of
+EAAG.
+
+{\color{blue} \textbf{[DATA NEEDED: Table A1.]} Environment $\times$ Feature
+matrix showing LASSO coefficients. Rows = 8 environments.
+Columns = step\_count, token\_entropy, state\_length, action\_entropy,
+num\_available\_actions, has\_output, + LLM-generated features per env.
+Values = LASSO coefficient (0 = not selected, sign = direction).
+This is the detailed version of the heatmap referenced in
+Section~\ref{sec:empirical-landscape}.}
+
+\subsection{LLM-Generated Features}
+\label{app:llm-features}
+
+{\color{blue} \textbf{[DATA NEEDED: Table A2.]} LLM-generated features per
+environment. Columns: Environment, LLM Prompt (abbreviated), Generated
+Features, LASSO Selected (Y/N), Coefficient. Shows the LLM reasoning
+step's concrete output for each environment.}
+
+\subsection{AUC Hierarchy: Single vs.\ Multi-Signal Gates}
+\label{app:auc}
+
+This subsection expands on the claim in
+Section~\ref{sec:empirical-landscape} that even the best single
+signal is insufficient for predicting rollout value. We compare
+three gate families on held-out data across four representative
+environments (HotpotQA, APPS Intro, WebShop, FEVER):
+(i) a single-signal gate using token entropy, (ii) a multi-signal
+logistic gate over the LASSO-selected feature set, and
+(iii) a hidden-state probe trained on the model's final-layer
+representations.
+
+A clear hierarchy emerges. Single token entropy achieves
+AUC${\approx}$0.50, indistinguishable from chance, confirming that
+no single scalar reliably predicts $U(T,s)$. Multi-signal logistic
+gates reach AUC${\approx}$0.83, a substantial jump achieved purely
+by combining cheap, interpretable features. Hidden-state probes
+push this further to AUC${\approx}$0.90, but at the cost of opacity
+and per-step inference overhead. The 0.50~$\to$~0.83 gap is the
+relevant one for our method design: it shows that the bottleneck
+is signal \emph{combination}, not gate \emph{capacity}, which is
+why EAAG invests its complexity in feature discovery rather than
+in a deeper gate architecture (cf.\ the gate-complexity ablation
+in Table~\ref{tab:complexity-ablation}).
+
+{\color{blue} \textbf{[DATA NEEDED: Table A0.]} AUC table.
+Rows = 4 environments (HotpotQA, APPS Intro, WebShop, FEVER).
+Columns = single-entropy AUC, multi-signal logistic AUC,
+hidden-state probe AUC.}
+
+\subsection{Temporal Dynamics (Prediction P1)}
+\label{app:temporal}
+
+{\color{blue} \textbf{[DATA NEEDED: Table A4.]} P1 Temporal Dynamics full data.
+Columns: Environment, $\rho_{\text{early}}$ (step $\leq$ median),
+$\rho_{\text{late}}$ (step $>$ median), $p_{\text{early}}$,
+$p_{\text{late}}$. All 8 environments. Shows the temporal shift
+pattern for each.}
+
+\subsection{Signal Identity Alignment (Prediction P3)}
+\label{app:signal-alignment}
+
+{\color{blue} \textbf{[DATA NEEDED: Table A5.]} P3 Signal Identity Alignment.
+Columns: Environment, Dominant Type, Strongest Signal, $|\rho|$,
+Signal Interpretation. Shows what each environment's strongest
+signal measures and how it aligns with the predicted type.}
+
+\subsection{Controlled Information Manipulation}
+\label{app:controlled}
+
+To provide stronger evidence that information structure drives
+signal semantics, we manipulate information availability within
+HotpotQA itself. \emph{InfoPoor} (search returns only the first
+sentence) reduces base SR to 44.0\% while \emph{InfoRich} (gold
+evidence injected at start) raises it to 82.0\%. The signal
+hierarchy shifts: in InfoPoor, \texttt{step\_count} dominates
+($\rho{=}{-}0.608$) while entropy carries a weak positive signal
+($\rho{=}{+}0.119$, $n{=}317$; the Two-Source Model predicts
+entropy should be negative in info-poor settings, but the small
+sample and mixed early-step Type~D component may explain the
+weakly positive sign; the key finding is that \texttt{step\_count}
+overtakes entropy as the dominant signal); in InfoRich, entropy
+becomes the dominant positive signal ($\rho{=}{+}0.311$) while
+\texttt{step\_count} weakens ($\rho{=}{-}0.147$). This
+demonstrates that the \emph{identity} of the most informative
+signal, not just its direction, is a function of the environment's
+information structure.
+
+{\color{blue} \textbf{[DATA NEEDED: Table A9.]} InfoPoor vs InfoRich
+full signal correlation table for all features. Columns: Condition,
+Base SR, $\rho$ for each feature, strongest signal.}
+
+
+% ============================================================
+% E. EXPERIMENTAL DETAILS
+% ============================================================
 \section{Experimental Details}
 \label{app:experiments}
 
@@ -195,21 +580,6 @@ CoRefine: entropy threshold calibrated on Phase~1.
 CATTS: $K{=}5$ votes, entropy threshold = 0.8, margin threshold = 0.2.
 BSW: EAAG with intentionally reversed direction (sign flip).
 
-\subsection{Feature Selection Details}
-\label{app:features}
-
-{\color{blue} \textbf{[DATA NEEDED: Table A1.]} Environment $\times$ Feature
-matrix showing LASSO coefficients. Rows = 8 environments.
-Columns = step\_count, token\_entropy, state\_length, action\_entropy,
-num\_available\_actions, has\_output, + LLM-generated features per env.
-Values = LASSO coefficient (0 = not selected, sign = direction).
-This is the detailed version of Figure 2 in the main text.}
-
-{\color{blue} \textbf{[DATA NEEDED: Table A2.]} LLM-generated features per
-environment. Columns: Environment, LLM Prompt (abbreviated), Generated
-Features, LASSO Selected (Y/N), Coefficient. Shows the LLM reasoning
-step's concrete output for each environment.}
-
 \subsection{Computational Cost Breakdown}
 
 {\color{blue} \textbf{[DATA NEEDED: Table A3.]} Method $\times$ Cost component.
@@ -219,194 +589,9 @@ Shows EAAG's cost advantage: 50 exploration episodes, $\sim$2 GPU-hrs,
 0ms gate overhead, $<$1s training.}
 
 
-\section{Proofs}
-\label{app:proofs}
-
-\subsection{Proof of Proposition~\ref{prop:necessity}
-  (Necessity of Direction Discovery)}
-
-\begin{proposition*}[Restated]
-Suppose there exist two environments $\mathcal{E}_1, \mathcal{E}_2$
-with opposite true directions: $d^*(\mathcal{E}_1) = +1$ and
-$d^*(\mathcal{E}_2) = -1$. Then no fixed-direction gate $g_d$ can
-simultaneously satisfy
-$\mathrm{SR}(g_d, \mathcal{E}_1) \geq \mathrm{SR}(\mathrm{base},
-\mathcal{E}_1)$ and
-$\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
-\mathcal{E}_2)$.
-\end{proposition*}
-
-\begin{proof}
-Define a fixed-direction gate as $g_d(s) = \mathbf{1}[d \cdot \sigma(s) > \theta]$
-for $d \in \{+1, -1\}$ and threshold $\theta$.
-
-Define $d^*(\mathcal{E}) = +1$ if $\mathrm{Corr}(\sigma(s), U(T,s)) > 0$
-in $\mathcal{E}$ (Type~D), and $d^*(\mathcal{E}) = -1$ if
-$\mathrm{Corr}(\sigma(s), U(T,s)) < 0$ (Type~I).
-
-\textbf{Lemma (Wrong-direction harm).} If $d \neq d^*(\mathcal{E})$, then
-$\mathrm{SR}(g_d, \mathcal{E}) \leq \mathrm{SR}(\mathrm{base}, \mathcal{E}) - \delta(\mathcal{E})$
-where $\delta(\mathcal{E}) > 0$ depends on signal strength $|\rho(\mathcal{E})|$.
-
-\emph{Proof of Lemma}: By definition of $d^*$, states with high
-$d \cdot \sigma(s)$ are states where $U < 0$. The gate triggers $T$
-at these states, causing the agent to adopt worse actions. The base
-policy, which never triggers $T$, avoids this systematic harm.
-
-\textbf{Main argument:}
-
-\emph{Case 1}: $d = +1$. In $\mathcal{E}_2$ where $d^* = -1$,
-$d \neq d^*(\mathcal{E}_2)$. By Lemma:
-$\mathrm{SR}(g_{+1}, \mathcal{E}_2) \leq \mathrm{SR}(\mathrm{base}, \mathcal{E}_2) - \delta(\mathcal{E}_2)
-< \mathrm{SR}(\mathrm{base}, \mathcal{E}_2)$.
-Constraint violated.
-
-\emph{Case 2}: $d = -1$. In $\mathcal{E}_1$ where $d^* = +1$,
-by symmetric argument, constraint violated.
-
-Since $d \in \{+1, -1\}$ and both cases lead to violation, no fixed
-$d$ satisfies both constraints simultaneously.
-
-\textbf{Empirical grounding:}
-$\delta(\text{HotpotQA}) \approx 37.0$\,pp (BSW ablation),
-$\delta(\text{WebShop}) \approx 23.2$\,pp,
-$\delta(\text{FEVER}) \approx 36.8$\,pp.
-MLP with wrong direction: 45.3\% $<$ base 49.0\% on HotpotQA.
-\end{proof}
-
-\subsection{Wrong-Direction Damage Quantification}
-
-\begin{table}[h]
-\centering\small
-\caption{Wrong-direction damage scales with signal strength.}
-\begin{tabular}{lcccc}
-\toprule
-Environment & Correct SR & Wrong SR & $\Delta$ SR & $|\rho|$ (strongest) \\
-\midrule
-HotpotQA   & 95.2\% & 58.2\% & $-$37.0 & 0.494 \\
-WebShop    & 43.8\% & 21.4\% & $-$22.4 & 0.444 \\
-FEVER      & 49.8\% & 13.0\% & $-$36.8 & 0.619 \\
-APPS Intro & 66.0\% & 62.5\% & $-$3.5  & 0.155 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The damage magnitude scales with signal strength: environments with
-stronger signal--utility coupling ($|\rho|$) suffer larger SR degradation
-when direction is reversed ($R^2 > 0.5$). On HotpotQA, the MLP gate
-with wrong direction achieves 45.3\%, \emph{below} the 49.0\% base,
-demonstrating that a more powerful gate with wrong direction is
-\emph{worse} than a simpler gate with wrong direction (logistic: 62.0\%),
-because it more precisely targets harmful states.
-
-\subsection{VOC Non-Negativity Scope}
-
-In the classical VOC framework~\citep{russell1991right},
-$\mathrm{VOC}(T, s) = \mathbb{E}[\max(V(a_T), V(a_{\mathrm{base}}))] - V(a_{\mathrm{base}}) \geq 0$
-because the agent can \emph{disregard} the computation result if
-unfavorable. Our setting violates this: when the agent uses an
-evaluator/optimizer $T$, the evaluator's assessment \emph{is} the
-agent's decision. The agent cannot separately evaluate the
-evaluator's output because the evaluator \emph{is} the evaluation
-mechanism.
-
-Under evaluator-executor identity, VOC can be negative:
-$\mathrm{VOC}(T, s) = \mathbb{E}[V(a_T(s))] - V(a_{\mathrm{base}}(s))$.
-If $T$ systematically selects worse actions in Type~I states,
-$\mathrm{VOC} < 0$ for those states. This explains why wrong-direction
-gating is not merely wasteful ($\mathrm{VOC} = 0$) but actively
-harmful ($\mathrm{VOC} < 0$).
-
-
-\section{Two-Source Model: Full Derivation and Verification}
-\label{app:model}
-
-\subsection{Full Derivation}
-
-At each step $t$, state $s_t$ belongs to one of two latent types:
-$s_t \in \text{Type~I}$ with probability $p_I(\mathcal{E})$,
-$s_t \in \text{Type~D}$ with probability $1 - p_I(\mathcal{E})$.
-
-Conditional utility models:
-\begin{align}
-  U(T, s) \mid s \in \text{Type~I} &= -\alpha \cdot H(s) + \varepsilon_I, \quad \alpha > 0 \\
-  U(T, s) \mid s \in \text{Type~D} &= +\beta \cdot H(s) + \varepsilon_D, \quad \beta > 0
-\end{align}
-
-The marginal correlation:
-\begin{align}
-  \mathrm{sign}(\rho(\mathcal{E})) &= \mathrm{sign}(\beta \cdot (1 - p_I) - \alpha \cdot p_I) \\
-  &= \mathrm{sign}(\beta - (\alpha + \beta) \cdot p_I)
-\end{align}
-
-Reversal threshold: $p_I^* = \beta / (\alpha + \beta)$.
-
-\subsection{Environment Mapping on the $p_I$ Axis}
-
-{\color{red} \textbf{[FIGURE NEEDED: Figure A1.]} 1D axis diagram.
-Horizontal axis from $p_I = 0$ (pure Type~D) to $p_I = 1$ (pure Type~I).
-Mark each environment's estimated position with a labeled point.
-Show the reversal threshold $p_I^*$ as a vertical dashed line.
-Left of $p_I^*$: positive $\rho$ (green). Right: negative $\rho$ (red).
-Provides a visual summary of the entire Two-Source Model.}
-
-Estimated positions on the $p_I$ axis (0 = pure Type~D, 1 = pure Type~I):
-\begin{itemize}[nosep,leftmargin=*]
-\item $p_I \approx 0.2$: APPS Interview (strong positive $\rho = +0.317$)
-\item $p_I \approx 0.45$: APPS Intro (near-zero $\rho = +0.012$)
-\item $p_I \approx 0.5$: WebShop (entropy $\rho \approx 0$, but non-entropy signals work)
-\item $p_I \approx 0.55$: CRUXEval (weak negative $\rho = -0.048$)
-\item $p_I \approx 0.6$: Plancraft (weak negative, rollouts harmful)
-\item $p_I \approx 0.7$: HotpotQA (negative $\rho = -0.041$)
-\item $p_I \approx 0.8$: TWExpress (negative $\rho = -0.290$)
-\item $p_I \approx 0.9$: FEVER (strong negative $\rho = -0.119$)
-\end{itemize}
-
-\subsection{Prediction Verification: Full Data}
-
-{\color{blue} \textbf{[DATA NEEDED: Table A4.]} P1 Temporal Dynamics full data.
-Columns: Environment, $\rho_{\text{early}}$ (step $\leq$ median),
-$\rho_{\text{late}}$ (step $>$ median), $p_{\text{early}}$, $p_{\text{late}}$.
-All 8 environments. Shows the temporal shift pattern for each.}
-
-{\color{blue} \textbf{[DATA NEEDED: Table A5.]} P3 Signal Identity Alignment.
-Columns: Environment, Dominant Type, Strongest Signal, $|\rho|$,
-Signal Interpretation. Shows what each environment's strongest
-signal measures and how it aligns with the predicted type.}
-
-
-\section{Multi-Backbone Verification}
-\label{app:multi-backbone}
-
-We validate our core findings on three backbones from three vendors:
-Qwen3-4B-Instruct (Alibaba, 4B), Phi-3.5-mini-instruct (Microsoft, 3.8B),
-and Llama-3.1-8B-Instruct (Meta, 8B) across all 8 environments.
-
-\subsection{Signal Direction: Environment $\times$ Model Interaction}
-
-The multi-backbone results (Table~\ref{tab:signal-discovery} in main text)
-reveal that 4/5 environments with $\geq$2 significant signals show
-cross-model direction variation. Structural signals
-(\texttt{step\_count}) are model-invariant while entropy signals are
-model-dependent.
-
-{\color{blue} \textbf{[DATA NEEDED: Table A6.]} Full multi-backbone results.
-8 environments $\times$ 3 backbones $\times$ multiple signals.
-Extends Table 1 in main text with all signal types, not just entropy.
-Shows that step\_count direction is stable while entropy flips.}
-
-\subsection{Fixed-Direction Baselines Fail Across Backbones}
-
-On Phi-3.5 APPS: all 6 CB methods score \emph{below} base\_only
-(59\% $\to$ 27--36\%), demonstrating that fixed-direction assumption
-is catastrophically wrong when the model changes.
-
-{\color{blue} \textbf{[DATA NEEDED: Table A7.]} Cross-backbone baseline results.
-Methods $\times$ environments for Phi-3.5 and Llama-3.1 backbones.
-Shows that the same baselines that work on Qwen3 fail on other backbones,
-while EAAG adapts successfully.}
-
-
+% ============================================================
+% F. ADDITIONAL ANALYSES
+% ============================================================
 \section{Additional Analyses}
 \label{app:additional}
 
@@ -416,8 +601,7 @@ while EAAG adapts successfully.}
 (a) SR vs $N_{\text{explore}} \in \{10, 20, 30, 50, 100\}$ for 4 environments.
 Shows stability for $N_{\text{explore}} \geq 30$.
 (b) SR vs gate threshold $\tau \in \{0.3, 0.4, 0.5, 0.6, 0.7\}$.
-Shows robustness across threshold range.
-Similar to standard ablation sensitivity plots in NeurIPS papers.}
+Shows robustness across threshold range.}
 
 EAAG is robust to $N_{\text{explore}} \in [30, 100]$ (stable SR for
 $N_{\text{explore}} \geq 30$; marginal gains above 50) and gate
@@ -425,39 +609,15 @@ threshold $\tau \in [0.3, 0.7]$.
 
 \subsection{Statistical Significance}
 
-All head-to-head comparisons use 3-seed evaluation (200 episodes/seed).
-Bootstrap confidence intervals (5000 resamples) are reported for all
-comparisons. 18 of 34 wins are statistically significant (95\% CI
-excludes zero). Pareto-dominance claims use a conservative criterion
-that does not rely on p-values.
+All head-to-head comparisons use 3-seed evaluation
+(200 episodes/seed). Bootstrap confidence intervals (5000 resamples)
+are reported for all comparisons. 18 of 34 wins are statistically
+significant (95\% CI excludes zero). Pareto-dominance claims use a
+conservative criterion that does not rely on p-values.
 
 {\color{blue} \textbf{[DATA NEEDED: Table A8.]} Full statistical significance table.
 For each method $\times$ environment pair: $\Delta$SR, 95\% bootstrap CI,
 significant (Y/N). 48 cells total (6 baselines $\times$ 8 environments).}
-
-\subsection{Controlled Information Manipulation: Full Results}
-\label{app:controlled}
-
-To provide stronger evidence that information structure drives signal
-semantics, we manipulate information availability within HotpotQA
-itself. \emph{InfoPoor} (search returns only the first sentence)
-reduces base SR to 44.0\% while \emph{InfoRich} (gold evidence
-injected at start) raises it to 82.0\%. The signal hierarchy shifts:
-in InfoPoor, \texttt{step\_count} dominates ($\rho{=}{-}0.608$) while
-entropy carries a weak positive signal ($\rho{=}{+}0.119$,
-$n{=}317$; note that the Two-Source Model predicts entropy should be
-negative in info-poor settings, but the small sample and mixed
-early-step Type~D component may explain the weakly positive sign;
-the key finding is that \texttt{step\_count} overtakes entropy as the
-dominant signal); in InfoRich, entropy becomes the dominant positive
-signal ($\rho{=}{+}0.311$) while \texttt{step\_count} weakens
-($\rho{=}{-}0.147$). This demonstrates that the \emph{identity} of
-the most informative signal, not just its direction, is a function
-of the environment's information structure, supporting Observation~2.
-
-{\color{blue} \textbf{[DATA NEEDED: Table A9.]} InfoPoor vs InfoRich
-full signal correlation table for all features. Columns: Condition,
-Base SR, $\rho$ for each feature, strongest signal.}
 
 \subsection{LLM Reasoning Prompts and Outputs}
 \label{app:llm-prompts}
@@ -471,14 +631,18 @@ Use WebShop as the example (most interesting LLM contribution).
 This is important for reproducibility (NeurIPS checklist item).}
 
 
+% ============================================================
+% G. BROADER IMPACT
+% ============================================================
 \section{Broader Impact}
 \label{app:impact}
 
-This work addresses computational efficiency in LLM agent deployment.
-By reducing unnecessary optimizer invocations, EAAG lowers the energy
-and cost footprint of test-time compute without sacrificing task
-performance. The prescriptive framework (characterize information
-structure before designing gates) may help practitioners avoid
-deploying fixed-direction methods that actively harm performance in
-mismatched environments. We do not foresee direct negative societal
-impacts beyond those inherent to the LLM agents themselves.
+This work addresses computational efficiency in LLM agent
+deployment. By reducing unnecessary optimizer invocations, EAAG
+lowers the energy and cost footprint of test-time compute without
+sacrificing task performance. The prescriptive framework
+(characterize information structure before designing gates) may
+help practitioners avoid deploying fixed-direction methods that
+actively harm performance in mismatched environments. We do not
+foresee direct negative societal impacts beyond those inherent to
+the LLM agents themselves.
