@@ -2,11 +2,14 @@
 % 7. CONCLUSION
 % ============================================================
 \section{Conclusion}
-
 All existing adaptive gating methods for LLM agents rest on an
 implicit assumption: that uncertainty signals have a fixed
 relationship with compute value. We show that this assumption
+<<<<<<< HEAD
 reflects a structural limitation---uncertainty signals are not
+=======
+reflects a structural limitation: uncertainty signals are not
+>>>>>>> cc1bc6e4f1be11f03658207b43893225ca507faf
 sufficient statistics for the value of computation, because their
 meaning depends on a latent state property (information poverty
 vs.\ decision difficulty) that the signal alone cannot identify.
@@ -16,9 +19,20 @@ direction reverses; once misaligned, improved calibration
 states. A two-source model grounded in Simpson's paradox explains
 when and why reversal occurs, and a necessity proof establishes
 that direction discovery is unavoidable for cross-environment
+<<<<<<< HEAD
 robustness. EAAG instantiates this principle through exploration,
 LLM-based reasoning, and sparse direction learning, with zero
 additional per-step overhead. Across all evaluated settings,
 EAAG dominates fixed-direction baselines, with the full range of
 gating behavior---from aggressive triggering to near-total
 suppression---emerging from direction learning alone.
+=======
+robustness. EAAG instantiates this principle with a minimal
+pipeline that collects unbiased data through randomized
+exploration and recovers per-environment direction through sparse
+linear learning, adding zero per-step overhead at deployment.
+Across all evaluated settings, EAAG dominates fixed-direction
+baselines, with the full range of gating behavior, from aggressive
+triggering to near-total suppression, emerging from direction
+learning alone.
+>>>>>>> cc1bc6e4f1be11f03658207b43893225ca507faf

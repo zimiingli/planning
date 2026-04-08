@@ -10,18 +10,18 @@ confidence, entropy, or disagreement, under the assumption that
 higher uncertainty indicates greater need for compute. In the
 reasoning setting, signal-based methods extend chain-of-thought
 generation when token confidence or entropy exceeds a
-threshold~\citep{seag2025, cats2025, corefine2026, thinkjustenough2025,
+threshold~\cite{seag2025, cats2025, corefine2026, thinkjustenough2025,
 s1_2025, han2025tokenbudget}. In the agent setting, vote-based
-methods~\citep{catts2026} sample multiple candidate actions and
+methods~\cite{catts2026} sample multiple candidate actions and
 invoke an arbiter when they disagree, while verbalized uncertainty
-methods~\citep{auq2026} prompt the agent to reflect when its
+methods~\cite{auq2026} prompt the agent to reflect when its
 self-reported confidence is low.
 
 \paragraph{Gating on learned difficulty.}
 A second line learns to predict task difficulty and allocate compute
-accordingly. Hidden-state probes~\citep{diffadapt2025,
+accordingly. Hidden-state probes~\cite{diffadapt2025,
 zhu2025llmalreadyknows} estimate difficulty from internal
-representations, and RL-based methods~\citep{adaptthink2025,
+representations, and RL-based methods~\cite{adaptthink2025,
 thinkless2025, aggarwal2025l1, paglieri2025learning} learn
 think/no-think policies end-to-end. Though these methods do not
 commit to a specific signal, their gating policies effectively
@@ -37,24 +37,24 @@ directly addressed; we show it does not
 Appendix~\ref{app:related}.
 
 \paragraph{Orthogonal: search-based optimizers.}
-Search methods such as Tree of Thoughts~\citep{yao2023tree},
-LATS~\citep{zhou2024lats}, RAP~\citep{hao2023reasoning}, and
-FLARE~\citep{wang2026flare} improve \emph{what} the optimizer does
+Search methods such as Tree of Thoughts~\cite{yao2023tree},
+LATS~\cite{zhou2024lats}, RAP~\cite{hao2023reasoning}, and
+FLARE~\cite{wang2026flare} improve \emph{what} the optimizer does
 through tree search, value propagation, and lookahead evaluation.
 These are orthogonal to our work: we control \emph{when} to invoke
 the optimizer, and our gate composes with any such procedure.
 
 \paragraph{Metareasoning and uncertainty semantics.}
-Rational metareasoning~\citep{russell1991right,
+Rational metareasoning~\cite{russell1991right,
 desabbata2024metareasoning} formalizes the value of computation
 (VOC), classically assuming $\text{VOC} \geq 0$ since an agent can
 disregard unfavorable computations. We show that this assumption
 fails in the agent setting, where the same model both proposes and
 evaluates actions: under this evaluator--executor identity, VOC can
 be \emph{negative}, making direction discovery necessary.
-\citet{tao2025revisiting} and \citet{heo2025llmuncertainty} find
+\cite{tao2025revisiting} and \cite{heo2025llmuncertainty} find
 that calibration quality varies across task types, and
-\citet{yadkori2024believe} decouple epistemic and aleatoric
+\cite{yadkori2024believe} decouple epistemic and aleatoric
 uncertainty---providing converging evidence that uncertainty
 semantics are domain-dependent, though they stop short of
 documenting direction reversal. Our two-source model formalizes
@@ -62,9 +62,9 @@ this domain dependence (\S\ref{sec:toy-model}), and our reversal
 results make it actionable.
 
 % \paragraph{Complementary axes.}
-% Test-time scaling~\citep{snell2024scaling} asks \emph{how much}
+% Test-time scaling~\cite{snell2024scaling} asks \emph{how much}
 % compute to allocate given a fixed signal; search methods such as
-% Tree of Thoughts~\citep{yao2023tree}, LATS~\citep{zhou2024lats},
-% RAP~\citep{hao2023reasoning}, and FLARE~\citep{wang2026flare} improve
+% Tree of Thoughts~\cite{yao2023tree}, LATS~\cite{zhou2024lats},
+% RAP~\cite{hao2023reasoning}, and FLARE~\cite{wang2026flare} improve
 % \emph{what} the optimizer does. We control \emph{when} to invoke it
 % and compose with any such optimizer.

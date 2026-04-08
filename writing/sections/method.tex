@@ -4,36 +4,37 @@
 \section{Method: Environment-Aware Adaptive Gating}
 \label{sec:method}
 
+<<<<<<< HEAD
 Proposition~\ref{prop:necessity} establishes that direction
 discovery is necessary for cross-environment robustness; no
 existing method performs it (Table~\ref{tab:classification}).
 EAAG (Environment-Aware Adaptive Gating) closes this gap by
 learning both signal identity and direction from online
 interaction data.
+=======
+Section~\ref{sec:signal-landscape} imposes three requirements on
+any gating method that aims for cross-environment robustness.
+(i) Signal direction must be \emph{learned} per environment,
+since Proposition~\ref{prop:necessity} rules out any fixed
+choice. (ii) The feature set must be \emph{multi-signal}, since
+no single signal is reliably informative across environments
+(\S\ref{sec:empirical-landscape}). (iii) Exploration must be
+\emph{signal-agnostic}, since conditioning on a signal whose
+semantics are unknown would bias the collected data in a
+direction that depends on the answer.
+>>>>>>> cc1bc6e4f1be11f03658207b43893225ca507faf
 
-\begin{table}[t]
-\caption{Method classification by adaptive compute components. All
-prior methods share \{Single signal, Fixed direction, Problem-level\}.
-EAAG is the only method with \{Multi-signal, Learned direction,
-Step-level, Environment-aware\}.}
-\label{tab:classification}
-\centering\small
-\begin{tabular}{lcccc}
-\toprule
-Method & Signal & Direction & Granularity & Env-Aware \\
-\midrule
-CaTS$^\dagger$     & Single & Fixed & Problem & \xmark \\
-SEAG$^\dagger$     & Single & Fixed & Problem & \xmark \\
-CoRefine$^\dagger$ & Single & Fixed & Problem & \xmark \\
-CATTS              & Single & Fixed & Problem & \xmark \\
-AUQ                & Single & Fixed & Problem & \xmark \\
-\midrule
-\textbf{EAAG}      & \textbf{Multi (auto)} & \textbf{Learned}
-                    & \textbf{Step} & \cmark \\
-\bottomrule
-\end{tabular}
-\end{table}
+EAAG is a deliberately minimal instantiation of these
+requirements. Its contribution is not a new gate architecture
+but a pipeline that reduces the adaptive-gating problem to a
+form where a standard sparse linear model suffices: randomized
+exploration (\S\ref{sec:explore}) handles the unknown prior
+direction, an optional LLM feature layer (\S\ref{sec:reason})
+proposes task-specific signals when universal ones are
+inadequate, and a sparse linear gate (\S\ref{sec:learn})
+recovers per-environment direction from the resulting dataset.
 
+<<<<<<< HEAD
 \paragraph{Design rationale.}
 The bottleneck in adaptive gating is direction, not model capacity
 (\S\ref{sec:ablation}, Table~\ref{tab:capacity}): an MLP with the
@@ -52,57 +53,136 @@ Show arrows from \S3 findings (direction reversal, signal identity, necessity)
 to each design choice.
 Similar to FLARE's method section which has equations inline but
 a clear conceptual flow. Consider a horizontal pipeline diagram.}
+=======
+\paragraph{Why a minimal gate suffices.}
+The real difficulty identified in Section~\ref{sec:signal-landscape}
+is identifying signal direction per environment, not
+classification capacity. Once exploration and feature selection
+have produced unbiased $(s, U)$ data and a usable feature pool,
+the remaining task is well-posed for a standard sparse linear
+model. On HotpotQA (Table~\ref{tab:capacity}), a logistic gate,
+an MLP, and a $2560$-dimensional hidden-state probe all reach
+$\sim$$95\%$ SR \emph{with the correct direction}; under a
+reversed direction, the MLP falls \emph{below} the no-trigger
+baseline because a more expressive gate more precisely targets
+harmful states. In the environments we study, the marginal
+return on gate complexity is small compared to the return on
+getting direction right, so we invest complexity in exploration
+and feature selection and keep the deployed gate minimal.
 
-EAAG operates in three phases (Figure~\ref{fig:method}):
-exploration, reasoning, and learning.
+{\color{red} \textbf{[FIGURE NEEDED: Figure 4.]} EAAG pipeline
+diagram: Explore $\to$ Reason (optional) $\to$ Learn, with
+arrows from requirements (i), (ii), (iii) to the corresponding
+stages.}
+>>>>>>> cc1bc6e4f1be11f03658207b43893225ca507faf
 
-\subsection{Exploration}
+\subsection{Explore: Signal-Agnostic Data Collection}
+\label{sec:explore}
 
-The agent explores a new environment with $N_{\text{explore}} = 50$
-episodes using randomized gating ($\varepsilon = 0.5$): at each step,
-the optimizer $T$ is invoked with probability 0.5 regardless of state.
-This produces a dataset $\mathcal{D} = \{(s_t^{(i)},\; U_t^{(i)})\}$
-of state--utility pairs. The randomized design ensures unbiased
-estimation of $U$ across the full signal range, a requirement that
-targeted exploration would violate by conditioning on the signal
-whose semantics are unknown.
+Exploration collects the $(s, U)$ pairs that will be used to fit
+the gate. The central constraint is requirement (iii): the
+collection policy must not condition on any signal whose
+semantics we are trying to learn. Any signal-dependent
+alternative, such as uncertainty sampling, would have to
+condition on a signal whose relationship to $U$ is exactly what
+\S\ref{sec:empirical-landscape} showed to be unknown, biasing
+$\mathcal{D}$ in a direction that depends on the quantity being
+estimated. Warm-starting from prior-method data inherits the
+same circularity.
 
-\subsection{Feature Generation}
+EAAG therefore uses the simplest policy consistent with this
+constraint: at each step, the optimizer $T$ is invoked with
+probability $\varepsilon_{\text{explore}} = 0.5$ independently
+of state, yielding an unbiased dataset
+$\mathcal{D} = \{(s_t^{(i)}, U_t^{(i)})\}$ over
+$N_{\text{explore}} = 50$ episodes.
 
-An LLM analyzes $\mathcal{D}$ to identify patterns distinguishing
-useful from wasteful rollouts. It produces an \emph{environment
-profile} describing the task structure and \emph{feature hypotheses}
-proposing task-specific signals to extract. For example, in WebShop
-the LLM identifies that rollouts help during product comparison but
-not during search, proposing features such as
-\texttt{price\_mentioned} and \texttt{action\_is\_click}. These
-complement a set of universal features (step count, token entropy,
-state length) available across all environments. The LLM's primary
-value is generalizability: it enables zero-shot feature generation
-for unseen environments where task-specific signals cannot be
-anticipated by universal features alone.
+\subsection{Reason: LLM Feature Layer}
+\label{sec:reason}
 
-\subsection{Sparse Direction Learning}
+The next step builds the feature pool $\phi_{\text{cand}}(s)$
+that the gate will be fit over. Requirement (ii) demands that
+this pool be rich enough to include each environment's relevant
+signals, but not so environment-specific that deployment
+requires manual engineering per task.
 
-LASSO selects the most relevant features from the union of universal
-and LLM-generated candidates, then trains a logistic regression gate:
+EAAG's default is a fixed set of universal features (step count,
+token entropy, state length, action entropy, and standard
+structural signals), available in every environment without
+task-specific engineering. In the environments we study, this
+pool alone is sufficient to recover a gate that outperforms all
+fixed-direction baselines (\S\ref{sec:ablation}).
+
+For environments where universal features may be inadequate,
+such as WebShop, whose gating benefits from task-specific
+signals like \texttt{num\_available\_actions}, EAAG offers an
+\emph{optional} automation layer: an LLM is given a summary of
+$\mathcal{D}$ and proposes task-specific feature hypotheses,
+which join the universal pool to form $\phi_{\text{cand}}(s)$.
+The ablation in \S\ref{sec:ablation} shows its gains concentrate
+in the few settings where universal features miss the relevant
+structure, so the LLM is best viewed as an automation
+convenience for zero-shot deployment rather than a core
+component the method depends on.
+
+\subsection{Learn: Sparse Linear Gate}
+\label{sec:learn}
+
+EAAG fits a standard $\ell_1$-regularized logistic regression
+on $\mathcal{D}$:
 \begin{equation}
   g(s) = \mathbf{1}\!\left[\sigma(\mathbf{w}^\top \phi(s) + b)
-  > \tau\right]
+  > \tau\right],
   \label{eq:gate}
 \end{equation}
-where $\phi(s)$ is the selected feature vector and $\mathbf{w}$
-encodes both direction (sign) and importance (magnitude) for each
-signal. The sign of each $w_i$ directly implements direction
-discovery: $w_i > 0$ triggers on high signal values (Type~D
-semantics), $w_i < 0$ triggers on low values (Type~I semantics), and
-$w_i = 0$ indicates an uninformative signal (LASSO selection).
-Training completes in ${<}1$\,s on CPU. At deployment, the gate
-adds zero per-step cost.
+with sparsity induced over $\phi_{\text{cand}}$ so that
+uninformative features drop out. Gate fitting completes in
+under a second, and deployment adds zero per-step overhead
+beyond feature computation. Implementation details are in
+Appendix~\ref{app:eaag-details}.
 
-\subsection{Online Adaptation}
+\paragraph{Signed weights as a diagnostic.}
+The fitted weight signs provide an interpretable per-environment
+estimate of the Two-Source mixture of \S\ref{sec:toy-model}:
+$w_i > 0$ indicates the environment sits on the Type-D side of
+the reversal threshold $p_I^*$ for signal $i$, $w_i < 0$ the
+Type-I side, and $w_i \approx 0$ an uninformative signal. This
+is a diagnostic reading of the fitted model, not a novel
+modeling choice; any signed linear classifier would expose the
+same information.
 
-During deployment, EAAG optionally continues collecting data via
-$\varepsilon$-greedy exploration ($\varepsilon: 0.1 \to 0$) and
-retrains the gate periodically, enabling adaptation to distributional
-shift.
+\paragraph{Online adaptation.}
+For drifting environments, EAAG can optionally refit during
+deployment using $\varepsilon$-greedy exploration
+($\varepsilon: 0.1 \to 0$) and periodic retraining. This mode
+is \emph{not free}: $\varepsilon$-greedy overrides ignore the
+current gate, so in Type-I environments a fraction of
+overridden steps will trigger harmful rollouts. For stationary
+environments, which are the setting of our main experiments,
+we recommend skipping online adaptation and relying on the
+offline-fitted gate.
+
+% \begin{table}[t]
+% \caption{Adaptive compute methods by design axis. EAAG is the
+% only method that varies all four, each forced by a requirement
+% in \S\ref{sec:signal-landscape}.}
+% \vspace{-0.1in}
+% \label{tab:classification}
+% \centering\small
+% \resizebox{\columnwidth}{!}{%
+% \begin{tabular}{lcccc}
+% \toprule
+% Method & Signal & Direction & Granularity & Env-Aware \\
+% \midrule
+% CaTS$^\dagger$     & Single & Fixed & Problem & \xmark \\
+% SEAG$^\dagger$     & Single & Fixed & Problem & \xmark \\
+% CoRefine$^\dagger$ & Single & Fixed & Problem & \xmark \\
+% CATTS              & Single & Fixed & Problem & \xmark \\
+% AUQ                & Single & Fixed & Problem & \xmark \\
+% \midrule
+% \textbf{EAAG}      & \textbf{Multi (auto)} & \textbf{Learned}
+%                     & \textbf{Step} & \cmark \\
+% \bottomrule
+% \end{tabular}
+% }
+% \end{table}

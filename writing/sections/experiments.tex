@@ -27,7 +27,11 @@ Plancraft: rollout-harmful).
 optimizer $T$; only the gating decision differs. Bounds:
 base\_only (never trigger), always\_trigger, oracle.
 Fixed-direction baselines: CaTS, SEAG, CoRefine, CATTS, AUQ,
+<<<<<<< HEAD
 s1\_budget---all assuming high uncertainty warrants compute.
+=======
+s1\_budget, all assuming high uncertainty warrants compute.
+>>>>>>> cc1bc6e4f1be11f03658207b43893225ca507faf
 Ablation: BSW (direction intentionally reversed). Full
 specifications in Appendix~\ref{app:experiments}.
 
@@ -79,8 +83,12 @@ all adapt to the environment, as we analyze below.
 Full method $\times$ environment grid. Rows = methods (base\_only,
 always\_trigger, oracle, CaTS, SEAG, CoRefine, CATTS, AUQ, s1\_budget,
 BSW, EAAG). Columns = 8 environments, each with SR(\%) and Cost (ro/ep).
-Bold best SR per environment. $\dagger$ marks Phase-1-dependent methods.
+Bold best SR per environment. $\dagger$ marks calibration-dependent methods.
 Similar to FLARE Table 1 (benchmark $\times$ method $\times$ backbone grid).}
+
+{\color{blue} \textbf{[DATA NEEDED: Table tab:winloss.]} Win/loss summary
+over all baseline-environment pairs. Rows = baselines, columns = number
+of environments where EAAG wins/ties/loses on SR and on Cost.}
 
 {\color{red} \textbf{[FIGURE NEEDED: Figure 5.]} Pareto frontier plot.
 x-axis = Cost (rollouts/episode), y-axis = SR(\%).
@@ -93,26 +101,37 @@ The results align with the Two-Source Model along three axes.
 The gap between EAAG and baselines is largest where direction
 mismatch is most severe: in Type~I environments, all ``high
 uncertainty $\to$ trigger'' baselines fall below the no-trigger
+<<<<<<< HEAD
 baseline because the assumed direction is wrong---no amount of
+=======
+baseline because the assumed direction is wrong, and no amount of
+>>>>>>> cc1bc6e4f1be11f03658207b43893225ca507faf
 calibration rescues them. Conversely, EAAG's advantage is smallest
 in high-headroom environments where most methods approach the
 oracle regardless of direction. Most tellingly, EAAG adapts not
 only direction but \emph{gating magnitude}: aggressive triggering
 in rollout-safe environments (TWExpress, RR\,=\,73\%),
 moderate triggering in mixed environments, and step-dependent
+<<<<<<< HEAD
 decay in rollout-harmful ones (Plancraft: 49\% at step~0 $\to$
 $<$20\% later). This full behavioral range---from near-always
 to near-never triggering---emerges from direction learning
 alone, without explicit headroom estimation.
+=======
+decay in rollout-harmful ones (Plancraft: 49\% at step~0 to
+$<$20\% later). This full behavioral range, from near-always
+to near-never triggering, emerges from direction learning alone,
+without explicit headroom estimation.
+>>>>>>> cc1bc6e4f1be11f03658207b43893225ca507faf
 
 
 \subsection{Ablation Studies}
 \label{sec:ablation}
 
 The main results show \emph{that} EAAG works; we now ask
-\emph{why}. We ablate three components in decreasing order of
-expected importance: direction learning, multi-signal features, and
-LLM reasoning.
+\emph{why}. We ablate the two components of EAAG that §3
+identified as necessary: direction learning and the LLM feature
+layer.
 
 \textbf{Direction is the primary determinant of gate quality.}
 Intentionally reversing the learned direction (BSW ablation) causes
@@ -121,18 +140,23 @@ wrong direction falling \emph{below} the no-trigger baseline. This
 confirms the central prediction of Proposition~\ref{prop:necessity}:
 direction is not a minor calibration detail but the primary
 determinant of gate quality. The magnitude of degradation correlates
+<<<<<<< HEAD
 with signal strength (Appendix~\ref{app:wrong-direction}), as the Two-Source
 Model predicts.
+=======
+with signal strength (Appendix~\ref{app:wrong-direction}), as the
+Two-Source Model predicts.
+>>>>>>> cc1bc6e4f1be11f03658207b43893225ca507faf
 
-\textbf{LLM reasoning provides robustness, not marginal accuracy.}
-Removing the LLM reasoning step changes SR by ${<}$1\,pp in the
-majority of environments. Two environments show larger effects:
-one where LLM-generated features capture step-0 criticality, and one
-where LLM features introduce noise. The LLM's value is not marginal
-accuracy improvement but \emph{generalizability}: it enables
-zero-shot feature generation for unseen environments where
-task-specific signals cannot be anticipated by universal features
-alone.
+\textbf{The LLM feature layer is an automation convenience, not
+a core component.} Removing the LLM layer changes SR by
+${<}$1\,pp in most environments; the gains concentrate in
+settings like WebShop where task-specific signals meaningfully
+extend the universal feature pool. In one environment LLM
+features even introduce noise. Consistent with the framing in
+\S\ref{sec:reason}, the LLM is best viewed as an automation
+convenience that enables zero-shot deployment on new environments
+rather than a component the method's main claims depend on.
 
 {\color{red} \textbf{[FIGURE NEEDED: Figure 6.]} Environment-adaptive trigger rates.
 Bar chart: x-axis = 8 environments (ordered by rollout headroom $\Delta$),
@@ -145,9 +169,15 @@ Similar to FLARE Figure 2 which shows dynamics across environments.}
 The gate's trigger rate varies from 73\% (TWExpress) to $<$20\%
 (late-step Plancraft), with step-dependent decay in
 rollout-harmful environments. These patterns are not explicitly
+<<<<<<< HEAD
 programmed: they arise from logistic regression over
 LASSO-selected features, whose signed weights implicitly encode
 each environment's signal--utility structure.
+=======
+programmed: they follow from the per-environment signed weights
+fit in \S\ref{sec:learn}, which capture each environment's
+signal--utility structure.
+>>>>>>> cc1bc6e4f1be11f03658207b43893225ca507faf
 
 
 \subsection{Two-Source Model Verification}
@@ -182,8 +212,13 @@ $\rho$ shifts from $+0.102$ (early, non-significant) to $-0.144$
 debugging frustration. In WebShop, the strong positive early-phase
 signal ($\rho{=}{+}0.285$) vanishes in the late phase. The pattern
 is consistent across all environments with sufficient signal (full
+<<<<<<< HEAD
 data in Appendix~\ref{app:model-derivation}): early steps mix both uncertainty
 sources, while late steps isolate the dominant type.
+=======
+data in Appendix~\ref{app:model-derivation}): early steps mix both
+uncertainty sources, while late steps isolate the dominant type.
+>>>>>>> cc1bc6e4f1be11f03658207b43893225ca507faf
 
 \paragraph{P2: Cross-environment consistency (confirmed).}
 We compare same-family pairs. FEVER ($\rho{=}{-}0.119$) and HotpotQA
@@ -196,10 +231,10 @@ degree of Type~I contamination; FEVER has more early-step
 information poverty than HotpotQA.
 
 \paragraph{P3: Signal identity alignment (confirmed).}
-We examine the LASSO-selected features per environment.
-In Type~I environments (HotpotQA, FEVER), the
-strongest signal (\texttt{step\_count}, $|\rho|{=}0.494$ and $0.619$)
-measures trajectory progress, a proxy for information accumulation.
+We examine the sparse-selected features per environment.
+In Type~I environments (HotpotQA, FEVER), the strongest signal
+(\texttt{step\_count}, $|\rho|{=}0.494$ and $0.619$) measures
+trajectory progress, a proxy for information accumulation.
 In WebShop (mixed, choice-dominated),
 \texttt{num\_available\_actions} ($\rho{=}{+}0.444$) measures the
 decision space size, a proxy for decision complexity. All three
@@ -243,7 +278,7 @@ direction reversal were merely correlational, this manipulation
 should have no systematic effect. The observed damage confirms
 that direction encodes a causal relationship.
 
-\paragraph{Gate complexity ablation: direction $\gg$ capacity.}
+\paragraph{Gate complexity ablation: direction outweighs capacity.}
 To verify that the bottleneck is direction rather than gate
 complexity, we compare gate architectures with correct vs.\ wrong
 direction (Table~\ref{tab:capacity}).
@@ -265,7 +300,7 @@ Hidden state (2560-d) & Correct & $\sim$95 & $\sim$+46 \\
 Logistic (5 feat) & Wrong & 62.0 & +13.0 \\
 MLP (5 feat)      & Wrong & 45.3 & $-$3.7 \\
 \midrule
-No gate (base)    & --- & 49.0 & 0 \\
+No gate (base)    & n/a & 49.0 & 0 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -273,6 +308,7 @@ No gate (base)    & --- & 49.0 & 0 \\
 With correct direction, all architectures achieve $\sim$95\% SR;
 the jump from logistic to MLP to hidden-state probe adds $<$1\,pp.
 With wrong direction, higher capacity makes performance \emph{worse}
-(MLP 45.3\% $<$ logistic 62.0\%), because the more powerful gate more
-precisely targets harmful states. The information hierarchy is:
-\textbf{signal direction $\gg$ signal count $\gg$ gate complexity}.
+(MLP 45.3\% $<$ logistic 62.0\%), because the more powerful gate
+more precisely targets harmful states. Across the gate architectures
+we tested, signal direction consistently outweighs both signal count
+and gate complexity as a determinant of gate quality.

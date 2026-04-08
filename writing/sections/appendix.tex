@@ -563,22 +563,107 @@ For each of the 8 environments, we provide:
   \end{itemize}
 \end{itemize}
 
-\subsection{Hyperparameter Configuration}
+\subsection{EAAG Implementation Details}
+\label{app:eaag-details}
 
-\paragraph{EAAG hyperparameters.}
-$N_{\text{explore}} = 50$ episodes,
-$\varepsilon_{\text{explore}} = 0.5$,
-$\varepsilon_{\text{deploy}} = 0.1 \to 0$ over 100 episodes,
-LASSO $\alpha$ selected via 5-fold CV,
-gate threshold $\tau = 0.5$,
-retrain interval = 30 episodes.
+This appendix expands on the implementation details deferred from
+Section~\ref{sec:learn}. Algorithm~\ref{alg:eaag} gives the full
+pipeline; the paragraphs that follow describe each component.
 
-\paragraph{Baseline hyperparameters.}
-CaTS: Platt scaling on Phase~1 data (200 episodes), threshold = 0.5.
-SEAG: mean confidence threshold calibrated on Phase~1.
-CoRefine: entropy threshold calibrated on Phase~1.
-CATTS: $K{=}5$ votes, entropy threshold = 0.8, margin threshold = 0.2.
-BSW: EAAG with intentionally reversed direction (sign flip).
+\begin{algorithm}[h]
+\caption{EAAG: Environment-Aware Adaptive Gating}
+\label{alg:eaag}
+\begin{algorithmic}[1]
+\Require Environment $\mathcal{E}$, agent policy $\pi$, optimizer
+         $T$, universal feature set $\phi_{\text{univ}}$, LLM
+         $\mathcal{M}$, exploration budget $N_{\text{explore}}$,
+         exploration rate $\varepsilon_{\text{explore}}$,
+         deployment decay schedule $\varepsilon_{\text{deploy}}(t)$,
+         retrain interval $k$, gate threshold $\tau$
+\Ensure Deployed gate $g: \mathcal{S} \to \{0, 1\}$
+
+\Statex \textbf{// Phase 1: Explore}
+\State $\mathcal{D} \gets \emptyset$
+\For{episode $= 1, \dots, N_{\text{explore}}$}
+  \State Run $\pi$ in $\mathcal{E}$; at each step $t$, invoke $T$
+         with probability $\varepsilon_{\text{explore}}$
+         independent of state
+  \State Record $(s_t, U_t)$ pairs into $\mathcal{D}$
+\EndFor
+
+\Statex \textbf{// Phase 2: Reason}
+\State $(p_{\mathcal{E}}, \mathcal{H}) \gets
+       \mathcal{M}(\mathrm{summary}(\mathcal{D}))$
+       \Comment{environment profile + feature hypotheses}
+\State $\phi_{\text{cand}} \gets \phi_{\text{univ}} \cup
+       \mathrm{extract}(\mathcal{H})$
+\State Recompute $\phi_{\text{cand}}(s)$ for all
+       $s \in \mathcal{D}$
+
+\Statex \textbf{// Phase 3: Learn}
+\State Standardize $\phi_{\text{cand}}$ on $\mathcal{D}$
+\State Select regularization strength $C$ via 5-fold CV on
+       held-out log-loss
+\State Fit $\ell_1$-regularized logistic regression:
+       $\mathbf{w}, b \gets \arg\min\,
+       \mathcal{L}_{\text{logistic}}(\mathbf{w}, b; \mathcal{D}) +
+       \tfrac{1}{C}\|\mathbf{w}\|_1$
+\State $\phi \gets$ features with non-zero $w_i$
+\State $g(s) \gets
+       \mathbf{1}[\sigma(\mathbf{w}^\top \phi(s) + b) > \tau]$
+
+\Statex \textbf{// Phase 4 (optional): Online adaptation}
+\For{deployment episode $t = 1, 2, \dots$}
+  \State Deploy $g$; with probability
+         $\varepsilon_{\text{deploy}}(t)$ override with random
+         trigger; append new $(s, U)$ pairs to $\mathcal{D}$
+  \If{$t \bmod k = 0$}
+    \State Refit $g$ on updated $\mathcal{D}$ (repeat Phase 3,
+           reusing $\phi_{\text{cand}}$)
+  \EndIf
+\EndFor
+
+\State \Return $g$
+\end{algorithmic}
+\end{algorithm}
+
+\paragraph{Exploration budget.}
+Phase 1 runs for $N_{\text{explore}} = 50$ episodes with
+$\varepsilon_{\text{explore}} = 0.5$. Sensitivity to
+$N_{\text{explore}}$ is reported in
+Appendix~\ref{app:additional}; SR is stable for
+$N_{\text{explore}} \geq 30$.
+
+\paragraph{Feature standardization.}
+Before fitting in Phase 3, all features in $\phi_{\text{cand}}$
+are standardized to zero mean and unit variance on $\mathcal{D}$.
+This ensures that the interpretable weight signs discussed in
+Section~\ref{sec:learn} are not confounded by scale differences
+across heterogeneous features (e.g., \texttt{step\_count} and
+\texttt{token\_entropy} live on very different scales).
+
+\paragraph{Sparse solver.}
+We induce sparsity using $\ell_1$-regularized logistic regression
+(\texttt{scikit-learn}'s \texttt{LogisticRegression} with
+\texttt{liblinear} solver). The regularization strength $C$ is
+selected by 5-fold cross-validation over the grid
+$C \in \{0.01, 0.03, 0.1, 0.3, 1.0, 3.0, 10.0\}$, optimizing
+held-out log-loss on $\mathcal{D}$. Features with zero coefficient
+after fitting are dropped from the deployed gate.
+
+\paragraph{Gate threshold.}
+The decision threshold $\tau$ in Eq.~\eqref{eq:gate} is fixed to
+$0.5$ for all environments. Sensitivity across
+$\tau \in [0.3, 0.7]$ is reported in
+Appendix~\ref{app:additional}.
+
+\paragraph{Online adaptation.}
+During deployment, $\varepsilon_{\text{deploy}}$ decays from $0.1$
+to $0$ over the first 100 episodes, and the gate is refit every
+$k = 30$ episodes using the accumulated $\varepsilon$-greedy
+samples. Refitting reuses the same solver configuration as the
+initial training, so no additional hyperparameter tuning is
+required at deployment time.
 
 \subsection{Computational Cost Breakdown}
 
