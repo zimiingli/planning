@@ -1,62 +1,70 @@
-% ============================================================
-% 2. RELATED WORK
-% ============================================================
 \section{Related Work}
 \label{sec:related}
+Prior work on adaptive test-time compute spans diverse mechanisms
+but rests on a shared assumption: that uncertainty signals have a
+fixed, environment-independent relationship with compute value.
 
-\paragraph{Adaptive test-time compute.}
-Adaptive gating methods reduce the overhead of test-time
-optimization by invoking it only when needed. In the
-\emph{reasoning} setting, signal-based methods use token-level
-confidence or entropy to decide when to extend
-thinking~\citep{seag2025, cats2025, corefine2026,
-thinkjustenough2025, s1_2025, han2025tokenbudget}. RL-based methods
-learn think/no-think policies through reinforcement
-learning~\citep{adaptthink2025, thinkless2025, aggarwal2025l1},
-though these require per-environment training and provide no
-interpretable direction signal. Hidden-state probing
-methods~\citep{diffadapt2025, zhu2025llmalreadyknows} train
-lightweight classifiers on internal representations to estimate task
-difficulty, assuming a universal difficulty-to-compute mapping.
-In the \emph{agent} setting, vote-based
+\paragraph{Gating on uncertainty signals.}
+One line of work allocates extra computation based on token
+confidence, entropy, or disagreement, under the assumption that
+higher uncertainty indicates greater need for compute. In the
+reasoning setting, signal-based methods extend chain-of-thought
+generation when token confidence or entropy exceeds a
+threshold~\citep{seag2025, cats2025, corefine2026, thinkjustenough2025,
+s1_2025, han2025tokenbudget}. In the agent setting, vote-based
 methods~\citep{catts2026} sample multiple candidate actions and
-trigger evaluation when disagreement is high, and
-\citet{paglieri2025learning} learn when to invoke a planner at the
-episode level. The vast majority of adaptive compute research
-operates on homogeneous reasoning benchmarks (MATH, GSM8K, GPQA),
-where signal direction happens to be consistent across tasks. Our
-work is the first to systematically study signal semantics across
-heterogeneous \emph{agent} environments, where we find that the
-direction reverses. A detailed per-method comparison is provided in
+invoke an arbiter when they disagree, while verbalized uncertainty
+methods~\citep{auq2026} prompt the agent to reflect when its
+self-reported confidence is low.
+
+\paragraph{Gating on learned difficulty.}
+A second line learns to predict task difficulty and allocate compute
+accordingly. Hidden-state probes~\citep{diffadapt2025,
+zhu2025llmalreadyknows} estimate difficulty from internal
+representations, and RL-based methods~\citep{adaptthink2025,
+thinkless2025, aggarwal2025l1, paglieri2025learning} learn
+think/no-think policies end-to-end. Though these methods do not
+commit to a specific signal, their gating policies effectively
+behave as if higher difficulty warrants more compute, sharing the
+same fixed, environment-independent direction as the first family.
+This assumption holds well in the settings where these methods have
+been developed and evaluated, predominantly homogeneous reasoning
+benchmarks such as MATH, GSM8K, and GPQA, where signal direction is
+consistent by construction. Whether it transfers to heterogeneous
+agent environments is an open question that prior work has not
+directly addressed; we show it does not
+(Proposition~\ref{prop:necessity}). A per-method comparison is in
 Appendix~\ref{app:related}.
 
-\paragraph{Test-time scaling and search.}
-Test-time scaling~\citep{snell2024scaling} studies compute-optimal
-allocation at the problem level, showing that adaptive allocation
-outperforms uniform allocation by up to 4$\times$ in efficiency.
-This line of work focuses on \emph{how much} compute to allocate
-given a fixed difficulty signal, whereas we question the signal
-itself. Search methods such as Tree of
-Thoughts~\citep{yao2023tree}, LATS~\citep{zhou2024lats},
-RAP~\citep{hao2023reasoning}, and FLARE~\citep{wang2026flare}
-improve the quality of the search process through tree search,
-value propagation, and lookahead evaluation. These are complementary
-to our work: they improve \emph{what} the optimizer does, while we
-control \emph{when} to invoke it. Our gating framework can be
-composed with any such optimizer.
+\paragraph{Orthogonal: search-based optimizers.}
+Search methods such as Tree of Thoughts~\citep{yao2023tree},
+LATS~\citep{zhou2024lats}, RAP~\citep{hao2023reasoning}, and
+FLARE~\citep{wang2026flare} improve \emph{what} the optimizer does
+through tree search, value propagation, and lookahead evaluation.
+These are orthogonal to our work: we control \emph{when} to invoke
+the optimizer, and our gate composes with any such procedure.
 
-\paragraph{Uncertainty estimation and metareasoning.}
-Recent work on LLM uncertainty~\citep{tao2025revisiting,
-heo2025llmuncertainty} observes that calibration quality varies
-substantially across task types, providing converging evidence that
-uncertainty semantics are domain-dependent. \citet{yadkori2024believe}
-propose decoupling epistemic and aleatoric uncertainty in LLM
-outputs, a distinction conceptually related to our Type~I/Type~D
-decomposition. From a decision-theoretic perspective, rational
-metareasoning~\citep{russell1991right, desabbata2024metareasoning}
-formalizes the value of computation (VOC) as a guide for allocating
-cognitive resources. Our work extends this framework by showing
-that VOC can be \emph{negative} in the agent setting when the
-evaluator and executor are the same model, and that direction
-discovery is a necessary condition for non-negative VOC across
-environments.
+\paragraph{Metareasoning and uncertainty semantics.}
+Rational metareasoning~\citep{russell1991right,
+desabbata2024metareasoning} formalizes the value of computation
+(VOC), classically assuming $\text{VOC} \geq 0$ since an agent can
+disregard unfavorable computations. We show that this assumption
+fails in the agent setting, where the same model both proposes and
+evaluates actions: under this evaluator--executor identity, VOC can
+be \emph{negative}, making direction discovery necessary.
+\citet{tao2025revisiting} and \citet{heo2025llmuncertainty} find
+that calibration quality varies across task types, and
+\citet{yadkori2024believe} decouple epistemic and aleatoric
+uncertainty---providing converging evidence that uncertainty
+semantics are domain-dependent, though they stop short of
+documenting direction reversal. Our two-source model formalizes
+this domain dependence (\S\ref{sec:toy-model}), and our reversal
+results make it actionable.
+
+% \paragraph{Complementary axes.}
+% Test-time scaling~\citep{snell2024scaling} asks \emph{how much}
+% compute to allocate given a fixed signal; search methods such as
+% Tree of Thoughts~\citep{yao2023tree}, LATS~\citep{zhou2024lats},
+% RAP~\citep{hao2023reasoning}, and FLARE~\citep{wang2026flare} improve
+% \emph{what} the optimizer does. We control \emph{when} to invoke it
+% and compose with any such optimizer.

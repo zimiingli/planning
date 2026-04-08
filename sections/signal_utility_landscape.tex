@@ -1,13 +1,38 @@
 % ============================================================
-% 3. SIGNAL-UTILITY LANDSCAPE
+% 3. WHY FIXED-DIRECTION GATING FAILS
 % ============================================================
 \section{Why Fixed-Direction Gating Fails}
 \label{sec:signal-landscape}
+\begin{table}[!t]
+\caption{Signal--utility correlations across 8 environments and
+3 backbones. $\rho$: Spearman correlation of token entropy with
+optimizer utility $U$. $^*$: significant at $p{<}0.05$.
+Direction varies across \emph{both} environments and model
+backbones.}
+\vspace{-0.1in}
+\label{tab:signal-discovery}
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lcccc}
+\toprule
+Environment & Qwen3 & Phi-3.5 & Llama-3.1 & Cons. \\
+\midrule
+HotpotQA   & $-$0.327$^*$ & $+$0.184$^*$ & $-$0.346$^*$ & \xmark \\
+APPS Intro & $+$0.144$^*$ & $-$0.129$^*$ & $-$0.242$^*$ & \xmark \\
+WebShop    & $+$0.133$^*$ & $+$0.335$^*$ & $+$0.287$^*$ & \cmark \\
+FEVER      & $-$0.119$^*$ & $-$0.156$^*$ & $+$0.428$^*$ & \xmark \\
+APPS Intv. & $+$0.317$^*$ & $-$0.024     & $-$0.249$^*$ & \xmark \\
+TWExpress  & $-$0.290$^*$ & $+$0.000     & $+$0.000     & --- \\
+CRUXEval   & $-$0.048     & $-$0.065     & $-$0.045     & --- \\
+Plancraft  & $-$0.016     & $+$0.000     & $-$0.176$^*$ & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 We test the fixed-direction assumption by measuring signal--utility
 correlations across diverse environments. If the assumption holds,
-correlations should be consistent; if it fails, the failure mode will
-guide method design.
+correlations should be consistent; if it fails, the failure mode
+will guide method design.
 
 We study LLM-based agents in multi-step interactive environments.
 At each step $t$, the agent observes state $s_t$, selects action
@@ -20,214 +45,127 @@ quality. We define the \emph{optimizer utility} as:
            - \mathbb{E}[R(\tau) \mid a{=}\pi(s)]
   \label{eq:utility}
 \end{equation}
-where $R(\tau)$ is the episode return. $U > 0$ indicates the optimizer
-improves the outcome; $U \leq 0$ indicates it is wasteful or harmful.
-The \emph{adaptive gating problem} is to learn a gate
+where $R(\tau)$ is the episode return. $U > 0$ indicates the
+optimizer improves the outcome; $U \leq 0$ indicates it is wasteful
+or harmful. The \emph{adaptive gating problem} is to learn a gate
 $g: \mathcal{S} \to \{0, 1\}$ that triggers $T$ only when $U > 0$.
 
-\subsection{Empirical Landscape}
+\subsection{Signal--Utility Direction Reverses Across Environments
+            and Backbones}
 \label{sec:empirical-landscape}
 
-{\color{red} \textbf{[FIGURE NEEDED: Figure 1.]} Signal--utility scatter plots
-for 4 representative environments (FEVER, APPS Interview, HotpotQA, WebShop).
-Each panel: x-axis = token entropy, y-axis = optimizer utility U.
-Show the regression line with positive/negative slope to visually
-demonstrate direction reversal. Similar to FLARE Figure 1 (4-panel grid).
-This is the paper's most important figure -- the reader should SEE the reversal.}
+\textbf{The signal--utility direction is not fixed.}
+Table~\ref{tab:signal-discovery} reports Spearman correlations
+between token entropy and optimizer utility across 8 environments
+and 3 model backbones. Two patterns stand out. First, even within
+a single backbone, the direction varies across environments: on
+Qwen3, entropy is negatively correlated with utility in
+fact-verification environments (FEVER, TWExpress) but positively
+in code generation (APPS Interview), with near-zero correlation in
+mixed environments. Second, the same signal in the same environment
+can reverse across backbones: in 4 out of 5 environments with
+multiple significant correlations, models disagree on the sign.
+Most strikingly, FEVER flips from $\rho{=}{-}0.156$ on Phi-3.5 to
+$\rho{=}{+}0.428$ on Llama-3.1. Structural signals such as
+\texttt{step\_count} are more stable across backbones
+(Appendix~\ref{app:multi-backbone}), while entropy is unpredictable
+without per-environment, per-model measurement. Crucially, this
+direction mismatch is not benign: as
+Section~\ref{sec:main-results} will show, gates that assume the
+wrong direction systematically fall \emph{below} the no-trigger
+baseline, making them strictly worse than doing nothing in
+mismatched environments.
 
-\textbf{Observation 1: The signal--utility direction reverses across
-environments \emph{and} model backbones.}
-Table~\ref{tab:signal-discovery} reports Spearman correlations between
-token entropy and optimizer utility across 8 environments and 3 model
-backbones. Two patterns stand out. First, entropy correlates
-\emph{negatively} with utility in fact-verification environments
-(FEVER, HotpotQA) but \emph{positively} in code generation (APPS
-Interview), with near-zero correlation in mixed environments (APPS
-Intro, WebShop). Second, the \emph{same signal in the same
-environment} can reverse across backbones: among the 5 environments
-with at least two significant correlations, 4 show inconsistent
-signs across models. Structural signals like \texttt{step\_count}
-are more stable across backbones, while entropy is unpredictable
-without per-environment, per-model measurement.
 
-\begin{table}[t]
-\caption{Signal--utility correlations across 8 environments and 3 backbones.
-$\rho$: Spearman correlation of token entropy with optimizer utility $U$.
-$^*$: significant at $p{<}0.05$.
-Direction varies across \emph{both} environments and model backbones.}
-\label{tab:signal-discovery}
-\centering\small
-\begin{tabular}{lcccc}
-\toprule
-Environment & Qwen3-4B & Phi-3.5 & Llama-3.1 & Consistent \\
-\midrule
-HotpotQA       & $-$0.327$^*$ & $+$0.184$^*$ & $-$0.346$^*$ & {\color{red}$\times$} \\
-APPS Intro     & $+$0.144$^*$ & $-$0.129$^*$ & $-$0.242$^*$ & {\color{red}$\times$} \\
-WebShop        & $+$0.133$^*$ & $+$0.335$^*$ & $+$0.287$^*$ & {\color{green}\checkmark} \\
-FEVER          & $-$0.119$^*$ & $-$0.156$^*$ & $+$0.428$^*$ & {\color{red}$\times$} \\
-APPS Intv.     & $+$0.317$^*$ & $-$0.024     & $-$0.249$^*$ & {\color{red}$\times$} \\
-TWExpress      & $-$0.290$^*$ & $+$0.000     & $+$0.000     & --- \\
-CRUXEval       & $-$0.048     & $-$0.065     & $-$0.045     & --- \\
-Plancraft      & $-$0.016     & $+$0.000     & $-$0.176$^*$ & --- \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-{\color{red} \textbf{[FIGURE NEEDED: Figure 2.]} Feature importance heatmap.
-Rows = 8 environments, Columns = features (step\_count, token\_entropy,
-state\_length, num\_available\_actions, LLM-generated features).
-Cell color = LASSO coefficient magnitude, with sign indicated by +/-.
-Shows that different environments select completely different feature subsets.
-Similar to a feature-attribution matrix.}
-
-\textbf{Observation 2: The identity of the most informative signal
-varies across environments.} Sparse feature selection across
-environments (Figure~\ref{fig:feature-heatmap}) reveals that
-different environments rely on entirely different signals:
-\texttt{step\_count} is informative in 6/7 environments, but
-WebShop relies on \texttt{num\_available\_actions} and task-specific
-features instead. No single signal is universally informative.
-
-{\color{red} \textbf{[FIGURE NEEDED: Figure 3.]} AUC hierarchy bar chart.
-3 grouped bars per environment: single-entropy AUC (~0.50), multi-signal
-logistic AUC (~0.83), hidden-state probe AUC (~0.90).
-Clearly shows the information gap between single-signal and multi-signal gates.
-4 environments side by side (HotpotQA, APPS Intro, WebShop, FEVER).}
-
-\textbf{Observation 3: Even the best single signal is insufficient.}
-Beyond signal identity, even the \emph{most} informative single
-signal per environment carries near-zero predictive power. AUC
-analysis across 4 environments (Figure~\ref{fig:auc-hierarchy})
-reveals a clear hierarchy:
-single token entropy achieves AUC${\approx}$0.50 (indistinguishable
-from chance), whereas combining multiple signals reaches
-AUC${\approx}$0.83, and hidden-state probes reach AUC${\approx}$0.90.
-Predicting rollout value requires multiple signals, not a single
-scalar.
-
-\textbf{Observation 4: All fixed-direction methods fail systematically.}
-When evaluated across all 8 environments, every fixed-direction
-baseline underperforms the no-trigger baseline in at least 2
-environments (\S\ref{sec:main-results}). Most strikingly, CATTS
-achieves 34.2\% on FEVER, \emph{below} the 37.0\% no-trigger
-baseline, demonstrating that wrong-direction gating is actively
-harmful.
-
+\textbf{Signal identity also varies across environments.}
+Beyond direction, the most informative signal itself differs from
+environment to environment: \texttt{step\_count} dominates in most
+environments, but WebShop instead relies on
+\texttt{num\_available\_actions} and task-specific features
+(Appendix~\ref{app:feature-selection}). Moreover, even the best
+single signal is near-chance: per-environment AUC analysis shows
+single token entropy at AUC${\approx}$0.50, while multi-signal
+logistic gates reach AUC${\approx}$0.83 and hidden-state probes
+reach AUC${\approx}$0.90 (Appendix~\ref{app:auc}). Predicting
+rollout value requires multiple signals selected per environment,
+not a single universal scalar.
 
 \subsection{Why Does Direction Reverse? A Two-Source Model}
 \label{sec:toy-model}
 
-The four observations above establish \emph{that} fixed-direction
-gating fails; we now ask \emph{why}. We propose a model that
-explains direction reversal through a single mechanism.
+The findings above establish that fixed-direction gating
+fails; we now ask \emph{why}. We trace direction reversal to a minimal mechanism that jointly
+accounts for the observed patterns: the conflation of two distinct
+sources of uncertainty.
 
 \paragraph{Intuition.}
 Consider a web-shopping agent choosing between products. When it
 hesitates (high entropy) because multiple items match the query,
-exploring alternatives via rollouts is valuable, since the agent has
-adequate information but faces a genuine choice. Now consider a
-fact-verification agent that hesitates because the retrieved evidence
-is ambiguous. Here, high entropy reflects \emph{missing information},
-not optionality: rollouts from the same model with the same evidence
-will not resolve the ambiguity. In the first case, entropy positively
-predicts rollout utility; in the second, it predicts rollout
-\emph{futility}. The same numerical signal carries opposite meaning
-because the \emph{source} of uncertainty differs. We formalize this
-intuition below.
+exploring alternatives via rollouts is valuable, since the agent
+has adequate information but faces a genuine choice. Now consider
+a fact-verification agent that hesitates because the retrieved
+evidence is ambiguous. Here, high entropy reflects \emph{missing
+information}, not optionality: rollouts from the same model with
+the same evidence will not resolve the ambiguity. In the first
+case, entropy positively predicts rollout utility; in the second,
+it predicts rollout \emph{futility}. The same numerical signal
+carries opposite meaning because the \emph{source} of uncertainty
+differs.
 
 \paragraph{Model.}
-We model the signal--utility direction reversal as arising from two
-sources of uncertainty at each decision step:
-
+We model direction reversal as arising from two sources of
+uncertainty at each decision step:
 \begin{itemize}[leftmargin=*,nosep]
 \item \textbf{Type~I (information poverty):} The agent lacks
-  sufficient information. High entropy reflects confusion, not
-  optionality. Rollouts from the same model cannot compensate for
-  missing information, so utility is \emph{negatively} related to
-  entropy: $U_I(s) \sim -\alpha \cdot H(s) + \varepsilon_I$,
-  \ $\alpha > 0$.
-
-\item \textbf{Type~D (decision difficulty):} The agent has adequate
-  information but faces multiple viable paths. High entropy reflects
-  optionality. Rollouts can exploit this diversity, so utility is
-  \emph{positively} related to entropy:
-  $U_D(s) \sim +\beta \cdot H(s) + \varepsilon_D$, \ $\beta > 0$.
+  sufficient information. Rollouts from the same model cannot
+  compensate, so utility is \emph{negatively} related to entropy:
+  $U_I(s) \sim -\alpha H(s) + \varepsilon_I$, $\alpha > 0$.
+\item \textbf{Type~D (decision difficulty):} The agent has
+  adequate information but faces multiple viable paths. Rollouts
+  exploit this diversity, so utility is \emph{positively} related
+  to entropy: $U_D(s) \sim +\beta H(s) + \varepsilon_D$,
+  $\beta > 0$.
 \end{itemize}
-
 Let $p_I(\mathcal{E})$ denote the fraction of Type~I states in
 environment $\mathcal{E}$. The marginal correlation becomes
-(full derivation in Appendix~\ref{app:model}):
 \begin{equation}
   \rho(\mathcal{E}) \;\approx\;
-  \beta - (\alpha + \beta)\,p_I(\mathcal{E})
+  \beta - (\alpha + \beta)\,p_I(\mathcal{E}),
   \label{eq:direction}
 \end{equation}
-Direction reversal occurs at the critical threshold
-$p_I^* = \beta/(\alpha+\beta)$: environments with $p_I > p_I^*$
-exhibit negative $\rho$ (Type~I dominated), while those with
-$p_I < p_I^*$ exhibit positive $\rho$ (Type~D dominated). Near
-$p_I^*$, the two effects cancel and entropy carries negligible
-signal ($\rho \approx 0$).
-
-\paragraph{Environment mapping.}
-Table~\ref{tab:env-type-mapping} maps each evaluation environment to
-its dominant uncertainty type based on task structure.
-This mapping is primarily determined by the environment's information
-structure, but multi-backbone experiments
-(Appendix~\ref{app:multi-backbone}) reveal that the model backbone
-modulates the effective $p_I$: different models may process the same
-environment with different balances of Type~I vs Type~D uncertainty,
-causing entropy $\rho$ to flip sign (e.g., FEVER: $\rho{=}{-}0.156$
-on Phi-3.5 but $\rho{=}{+}0.428$ on Llama-3.1). Structural signals
-like \texttt{step\_count} are more robust across backbones.
-
-\begin{table}[t]
-\caption{Environment-to-type mapping. The dominant uncertainty
-type is shaped by the environment's information structure and
-modulated by the model backbone. Predicted $\rho$ direction
-follows from Eq.~\eqref{eq:direction}; observed values are from
-Qwen3-4B. Multi-backbone $\rho$ values differ
-(Table~\ref{tab:signal-discovery}).}
-\label{tab:env-type-mapping}
-\centering\small
-\begin{tabular}{llccl}
-\toprule
-Environment & Dominant Type & Pred.\ $\rho$ & Obs.\ $\rho$ & Rationale \\
-\midrule
-HotpotQA       & Type~I (info-poverty) & $-$ & $-0.041$ & Requires retrieving specific evidence \\
-FEVER          & Type~I (info-poverty) & $-$ & $-0.119$ & Depends on finding supporting facts \\
-TWExpress      & Type~I (info-poverty) & $-$ & $-0.290$ & Sparse reward, long info-gathering \\
-\midrule
-APPS Intv.     & Type~D (decision-diff) & $+$ & $+0.317$ & Multiple valid solution strategies \\
-\midrule
-APPS Intro     & Mixed ($p_I \approx p_I^*$) & $\approx 0$ & $+0.012$ & Mix of info-gathering \& code design \\
-WebShop        & Mixed (entropy weak) & $\approx 0$ & $-0.019$ & Choice-dominated but entropy weak \\
-\midrule
-CRUXEval       & Weak signal & $\approx 0$ & $-0.048$ & Short trajectories, little variation \\
-Plancraft      & Weak signal & $\approx 0$ & $-0.016$ & Rollouts harmful; entropy uninformative \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The mapping confirms the model's core prediction: \emph{the sign of
-the entropy--utility correlation is determined by which uncertainty
-source dominates}, not by properties of the entropy signal itself.
-Multi-backbone experiments further show that different models shift
-the effective balance between Type~I and Type~D uncertainty in the
-same environment, making direction unpredictable from environment
-structure alone, reinforcing why adaptive direction discovery
-(rather than environment-level heuristics) is essential.
+which reverses sign at the critical threshold
+$p_I^* = \beta/(\alpha+\beta)$ (full derivation in
+Appendix~\ref{app:model-derivation}). Environments with
+$p_I > p_I^*$ exhibit negative $\rho$ (Type~I dominated); those
+with $p_I < p_I^*$ exhibit positive $\rho$ (Type~D dominated);
+near $p_I^*$, the two effects cancel and entropy carries
+negligible signal. This prediction is consistent with the observed
+Qwen3 pattern in Table~\ref{tab:signal-discovery}: search-based QA
+(FEVER, HotpotQA, TWExpress) shows negative $\rho$, code generation
+(APPS Interview) shows positive $\rho$, and mixed environments
+cluster near zero. A full per-environment mapping is provided in
+Appendix~\ref{app:env-mapping}. Multi-backbone results
+(Appendix~\ref{app:multi-backbone}) further show that the model
+backbone modulates the effective $p_I$, making direction
+unpredictable from environment structure alone. We treat this
+two-source decomposition as a \emph{minimal falsifiable} model rather than
+a post-hoc explanation: in
+Section~\ref{sec:theory-verification} we derive three predictions
+from it (temporal dynamics, cross-environment consistency, and
+signal identity alignment) and verify each on held-out data.
 
 \paragraph{Theoretical grounding.}
-This direction reversal is an instance of Simpson's
-paradox~\citep{simpson1951interpretation, DBLP:books/acm/22/Pearl22n}:
-aggregating heterogeneous subpopulations with opposing within-group
-trends reverses the aggregate correlation. Our two-source
-decomposition draws on the epistemic/aleatoric
-distinction~\citep{der2009aleatory},
-adapted to the meta-decision setting: Type~I states exhibit
-epistemic-like uncertainty (information deficit), while Type~D states
-exhibit aleatoric-like diversity (multiple viable paths).
+This direction reversal is a special case of Simpson's
+paradox~\cite{simpson1951interpretation,DBLP:books/acm/22/Pearl22n}:
+aggregating subpopulations with opposing within-group trends
+reverses the aggregate correlation. Our decomposition adapts the
+epistemic/aleatoric distinction~\cite{der2009aleatory} to the
+meta-decision setting: Type~I states exhibit epistemic-like
+uncertainty (information deficit), while Type~D states exhibit
+aleatoric-like diversity (multiple viable paths).
+
+\subsection{Necessity of Direction Discovery}
+\label{sec:necessity}
 
 \begin{proposition}[Necessity of Direction Discovery]
 \label{prop:necessity}
@@ -235,35 +173,21 @@ Suppose there exist two environments $\mathcal{E}_1, \mathcal{E}_2$
 with opposite true directions: $d^*(\mathcal{E}_1) = +1$ and
 $d^*(\mathcal{E}_2) = -1$. Then no fixed-direction gate $g_d$ can
 simultaneously satisfy
-$\mathrm{SR}(g_d, \mathcal{E}_1) \geq \mathrm{SR}(\mathrm{base},
-\mathcal{E}_1)$ and
-$\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
-\mathcal{E}_2)$.
-That is, direction discovery is a \emph{necessary} condition for
-cross-environment non-negative value of computation.
+$\mathrm{SR}(g_d, \mathcal{E}_1) \geq
+ \mathrm{SR}(\mathrm{base}, \mathcal{E}_1)$ and
+$\mathrm{SR}(g_d, \mathcal{E}_2) \geq
+ \mathrm{SR}(\mathrm{base}, \mathcal{E}_2)$.
 \end{proposition}
 
-The intuition is straightforward: a gate with $d = +1$ triggers on
-high-signal states, which in a Type~I environment correspond to
-information poverty where rollouts are harmful. The symmetric
-argument holds for $d = -1$ in Type~D environments. Since no single
-direction satisfies both, direction discovery is necessary. The full
-proof is provided in Appendix~\ref{app:proofs}.
-
-\subsection{Implications for Method Design}
-\label{sec:implications}
-
-The four observations and the necessity result above jointly
-establish three requirements for cross-environment adaptive compute.
-First, the gate must use \emph{multiple signals}, since no single
-signal is universally informative (Obs.~2--3). Second, the gate must
-discover the \emph{direction} of each signal per environment, since
-fixed direction is provably insufficient
-(Prop.~\ref{prop:necessity}). Third, the gate must adapt to each
-\emph{environment's} information structure, since the dominant
-uncertainty type varies across tasks
-(Obs.~1, Table~\ref{tab:env-type-mapping}). The Two-Source Model
-further yields testable predictions regarding temporal dynamics,
-cross-environment consistency, and signal identity alignment, which
-we verify empirically in \S\ref{sec:theory-verification}. We now
-present a method that satisfies all three requirements.
+The intuition is direct: a gate with $d = +1$ triggers on
+high-signal states, which in a Type~I environment correspond
+exactly to states where rollouts harm the agent; the symmetric
+argument holds for $d = -1$ in Type~D environments. Since
+real-world deployments span both environment types, no
+fixed-direction strategy can deliver non-negative value of
+computation universally---direction discovery is a necessary
+precondition for cross-environment robustness, not a refinement
+of it. The full proof is in Appendix~\ref{app:proof-necessity},
+and as Section~\ref{sec:main-results} will show, every
+fixed-direction baseline empirically underperforms the no-trigger
+baseline in at least 2 of 8 environments.
