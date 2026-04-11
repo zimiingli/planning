@@ -1,0 +1,23 @@
+\begin{table}[t]
+\centering
+\caption{P3 Signal identity alignment. The strongest signal in each environment
+matches the Two-Source Model prediction: information-sufficiency proxies dominate
+in Type~I environments; decision-complexity proxies dominate in mixed/Type~D.}
+\label{tab:signal-identity}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llllcl}
+\toprule
+\textbf{Env} & \textbf{Type} & \textbf{Strongest Signal} & $|\rho|$ & \textbf{Interpretation} \\
+\midrule
+HotpotQA   & Info-Poverty & step\_count             & 0.494 & Info accumulation \\
+FEVER      & Info-Poverty & step\_count             & 0.619 & Info accumulation \\
+TWExpress  & Info-Poverty & step\_count             & 0.477 & Exploration depth \\
+APPS Intro & Mixed        & step\_count             & 0.155 & Weak signal \\
+WebShop    & Mixed        & num\_available\_actions  & 0.444 & Decision-space size \\
+APPS Intv  & Decision-Diff & step\_count            & 0.339 & Debugging depth \\
+CRUXEval   & Weak         & step\_count             & 0.184 & Weak (ceiling) \\
+Plancraft  & Weak (harmful) & has\_output           & 0.162 & Rollout harmful \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
