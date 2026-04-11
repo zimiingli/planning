@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.1.24)  6 APR 2026 18:17
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.1.24)  8 APR 2026 18:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -413,54 +413,94 @@ LaTeX Font Info:    Trying to load font information for U+psy on input line 64.
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/upsy.fd
 File: upsy.fd 2001/06/04 font definitions for U/psy.
 ))
-\c@proposition=\count297
-\c@definition=\count298
-LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 3
-6.
+(/usr/local/texlive/2023/texmf-dist/tex/latex/algorithms/algorithm.sty
+Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating enviro
+nment
 
-(/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ot1ptm.fd
+(/usr/local/texlive/2023/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count297
+\float@exts=\toks30
+\float@box=\box54
+\@float@everytoks=\toks31
+\@floatcapt=\box55
+)
+(/usr/local/texlive/2023/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2022/04/13 v1.1d Standard LaTeX ifthen package (DPC)
+)
+\@float@every@algorithm=\toks32
+\c@algorithm=\count298
+)
+(/usr/local/texlive/2023/texmf-dist/tex/latex/algorithmicx/algpseudocode.sty
+Package: algpseudocode 
+
+(/usr/local/texlive/2023/texmf-dist/tex/latex/algorithmicx/algorithmicx.sty
+Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
+
+Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
+\c@ALG@line=\count299
+\c@ALG@rem=\count300
+\c@ALG@nested=\count301
+\ALG@tlm=\skip63
+\ALG@thistlm=\skip64
+\c@ALG@Lnr=\count302
+\c@ALG@blocknr=\count303
+\c@ALG@storecount=\count304
+\c@ALG@tmpcounter=\count305
+\ALG@tmplength=\skip65
+)
+Document Style - pseudocode environments for use with the `algorithmicx' style
+)
+\c@proposition=\count306
+\c@definition=\count307
+LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 3
+7.
+ (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
 (/usr/local/texlive/2023/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2023-01-16 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count299
-\l__pdf_internal_box=\box54
+\l__color_backend_stack_int=\count308
+\l__pdf_internal_box=\box56
 )
-(./main.aux)
+(./main.aux
+
+LaTeX Warning: Label `alg:eaag' multiply defined.
+
+)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-
-(/usr/local/texlive/2023/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+ (/usr/local/texlive/2023/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count300
+\scratchcounter=\count309
 \scratchdimen=\dimen187
-\scratchbox=\box55
-\nofMPsegments=\count301
-\nofMParguments=\count302
-\everyMPshowfont=\toks30
-\MPscratchCnt=\count303
+\scratchbox=\box57
+\nofMPsegments=\count310
+\nofMParguments=\count311
+\everyMPshowfont=\toks33
+\MPscratchCnt=\count312
 \MPscratchDim=\dimen188
-\MPnumerator=\count304
-\makeMPintoPDFobject=\count305
-\everyMPtoPDFconversion=\toks31
+\MPnumerator=\count313
+\makeMPintoPDFobject=\count314
+\everyMPtoPDFconversion=\toks34
 ) (/usr/local/texlive/2023/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
@@ -505,305 +545,440 @@ e
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring ON on input line 36.
+Package hyperref Info: Link coloring ON on input line 37.
 (./main.out) (./main.out)
 \@outlinefile=\write3
 \openout3 = `main.out'.
 
-LaTeX Font Info:    Trying to load font information for U+lasy on input line 37
+LaTeX Font Info:    Trying to load font information for U+lasy on input line 38
 .
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/base/ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 37.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 38.
 
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 37.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 38.
 
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-(./sections/abstract.tex
-Underfull \hbox (badness 1609) in paragraph at lines 5--19
-\OT1/ptm/m/n/10 pose EAAG (Environment-Aware Adap-tive
- []
-
-) (./sections/introduction.tex
-Underfull \hbox (badness 1502) in paragraph at lines 49--50
-[]\OT1/ptm/m/n/10.95 We con-duct sys-tem-atic mea-sure-ment across
- []
-
-
-Underfull \hbox (badness 1231) in paragraph at lines 49--50
-\OT1/ptm/m/n/10.95 eight agent en-vi-ron-ments span-ning QA ([][]Yang
- []
-
-[1{/usr/local/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/l
-ocal/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc}
+(./sections/abstract.tex) (./sections/introduction.tex [1{/usr/local/texlive/20
+23/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/local/texlive/2023/texmf-
+dist/fonts/enc/dvips/base/8r.enc}
 
 
 
 ]
-Underfull \hbox (badness 1755) in paragraph at lines 68--79
-\OT1/ptm/m/n/10.95 (\OT1/ptm/b/n/10.95 E\OT1/ptm/m/n/10.95 nvironment-\OT1/ptm/
-b/n/10.95 A\OT1/ptm/m/n/10.95 ware \OT1/ptm/b/n/10.95 A\OT1/ptm/m/n/10.95 dapti
-ve \OT1/ptm/b/n/10.95 G\OT1/ptm/m/n/10.95 ating), which
+Underfull \hbox (badness 3803) in paragraph at lines 62--67
+\OT1/ptm/m/n/10.95 ment across eight agent en-vi-ron-ments span-
  []
 
 
-Underfull \hbox (badness 3323) in paragraph at lines 68--79
-\OT1/ptm/m/n/10.95 dis-cov-ers environment-specific gat-ing pat-terns
+Underfull \hbox (badness 2600) in paragraph at lines 62--67
+\OT1/ptm/m/n/10.95 ning QA ([][]Yang et al.[][], [][]2018[][]), code gen-er-a-
  []
 
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 8
-1.
+
+Underfull \hbox (badness 2181) in paragraph at lines 62--67
+\OT1/ptm/m/n/10.95 tion ([][]Hendrycks et al.[][], [][]2021b[][]), web nav-i-ga
+-
+ []
+
+
+Underfull \hbox (badness 1917) in paragraph at lines 62--67
+\OT1/ptm/m/n/10.95 tion ([][]Hendrycks et al.[][], [][]2021a[][]), fact ver-i-f
+i-ca-
+ []
+
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 1
+16.
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
-)
-Underfull \hbox (badness 3098) in paragraph at lines 89--93
-\OT1/ptm/m/n/10.95 di-rec-tion learn-ing to dis-cover environment-
+))
+(./sections/related_work.tex
+Underfull \hbox (badness 1107) in paragraph at lines 8--19
+ []\OT1/ptm/b/n/10.95 Gating on un-cer-tainty sig-nals.[] \OT1/ptm/m/n/10.95 On
+e line of
  []
 
-) (./sections/related_work.tex
-Underfull \hbox (badness 1496) in paragraph at lines 8--32
-[][]\OT1/ptm/m/n/10.95 Muen-nighoff et al.[][], [][]2025[][]; [][]Han et al.[][
-], [][]2025[][]).
+[2]
+Underfull \hbox (badness 2875) in paragraph at lines 21--38
+\OT1/ptm/m/n/10.95 learns to pre-dict task dif-fi-culty and al-lo-cate
  []
 
 
-Underfull \hbox (badness 1694) in paragraph at lines 8--32
-\OT1/ptm/m/n/10.95 through re-in-force-ment learn-ing ([][]Zhang et al.[][],
+Underfull \hbox (badness 7704) in paragraph at lines 48--63
+ []\OT1/ptm/b/n/10.95 Metareasoning and un-cer-tainty se-man-tics.[]
  []
 
-[2])
-Underfull \hbox (badness 4467) in paragraph at lines 49--44
- []\OT1/ptm/b/n/10.95 Uncertainty es-ti-ma-tion and metar-ea-son-ing.[]
+
+Underfull \hbox (badness 3492) in paragraph at lines 48--63
+\OT1/ptm/m/n/10.95 Ra-tio-nal metar-ea-son-ing ([][]Rus-sell and We-fald[][],
  []
 
-(./sections/signal_utility_landscape.tex
-LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 4
-9.
+
+Underfull \hbox (badness 1112) in paragraph at lines 48--63
+\OT1/ptm/m/n/10.95 basi Yad-kori et al.[][], [][]2024[][]) de-cou-ple epis-temi
+c
+ []
+
+) (./sections/signal_utility_landscape.tex
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 7
+0.
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
-)
-Overfull \hbox (34.06914pt too wide) in paragraph at lines 60--74
- [][] 
+) [3]
+Underfull \hbox (badness 3525) in paragraph at lines 80--92
+\OT1/ptm/b/n/10.95 ments. \OT1/ptm/m/n/10.95 Be-yond di-rec-tion, the most in-f
+or-
  []
 
 
-Underfull \hbox (badness 6141) in paragraph at lines 76--82
-[]\OT1/ptm/b/n/10.95 [FIGURE NEEDED: Fig-ure 2.] \OT1/ptm/m/n/10.95 Fea-
+Underfull \hbox (badness 2326) in paragraph at lines 80--92
+\OT1/ptm/m/n/10.95 ma-tive sig-nal it-self dif-fers from en-vi-ron-ment
  []
 
 
-Underfull \hbox (badness 2318) in paragraph at lines 76--82
-\OT1/ptm/m/n/10.95 ture im-por-tance heatmap. Rows = 8 en-vi-
+Underfull \hbox (badness 2617) in paragraph at lines 80--92
+\OT1/ptm/m/n/10.95 to en-vi-ron-ment: \OT1/pcr/m/n/10.95 step[]count \OT1/ptm/m
+/n/10.95 dom-i-nates in
  []
 
 
-LaTeX Warning: Reference `fig:feature-heatmap' on page 3 undefined on input lin
-e 85.
+Underfull \hbox (badness 1874) in paragraph at lines 80--92
+\OT1/ptm/m/n/10.95 most en-vi-ron-ments, but Web-Shop in-stead re-
+ []
 
 
-Underfull \vbox (badness 1308) has occurred while \output is active []
-
- [3]
-
-LaTeX Warning: Reference `fig:auc-hierarchy' on page 4 undefined on input line 
-100.
+Underfull \hbox (badness 1609) in paragraph at lines 80--92
+\OT1/ptm/m/n/10.95 specific fea-tures (Ap-pendix [][]D.1[][]). More-over,
+ []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 125--137
+Underfull \hbox (badness 10000) in paragraph at lines 102--114
  []\OT1/ptm/b/n/10.95 Intuition.[] \OT1/ptm/m/n/10.95 Con-sider a web-shopping 
 agent
  []
 
 
-Underfull \hbox (badness 2384) in paragraph at lines 125--137
+Underfull \hbox (badness 2384) in paragraph at lines 102--114
 \OT1/ptm/m/n/10.95 (high en-tropy) be-cause mul-ti-ple items match
  []
 
 
-Underfull \hbox (badness 1043) in paragraph at lines 125--137
+Underfull \hbox (badness 1043) in paragraph at lines 102--114
 \OT1/ptm/m/n/10.95 re-trieved ev-i-dence is am-bigu-ous. Here, high
  []
 
 
-Underfull \hbox (badness 2452) in paragraph at lines 173--183
- []\OT1/ptm/b/n/10.95 Environment map-ping.[] \OT1/ptm/m/n/10.95 Ta-ble [][]2[]
-[] maps each
+Underfull \hbox (badness 1735) in paragraph at lines 158--166
+\OT1/ptm/m/n/10.95 epis-temic/aleatoric dis-tinc-tion ([][]Der Ki-ureghian
  []
 
 
-Overfull \hbox (168.40182pt too wide) in paragraph at lines 193--210
- [][] 
- []
+Underfull \vbox (badness 1033) has occurred while \output is active []
 
-[4]
-Underfull \hbox (badness 1308) in paragraph at lines 222--231
-\OT1/ptm/m/n/10.95 adapted to the meta-decision set-ting: Type I
- []
-
-)
-Underfull \hbox (badness 1629) in paragraph at lines 256--46
-\OT1/ptm/m/n/10.95 above jointly es-tab-lish three re-quire-ments for
- []
-
-
-Underfull \vbox (badness 1308) has occurred while \output is active []
-
-
+ [4])
 (./sections/method.tex
-LaTeX Font Info:    Trying to load font information for OMS+ptm on input line 1
-7.
 
-(/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/omsptm.fd
-File: omsptm.fd 
-)
-LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 17.
+LaTeX Warning: Reference `fig:eaag-pipeline' on page 5 undefined on input line 
+27.
 
-Overfull \hbox (41.29042pt too wide) in paragraph at lines 20--34
- [][] 
+
+LaTeX Warning: Reference `fig:eaag-pipeline' on page 5 undefined on input line 
+46.
+
+
+Underfull \hbox (badness 1253) in paragraph at lines 46--49
+[]\OT1/ptm/b/n/10.95 [FIGURE NEEDED: Fig-ure [].] \OT1/ptm/m/n/10.95 EAAG
  []
 
 
-Underfull \hbox (badness 2990) in paragraph at lines 37--45
- []\OT1/ptm/b/n/10.95 Design ra-tio-nale.[] \OT1/ptm/m/n/10.95 Since di-rec-tio
-n dom-i-nates
+Underfull \hbox (badness 1460) in paragraph at lines 56--64
+\OT1/ptm/m/sc/10.95 son \OT1/ptm/m/n/10.95 (or-ange, dashed bor-der for op-tion
+al) $\OMS/cmsy/m/n/10.95 !$
  []
 
 
-Underfull \hbox (badness 2384) in paragraph at lines 46--53
-[]\OT1/ptm/b/n/10.95 [FIGURE NEEDED: Fig-ure 4.] \OT1/ptm/m/n/10.95 EAAG
+Underfull \hbox (badness 10000) in paragraph at lines 65--69
+[]\OT1/ptm/b/n/10.95 Bottom an-no-ta-tion: \OT1/ptm/m/n/10.95 Two small boxes
+ []
+
+
+Underfull \hbox (badness 1859) in paragraph at lines 65--69
+\OT1/ptm/m/n/10.95 show-ing ex-am-ple signed weights: Hot-potQA
+ []
+
+
+Underfull \hbox (badness 2564) in paragraph at lines 65--69
+\OT1/ptm/m/n/10.95 trig-ger) vs. APPS In-ter-view ($\OML/cmm/m/it/10.95 w[][][]
+\OT1/cmr/m/n/10.95 0\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 32$\OT1/ptm/m/n/10.
+95 ,
  []
 
 [5]
-
-LaTeX Warning: Reference `fig:method' on page 6 undefined on input line 54.
-
-
-Underfull \hbox (badness 2229) in paragraph at lines 59--67
-\OT1/ptm/m/n/10.95 The agent ex-plores a new en-vi-ron-ment with
+Overfull \hbox (198.81206pt too wide) detected at line 127
+[][][]\OML/cmm/m/it/10.95 ^^^[]\OT1/cmr/m/n/10.95 (\OML/cmm/m/it/10.95 s\OT1/cm
+r/m/n/10.95 ) = [ []\OML/cmm/m/it/10.95 ;  [];  [];  [];  [] \OT1/cmr/m/n/10.95
+ ]\OML/cmm/m/it/10.95 ;
  []
 
-)
-Underfull \hbox (badness 1454) in paragraph at lines 103--48
-\OT1/ptm/m/n/10.95 col-lect-ing data via $\OML/cmm/m/it/10.95 "$\OT1/ptm/m/n/10
-.95 -greedy ex-plo-ration ($\OML/cmm/m/it/10.95 " \OT1/cmr/m/n/10.95 :
+
+Underfull \hbox (badness 2582) in paragraph at lines 127--132
+\OT1/ptm/m/n/10.95 available in ev-ery en-vi-ron-ment with-out task-
  []
 
-(./sections/experiments.tex
-Overfull \hbox (62.57707pt too wide) in paragraph at lines 50--64
+
+Underfull \hbox (badness 3679) in paragraph at lines 133--139
+[]\OT1/ptm/m/n/10.95 For en-vi-ron-ments where uni-ver-sal fea-tures
+ []
+
+
+Underfull \hbox (badness 1728) in paragraph at lines 133--139
+\OT1/ptm/m/n/10.95 gat-ing ben-e-fits from task-specific sig-nals like
+ []
+
+! Undefined control sequence.
+l.157   \mathbf{w}^*, b^* = \argmin
+                                   _{\mathbf{w}, b}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
+put line 203.
+! Undefined control sequence.
+l.232   \argmin
+               _{\mathbf{w},b}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+) (./sections/experiments.tex
+Underfull \hbox (badness 2393) in paragraph at lines 10--15
+\OT1/ptm/m/n/10.95 We eval-u-ate EAAG along three axes: does
+ []
+
+
+Underfull \hbox (badness 1946) in paragraph at lines 10--15
+\OT1/ptm/m/n/10.95 direction base-lines (\TS1/ptm/m/n/10.95 §[][]\OT1/ptm/m/n/1
+0.95 5.2[][]); which com-po-nents
+ []
+
+[6]
+Overfull \hbox (62.57707pt too wide) in paragraph at lines 47--61
  [][] 
  []
 
 
-LaTeX Warning: Reference `tab:main' on page 6 undefined on input line 71.
+LaTeX Warning: Reference `tab:main' on page 7 undefined on input line 68.
 
 
-LaTeX Warning: Reference `tab:winloss' on page 6 undefined on input line 73.
+LaTeX Warning: Reference `tab:winloss' on page 7 undefined on input line 69.
 
 
-Underfull \hbox (badness 1377) in paragraph at lines 71--79
-\OT1/ptm/b/n/10.95 EAAG out-per-forms fixed-direction base-lines
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Warning: Reference `tab:main' on page 7 undefined on input line 78.
+
+
+Underfull \hbox (badness 2556) in paragraph at lines 78--83
+[]\OT1/ptm/b/n/10.95 [DATA NEEDED: Ta-ble [].] \OT1/ptm/m/n/10.95 Main re-
  []
 
 
-Underfull \hbox (badness 1168) in paragraph at lines 71--79
-\OT1/ptm/m/n/10.95 effect en-vi-ron-ments where EAAG al-ready ap-
- []
-
-[6]
-Underfull \hbox (badness 1132) in paragraph at lines 84--90
+Underfull \hbox (badness 1132) in paragraph at lines 78--83
 \OT1/ptm/m/n/10.95 a-cle, CaTS, SEAG, CoRe-fine, CATTS, AUQ,
  []
 
 
-Underfull \hbox (badness 1117) in paragraph at lines 84--90
-\OT1/ptm/m/n/10.95 best SR per en-vi-ron-ment. $\OMS/cmsy/m/n/10.95 y$ \OT1/ptm
-/m/n/10.95 marks Phase-1-
+LaTeX Warning: Reference `tab:winloss' on page 7 undefined on input line 88.
+
+
+LaTeX Warning: Reference `fig:pareto' on page 7 undefined on input line 92.
+
+
+Underfull \hbox (badness 1137) in paragraph at lines 92--94
+[]\OT1/ptm/b/n/10.95 [FIGURE NEEDED: Fig-ure [].] Pareto
  []
 
 
-Underfull \hbox (badness 1210) in paragraph at lines 98--116
-\OT1/ptm/m/n/10.95 EAAG and fixed-direction base-lines is largest
- []
-
-
-Underfull \hbox (badness 1158) in paragraph at lines 98--116
-\OT1/ptm/m/n/10.95 where di-rec-tion mis-match is most se-vere: in
- []
-
-
-Underfull \hbox (badness 1242) in paragraph at lines 98--116
-\OT1/ptm/m/n/10.95 meth-ods ap-proach the or-a-cle. Third, EAAG
- []
-
-
-Underfull \hbox (badness 2042) in paragraph at lines 98--116
-\OT1/ptm/m/n/10.95 ing to the en-vi-ron-ment's roll-out value struc-
- []
-
-
-Underfull \hbox (badness 2189) in paragraph at lines 136--145
-[]\OT1/ptm/b/n/10.95 LLM rea-son-ing pro-vides ro-bust-ness, not
+Underfull \hbox (badness 1137) in paragraph at lines 104--108
+[]\OT1/ptm/m/n/10.95 Different marker shapes by method cat-e-
  []
 
 [7]
-Underfull \hbox (badness 2005) in paragraph at lines 153--161
-\OT1/ptm/m/n/10.95 ger rate across en-vi-ron-ments with-out ex-plicit
+Underfull \hbox (badness 1024) in paragraph at lines 108--110
+\OT1/ptm/m/n/10.95 in a se-quen-tial col-ormap (e.g., viridis or
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 199--207
+Underfull \hbox (badness 2165) in paragraph at lines 116--118
+\OT1/ptm/m/n/10.95 fron-tier in ev-ery en-vi-ron-ment; fixed-direction
+ []
+
+
+LaTeX Warning: Reference `fig:entropy-bin' on page 8 undefined on input line 14
+1.
+
+
+Underfull \hbox (badness 1990) in paragraph at lines 152--154
+[]\OT1/ptm/m/n/10.95 For each bin, com-pute SR of: EAAG,
+ []
+
+
+Underfull \hbox (badness 3536) in paragraph at lines 169--171
+\OT1/ptm/m/n/10.95 EAAG and base-lines im-prove (di-rec-tion
+ []
+
+
+Underfull \hbox (badness 2529) in paragraph at lines 171--172
+[]\OT1/ptm/m/n/10.95 In Mixed panel: EAAG adapts within-
+ []
+
+
+Underfull \hbox (badness 2080) in paragraph at lines 174--176
+[]\OT1/ptm/b/n/10.95 Data source: \OT1/ptm/m/n/10.95 Com-pute from per-step ex-
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 174--176
+\OT1/pcr/m/n/10.95 entropy, trigger[]decision, U,
+ []
+
+[8]
+
+LaTeX Warning: Reference `fig:trigger-adapt' on page 9 undefined on input line 
+206.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 206--208
+[]\OT1/ptm/b/n/10.95 [FIGURE NEEDED: Fig-ure [].]
+ []
+
+
+Underfull \hbox (badness 2150) in paragraph at lines 206--208
+\OT1/ptm/b/n/10.95 Environment-adaptive trig-ger be-hav-ior \OT1/ptm/m/n/10.95 
+(ref:
+ []
+
+
+Underfull \hbox (badness 3386) in paragraph at lines 225--226
+[]\OT1/ptm/m/n/10.95 Order pan-els by $\OT1/cmr/m/n/10.95 ^^A$ \OT1/ptm/m/n/10.
+95 (roll-out head-room):
+ []
+
+
+Underfull \hbox (badness 3009) in paragraph at lines 228--232
+\OT1/ptm/m/n/10.95 (TWEx-press, rollout-safe) to $\OML/cmm/m/it/10.95 <$\OT1/pt
+m/m/n/10.95 20% late-step
+ []
+
+
+Underfull \hbox (badness 1231) in paragraph at lines 233--237
+[]\OT1/ptm/b/n/10.95 Data source: \OT1/pcr/m/n/10.95 fig[]trigger[]rate/ \OT1/p
+tm/m/n/10.95 CSV
+ []
+
+
+LaTeX Warning: Reference `fig:direction-cost' on page 9 undefined on input line
+ 246.
+
+
+Underfull \hbox (badness 1478) in paragraph at lines 254--257
+\OT1/pcr/m/n/10.95 tab[]signal[]discovery/ \OT1/ptm/m/n/10.95 CSV files. For
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 276--279
+[]\OT1/ptm/b/n/10.95 Improvement over cur-rent
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 276--279
+\OT1/ptm/b/n/10.95 fig3[]bsw[]cost.png: \OT1/ptm/m/n/10.95 Cur-rent ver-sion wo
+rks
+ []
+
+
+LaTeX Warning: Reference `fig:temporal-shift' on page 9 undefined on input line
+ 303.
+
+
+Underfull \hbox (badness 7030) in paragraph at lines 303--306
+[]\OT1/ptm/b/n/10.95 [FIGURE NEEDED: Fig-ure [].] P1
+ []
+
+
+Underfull \hbox (badness 2205) in paragraph at lines 303--306
+\OT1/ptm/b/n/10.95 ver-i-fi-ca-tion: tem-po-ral dy-nam-ics of $\OML/cmm/m/it/10
+.95 ^^Z$ \OT1/ptm/m/n/10.95 (ref:
+ []
+
+
+Underfull \hbox (badness 3088) in paragraph at lines 312--313
+[]\OT1/ptm/b/n/10.95 Data: \OT1/ptm/m/n/10.95 From \OT1/pcr/m/n/10.95 fig[]p1[]
+temporal[]shift/
+ []
+
+[9]
+Underfull \hbox (badness 10000) in paragraph at lines 348--356
  []\OT1/ptm/b/n/10.95 P2: Cross-environment con-sis-tency (con-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 199--207
+Underfull \hbox (badness 10000) in paragraph at lines 348--356
 \OT1/ptm/b/n/10.95 firmed).[] \OT1/ptm/m/n/10.95 We com-pare same-family pairs.
 
  []
 
 
-Underfull \hbox (badness 1303) in paragraph at lines 199--207
+Underfull \hbox (badness 1303) in paragraph at lines 348--356
 \OT1/ptm/m/n/10.95 APPS In-tro ($\OML/cmm/m/it/10.95 ^^Z[][]\OT1/cmr/m/n/10.95 
 0\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 012$\OT1/ptm/m/n/10.95 ) and APPS In-t
 er-view
  []
 
 
-Underfull \hbox (badness 5133) in paragraph at lines 199--207
+Underfull \hbox (badness 5133) in paragraph at lines 348--356
 \OT1/ptm/m/n/10.95 con-tam-i-na-tion; FEVER has more early-step
  []
 
 
-Underfull \hbox (badness 1983) in paragraph at lines 209--218
+Underfull \hbox (badness 1983) in paragraph at lines 358--367
  []\OT1/ptm/b/n/10.95 P3: Sig-nal iden-tity align-ment (con-firmed).[]
  []
 
 
-Underfull \hbox (badness 1147) in paragraph at lines 209--218
-\OT1/ptm/m/n/10.95 We ex-am-ine the LASSO-selected fea-tures per
+Underfull \hbox (badness 3108) in paragraph at lines 358--367
+\OT1/ptm/m/n/10.95 We ex-am-ine the sparse-selected fea-tures per
  []
 
 
-Underfull \hbox (badness 2245) in paragraph at lines 209--218
+Underfull \hbox (badness 2245) in paragraph at lines 358--367
 \OT1/ptm/m/n/10.95 FEVER), the strongest sig-nal (\OT1/pcr/m/n/10.95 step[]coun
 t\OT1/ptm/m/n/10.95 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 209--218
+Underfull \hbox (badness 10000) in paragraph at lines 358--367
 \OMS/cmsy/m/n/10.95 j\OML/cmm/m/it/10.95 ^^Z\OMS/cmsy/m/n/10.95 j[]\OT1/cmr/m/n
 /10.95 0\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 494$ \OT1/ptm/m/n/10.95 and $\O
 T1/cmr/m/n/10.95 0\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 619$\OT1/ptm/m/n/10.9
@@ -811,45 +986,135 @@ T1/cmr/m/n/10.95 0\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 619$\OT1/ptm/m/n/10.9
  []
 
 
-Underfull \hbox (badness 2452) in paragraph at lines 209--218
+Underfull \hbox (badness 2452) in paragraph at lines 358--367
 \OT1/ptm/m/n/10.95 progress, a proxy for in-for-ma-tion ac-cu-mu-la-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 209--218
+Underfull \hbox (badness 10000) in paragraph at lines 358--367
 \OT1/pcr/m/n/10.95 num[]available[]actions \OT1/ptm/m/n/10.95 ($\OML/cmm/m/it/1
 0.95 ^^Z[][]\OT1/cmr/m/n/10.95 0\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 444$\OT
 1/ptm/m/n/10.95 )
  []
 
 
-Underfull \hbox (badness 2653) in paragraph at lines 229--235
-\OT1/ptm/m/n/10.95 com-ple-men-tary anal-y-ses, plus multi-backbone
- []
-
-
-Underfull \hbox (badness 2529) in paragraph at lines 247--254
+Underfull \hbox (badness 2529) in paragraph at lines 397--404
  []\OT1/ptm/b/n/10.95 Interventional ev-i-dence.[] \OT1/ptm/m/n/10.95 The BSW a
 b-la-tion
  []
 
-[8])
-Underfull \hbox (badness 1400) in paragraph at lines 282--50
+
+Underfull \hbox (badness 1400) in paragraph at lines 432--439
 \OT1/ptm/m/n/10.95 (MLP 45.3% $\OML/cmm/m/it/10.95 <$ \OT1/ptm/m/n/10.95 lo-gis
 -tic 62.0%), be-cause the
  []
 
-(./sections/discussion.tex) (./sections/conclusion.tex)
-Underfull \hbox (badness 1205) in paragraph at lines 6--54
-\OT1/ptm/m/n/10.95 this oc-curs, and a ne-ces-sity proof es-tab-lishes
+[10]
+
+LaTeX Warning: Reference `fig:case-study' on page 11 undefined on input line 44
+0.
+
+) (./sections/discussion.tex) (./sections/conclusion.tex)
+Underfull \hbox (badness 10000) in paragraph at lines 5--55
+\OT1/ptm/m/n/10.95 All ex-ist-ing adap-tive gat-ing meth-ods for
  []
 
 
-Underfull \hbox (badness 1163) in paragraph at lines 6--54
-\OT1/ptm/m/n/10.95 that di-rec-tion dis-cov-ery is re-quired for cross-
+Underfull \hbox (badness 10000) in paragraph at lines 5--55
+\OT1/ptm/m/n/10.95 LLM agents rest on an im-plicit as-sump-
  []
 
-(./main.bbl
+
+Underfull \hbox (badness 3872) in paragraph at lines 5--55
+\OT1/ptm/m/n/10.95 tion: that un-cer-tainty sig-nals have a fixed
+ []
+
+
+Underfull \hbox (badness 2253) in paragraph at lines 5--55
+\OT1/ptm/m/n/10.95 re-la-tion-ship with com-pute value. We show
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 5--55
+\OT1/ptm/m/n/10.95 that this as-sump-tion <<<<<<< HEAD re-flects
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 5--55
+\OT1/ptm/m/n/10.95 a struc-tural limitation---uncertainty sig-nals
+ []
+
+
+Underfull \hbox (badness 3724) in paragraph at lines 5--55
+\OT1/ptm/m/n/10.95 are not ======= re-flects a struc-tural lim-i-
+ []
+
+
+Underfull \hbox (badness 4739) in paragraph at lines 5--55
+\OT1/ptm/m/n/10.95 ta-tion: un-cer-tainty sig-nals are not >>>>>>>
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 5--55
+\OT1/ptm/m/n/10.95 cc1bc6e4f1be11f03658207b43893225ca507faf
+ []
+
+
+Underfull \hbox (badness 1509) in paragraph at lines 5--55
+\OT1/ptm/m/n/10.95 suf-fi-cient statis-tics for the value of com-pu-ta-
+ []
+
+
+Underfull \hbox (badness 4328) in paragraph at lines 5--55
+\OT1/ptm/m/n/10.95 Across eight en-vi-ron-ments and three model
+ []
+
+
+Underfull \hbox (badness 3189) in paragraph at lines 5--55
+\OT1/ptm/m/n/10.95 A two-source model grounded in Simp-son's
+ []
+
+
+Underfull \hbox (badness 1365) in paragraph at lines 5--55
+\OT1/ptm/m/n/10.95 <<<<<<< HEAD ro-bust-ness. EAAG in-stan-ti-ates
+ []
+
+
+Underfull \hbox (badness 1024) in paragraph at lines 5--55
+\OT1/ptm/m/n/10.95 this prin-ci-ple through ex-plo-ration, LLM-based
+ []
+
+
+Underfull \hbox (badness 1067) in paragraph at lines 5--55
+\OT1/ptm/m/n/10.95 rea-son-ing, and sparse di-rec-tion learn-ing, with
+ []
+
+
+Underfull \hbox (badness 8056) in paragraph at lines 5--55
+\OT1/ptm/m/n/10.95 eval-u-ated set-tings, EAAG dom-i-nates fixed-
+ []
+
+
+Underfull \hbox (badness 1097) in paragraph at lines 5--55
+\OT1/ptm/m/n/10.95 suppression---emerging from di-rec-tion learn-ing
+ []
+
+
+Underfull \hbox (badness 1308) in paragraph at lines 5--55
+\OT1/ptm/m/n/10.95 un-bi-ased data through ran-dom-ized ex-plo-ration
+ []
+
+
+Underfull \hbox (badness 4543) in paragraph at lines 5--55
+\OT1/ptm/m/n/10.95 sparse lin-ear learn-ing, adding zero per-step
+ []
+
+
+Underfull \hbox (badness 1062) in paragraph at lines 5--55
+\OT1/ptm/m/n/10.95 ag-gres-sive trig-ger-ing to near-total sup-pres-sion,
+ []
+
+[11] (./main.bbl
 Underfull \hbox (badness 1552) in paragraph at lines 17--20
 []\OT1/ptm/m/n/10 Armen Der Ki-ureghian and Ove Ditlevsen. 2009.
  []
@@ -864,12 +1129,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 32--38
 []\OT1/ptm/m/n/10 Mostafa El-houshi, Ak-shat Shri-vas-tava, Di-ana
  []
 
-[9]
+
 Underfull \hbox (badness 10000) in paragraph at lines 99--103
 []\OT1/ptm/m/n/10 Peter Jansen and Marc-Alexandre C[]ot[]e. 2023.
  []
 
-
+[12]
 Underfull \hbox (badness 1584) in paragraph at lines 115--122
 \OT1/ptm/m/n/10 Henighan, Dawn Drain, Ethan Perez, Nicholas
  []
@@ -884,7 +1149,7 @@ Underfull \hbox (badness 5288) in paragraph at lines 187--190
 []\OT1/ptm/m/n/10 Nicol[]o De Sab-bata, Theodore R. Sumers, and
  []
 
-[10]
+
 Underfull \hbox (badness 10000) in paragraph at lines 247--251
 []\OT1/ptm/m/n/10 James Thorne, An-dreas Vla-chos, Chris-tos
  []
@@ -894,168 +1159,136 @@ Underfull \hbox (badness 10000) in paragraph at lines 247--251
 \OT1/ptm/m/n/10 Christodoulopou-los, and Arpit Mit-tal. 2018.
  []
 
-
+[13]
 Underfull \hbox (badness 1748) in paragraph at lines 294--298
 \OT1/ptm/m/n/10 Huang, Caim-ing Xiong, and Chien-Sheng Wu.
  []
 
 ) (./sections/appendix.tex
-Underfull \hbox (badness 2486) in paragraph at lines 11--27
+Underfull \hbox (badness 2486) in paragraph at lines 14--30
 \OT1/ptm/m/n/10.95 meth-ods op-ti-mize single-turn chain-of-thought
  []
 
 
-Underfull \hbox (badness 1838) in paragraph at lines 11--27
+Underfull \hbox (badness 1838) in paragraph at lines 14--30
 \OT1/ptm/m/n/10.95 to ex-tend think-ing ([][]Lee et al.[][], [][]2025[][]; [][]
 Huang
  []
 
 
-Underfull \hbox (badness 2096) in paragraph at lines 11--27
+Underfull \hbox (badness 2096) in paragraph at lines 14--30
 [][]\OT1/ptm/m/n/10.95 2025[][]; [][]Muen-nighoff et al.[][], [][]2025[][]; [][
 ]Han et al.[][],
  []
 
 
-Underfull \hbox (badness 1418) in paragraph at lines 28--39
+Underfull \hbox (badness 1418) in paragraph at lines 31--42
 \OT1/ptm/m/n/10.95 sam-ple mul-ti-ple can-di-date ac-tions and trig-ger
  []
 
 
-Underfull \hbox (badness 4048) in paragraph at lines 57--57
+Underfull \hbox (badness 4048) in paragraph at lines 60--60
 []\OT1/ptm/m/n/9 Vote en-tropy +
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 57--58
+Underfull \hbox (badness 10000) in paragraph at lines 60--61
 []\OT1/ptm/m/n/9 High dis-
  []
 
 
-Underfull \hbox (badness 7963) in paragraph at lines 57--58
+Underfull \hbox (badness 7963) in paragraph at lines 60--61
 \OT1/ptm/m/n/9 agree. $\OMS/cmsy/m/n/9 !$
  []
 
 
-Underfull \hbox (badness 4621) in paragraph at lines 58--59
+Underfull \hbox (badness 4621) in paragraph at lines 61--62
 \OT1/ptm/m/n/9 ar-biter on dis-agree-
  []
 
 
-Underfull \hbox (badness 1776) in paragraph at lines 60--61
+Underfull \hbox (badness 1776) in paragraph at lines 63--64
 []\OT1/ptm/m/n/9 Platt scal-ing, search
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 63--63
+Underfull \hbox (badness 10000) in paragraph at lines 66--66
 []\OT1/ptm/m/n/9 Conv1D con-fi-
  []
 
 
-Underfull \hbox (badness 2644) in paragraph at lines 64--65
+Underfull \hbox (badness 2644) in paragraph at lines 67--68
 []\OT1/ptm/m/n/9 Halt / re-examine /
  []
 
 
-Underfull \hbox (badness 3179) in paragraph at lines 65--66
+Underfull \hbox (badness 3179) in paragraph at lines 68--69
 []\OT1/ptm/m/n/9 Fixed bud-get
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 66--67
+Underfull \hbox (badness 10000) in paragraph at lines 69--70
 []\OT1/ptm/m/n/9 Budget-constrained
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 67--67
+Underfull \hbox (badness 10000) in paragraph at lines 70--70
 []\OT1/ptm/m/n/9 Verbalized un-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 67--68
+Underfull \hbox (badness 10000) in paragraph at lines 70--71
 []\OT1/ptm/m/n/9 High un-cert.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 68--69
+Underfull \hbox (badness 10000) in paragraph at lines 71--72
 []\OT1/ptm/m/n/9 Uncertainty-aware
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 68--69
+Underfull \hbox (badness 10000) in paragraph at lines 71--72
 \OT1/ptm/m/n/9 mem-ory + re-flec-
  []
 
 
-Underfull \hbox (badness 5519) in paragraph at lines 68--69
+Underfull \hbox (badness 5519) in paragraph at lines 71--72
 \OT1/ptm/m/n/9 tion ([][]Zhang et al.[][],
  []
 
 
-Underfull \hbox (badness 1881) in paragraph at lines 71--72
+Underfull \hbox (badness 1881) in paragraph at lines 74--75
 []\OT1/ptm/m/n/9 Explore + rea-son +
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 71--72
+Underfull \hbox (badness 10000) in paragraph at lines 74--75
 \OT1/ptm/m/n/9 LASSO di-rec-tion
  []
 
 
-Overfull \hbox (131.13185pt too wide) in paragraph at lines 53--74
+Overfull \hbox (131.13185pt too wide) in paragraph at lines 56--77
  [][] 
  []
 
 
-LaTeX Warning: `h' float specifier changed to `ht'.
+Underfull \vbox (badness 1635) has occurred while \output is active []
 
-[11]
-Underfull \hbox (badness 3492) in paragraph at lines 110--126
+ [14]
+Underfull \hbox (badness 3492) in paragraph at lines 114--130
 \OT1/ptm/m/n/10.95 Rational metar-ea-son-ing ([][]Rus-sell and We-fald[][],
  []
 
-[12]
-Underfull \hbox (badness 2790) in paragraph at lines 172--174
-[]\OT1/ptm/m/n/10.95 HotpotQA, FEVER, TWEx-press, Plan-
- []
 
-
-Underfull \hbox (badness 1708) in paragraph at lines 176--178
-\OT1/ptm/m/n/10.95 poses $\OML/cmm/m/it/10.95 K[]\OT1/cmr/m/n/10.95 3$ \OT1/ptm
-/m/n/10.95 ac-tion se-quences, sim-u-late
- []
-
-
-Underfull \hbox (badness 7291) in paragraph at lines 184--190
- []\OT1/ptm/b/n/10.95 EAAG hy-per-pa-ram-e-ters.[] $\OML/cmm/m/it/10.95 N[] \OT
-1/cmr/m/n/10.95 = 50$
- []
-
-
-Underfull \hbox (badness 7685) in paragraph at lines 201--207
-\OT1/ptm/b/n/10.95 [DATA NEEDED: Ta-ble A1.] \OT1/ptm/m/n/10.95 En-vi-ron-
- []
-
-
-Underfull \hbox (badness 1005) in paragraph at lines 201--207
-\OT1/ptm/m/n/10.95 fi-cients. Rows = 8 en-vi-ron-ments. Columns
- []
-
-
-Underfull \hbox (badness 2326) in paragraph at lines 201--207
-\OT1/ptm/m/n/10.95 = step[]count, to-ken[]entropy, state[]length, ac-
- []
-
-
-Underfull \hbox (badness 4543) in paragraph at lines 243--246
+Underfull \hbox (badness 4543) in paragraph at lines 197--201
 \OT1/cmr/m/n/10.95 0$ \OT1/ptm/m/n/10.95 in $\OMS/cmsy/m/n/10.95 E$ \OT1/ptm/m/
 n/10.95 (Type D), and $\OML/cmm/m/it/10.95 d[]\OT1/cmr/m/n/10.95 (\OMS/cmsy/m/n
 /10.95 E\OT1/cmr/m/n/10.95 ) = \OMS/cmsy/m/n/10.95 ^^@\OT1/cmr/m/n/10.95 1$ \OT
 1/ptm/m/n/10.95 if
  []
 
-
-Underfull \hbox (badness 1048) in paragraph at lines 258--263
+[15]
+Underfull \hbox (badness 1048) in paragraph at lines 216--222
 \OML/cmm/m/it/10.95 d \OMS/cmsy/m/n/10.95 6\OT1/cmr/m/n/10.95 = \OML/cmm/m/it/1
 0.95 d[]\OT1/cmr/m/n/10.95 (\OMS/cmsy/m/n/10.95 E[]\OT1/cmr/m/n/10.95 )$\OT1/pt
 m/m/n/10.95 . By Lemma: $[]\OT1/cmr/m/n/10.95 (\OML/cmm/m/it/10.95 g[]; \OMS/cm
@@ -1063,39 +1296,28 @@ sy/m/n/10.95 E[]\OT1/cmr/m/n/10.95 ) \OMS/cmsy/m/n/10.95 ^^T
  []
 
 
-Underfull \hbox (badness 6125) in paragraph at lines 270--275
-[]\OT1/ptm/b/n/10.95 Empirical ground-ing: $\OML/cmm/m/it/10.95 ^^N\OT1/cmr/m/n
-/10.95 ([]) \OMS/cmsy/m/n/10.95 ^^Y
- []
-
-
-Overfull \hbox (39.63953pt too wide) in paragraph at lines 282--292
+Overfull \hbox (39.63953pt too wide) in paragraph at lines 243--253
  [][] 
  []
 
 
-Underfull \hbox (badness 2941) in paragraph at lines 294--301
-[]\OT1/ptm/m/n/10.95 The dam-age mag-ni-tude scales with sig-nal
+Underfull \hbox (badness 1028) in paragraph at lines 255--262
+\OT1/ptm/m/n/10.95 a sim-pler gate with wrong di-rec-tion (lo-gis-tic:
  []
 
 
-Underfull \hbox (badness 2189) in paragraph at lines 294--301
-\OT1/ptm/m/n/10.95 strength: en-vi-ron-ments with stronger signal--
- []
-
-[13]
-Underfull \hbox (badness 10000) in paragraph at lines 304--312
+Underfull \hbox (badness 10000) in paragraph at lines 266--276
 \OT1/ptm/m/n/10.95 In the clas-si-cal VOC frame-work ([][]Rus-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 304--312
+Underfull \hbox (badness 10000) in paragraph at lines 266--276
 \OT1/ptm/m/n/10.95 sell and We-fald[][], [][]1991[][]), $[]\OT1/cmr/m/n/10.95 (
 \OML/cmm/m/it/10.95 T; s\OT1/cmr/m/n/10.95 ) =
  []
 
 
-Underfull \hbox (badness 4048) in paragraph at lines 304--312
+Underfull \hbox (badness 4048) in paragraph at lines 266--276
 \U/msb/m/n/10.95 E\OT1/cmr/m/n/10.95 [[](\OML/cmm/m/it/10.95 V\OT1/cmr/m/n/10.9
 5 (\OML/cmm/m/it/10.95 a[]\OT1/cmr/m/n/10.95 )\OML/cmm/m/it/10.95 ; V\OT1/cmr/m
 /n/10.95 (\OML/cmm/m/it/10.95 a[]\OT1/cmr/m/n/10.95 ))] \OMS/cmsy/m/n/10.95 ^^@
@@ -1104,12 +1326,12 @@ Underfull \hbox (badness 4048) in paragraph at lines 304--312
  []
 
 
-Underfull \hbox (badness 1082) in paragraph at lines 313--319
+Underfull \hbox (badness 1082) in paragraph at lines 277--285
 []\OT1/ptm/m/n/10.95 Under evaluator-executor iden-tity, VOC can
  []
 
 
-Underfull \hbox (badness 1571) in paragraph at lines 313--319
+Underfull \hbox (badness 1571) in paragraph at lines 277--285
 \OT1/ptm/m/n/10.95 be neg-a-tive: $[]\OT1/cmr/m/n/10.95 (\OML/cmm/m/it/10.95 T;
  s\OT1/cmr/m/n/10.95 ) = \U/msb/m/n/10.95 E\OT1/cmr/m/n/10.95 [\OML/cmm/m/it/10
 .95 V\OT1/cmr/m/n/10.95 (\OML/cmm/m/it/10.95 a[]\OT1/cmr/m/n/10.95 (\OML/cmm/m/
@@ -1117,102 +1339,316 @@ it/10.95 s\OT1/cmr/m/n/10.95 ))] \OMS/cmsy/m/n/10.95 ^^@
  []
 
 
-Overfull \hbox (5.62189pt too wide) detected at line 334
+Overfull \hbox (5.62189pt too wide) detected at line 297
 []
  []
 
 
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 344.
+Overfull \hbox (168.40182pt too wide) in paragraph at lines 332--349
+ [][] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `subscript' on input line 344.
+(hyperref)                removing `math shift' on input line 355.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 344.
+(hyperref)                removing `subscript' on input line 355.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 385.
+(hyperref)                removing `math shift' on input line 355.
+
+[16]
+Underfull \hbox (badness 1721) in paragraph at lines 386--388
+[]\OT1/ptm/b/n/10.95 Style: \OT1/ptm/m/n/10.95 TikZ, clean and publication-qual
+ity.
+ []
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\times' on input line 385.
+(hyperref)                removing `math shift' on input line 417.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 385.
+(hyperref)                removing `\times' on input line 417.
 
 
-Underfull \hbox (badness 1571) in paragraph at lines 387--392
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 417.
+
+
+Underfull \hbox (badness 1571) in paragraph at lines 419--424
 \OT1/ptm/m/n/10.95 The multi-backbone re-sults (Ta-ble [][]1[][] in main
  []
 
 
-Underfull \hbox (badness 1728) in paragraph at lines 387--392
+Underfull \hbox (badness 1728) in paragraph at lines 419--424
 \OT1/ptm/m/n/10.95 a-tion. Struc-tural sig-nals (\OT1/pcr/m/n/10.95 step[]count
 \OT1/ptm/m/n/10.95 ) are
  []
 
-[14]
-Underfull \hbox (badness 1077) in paragraph at lines 441--457
+
+Underfull \hbox (badness 6110) in paragraph at lines 449--451
+[]\OT1/ptm/b/n/10.95 Data: \OT1/ptm/m/n/10.95 From \OT1/pcr/m/n/10.95 tab[]sign
+al[]discovery/
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 452--453
+[]\OT1/ptm/b/n/10.95 Visual de-sign (ex-tends main-text
+ []
+
+[17]
+Underfull \hbox (badness 10000) in paragraph at lines 458--459
+[]\OT1/ptm/m/n/10.95 Panel ti-tles: ``Qwen3-4B'', ``Phi-3.5'',
+ []
+
+
+Underfull \hbox (badness 1325) in paragraph at lines 516--530
+\OT1/ptm/m/n/10.95 tirely dif-fer-ent sig-nal sub-sets. \OT1/pcr/m/n/10.95 step
+[]count
+ []
+
+
+Underfull \hbox (badness 1360) in paragraph at lines 516--530
+\OT1/ptm/m/n/10.95 is in-for-ma-tive in 6 of 7 en-vi-ron-ments where
+ []
+
+
+Underfull \hbox (badness 3118) in paragraph at lines 516--530
+\OT1/ptm/m/n/10.95 in-for-ma-tion ac-cu-mu-la-tion. Web-Shop is the
+ []
+
+
+Underfull \hbox (badness 3271) in paragraph at lines 516--530
+\OT1/ptm/m/n/10.95 no-table ex-cep-tion: its dom-i-nant sig-nals are
+ []
+
+
+Underfull \hbox (badness 3118) in paragraph at lines 516--530
+\OT1/pcr/m/n/10.95 num[]available[]actions \OT1/ptm/m/n/10.95 and task-specific
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 516--530
+\OT1/ptm/m/n/10.95 fea-tures such as \OT1/pcr/m/n/10.95 price[]mentioned \OT1/p
+tm/m/n/10.95 and
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 516--530
+\OT1/pcr/m/n/10.95 action[]is[]click\OT1/ptm/m/n/10.95 , re-flect-ing its choic
+e-
+ []
+
+
+Underfull \hbox (badness 1275) in paragraph at lines 516--530
+\OT1/ptm/m/n/10.95 dominated struc-ture where decision-space size
+ []
+
+
+Underfull \hbox (badness 3302) in paragraph at lines 516--530
+\OT1/ptm/m/n/10.95 mat-ters more than in-for-ma-tion ac-cu-mu-la-tion.
+ []
+
+
+Underfull \hbox (badness 1297) in paragraph at lines 516--530
+\OT1/ptm/m/n/10.95 fewer than half of en-vi-ron-ments. No sin-gle
+ []
+
+
+Underfull \hbox (badness 3098) in paragraph at lines 531--538
+[]\OT1/ptm/b/n/10.95 [DATA NEEDED: Ta-ble A1.] \OT1/ptm/m/n/10.95 En-vi-ron-
+ []
+
+
+Underfull \hbox (badness 1005) in paragraph at lines 531--538
+\OT1/ptm/m/n/10.95 fi-cients. Rows = 8 en-vi-ron-ments. Columns
+ []
+
+
+Underfull \hbox (badness 2326) in paragraph at lines 531--538
+\OT1/ptm/m/n/10.95 = step[]count, to-ken[]entropy, state[]length, ac-
+ []
+
+
+Underfull \hbox (badness 1418) in paragraph at lines 550--559
+\OT1/ptm/m/n/10.95 rep-re-sen-ta-tive en-vi-ron-ments (Hot-potQA, APPS
+ []
+
+
+LaTeX Warning: Reference `tab:complexity-ablation' on page 18 undefined on inpu
+t line 571.
+
+[18]
+Underfull \hbox (badness 2293) in paragraph at lines 573--577
+[]\OT1/ptm/b/n/10.95 [DATA NEEDED: Ta-ble A0.] \OT1/ptm/m/n/10.95 AUC ta-
+ []
+
+
+Underfull \hbox (badness 1038) in paragraph at lines 573--577
+\OT1/ptm/m/n/10.95 In-tro, Web-Shop, FEVER). Columns = single-
+ []
+
+
+Underfull \hbox (badness 1077) in paragraph at lines 622--639
 \OT1/ptm/m/n/10.95 To pro-vide stronger ev-i-dence that in-for-ma-tion
  []
 
 
-Underfull \hbox (badness 1137) in paragraph at lines 441--457
-\OT1/ptm/m/n/10.95 struc-ture drives sig-nal se-man-tics, we ma-nip-u-
+Underfull \hbox (badness 1325) in paragraph at lines 644--646
+\OT1/ptm/b/n/10.95 in-for-ma-tion ma-nip-u-la-tion: sig-nal hi-er-ar-chy
+ []
+
+[19]
+Underfull \hbox (badness 2790) in paragraph at lines 692--694
+[]\OT1/ptm/m/n/10.95 HotpotQA, FEVER, TWEx-press, Plan-
  []
 
 
-Underfull \hbox (badness 1527) in paragraph at lines 441--457
-\OT1/ptm/m/n/10.95 self. \OT1/ptm/m/it/10.95 In-foPoor \OT1/ptm/m/n/10.95 (sear
-ch re-turns only the first
+Underfull \hbox (badness 1708) in paragraph at lines 696--698
+\OT1/ptm/m/n/10.95 poses $\OML/cmm/m/it/10.95 K[]\OT1/cmr/m/n/10.95 3$ \OT1/ptm
+/m/n/10.95 ac-tion se-quences, sim-u-late
  []
 
-) [15] (./main.aux)
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 766--771
+ []\OT1/ptm/b/n/10.95 Exploration bud-get.[] \OT1/ptm/m/n/10.95 Phase 1 runs fo
+r
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 773--779
+ []\OT1/ptm/b/n/10.95 Feature stan-dard-iza-tion.[] \OT1/ptm/m/n/10.95 Be-fore 
+fit-ting in
+ []
+
+
+Underfull \hbox (badness 3148) in paragraph at lines 773--779
+\OT1/ptm/m/n/10.95 that the in-ter-pretable weight signs dis-cussed
+ []
+
+
+Underfull \hbox (badness 2351) in paragraph at lines 773--779
+\OT1/ptm/m/n/10.95 in Sec-tion [][]4.3[][] are not con-founded by scale
+ []
+
+
+Underfull \hbox (badness 2626) in paragraph at lines 773--779
+\OT1/pcr/m/n/10.95 step[]count \OT1/ptm/m/n/10.95 and \OT1/pcr/m/n/10.95 token[
+]entropy \OT1/ptm/m/n/10.95 live on
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 781--788
+ []\OT1/ptm/b/n/10.95 Sparse solver.[] \OT1/ptm/m/n/10.95 We in-duce spar-sity 
+us-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 781--788
+\OT1/ptm/m/n/10.95 ing $\OML/cmm/m/it/10.95 `[]$\OT1/ptm/m/n/10.95 -regularized
+ lo-gis-tic re-gres-sion
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 781--788
+\OT1/ptm/m/n/10.95 (\OT1/pcr/m/n/10.95 scikit-learn\OT1/ptm/m/n/10.95 's \OT1/p
+cr/m/n/10.95 LogisticRegression
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 781--788
+\OT1/ptm/m/n/10.95 with \OT1/pcr/m/n/10.95 liblinear \OT1/ptm/m/n/10.95 solver)
+. The reg-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 781--788
+\OT1/ptm/m/n/10.95 u-lar-iza-tion strength $\OML/cmm/m/it/10.95 C$ \OT1/ptm/m/n
+/10.95 is se-lected by
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 781--788
+\OT1/ptm/m/n/10.95 5-fold cross-validation over the grid
+ []
+
+
+Underfull \hbox (badness 2111) in paragraph at lines 781--788
+\OML/cmm/m/it/10.95 C \OMS/cmsy/m/n/10.95 2 f\OT1/cmr/m/n/10.95 0\OML/cmm/m/it/
+10.95 :\OT1/cmr/m/n/10.95 01\OML/cmm/m/it/10.95 ; \OT1/cmr/m/n/10.95 0\OML/cmm/
+m/it/10.95 :\OT1/cmr/m/n/10.95 03\OML/cmm/m/it/10.95 ; \OT1/cmr/m/n/10.95 0\OML
+/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 1\OML/cmm/m/it/10.95 ; \OT1/cmr/m/n/10.95 0
+\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 3\OML/cmm/m/it/10.95 ; \OT1/cmr/m/n/10.
+95 1\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 0\OML/cmm/m/it/10.95 ; \OT1/cmr/m/n
+/10.95 3\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 0\OML/cmm/m/it/10.95 ; \OT1/cmr
+/m/n/10.95 10\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 0\OMS/cmsy/m/n/10.95 g$\OT
+1/ptm/m/n/10.95 , op-
+ []
+
+
+LaTeX Warning: Reference `fig:pareto' on page 20 undefined on input line 815.
+
+[20]) [21] [22
+
+] (./main.aux)
 
 LaTeX Warning: There were undefined references.
 
+
+LaTeX Warning: There were multiply-defined labels.
+
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 54F8528D62F1DD64FB82B3559768173D;9743.
+(rerunfilecheck)             Checksum: F69BE7A67A8178E2F14975787235BA6F;10969.
  ) 
 Here is how much of TeX's memory you used:
- 13436 strings out of 476025
- 215207 string characters out of 5790017
+ 14193 strings out of 476025
+ 227302 string characters out of 5790017
  1876388 words of memory out of 5000000
- 33491 multiletter control sequences out of 15000+600000
- 545977 words of font info for 116 fonts, out of 8000000 for 9000
+ 34192 multiletter control sequences out of 15000+600000
+ 553520 words of font info for 129 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 90i,12n,90p,775b,632s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,12n,90p,755b,644s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
-></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb>
-</usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
-/usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></u
-sr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr
-/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/l
-ocal/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/loc
-al/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/
-texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/tex
-live/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texl
-ive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texliv
-e/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/
-2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/20
-23/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2023
-/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/
-2023/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texl
-ive/2023/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2023
-/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2023/texmf-dis
-t/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/t
-ype1/urw/times/utmr8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/t
-imes/utmri8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/zapfding/u
-zdr.pfb>
-Output written on main.pdf (15 pages, 315765 bytes).
+></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx6.pfb><
+/usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></u
+sr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr
+/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/
+local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex9.pfb></u
+sr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></us
+r/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/
+local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/lo
+cal/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/loca
+l/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/
+texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/tex
+live/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texliv
+e/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2
+023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/20
+23/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2023
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2023/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2023/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2023/texmf
+-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2023/t
+exmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/20
+23/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2023/texmf
+-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2023/texmf-dist/font
+s/type1/urw/times/utmr8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/ur
+w/times/utmri8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/zapfdin
+g/uzdr.pfb>
+Output written on main.pdf (22 pages, 401519 bytes).
 PDF statistics:
- 737 PDF objects out of 1000 (max. 8388607)
- 667 compressed objects within 7 object streams
- 149 named destinations out of 1000 (max. 500000)
- 393 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 877 PDF objects out of 1000 (max. 8388607)
+ 792 compressed objects within 8 object streams
+ 186 named destinations out of 1000 (max. 500000)
+ 417 words of extra memory for PDF output out of 10000 (max. 10000000)
 

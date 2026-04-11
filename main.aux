@@ -21,89 +21,102 @@
 \citation{seag2025,cats2025,corefine2026}
 \citation{s1_2025,han2025tokenbudget}
 \citation{catts2026}
-\citation{adaptthink2025,thinkless2025}
-\citation{tao2025revisiting,heo2025llmuncertainty}
+\citation{diffadapt2025,zhu2025llmalreadyknows,adaptthink2025,thinkless2025}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\newlabel{sec:intro}{{1}{1}{Introduction}{section.1}{}}
 \citation{yang2018hotpotqa}
 \citation{hendrycks2021apps}
 \citation{yao2022webshop}
 \citation{thorne2018fever}
 \citation{jansen2023twexpress}
-\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
-\newlabel{sec:intro}{{1}{1}{Introduction}{section.1}{}}
 \citation{simpson1951interpretation,kdd2023simpson}
 \citation{seag2025,cats2025,corefine2026,thinkjustenough2025,s1_2025,han2025tokenbudget}
-\citation{adaptthink2025,thinkless2025,aggarwal2025l1}
-\citation{diffadapt2025,zhu2025llmalreadyknows}
 \citation{catts2026}
-\citation{paglieri2025learning}
-\citation{snell2024scaling}
+\citation{auq2026}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{section.2}\protected@file@percent }
+\newlabel{sec:related}{{2}{2}{Related Work}{section.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Gating on uncertainty signals.}{2}{section*.1}\protected@file@percent }
+\citation{diffadapt2025,zhu2025llmalreadyknows}
+\citation{adaptthink2025,thinkless2025,aggarwal2025l1,paglieri2025learning}
 \citation{yao2023tree}
 \citation{zhou2024lats}
 \citation{hao2023reasoning}
 \citation{wang2026flare}
-\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{section.2}\protected@file@percent }
-\newlabel{sec:related}{{2}{2}{Related Work}{section.2}{}}
-\@writefile{toc}{\contentsline {paragraph}{Adaptive test-time compute.}{2}{section*.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Test-time scaling and search.}{2}{section*.2}\protected@file@percent }
-\citation{tao2025revisiting,heo2025llmuncertainty}
-\citation{yadkori2024believe}
 \citation{russell1991right,desabbata2024metareasoning}
-\@writefile{toc}{\contentsline {paragraph}{Uncertainty estimation and metareasoning.}{3}{section*.3}\protected@file@percent }
+\citation{tao2025revisiting}
+\citation{heo2025llmuncertainty}
+\citation{yadkori2024believe}
+\@writefile{toc}{\contentsline {paragraph}{Gating on learned difficulty.}{3}{section*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Orthogonal: search-based optimizers.}{3}{section*.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Metareasoning and uncertainty semantics.}{3}{section*.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Signal--utility correlations across 8 environments and 3 backbones. $\rho $: Spearman correlation of token entropy with optimizer utility $U$. $^*$: significant at $p{<}0.05$. Direction varies across \emph  {both} environments and model backbones.\relax }}{3}{table.caption.5}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{tab:signal-discovery}{{1}{3}{Signal--utility correlations across 8 environments and 3 backbones. $\rho $: Spearman correlation of token entropy with optimizer utility $U$. $^*$: significant at $p{<}0.05$. Direction varies across \emph {both} environments and model backbones.\relax }{table.caption.5}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {3}Why Fixed-Direction Gating Fails}{3}{section.3}\protected@file@percent }
 \newlabel{sec:signal-landscape}{{3}{3}{Why Fixed-Direction Gating Fails}{section.3}{}}
 \newlabel{eq:utility}{{1}{3}{Why Fixed-Direction Gating Fails}{equation.3.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Empirical Landscape}{3}{subsection.3.1}\protected@file@percent }
-\newlabel{sec:empirical-landscape}{{3.1}{3}{Empirical Landscape}{subsection.3.1}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Signal--utility correlations across 8 environments and 3 backbones. $\rho $: Spearman correlation of token entropy with optimizer utility $U$. $^*$: significant at $p{<}0.05$. Direction varies across \emph  {both} environments and model backbones.\relax }}{3}{table.caption.4}\protected@file@percent }
-\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{tab:signal-discovery}{{1}{3}{Signal--utility correlations across 8 environments and 3 backbones. $\rho $: Spearman correlation of token entropy with optimizer utility $U$. $^*$: significant at $p{<}0.05$. Direction varies across \emph {both} environments and model backbones.\relax }{table.caption.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Why Does Direction Reverse? A Two-Source Model}{4}{subsection.3.2}\protected@file@percent }
-\newlabel{sec:toy-model}{{3.2}{4}{Why Does Direction Reverse? A Two-Source Model}{subsection.3.2}{}}
-\@writefile{toc}{\contentsline {paragraph}{Intuition.}{4}{section*.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Model.}{4}{section*.6}\protected@file@percent }
-\newlabel{eq:direction}{{2}{4}{Model}{equation.3.2}{}}
-\@writefile{toc}{\contentsline {paragraph}{Environment mapping.}{4}{section*.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Signal--Utility Direction Reverses Across Environments and Backbones}{3}{subsection.3.1}\protected@file@percent }
+\newlabel{sec:empirical-landscape}{{3.1}{3}{Signal--Utility Direction Reverses Across Environments and Backbones}{subsection.3.1}{}}
 \citation{simpson1951interpretation,DBLP:books/acm/22/Pearl22n}
 \citation{der2009aleatory}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Environment-to-type mapping. The dominant uncertainty type is shaped by the environment's information structure and modulated by the model backbone. Predicted $\rho $ direction follows from Eq.\nobreakspace  {}\eqref  {eq:direction}; observed values are from Qwen3-4B. Multi-backbone $\rho $ values differ (Table\nobreakspace  {}\ref {tab:signal-discovery}).\relax }}{5}{table.caption.8}\protected@file@percent }
-\newlabel{tab:env-type-mapping}{{2}{5}{Environment-to-type mapping. The dominant uncertainty type is shaped by the environment's information structure and modulated by the model backbone. Predicted $\rho $ direction follows from Eq.~\eqref {eq:direction}; observed values are from Qwen3-4B. Multi-backbone $\rho $ values differ (Table~\ref {tab:signal-discovery}).\relax }{table.caption.8}{}}
-\@writefile{toc}{\contentsline {paragraph}{Theoretical grounding.}{5}{section*.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Why Does Direction Reverse? A Two-Source Model}{4}{subsection.3.2}\protected@file@percent }
+\newlabel{sec:toy-model}{{3.2}{4}{Why Does Direction Reverse? A Two-Source Model}{subsection.3.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Intuition.}{4}{section*.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Model.}{4}{section*.7}\protected@file@percent }
+\newlabel{eq:direction}{{2}{4}{Model}{equation.3.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Theoretical grounding.}{4}{section*.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Necessity of Direction Discovery}{5}{subsection.3.3}\protected@file@percent }
+\newlabel{sec:necessity}{{3.3}{5}{Necessity of Direction Discovery}{subsection.3.3}{}}
 \newlabel{prop:necessity}{{1}{5}{Necessity of Direction Discovery}{proposition.1}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Method classification by adaptive compute components. All prior methods share \{Single signal, Fixed direction, Problem-level\}. EAAG is the only method with \{Multi-signal, Learned direction, Step-level, Environment-aware\}.\relax }}{5}{table.caption.10}\protected@file@percent }
-\newlabel{tab:classification}{{3}{5}{Method classification by adaptive compute components. All prior methods share \{Single signal, Fixed direction, Problem-level\}. EAAG is the only method with \{Multi-signal, Learned direction, Step-level, Environment-aware\}.\relax }{table.caption.10}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Implications for Method Design}{5}{subsection.3.3}\protected@file@percent }
-\newlabel{sec:implications}{{3.3}{5}{Implications for Method Design}{subsection.3.3}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4}Method: Environment-Aware Adaptive Gating}{5}{section.4}\protected@file@percent }
 \newlabel{sec:method}{{4}{5}{Method: Environment-Aware Adaptive Gating}{section.4}{}}
-\@writefile{toc}{\contentsline {paragraph}{Design rationale.}{5}{section*.11}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Exploration}{6}{subsection.4.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Feature Generation}{6}{subsection.4.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Sparse Direction Learning}{6}{subsection.4.3}\protected@file@percent }
-\newlabel{eq:gate}{{3}{6}{Sparse Direction Learning}{equation.4.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Online Adaptation}{6}{subsection.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Why a minimal gate suffices.}{5}{section*.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Explore: Signal-Agnostic Data Collection}{5}{subsection.4.1}\protected@file@percent }
+\newlabel{sec:explore}{{4.1}{5}{Explore: Signal-Agnostic Data Collection}{subsection.4.1}{}}
+\newlabel{eq:explore}{{3}{6}{Explore: Signal-Agnostic Data Collection}{equation.4.3}{}}
+\newlabel{eq:dataset}{{4}{6}{Explore: Signal-Agnostic Data Collection}{equation.4.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Reason: LLM Feature Layer}{6}{subsection.4.2}\protected@file@percent }
+\newlabel{sec:reason}{{4.2}{6}{Reason: LLM Feature Layer}{subsection.4.2}{}}
+\newlabel{eq:universal}{{5}{6}{Reason: LLM Feature Layer}{equation.4.5}{}}
+\newlabel{eq:cand}{{6}{6}{Reason: LLM Feature Layer}{equation.4.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Learn: Sparse Linear Gate}{6}{subsection.4.3}\protected@file@percent }
+\newlabel{sec:learn}{{4.3}{6}{Learn: Sparse Linear Gate}{subsection.4.3}{}}
+\newlabel{eq:lasso}{{7}{6}{Learn: Sparse Linear Gate}{equation.4.7}{}}
+\newlabel{eq:gate}{{8}{6}{Learn: Sparse Linear Gate}{equation.4.8}{}}
+\@writefile{toc}{\contentsline {paragraph}{Signed weights as a diagnostic.}{6}{section*.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Online adaptation.}{6}{section*.11}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {5}Experiments}{6}{section.5}\protected@file@percent }
 \newlabel{sec:experiments}{{5}{6}{Experiments}{section.5}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Experimental Setup}{6}{subsection.5.1}\protected@file@percent }
 \newlabel{sec:setup}{{5.1}{6}{Experimental Setup}{subsection.5.1}{}}
-\@writefile{toc}{\contentsline {paragraph}{Environments.}{6}{section*.12}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Baselines.}{6}{section*.13}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Metrics.}{6}{section*.14}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Environment setup. Base/Always: SR without/with optimizer. $\Delta $: rollout headroom.\relax }}{7}{table.caption.15}\protected@file@percent }
-\newlabel{tab:env-setup}{{4}{7}{Environment setup. Base/Always: SR without/with optimizer. $\Delta $: rollout headroom.\relax }{table.caption.15}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces EAAG: Environment-Aware Adaptive Gating\relax }}{7}{algorithm.1}\protected@file@percent }
+\newlabel{alg:eaag}{{1}{7}{EAAG: Environment-Aware Adaptive Gating\relax }{algorithm.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{Environments.}{7}{section*.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Baselines.}{7}{section*.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Metrics.}{7}{section*.14}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Environment setup. Base/Always: SR without/with optimizer. $\Delta $: rollout headroom.\relax }}{7}{table.caption.15}\protected@file@percent }
+\newlabel{tab:env-setup}{{2}{7}{Environment setup. Base/Always: SR without/with optimizer. $\Delta $: rollout headroom.\relax }{table.caption.15}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Main Results}{7}{subsection.5.2}\protected@file@percent }
 \newlabel{sec:main-results}{{5.2}{7}{Main Results}{subsection.5.2}{}}
-\@writefile{toc}{\contentsline {paragraph}{Cross-environment patterns.}{7}{section*.16}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Ablation Studies}{7}{subsection.5.3}\protected@file@percent }
-\newlabel{sec:ablation}{{5.3}{7}{Ablation Studies}{subsection.5.3}{}}
+\@writefile{toc}{\contentsline {paragraph}{Cross-environment patterns.}{8}{section*.16}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Ablation Studies}{8}{subsection.5.3}\protected@file@percent }
+\newlabel{sec:ablation}{{5.3}{8}{Ablation Studies}{subsection.5.3}{}}
 \citation{schaeffer2023emergent}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Two-Source Model Verification}{8}{subsection.5.4}\protected@file@percent }
-\newlabel{sec:theory-verification}{{5.4}{8}{Two-Source Model Verification}{subsection.5.4}{}}
-\@writefile{toc}{\contentsline {paragraph}{P1: Temporal dynamics (confirmed).}{8}{section*.17}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{P2: Cross-environment consistency (confirmed).}{8}{section*.18}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{P3: Signal identity alignment (confirmed).}{8}{section*.19}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Robustness of Direction Reversal}{8}{subsection.5.5}\protected@file@percent }
-\newlabel{sec:robustness}{{5.5}{8}{Robustness of Direction Reversal}{subsection.5.5}{}}
-\@writefile{toc}{\contentsline {paragraph}{Stratified analysis: controlling for trajectory length.}{8}{section*.20}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Two-Source Model Verification}{9}{subsection.5.4}\protected@file@percent }
+\newlabel{sec:theory-verification}{{5.4}{9}{Two-Source Model Verification}{subsection.5.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{P1: Temporal dynamics (confirmed).}{10}{section*.17}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{P2: Cross-environment consistency (confirmed).}{10}{section*.18}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{P3: Signal identity alignment (confirmed).}{10}{section*.19}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Robustness of Direction Reversal}{10}{subsection.5.5}\protected@file@percent }
+\newlabel{sec:robustness}{{5.5}{10}{Robustness of Direction Reversal}{subsection.5.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{Stratified analysis: controlling for trajectory length.}{10}{section*.20}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Interventional evidence.}{10}{section*.21}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Gate complexity ablation: direction outweighs capacity.}{10}{section*.22}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Gate complexity ablation on HotpotQA. Direction matters more than model capacity: a logistic gate with correct direction outperforms an MLP with wrong direction by 49.9\,pp.\relax }}{11}{table.caption.23}\protected@file@percent }
+\newlabel{tab:capacity}{{3}{11}{Gate complexity ablation on HotpotQA. Direction matters more than model capacity: a logistic gate with correct direction outperforms an MLP with wrong direction by 49.9\,pp.\relax }{table.caption.23}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Limitations}{11}{section.6}\protected@file@percent }
+\newlabel{sec:discussion}{{6}{11}{Limitations}{section.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{11}{section.7}\protected@file@percent }
 \bibdata{references}
 \bibcite{yadkori2024believe}{{1}{2024}{{Abbasi~Yadkori et~al.}}{{Abbasi~Yadkori, Kuzborskij, and Gy{\"o}rgy}}}
 \bibcite{aggarwal2025l1}{{2}{2025}{{Aggarwal and Welleck}}{{}}}
@@ -113,13 +126,6 @@
 \bibcite{thinkless2025}{{6}{2025}{{Fang et~al.}}{{Fang, Ma, and Wang}}}
 \bibcite{graves2016act}{{7}{2016}{{Graves}}{{}}}
 \bibcite{han2025tokenbudget}{{8}{2025}{{Han et~al.}}{{Han, Wang, Fang, Zhao, Ma, and Chen}}}
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Gate complexity ablation on HotpotQA. Direction matters more than model capacity: a logistic gate with correct direction outperforms an MLP with wrong direction by 49.9\,pp.\relax }}{9}{table.caption.23}\protected@file@percent }
-\newlabel{tab:capacity}{{5}{9}{Gate complexity ablation on HotpotQA. Direction matters more than model capacity: a logistic gate with correct direction outperforms an MLP with wrong direction by 49.9\,pp.\relax }{table.caption.23}{}}
-\@writefile{toc}{\contentsline {paragraph}{Interventional evidence.}{9}{section*.21}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Gate complexity ablation: direction $\gg $ capacity.}{9}{section*.22}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}Limitations}{9}{section.6}\protected@file@percent }
-\newlabel{sec:discussion}{{6}{9}{Limitations}{section.6}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{9}{section.7}\protected@file@percent }
 \bibcite{hao2023reasoning}{{9}{2023}{{Hao et~al.}}{{Hao, Gu, Ma, Hong, Wang, Wang, and Hu}}}
 \bibcite{yao2022webshop}{{10}{2021{a}}{{Hendrycks et~al.}}{{Hendrycks, Basart, Kadavath, Mazeika, Arora, Guo, Burns, Puranik, He, Song, and Steinhardt}}}
 \bibcite{hendrycks2021apps}{{11}{2021{b}}{{Hendrycks et~al.}}{{Hendrycks, Basart, Kadavath, Mazeika, Zou, Song, and Steinhardt}}}
@@ -171,12 +177,14 @@
 \citation{tao2025revisiting}
 \citation{heo2025llmuncertainty}
 \citation{yadkori2024believe}
-\@writefile{toc}{\contentsline {section}{\numberline {A}Extended Related Work}{11}{appendix.A}\protected@file@percent }
-\newlabel{app:related}{{A}{11}{Extended Related Work}{appendix.A}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Adaptive Compute: Reasoning vs.\ Agent Settings}{11}{subsection.A.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Detailed Baseline Comparison}{11}{subsection.A.2}\protected@file@percent }
-\newlabel{app:method-comparison}{{A.2}{11}{Detailed Baseline Comparison}{subsection.A.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Adaptive Computation in Neural Networks}{11}{subsection.A.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A}Extended Related Work}{14}{appendix.A}\protected@file@percent }
+\newlabel{app:related}{{A}{14}{Extended Related Work}{appendix.A}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Adaptive Compute: Reasoning vs.\ Agent Settings}{14}{subsection.A.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Detailed Baseline Comparison}{14}{subsection.A.2}\protected@file@percent }
+\newlabel{app:method-comparison}{{A.2}{14}{Detailed Baseline Comparison}{subsection.A.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Detailed comparison of baselines. All methods assume a fixed signal--utility direction. Phase\nobreakspace  {}1 methods require a separate calibration dataset; EAAG requires only exploration episodes.\relax }}{14}{table.caption.25}\protected@file@percent }
+\newlabel{tab:baseline-detail}{{4}{14}{Detailed comparison of baselines. All methods assume a fixed signal--utility direction. Phase~1 methods require a separate calibration dataset; EAAG requires only exploration episodes.\relax }{table.caption.25}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Adaptive Computation in Neural Networks}{14}{subsection.A.3}\protected@file@percent }
 \citation{russell1991right,horvitz1987reasoning}
 \citation{lieder2020resource}
 \citation{desabbata2024metareasoning}
@@ -188,45 +196,68 @@
 \citation{thinkless2025}
 \citation{diffadapt2025}
 \citation{auq2026}
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Detailed comparison of baselines. All methods assume a fixed signal--utility direction. Phase\nobreakspace  {}1 methods require a separate calibration dataset; EAAG requires only exploration episodes.\relax }}{12}{table.caption.25}\protected@file@percent }
-\newlabel{tab:baseline-detail}{{6}{12}{Detailed comparison of baselines. All methods assume a fixed signal--utility direction. Phase~1 methods require a separate calibration dataset; EAAG requires only exploration episodes.\relax }{table.caption.25}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}LLM Confidence Estimation and Calibration}{12}{subsection.A.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.5}Metareasoning and Value of Computation}{12}{subsection.A.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.6}Simpson's Paradox in Machine Learning}{12}{subsection.A.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.7}Concurrent Work Statement}{12}{subsection.A.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {B}Experimental Details}{12}{appendix.B}\protected@file@percent }
-\newlabel{app:experiments}{{B}{12}{Experimental Details}{appendix.B}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {B.1}Environment Specifications}{12}{subsection.B.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {B.2}Hyperparameter Configuration}{13}{subsection.B.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{EAAG hyperparameters.}{13}{section*.26}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Baseline hyperparameters.}{13}{section*.27}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {B.3}Feature Selection Details}{13}{subsection.B.3}\protected@file@percent }
-\newlabel{app:features}{{B.3}{13}{Feature Selection Details}{subsection.B.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {B.4}Computational Cost Breakdown}{13}{subsection.B.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {C}Proofs}{13}{appendix.C}\protected@file@percent }
-\newlabel{app:proofs}{{C}{13}{Proofs}{appendix.C}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {C.1}Proof of Proposition\nobreakspace  {}\ref {prop:necessity} (Necessity of Direction Discovery)}{13}{subsection.C.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {C.2}Wrong-Direction Damage Quantification}{13}{subsection.C.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Wrong-direction damage scales with signal strength.\relax }}{13}{table.caption.28}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}LLM Confidence Estimation and Calibration}{15}{subsection.A.4}\protected@file@percent }
+\newlabel{app:calibration}{{A.4}{15}{LLM Confidence Estimation and Calibration}{subsection.A.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.5}Metareasoning and Value of Computation}{15}{subsection.A.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.6}Simpson's Paradox in Machine Learning}{15}{subsection.A.6}\protected@file@percent }
+\newlabel{app:simpson}{{A.6}{15}{Simpson's Paradox in Machine Learning}{subsection.A.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.7}Concurrent Work Statement}{15}{subsection.A.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {B}Theoretical Material}{15}{appendix.B}\protected@file@percent }
+\newlabel{app:theory}{{B}{15}{Theoretical Material}{appendix.B}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.1}Proof of Proposition\nobreakspace  {}\ref {prop:necessity} (Necessity of Direction Discovery)}{15}{subsection.B.1}\protected@file@percent }
+\newlabel{app:proof-necessity}{{B.1}{15}{Proof of Proposition~\ref {prop:necessity} (Necessity of Direction Discovery)}{subsection.B.1}{}}
 \citation{russell1991right}
-\@writefile{toc}{\contentsline {subsection}{\numberline {C.3}VOC Non-Negativity Scope}{14}{subsection.C.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {D}Two-Source Model: Full Derivation and Verification}{14}{appendix.D}\protected@file@percent }
-\newlabel{app:model}{{D}{14}{Two-Source Model: Full Derivation and Verification}{appendix.D}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.1}Full Derivation}{14}{subsection.D.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.2}Environment Mapping on the $p_I$ Axis}{14}{subsection.D.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.3}Prediction Verification: Full Data}{14}{subsection.D.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {E}Multi-Backbone Verification}{14}{appendix.E}\protected@file@percent }
-\newlabel{app:multi-backbone}{{E}{14}{Multi-Backbone Verification}{appendix.E}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.1}Signal Direction: Environment $\times $ Model Interaction}{14}{subsection.E.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.2}Fixed-Direction Baselines Fail Across Backbones}{15}{subsection.E.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {F}Additional Analyses}{15}{appendix.F}\protected@file@percent }
-\newlabel{app:additional}{{F}{15}{Additional Analyses}{appendix.F}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {F.1}Hyperparameter Sensitivity}{15}{subsection.F.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {F.2}Statistical Significance}{15}{subsection.F.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {F.3}Controlled Information Manipulation: Full Results}{15}{subsection.F.3}\protected@file@percent }
-\newlabel{app:controlled}{{F.3}{15}{Controlled Information Manipulation: Full Results}{subsection.F.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {F.4}LLM Reasoning Prompts and Outputs}{15}{subsection.F.4}\protected@file@percent }
-\newlabel{app:llm-prompts}{{F.4}{15}{LLM Reasoning Prompts and Outputs}{subsection.F.4}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {G}Broader Impact}{15}{appendix.G}\protected@file@percent }
-\newlabel{app:impact}{{G}{15}{Broader Impact}{appendix.G}{}}
-\gdef \@abspage@last{15}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.2}Wrong-Direction Damage Quantification}{16}{subsection.B.2}\protected@file@percent }
+\newlabel{app:wrong-direction}{{B.2}{16}{Wrong-Direction Damage Quantification}{subsection.B.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Wrong-direction damage scales with signal strength.\relax }}{16}{table.caption.26}\protected@file@percent }
+\newlabel{tab:wrong-direction}{{5}{16}{Wrong-direction damage scales with signal strength.\relax }{table.caption.26}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.3}VOC Non-Negativity Scope}{16}{subsection.B.3}\protected@file@percent }
+\newlabel{app:voc}{{B.3}{16}{VOC Non-Negativity Scope}{subsection.B.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.4}Two-Source Model: Full Derivation}{16}{subsection.B.4}\protected@file@percent }
+\newlabel{app:model-derivation}{{B.4}{16}{Two-Source Model: Full Derivation}{subsection.B.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.5}Per-Environment Type Mapping}{16}{subsection.B.5}\protected@file@percent }
+\newlabel{app:env-mapping}{{B.5}{16}{Per-Environment Type Mapping}{subsection.B.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.6}Position on the $p_I$ Axis}{16}{subsection.B.6}\protected@file@percent }
+\newlabel{app:pi-axis}{{B.6}{16}{Position on the $p_I$ Axis}{subsection.B.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Environment-to-type mapping. Predicted $\rho $ direction follows from Eq.\nobreakspace  {}\eqref  {eq:direction}; observed values are from Qwen3-4B.\relax }}{17}{table.caption.27}\protected@file@percent }
+\newlabel{tab:env-type-mapping}{{6}{17}{Environment-to-type mapping. Predicted $\rho $ direction follows from Eq.~\eqref {eq:direction}; observed values are from Qwen3-4B.\relax }{table.caption.27}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {C}Multi-Backbone Verification}{17}{appendix.C}\protected@file@percent }
+\newlabel{app:multi-backbone}{{C}{17}{Multi-Backbone Verification}{appendix.C}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C.1}Signal Direction: Environment $\times $ Model Interaction}{17}{subsection.C.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {C.2}Fixed-Direction Baselines Fail Across Backbones}{17}{subsection.C.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {D}Signal and Feature Analyses}{18}{appendix.D}\protected@file@percent }
+\newlabel{app:signal-analyses}{{D}{18}{Signal and Feature Analyses}{appendix.D}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.1}Per-Environment Feature Selection}{18}{subsection.D.1}\protected@file@percent }
+\newlabel{app:feature-selection}{{D.1}{18}{Per-Environment Feature Selection}{subsection.D.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.2}LLM-Generated Features}{18}{subsection.D.2}\protected@file@percent }
+\newlabel{app:llm-features}{{D.2}{18}{LLM-Generated Features}{subsection.D.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.3}AUC Hierarchy: Single vs.\ Multi-Signal Gates}{18}{subsection.D.3}\protected@file@percent }
+\newlabel{app:auc}{{D.3}{18}{AUC Hierarchy: Single vs.\ Multi-Signal Gates}{subsection.D.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.4}Temporal Dynamics (Prediction P1)}{19}{subsection.D.4}\protected@file@percent }
+\newlabel{app:temporal}{{D.4}{19}{Temporal Dynamics (Prediction P1)}{subsection.D.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.5}Signal Identity Alignment (Prediction P3)}{19}{subsection.D.5}\protected@file@percent }
+\newlabel{app:signal-alignment}{{D.5}{19}{Signal Identity Alignment (Prediction P3)}{subsection.D.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.6}Controlled Information Manipulation}{19}{subsection.D.6}\protected@file@percent }
+\newlabel{app:controlled}{{D.6}{19}{Controlled Information Manipulation}{subsection.D.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {E}Experimental Details}{20}{appendix.E}\protected@file@percent }
+\newlabel{app:experiments}{{E}{20}{Experimental Details}{appendix.E}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.1}Environment Specifications}{20}{subsection.E.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.2}EAAG Implementation Details}{20}{subsection.E.2}\protected@file@percent }
+\newlabel{app:eaag-details}{{E.2}{20}{EAAG Implementation Details}{subsection.E.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Exploration budget.}{20}{section*.28}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Feature standardization.}{20}{section*.29}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Sparse solver.}{20}{section*.30}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Gate threshold.}{20}{section*.31}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Online adaptation.}{20}{section*.32}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.3}Computational Cost Breakdown}{20}{subsection.E.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {F}Additional Analyses}{21}{appendix.F}\protected@file@percent }
+\newlabel{app:additional}{{F}{21}{Additional Analyses}{appendix.F}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {F.1}Hyperparameter Sensitivity}{21}{subsection.F.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {F.2}Statistical Significance}{21}{subsection.F.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {F.3}LLM Reasoning Prompts and Outputs}{21}{subsection.F.3}\protected@file@percent }
+\newlabel{app:llm-prompts}{{F.3}{21}{LLM Reasoning Prompts and Outputs}{subsection.F.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {G}Broader Impact}{21}{appendix.G}\protected@file@percent }
+\newlabel{app:impact}{{G}{21}{Broader Impact}{appendix.G}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces EAAG: Environment-Aware Adaptive Gating\relax }}{22}{algorithm.2}\protected@file@percent }
+\newlabel{alg:eaag}{{2}{22}{EAAG: Environment-Aware Adaptive Gating\relax }{algorithm.2}{}}
+\gdef \@abspage@last{22}

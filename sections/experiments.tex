@@ -79,22 +79,51 @@ aggregate numbers, EAAG exhibits \emph{qualitatively different}
 gating behavior: its trigger rate, direction, and signal weights
 all adapt to the environment, as we analyze below.
 
-{\color{blue} \textbf{[DATA NEEDED: Table 3 (tab:main).]} Main results table.
+{\color{blue} \textbf{[DATA NEEDED: Table~\ref{tab:main}.]} Main results table.
 Full method $\times$ environment grid. Rows = methods (base\_only,
 always\_trigger, oracle, CaTS, SEAG, CoRefine, CATTS, AUQ, s1\_budget,
 BSW, EAAG). Columns = 8 environments, each with SR(\%) and Cost (ro/ep).
 Bold best SR per environment. $\dagger$ marks calibration-dependent methods.
-Similar to FLARE Table 1 (benchmark $\times$ method $\times$ backbone grid).}
 
-{\color{blue} \textbf{[DATA NEEDED: Table tab:winloss.]} Win/loss summary
+\textbf{Format reference:} SEAG Table~1 (benchmark $\times$ method $\times$ backbone grid)
+and CoRefine Table~1 (mean$_{\pm\text{std}}$ over 5 runs).
+Include $\pm$ std if available. Add $\Delta$ column showing SR improvement over base.}
+
+{\color{blue} \textbf{[DATA NEEDED: Table~\ref{tab:winloss}.]} Win/loss summary
 over all baseline-environment pairs. Rows = baselines, columns = number
 of environments where EAAG wins/ties/loses on SR and on Cost.}
 
-{\color{red} \textbf{[FIGURE NEEDED: Figure 5.]} Pareto frontier plot.
+{\color{red} \textbf{[FIGURE NEEDED: Figure~\ref{fig:pareto}.]}
+\textbf{Pareto frontier plot} (ref: CATTS Figure~5).
+
+\textbf{Layout:} $2 \times 3$ grid of subplots (6 representative environments:
+HotpotQA, APPS Intro, WebShop, FEVER, Plancraft, APPS Interview).
 x-axis = Cost (rollouts/episode), y-axis = SR(\%).
-One panel per environment (or 4 representative ones).
-Plot each method as a point. EAAG should be on or near the Pareto frontier.
-Similar to FLARE Figure 3 (performance-budget trade-off curves).}
+
+\textbf{Data:} From \texttt{tab\_main\_results/} CSV files.
+Each method is one point: (cost, SR).
+
+\textbf{Visual design (ref: CATTS Figure 5):}
+\begin{itemize}[nosep]
+\item Different marker shapes by method category:
+  $\circ$ = bounds (base, always, oracle),
+  $\triangle$ = fixed-direction baselines (CaTS, SEAG, CoRefine, CATTS, AUQ, s1),
+  $\bigstar$ = EAAG (larger, prominent)
+\item Color palette: bounds in gray, fixed-direction in a sequential colormap
+  (e.g., viridis or tab10), EAAG in red/crimson
+\item Draw Pareto frontier as dashed line connecting non-dominated points
+\item Mark EAAG with a star ($\bigstar$) like CATTS does
+\item Add light shading below Pareto frontier
+\item Shared legend across subplots
+\end{itemize}
+
+\textbf{Key message:} EAAG sits on or near the Pareto frontier in every
+environment; fixed-direction baselines cluster below in Type~I environments.
+
+\textbf{Improvement over current fig2\_pareto.png:}
+Current version is too cluttered, markers too small, no Pareto line.
+Add: (1) Pareto frontier dashed line, (2) larger star marker for EAAG,
+(3) method-category marker shapes, (4) consistent axis ranges per panel.}
 
 \paragraph{Cross-environment patterns.}
 The results align with the Two-Source Model along three axes.
@@ -124,12 +153,48 @@ to near-never triggering, emerges from direction learning alone,
 without explicit headroom estimation.
 >>>>>>> cc1bc6e4f1be11f03658207b43893225ca507faf
 
+{\color{red} \textbf{[FIGURE NEEDED: Figure~\ref{fig:entropy-bin}.]}
+\textbf{SR by entropy bin} (ref: SEAG Figure~4 + CATTS Figure~4).
+
+\textbf{Layout:} $1 \times 3$ panels, each showing one representative
+environment type: (a) Type~I (FEVER or HotpotQA),
+(b) Mixed (APPS Intro), (c) Type~D (APPS Interview).
+
+\textbf{Data:} From exploration data $\mathcal{D}$.
+For each environment:
+\begin{enumerate}[nosep]
+\item Bin steps by entropy into 4--5 bins (e.g., 0--0.3, 0.3--0.6, 0.6--0.9, 0.9+)
+\item For each bin, compute SR of: EAAG, best fixed-direction baseline,
+  always\_trigger, base\_only
+\item Also compute: proportion of steps in each bin (annotate on top like SEAG Fig~4)
+\end{enumerate}
+
+\textbf{Visual design (ref: SEAG Figure 4):}
+\begin{itemize}[nosep]
+\item Grouped bar chart: 3--4 methods per entropy bin
+\item Annotate proportion of steps at top of each bin group (like SEAG)
+\item Color: EAAG = red/crimson, baselines = blue/green/gray
+\item Show numbers on top of each bar
+\end{itemize}
+
+\textbf{Key message:}
+\begin{itemize}[nosep]
+\item In Type~I panel: At high entropy, EAAG maintains SR while baselines
+  degrade (they trigger when they shouldn't)
+\item In Type~D panel: At high entropy, both EAAG and baselines improve
+  (direction aligns), but EAAG is more selective
+\item In Mixed panel: EAAG adapts within-episode
+\end{itemize}
+
+\textbf{Data source:} Compute from per-step exploration logs.
+Fields needed: \texttt{env, step, entropy, trigger\_decision, U, method}.}
+
 
 \subsection{Ablation Studies}
 \label{sec:ablation}
 
 The main results show \emph{that} EAAG works; we now ask
-\emph{why}. We ablate the two components of EAAG that §3
+\emph{why}. We ablate the two components of EAAG that \S\ref{sec:signal-landscape}
 identified as necessary: direction learning and the LLM feature
 layer.
 
@@ -158,12 +223,37 @@ features even introduce noise. Consistent with the framing in
 convenience that enables zero-shot deployment on new environments
 rather than a component the method's main claims depend on.
 
-{\color{red} \textbf{[FIGURE NEEDED: Figure 6.]} Environment-adaptive trigger rates.
-Bar chart: x-axis = 8 environments (ordered by rollout headroom $\Delta$),
-y-axis = EAAG trigger rate (\%). Show how trigger rate naturally correlates
-with headroom: high in TWExpress/HotpotQA, moderate in APPS, low in WebShop,
-near-zero in Plancraft. No explicit headroom estimation needed.
-Similar to FLARE Figure 2 which shows dynamics across environments.}
+{\color{red} \textbf{[FIGURE NEEDED: Figure~\ref{fig:trigger-adapt}.]}
+\textbf{Environment-adaptive trigger behavior} (ref: CATTS Figure~2 trajectory profiles).
+
+\textbf{Layout:} $2 \times 3$ grid, 6 environments.
+Each subplot: x-axis = step index, y-axis = EAAG trigger rate (\%).
+
+\textbf{Data:} From deployment-phase gate decisions.
+For each environment and step index $t$:
+\begin{enumerate}[nosep]
+\item Compute trigger rate = \% of episodes where $g(s_t) = 1$
+\item Compute 95\% CI band (bootstrap or binomial)
+\item Annotate overall trigger rate (RR) in corner
+\end{enumerate}
+
+\textbf{Visual design (ref: CATTS Figure~2 dual-color line):}
+\begin{itemize}[nosep]
+\item Solid blue line with shaded 95\% CI band
+\item Horizontal dashed gray line at 50\% for reference
+\item Annotate overall RR in each panel corner
+\item Order panels by $\Delta$ (rollout headroom): TWExpress first, Plancraft last
+\end{itemize}
+
+\textbf{Key message:} Trigger rate varies from 73\% (TWExpress, rollout-safe)
+to $<$20\% late-step (Plancraft, rollout-harmful). Step-dependent decay
+in rollout-harmful environments. This behavioral range emerges from
+direction learning alone.
+
+\textbf{Data source:} \texttt{fig\_trigger\_rate/} CSV files.
+Current fig\_trigger\_rate\_by\_step.png exists but needs: (1) consistent
+axis range, (2) panel ordering by $\Delta$, (3) cleaner style matching
+other figures.}
 
 \textbf{Gating magnitude emerges from direction learning alone.}
 The gate's trigger rate varies from 73\% (TWExpress) to $<$20\%
@@ -178,6 +268,40 @@ programmed: they follow from the per-environment signed weights
 fit in \S\ref{sec:learn}, which capture each environment's
 signal--utility structure.
 >>>>>>> cc1bc6e4f1be11f03658207b43893225ca507faf
+
+{\color{red} \textbf{[FIGURE NEEDED: Figure~\ref{fig:direction-cost}.]}
+\textbf{Cost of wrong direction scales with signal strength}
+(ref: CATTS Figure~3 bar chart + Figure~4 net advantage).
+
+\textbf{Layout:} Single panel scatter plot.
+x-axis = signal strength $|\rho|$ per environment,
+y-axis = BSW degradation (pp SR drop vs.\ EAAG with correct direction).
+
+\textbf{Data:} From \texttt{fig3\_bsw\_direction/} and
+\texttt{tab\_signal\_discovery/} CSV files.
+For each environment:
+\begin{enumerate}[nosep]
+\item $|\rho|$ = absolute Spearman correlation of best signal
+  (from signal discovery table)
+\item BSW\_drop = SR(EAAG) $-$ SR(BSW) in percentage points
+\end{enumerate}
+
+\textbf{Visual design:}
+\begin{itemize}[nosep]
+\item Scatter with environment labels next to each point
+\item Color by environment type: blue = Type~I, red = Type~D,
+  gray = mixed/weak
+\item Dashed trend line (linear fit) with $r$ value
+\item Large, clear font for environment labels
+\end{itemize}
+
+\textbf{Key message:} Wrong direction is more damaging when signal is
+stronger. Environments with $|\rho| > 0.3$ see $>$15pp degradation.
+Directly validates Proposition~1: direction is the bottleneck.
+
+\textbf{Improvement over current fig3\_bsw\_cost.png:}
+Current version works but needs: (1) Type I/D color coding,
+(2) larger text, (3) clearer trend line annotation.}
 
 
 \subsection{Two-Source Model Verification}
@@ -201,6 +325,37 @@ and verify each:
   the strongest signal should measure information sufficiency; in
   Type~D environments, decision complexity.
 \end{enumerate}
+
+{\color{red} \textbf{[FIGURE NEEDED: Figure~\ref{fig:temporal-shift}.]}
+\textbf{P1 verification: temporal dynamics of $\rho$}
+(ref: CATTS Figure~2 dual-panel trajectory + current fig\_p1\_temporal\_shift.png).
+
+\textbf{Layout:} Single panel, grouped bar chart.
+x-axis = environments (HotpotQA, FEVER, TWExpress, APPS, WebShop).
+Two bars per environment: early steps (blue) vs.\ late steps (red).
+y-axis = $\rho$(entropy, utility).
+
+\textbf{Data:} From \texttt{fig\_p1\_temporal\_shift/} CSV files.
+\begin{enumerate}[nosep]
+\item Split each environment's trajectory data at median step
+\item Compute $\rho$ for early and late subsets
+\item Compute 95\% CI via bootstrap
+\end{enumerate}
+
+\textbf{Visual design:}
+\begin{itemize}[nosep]
+\item Paired bar chart with error bars
+\item Annotate $\Delta = \rho_{\text{late}} - \rho_{\text{early}}$
+  above each pair
+\item Horizontal dashed line at $\rho = 0$
+\end{itemize}
+
+\textbf{Key message:} $\rho$ consistently shifts more negative
+from early to late steps, confirming that late steps isolate
+the dominant uncertainty type.
+
+\textbf{Current fig\_p1\_temporal\_shift.png is good;} minor
+improvements: (1) add $\Delta$ annotations, (2) consistent error bars.}
 
 \paragraph{P1: Temporal dynamics (confirmed).}
 We split trajectory data into early (step $\leq$ median) and late
@@ -312,3 +467,47 @@ With wrong direction, higher capacity makes performance \emph{worse}
 more precisely targets harmful states. Across the gate architectures
 we tested, signal direction consistently outweighs both signal count
 and gate complexity as a determinant of gate quality.
+
+{\color{red} \textbf{[FIGURE NEEDED: Figure~\ref{fig:case-study}.]}
+\textbf{Trajectory-level gate decision visualization}
+(ref: CoRefine Figure~4 tree decision visualization).
+
+\textbf{Layout:} Two horizontal trajectory strips side by side:
+(a) Type~I example (HotpotQA episode) and (b) Type~D example
+(APPS Interview episode).
+
+\textbf{Data:} Select one representative episode from each environment
+from deployment logs. Need per-step:
+\begin{enumerate}[nosep]
+\item Step index $t$
+\item EAAG gate decision: trigger (1) or not (0)
+\item Entropy value at that step
+\item Whether the rollout actually helped ($U_t$)
+\item What a fixed-direction baseline would have decided
+\end{enumerate}
+
+\textbf{Visual design (ref: CoRefine Figure~4 + custom):}
+\begin{itemize}[nosep]
+\item Each step is a colored circle on a horizontal timeline
+\item Green circle = EAAG triggers and $U{=}1$ (correct trigger)
+\item Gray circle = EAAG doesn't trigger (correct skip)
+\item Red circle = fixed baseline triggers and $U{=}0$ (harmful trigger)
+\item Circle size proportional to entropy level
+\item Below each timeline: small entropy curve (line plot)
+\item Above: annotations at key decision points
+\end{itemize}
+
+\textbf{Panel (a) HotpotQA (Type~I):} EAAG learns NOT to trigger
+at high-entropy late steps (gray circles), while fixed baseline
+triggers and gets harmed (red Xs overlaid).
+\textbf{Panel (b) APPS Interview (Type~D):} EAAG triggers at
+high-entropy steps (green circles), matching the fixed baseline
+but with better selectivity.
+
+\textbf{Key message:} Same high entropy $\to$ opposite gate decisions
+$\to$ EAAG adapts correctly in both cases.
+This is the ``Same Signal, Opposite Meaning'' story in one figure.
+
+\textbf{Data source:} Select episodes from deployment logs where
+the direction difference is most visible. Choose episodes where
+fixed-direction baseline makes $\geq$2 wrong trigger decisions.}

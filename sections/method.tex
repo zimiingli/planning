@@ -14,11 +14,11 @@ interaction data.
 =======
 Section~\ref{sec:signal-landscape} imposes three requirements on
 any gating method that aims for cross-environment robustness.
-(i) Signal direction must be \emph{learned} per environment,
+(i)~Signal direction must be \emph{learned} per environment,
 since Proposition~\ref{prop:necessity} rules out any fixed
-choice. (ii) The feature set must be \emph{multi-signal}, since
+choice. (ii)~The feature set must be \emph{multi-signal}, since
 no single signal is reliably informative across environments
-(\S\ref{sec:empirical-landscape}). (iii) Exploration must be
+(\S\ref{sec:empirical-landscape}). (iii)~Exploration must be
 \emph{signal-agnostic}, since conditioning on a signal whose
 semantics are unknown would bias the collected data in a
 direction that depends on the answer.
@@ -33,6 +33,8 @@ direction, an optional LLM feature layer (\S\ref{sec:reason})
 proposes task-specific signals when universal ones are
 inadequate, and a sparse linear gate (\S\ref{sec:learn})
 recovers per-environment direction from the resulting dataset.
+Figure~\ref{fig:eaag-pipeline} illustrates the full pipeline
+and its connection to requirements~(i)--(iii).
 
 <<<<<<< HEAD
 \paragraph{Design rationale.}
@@ -70,119 +72,207 @@ return on gate complexity is small compared to the return on
 getting direction right, so we invest complexity in exploration
 and feature selection and keep the deployed gate minimal.
 
+<<<<<<< HEAD
+{\color{red} \textbf{[FIGURE NEEDED: Figure~\ref{fig:eaag-pipeline}.]}
+EAAG pipeline diagram. \textbf{Layout:} Horizontal three-stage pipeline
+with requirement mapping above and signed-weight example below.
+
+\textbf{Top row (requirements):} Three boxes labeled
+``Req~(iii): Signal-agnostic collection'',
+``Req~(ii): Multi-signal features'',
+``Req~(i): Direction must be learned'',
+each with a downward arrow to the corresponding pipeline stage.
+
+\textbf{Middle row (pipeline):} Three colored boxes connected by arrows:
+\textsc{Explore} (blue) $\to$ \textsc{Reason} (orange, dashed border for optional)
+$\to$ \textsc{Learn} (green) $\to$ \textsc{Deploy} (gray).
+Inside each box, 1--2 line summary:
+Explore: ``$\varepsilon{=}0.5$ random gating, 50 eps $\to$ $\mathcal{D}$'';
+Reason: ``LLM proposes task features $\to$ $\phi_{\text{cand}}$'';
+Learn: ``LASSO $\to$ gate $g(s)$ with signed $\mathbf{w}$'';
+Deploy: ``Zero overhead per step''.
+
+\textbf{Bottom annotation:} Two small boxes showing example signed weights:
+HotpotQA ($w_{\text{entropy}}{=}{-}0.34$, Type~I: high entropy $\to$ \emph{don't} trigger)
+vs.\ APPS Interview ($w_{\text{entropy}}{=}{+}0.32$, Type~D: high entropy $\to$ trigger).
+Use red/blue coloring to indicate direction.
+
+\textbf{Style:} Clean TikZ boxes similar to CATTS Figure~1 and CoRefine Figure~3.
+Rounded rectangles, minimal text, consistent color scheme.
+See drawing prompt in \texttt{figure\_prompts.md}.}
+
+=======
 {\color{red} \textbf{[FIGURE NEEDED: Figure 4.]} EAAG pipeline
 diagram: Explore $\to$ Reason (optional) $\to$ Learn, with
 arrows from requirements (i), (ii), (iii) to the corresponding
 stages.}
 >>>>>>> cc1bc6e4f1be11f03658207b43893225ca507faf
+>>>>>>> a7e30fbd74c674828774fd4253d874b033355a26
 
 \subsection{Explore: Signal-Agnostic Data Collection}
 \label{sec:explore}
 
 Exploration collects the $(s, U)$ pairs that will be used to fit
-the gate. The central constraint is requirement (iii): the
+the gate. The central constraint is requirement~(iii): the
 collection policy must not condition on any signal whose
 semantics we are trying to learn. Any signal-dependent
-alternative, such as uncertainty sampling, would have to
-condition on a signal whose relationship to $U$ is exactly what
+alternative, such as uncertainty sampling, would condition on a
+signal whose relationship to $U$ is exactly what
 \S\ref{sec:empirical-landscape} showed to be unknown, biasing
 $\mathcal{D}$ in a direction that depends on the quantity being
 estimated. Warm-starting from prior-method data inherits the
 same circularity.
 
 EAAG therefore uses the simplest policy consistent with this
-constraint: at each step, the optimizer $T$ is invoked with
-probability $\varepsilon_{\text{explore}} = 0.5$ independently
-of state, yielding an unbiased dataset
-$\mathcal{D} = \{(s_t^{(i)}, U_t^{(i)})\}$ over
-$N_{\text{explore}} = 50$ episodes.
+constraint. At each step~$t$ in episode~$i$, a Bernoulli coin
+flip determines the gating decision:
+\begin{equation}
+  z_t^{(i)} \sim \mathrm{Bernoulli}(\varepsilon_{\text{explore}}),
+  \quad \varepsilon_{\text{explore}} = 0.5,
+  \label{eq:explore}
+\end{equation}
+where $z_t{=}1$ triggers the optimizer~$T$ and $z_t{=}0$ uses
+the base action. Over $N_{\text{explore}} = 50$ episodes, this
+yields an unbiased dataset
+\begin{equation}
+  \mathcal{D} = \bigl\{
+    \bigl(\phi(s_t^{(i)}),\; U_t^{(i)}\bigr)
+    : z_t^{(i)} = 1
+  \bigr\}_{t, i},
+  \label{eq:dataset}
+\end{equation}
+where $U_t^{(i)} \in \{0, 1\}$ indicates whether the optimizer
+improved the outcome at step~$t$, and $\phi(s)$ is the feature
+vector described in \S\ref{sec:reason}.
+
 
 \subsection{Reason: LLM Feature Layer}
 \label{sec:reason}
 
 The next step builds the feature pool $\phi_{\text{cand}}(s)$
-that the gate will be fit over. Requirement (ii) demands that
+that the gate will be fit over. Requirement~(ii) demands that
 this pool be rich enough to include each environment's relevant
 signals, but not so environment-specific that deployment
 requires manual engineering per task.
 
-EAAG's default is a fixed set of universal features (step count,
-token entropy, state length, action entropy, and standard
-structural signals), available in every environment without
-task-specific engineering. In the environments we study, this
-pool alone is sufficient to recover a gate that outperforms all
-fixed-direction baselines (\S\ref{sec:ablation}).
+EAAG's default is a fixed set of universal features:
+\begin{equation}
+  \phi_{\text{univ}}(s) = [\,\texttt{step\_count},\;
+  \texttt{token\_entropy},\; \texttt{state\_length},\;
+  \texttt{action\_entropy},\; \ldots\,],
+  \label{eq:universal}
+\end{equation}
+available in every environment without task-specific engineering.
+In the environments we study, this pool alone is sufficient to
+recover a gate that outperforms all fixed-direction baselines
+(\S\ref{sec:ablation}).
 
 For environments where universal features may be inadequate,
 such as WebShop, whose gating benefits from task-specific
 signals like \texttt{num\_available\_actions}, EAAG offers an
 \emph{optional} automation layer: an LLM is given a summary of
-$\mathcal{D}$ and proposes task-specific feature hypotheses,
-which join the universal pool to form $\phi_{\text{cand}}(s)$.
+$\mathcal{D}$ and proposes task-specific feature hypotheses
+$\phi_{\text{LLM}}(s)$, which join the universal pool to form
+\begin{equation}
+  \phi_{\text{cand}}(s)
+  = \phi_{\text{univ}}(s) \;\cup\; \phi_{\text{LLM}}(s).
+  \label{eq:cand}
+\end{equation}
 The ablation in \S\ref{sec:ablation} shows its gains concentrate
 in the few settings where universal features miss the relevant
 structure, so the LLM is best viewed as an automation
 convenience for zero-shot deployment rather than a core
 component the method depends on.
 
+
 \subsection{Learn: Sparse Linear Gate}
 \label{sec:learn}
 
-EAAG fits a standard $\ell_1$-regularized logistic regression
-on $\mathcal{D}$:
+Given $\mathcal{D}$ and $\phi_{\text{cand}}$, EAAG fits an
+$\ell_1$-regularized logistic regression:
 \begin{equation}
-  g(s) = \mathbf{1}\!\left[\sigma(\mathbf{w}^\top \phi(s) + b)
+  \mathbf{w}^*, b^* = \argmin_{\mathbf{w}, b}
+  \sum_{(\phi, U) \in \mathcal{D}}
+  \ell\!\bigl(\sigma(\mathbf{w}^\top \phi + b),\, U\bigr)
+  + \lambda \|\mathbf{w}\|_1,
+  \label{eq:lasso}
+\end{equation}
+where $\ell$ is the binary cross-entropy loss and
+$\lambda$ controls sparsity over $\phi_{\text{cand}}$ so that
+uninformative features drop out. The deployed gate is
+\begin{equation}
+  g(s) = \mathbf{1}\!\left[\sigma(\mathbf{w}^{*\top} \phi(s) + b^*)
   > \tau\right],
   \label{eq:gate}
 \end{equation}
-with sparsity induced over $\phi_{\text{cand}}$ so that
-uninformative features drop out. Gate fitting completes in
-under a second, and deployment adds zero per-step overhead
-beyond feature computation. Implementation details are in
+with threshold $\tau$ set by cross-validation on $\mathcal{D}$.
+Gate fitting completes in under a second, and deployment adds
+zero per-step overhead beyond feature computation.
+Implementation details are in
 Appendix~\ref{app:eaag-details}.
 
 \paragraph{Signed weights as a diagnostic.}
-The fitted weight signs provide an interpretable per-environment
+The $\ell_1$ penalty in Eq.~\ref{eq:lasso} simultaneously
+performs feature selection and direction discovery. The sign of
+each fitted weight provides an interpretable per-environment
 estimate of the Two-Source mixture of \S\ref{sec:toy-model}:
-$w_i > 0$ indicates the environment sits on the Type-D side of
-the reversal threshold $p_I^*$ for signal $i$, $w_i < 0$ the
-Type-I side, and $w_i \approx 0$ an uninformative signal. This
-is a diagnostic reading of the fitted model, not a novel
-modeling choice; any signed linear classifier would expose the
-same information.
+$w_i > 0$ indicates the environment sits on the Type~D side of
+the reversal threshold $p_I^*$ for signal~$i$ (high signal
+$\to$ trigger), $w_i < 0$ the Type~I side (high signal $\to$
+\emph{don't} trigger), and $w_i \approx 0$ an uninformative
+signal. This is a diagnostic reading of the fitted model, not a
+novel modeling choice; any signed linear classifier would expose
+the same information.
 
 \paragraph{Online adaptation.}
 For drifting environments, EAAG can optionally refit during
 deployment using $\varepsilon$-greedy exploration
 ($\varepsilon: 0.1 \to 0$) and periodic retraining. This mode
 is \emph{not free}: $\varepsilon$-greedy overrides ignore the
-current gate, so in Type-I environments a fraction of
+current gate, so in Type~I environments a fraction of
 overridden steps will trigger harmful rollouts. For stationary
 environments, which are the setting of our main experiments,
 we recommend skipping online adaptation and relying on the
 offline-fitted gate.
 
-% \begin{table}[t]
-% \caption{Adaptive compute methods by design axis. EAAG is the
-% only method that varies all four, each forced by a requirement
-% in \S\ref{sec:signal-landscape}.}
-% \vspace{-0.1in}
-% \label{tab:classification}
-% \centering\small
-% \resizebox{\columnwidth}{!}{%
-% \begin{tabular}{lcccc}
-% \toprule
-% Method & Signal & Direction & Granularity & Env-Aware \\
-% \midrule
-% CaTS$^\dagger$     & Single & Fixed & Problem & \xmark \\
-% SEAG$^\dagger$     & Single & Fixed & Problem & \xmark \\
-% CoRefine$^\dagger$ & Single & Fixed & Problem & \xmark \\
-% CATTS              & Single & Fixed & Problem & \xmark \\
-% AUQ                & Single & Fixed & Problem & \xmark \\
-% \midrule
-% \textbf{EAAG}      & \textbf{Multi (auto)} & \textbf{Learned}
-%                     & \textbf{Step} & \cmark \\
-% \bottomrule
-% \end{tabular}
-% }
-% \end{table}
+% --- Algorithm Box ---
+\begin{algorithm}[t]
+\caption{EAAG: Environment-Aware Adaptive Gating}
+\label{alg:eaag}
+\small
+\begin{algorithmic}[1]
+\Require Environment~$E$, agent~$M$, optimizer~$T$,
+  $N_{\text{explore}}$ episodes, $\varepsilon_{\text{explore}}{=}0.5$
+\Ensure Fitted gate $g(s)$
+\Statex
+\Statex \textbf{Phase 1: Explore} \hfill\textit{// Req~(iii)}
+\State $\mathcal{D} \gets \emptyset$
+\For{episode $i = 1, \ldots, N_{\text{explore}}$}
+  \For{step $t$ in episode $i$}
+    \State $z_t \sim \mathrm{Bernoulli}(\varepsilon_{\text{explore}})$
+    \State Execute $T$ if $z_t{=}1$, else base action
+    \State $\mathcal{D} \gets \mathcal{D} \cup
+      \{(\phi(s_t),\, U_t,\, z_t)\}$
+  \EndFor
+\EndFor
+\Statex
+\Statex \textbf{Phase 2: Reason} (optional) \hfill\textit{// Req~(ii)}
+\State $\phi_{\text{univ}} \gets
+  [\texttt{step\_count}, \texttt{entropy}, \ldots]$
+\State $\phi_{\text{LLM}} \gets
+  \textsc{LLM\_Propose}(\mathrm{summary}(\mathcal{D}))$
+\State $\phi_{\text{cand}} \gets
+  \phi_{\text{univ}} \cup \phi_{\text{LLM}}$
+\Statex
+\Statex \textbf{Phase 3: Learn} \hfill\textit{// Req~(i)}
+\State $\mathbf{w}^*, b^* \gets
+  \argmin_{\mathbf{w},b}
+  \sum \ell(\sigma(\mathbf{w}^\top\phi + b), U)
+  + \lambda\|\mathbf{w}\|_1$
+\State $g(s) \gets
+  \mathbf{1}[\sigma(\mathbf{w}^{*\top}\phi(s) + b^*) > \tau]$
+\Statex
+\State \Return $g(s)$
+  \hfill\textit{// Deploy: zero per-step overhead}
+\end{algorithmic}
+\end{algorithm}
