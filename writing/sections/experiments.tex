@@ -27,11 +27,7 @@ Plancraft: rollout-harmful).
 optimizer $T$; only the gating decision differs. Bounds:
 base\_only (never trigger), always\_trigger, oracle.
 Fixed-direction baselines: CaTS, SEAG, CoRefine, CATTS, AUQ,
-<<<<<<< HEAD
 s1\_budget---all assuming high uncertainty warrants compute.
-=======
-s1\_budget, all assuming high uncertainty warrants compute.
->>>>>>> cc1bc6e4f1be11f03658207b43893225ca507faf
 Ablation: BSW (direction intentionally reversed). Full
 specifications in Appendix~\ref{app:experiments}.
 
@@ -130,28 +126,17 @@ The results align with the Two-Source Model along three axes.
 The gap between EAAG and baselines is largest where direction
 mismatch is most severe: in Type~I environments, all ``high
 uncertainty $\to$ trigger'' baselines fall below the no-trigger
-<<<<<<< HEAD
 baseline because the assumed direction is wrong---no amount of
-=======
-baseline because the assumed direction is wrong, and no amount of
->>>>>>> cc1bc6e4f1be11f03658207b43893225ca507faf
 calibration rescues them. Conversely, EAAG's advantage is smallest
 in high-headroom environments where most methods approach the
 oracle regardless of direction. Most tellingly, EAAG adapts not
 only direction but \emph{gating magnitude}: aggressive triggering
 in rollout-safe environments (TWExpress, RR\,=\,73\%),
 moderate triggering in mixed environments, and step-dependent
-<<<<<<< HEAD
 decay in rollout-harmful ones (Plancraft: 49\% at step~0 $\to$
 $<$20\% later). This full behavioral range---from near-always
 to near-never triggering---emerges from direction learning
 alone, without explicit headroom estimation.
-=======
-decay in rollout-harmful ones (Plancraft: 49\% at step~0 to
-$<$20\% later). This full behavioral range, from near-always
-to near-never triggering, emerges from direction learning alone,
-without explicit headroom estimation.
->>>>>>> cc1bc6e4f1be11f03658207b43893225ca507faf
 
 {\color{red} \textbf{[FIGURE NEEDED: Figure~\ref{fig:entropy-bin}.]}
 \textbf{SR by entropy bin} (ref: SEAG Figure~4 + CATTS Figure~4).
@@ -205,13 +190,8 @@ wrong direction falling \emph{below} the no-trigger baseline. This
 confirms the central prediction of Proposition~\ref{prop:necessity}:
 direction is not a minor calibration detail but the primary
 determinant of gate quality. The magnitude of degradation correlates
-<<<<<<< HEAD
-with signal strength (Appendix~\ref{app:wrong-direction}), as the Two-Source
-Model predicts.
-=======
 with signal strength (Appendix~\ref{app:wrong-direction}), as the
 Two-Source Model predicts.
->>>>>>> cc1bc6e4f1be11f03658207b43893225ca507faf
 
 \textbf{The LLM feature layer is an automation convenience, not
 a core component.} Removing the LLM layer changes SR by
@@ -259,15 +239,9 @@ other figures.}
 The gate's trigger rate varies from 73\% (TWExpress) to $<$20\%
 (late-step Plancraft), with step-dependent decay in
 rollout-harmful environments. These patterns are not explicitly
-<<<<<<< HEAD
-programmed: they arise from logistic regression over
-LASSO-selected features, whose signed weights implicitly encode
-each environment's signal--utility structure.
-=======
 programmed: they follow from the per-environment signed weights
 fit in \S\ref{sec:learn}, which capture each environment's
 signal--utility structure.
->>>>>>> cc1bc6e4f1be11f03658207b43893225ca507faf
 
 {\color{red} \textbf{[FIGURE NEEDED: Figure~\ref{fig:direction-cost}.]}
 \textbf{Cost of wrong direction scales with signal strength}
@@ -367,13 +341,8 @@ $\rho$ shifts from $+0.102$ (early, non-significant) to $-0.144$
 debugging frustration. In WebShop, the strong positive early-phase
 signal ($\rho{=}{+}0.285$) vanishes in the late phase. The pattern
 is consistent across all environments with sufficient signal (full
-<<<<<<< HEAD
-data in Appendix~\ref{app:model-derivation}): early steps mix both uncertainty
-sources, while late steps isolate the dominant type.
-=======
 data in Appendix~\ref{app:model-derivation}): early steps mix both
 uncertainty sources, while late steps isolate the dominant type.
->>>>>>> cc1bc6e4f1be11f03658207b43893225ca507faf
 
 \paragraph{P2: Cross-environment consistency (confirmed).}
 We compare same-family pairs. FEVER ($\rho{=}{-}0.119$) and HotpotQA
