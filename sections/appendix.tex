@@ -47,35 +47,35 @@ Table~\ref{tab:baseline-detail} provides a detailed comparison of all
 baselines evaluated in this paper. All six methods share a common
 assumption: a fixed mapping from signal value to compute need.
 
-\begin{table}[h]
+\begin{table*}[h]
 \caption{Detailed comparison of baselines. All methods assume a
-fixed signal--utility direction. Phase~1 methods require a separate
-calibration dataset; EAAG requires only exploration episodes.}
+fixed signal--utility direction. $^\dagger$Requires a separate labeled dataset for calibration.}
 \label{tab:baseline-detail}
 \centering\small
-\begin{tabular}{p{1.4cm}p{2.2cm}p{1.8cm}p{2.0cm}p{2.8cm}}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{l W W N W}
 \toprule
 Method & Signal & Direction & Granularity & Mechanism \\
 \midrule
-CATTS & Vote entropy + margin & High disagree. $\to$ trigger
+CATTS~\cite{catts2026} & Vote entropy + margin & High disagreement $\to$ trigger
   & Per-step & $K{=}5$ forward passes, arbiter on disagreement \\
-SEAG$^\dagger$ & Mean token confidence & Low conf.\ $\to$ search
+SEAG$^\dagger$~\cite{seag2025} & Mean token confidence & Low conf.\ $\to$ search
   & Per-problem & Platt scaling, search depth allocation \\
-CaTS$^\dagger$ & Calibrated confidence & Low conf.\ $\to$ generate
+CaTS$^\dagger$~\cite{cats2025} & Calibrated confidence & Low conf.\ $\to$ generate
   & Per-attempt & Self-calibration, Best-of-N early stopping \\
-CoRefine$^\dagger$ & Conv1D confidence & Low conf.\ $\to$ refine
+CoRefine$^\dagger$~\cite{corefine2026} & Conv1D confidence & Low conf.\ $\to$ refine
   & Per-problem & Halt / re-examine / redirect controller \\
-s1\_budget & Token budget & Fixed budget $\to$ stop
+s1\_budget~\cite{s1_2025} & Token budget & Fixed budget $\to$ stop
   & Per-problem & Budget-constrained generation \\
-AUQ & Verbalized uncertainty & High uncert.\ $\to$ reflect
-  & Per-step & Uncertainty-aware memory + reflection~\cite{auq2026} \\
+AUQ~\cite{auq2026} & Verbalized uncertainty & High uncert.\ $\to$ reflect
+  & Per-step & Uncertainty-aware memory + reflection \\
 \midrule
 \textbf{EAAG} & \textbf{Multi (auto)} & \textbf{Learned}
   & \textbf{Per-step} & Explore + reason + LASSO direction learning \\
 \bottomrule
-\end{tabular}
-\end{table}
-
+\end{tabularx}
+\vspace{2pt}\\
+\end{table*}
 \subsection{Adaptive Computation in Neural Networks}
 
 The idea of adapting computation to input difficulty predates LLMs.
@@ -240,6 +240,7 @@ $|\rho(\mathcal{E})|$.
 \centering\small
 \caption{Wrong-direction damage scales with signal strength.}
 \label{tab:wrong-direction}
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lcccc}
 \toprule
 Environment & Correct SR & Wrong SR & $\Delta$ SR & $|\rho|$ (strongest) \\
@@ -249,7 +250,8 @@ WebShop    & 43.8\% & 21.4\% & $-$22.4 & 0.444 \\
 FEVER      & 49.8\% & 13.0\% & $-$36.8 & 0.619 \\
 APPS Intro & 66.0\% & 62.5\% & $-$3.5  & 0.155 \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
 Environments with stronger signal--utility coupling ($|\rho|$)
@@ -323,12 +325,13 @@ which is why EAAG cannot rely on environment-level heuristics
 alone and must discover direction per (environment, backbone)
 pair from interaction data.
 
-\begin{table}[h]
+\begin{table*}[h]
 \caption{Environment-to-type mapping. Predicted $\rho$ direction
 follows from Eq.~\eqref{eq:direction}; observed values are from
 Qwen3-4B.}
 \label{tab:env-type-mapping}
 \centering\small
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{llccl}
 \toprule
 Environment & Dominant Type & Pred.\ $\rho$ & Obs.\ $\rho$ & Rationale \\
@@ -345,8 +348,9 @@ WebShop        & Mixed (entropy weak) & $\approx 0$ & $-0.019$ & Choice-dominate
 CRUXEval       & Weak signal & $\approx 0$ & $-0.048$ & Short trajectories, little variation \\
 Plancraft      & Weak signal & $\approx 0$ & $-0.016$ & Rollouts harmful; entropy uninformative \\
 \bottomrule
-\end{tabular}
-\end{table}
+\end{tabular}%
+}
+\end{table*}
 
 The mapping confirms the model's core prediction: the sign of the
 entropy--utility correlation is determined by which uncertainty

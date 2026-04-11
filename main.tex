@@ -20,6 +20,14 @@
 \usepackage{pifont}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{S}{>{\raggedright\arraybackslash\hsize=0.75\hsize}X}
+\newcolumntype{B}{>{\raggedright\arraybackslash\hsize=1.0833\hsize}X}
+\newcolumntype{N}{>{\raggedright\arraybackslash\hsize=0.6\hsize}X}
+\newcolumntype{W}{>{\raggedright\arraybackslash\hsize=1.1333\hsize}X}
 % === Theorem Environments ===
 \newtheorem{proposition}{Proposition}
 \newtheorem*{proposition*}{Proposition}
@@ -28,6 +36,12 @@
 % === Shortcuts ===
 \newcommand{\cmark}{\ding{51}}
 \newcommand{\xmark}{\ding{55}}
+\AtBeginDocument{%
+  \setlength{\abovedisplayskip}{4pt}%
+  \setlength{\belowdisplayskip}{4pt}%
+  \setlength{\abovedisplayshortskip}{2pt}%
+  \setlength{\belowdisplayshortskip}{2pt}%
+}
 
 \title{Same Signal, Opposite Meaning:\\Why Adaptive Compute Fails Across Environments}
 

@@ -4,14 +4,6 @@
 \section{Method: Environment-Aware Adaptive Gating}
 \label{sec:method}
 
-<<<<<<< HEAD
-Proposition~\ref{prop:necessity} establishes that direction
-discovery is necessary for cross-environment robustness; no
-existing method performs it (Table~\ref{tab:classification}).
-EAAG (Environment-Aware Adaptive Gating) closes this gap by
-learning both signal identity and direction from online
-interaction data.
-=======
 Section~\ref{sec:signal-landscape} imposes three requirements on
 any gating method that aims for cross-environment robustness.
 (i)~Signal direction must be \emph{learned} per environment,
@@ -22,7 +14,6 @@ no single signal is reliably informative across environments
 \emph{signal-agnostic}, since conditioning on a signal whose
 semantics are unknown would bias the collected data in a
 direction that depends on the answer.
->>>>>>> cc1bc6e4f1be11f03658207b43893225ca507faf
 
 EAAG is a deliberately minimal instantiation of these
 requirements. Its contribution is not a new gate architecture
@@ -36,26 +27,6 @@ recovers per-environment direction from the resulting dataset.
 Figure~\ref{fig:eaag-pipeline} illustrates the full pipeline
 and its connection to requirements~(i)--(iii).
 
-<<<<<<< HEAD
-\paragraph{Design rationale.}
-The bottleneck in adaptive gating is direction, not model capacity
-(\S\ref{sec:ablation}, Table~\ref{tab:capacity}): an MLP with the
-wrong direction falls \emph{below} the no-trigger baseline, while
-a logistic gate with the correct direction Pareto-dominates all
-baselines. EAAG therefore pairs a rich discovery pipeline
-(exploration + LLM reasoning + LASSO) with a deliberately simple
-gate---a logistic function that encodes both signal identity and
-direction.
-
-{\color{red} \textbf{[FIGURE NEEDED: Figure 4.]} EAAG method overview diagram.
-Three-phase pipeline: Explore (randomized gating, collect D) $\to$
-Reason (LLM analyzes D, generates environment profile + feature hypotheses)
-$\to$ Learn (LASSO selects features, trains logistic gate with signed weights).
-Show arrows from \S3 findings (direction reversal, signal identity, necessity)
-to each design choice.
-Similar to FLARE's method section which has equations inline but
-a clear conceptual flow. Consider a horizontal pipeline diagram.}
-=======
 \paragraph{Why a minimal gate suffices.}
 The real difficulty identified in Section~\ref{sec:signal-landscape}
 is identifying signal direction per environment, not
@@ -72,7 +43,6 @@ return on gate complexity is small compared to the return on
 getting direction right, so we invest complexity in exploration
 and feature selection and keep the deployed gate minimal.
 
-<<<<<<< HEAD
 {\color{red} \textbf{[FIGURE NEEDED: Figure~\ref{fig:eaag-pipeline}.]}
 EAAG pipeline diagram. \textbf{Layout:} Horizontal three-stage pipeline
 with requirement mapping above and signed-weight example below.
@@ -100,14 +70,6 @@ Use red/blue coloring to indicate direction.
 \textbf{Style:} Clean TikZ boxes similar to CATTS Figure~1 and CoRefine Figure~3.
 Rounded rectangles, minimal text, consistent color scheme.
 See drawing prompt in \texttt{figure\_prompts.md}.}
-
-=======
-{\color{red} \textbf{[FIGURE NEEDED: Figure 4.]} EAAG pipeline
-diagram: Explore $\to$ Reason (optional) $\to$ Learn, with
-arrows from requirements (i), (ii), (iii) to the corresponding
-stages.}
->>>>>>> cc1bc6e4f1be11f03658207b43893225ca507faf
->>>>>>> a7e30fbd74c674828774fd4253d874b033355a26
 
 \subsection{Explore: Signal-Agnostic Data Collection}
 \label{sec:explore}
@@ -154,15 +116,9 @@ that the gate will be fit over. Requirement~(ii) demands that
 this pool be rich enough to include each environment's relevant
 signals, but not so environment-specific that deployment
 requires manual engineering per task.
-
 EAAG's default is a fixed set of universal features:
-\begin{equation}
-  \phi_{\text{univ}}(s) = [\,\texttt{step\_count},\;
-  \texttt{token\_entropy},\; \texttt{state\_length},\;
-  \texttt{action\_entropy},\; \ldots\,],
-  \label{eq:universal}
-\end{equation}
-available in every environment without task-specific engineering.
+\texttt{step\_count}, \texttt{token\_entropy},
+\texttt{state\_length}, \texttt{action\_entropy}, and others. These are available in every environment without task-specific engineering.
 In the environments we study, this pool alone is sufficient to
 recover a gate that outperforms all fixed-direction baselines
 (\S\ref{sec:ablation}).
@@ -191,11 +147,13 @@ component the method depends on.
 Given $\mathcal{D}$ and $\phi_{\text{cand}}$, EAAG fits an
 $\ell_1$-regularized logistic regression:
 \begin{equation}
-  \mathbf{w}^*, b^* = \argmin_{\mathbf{w}, b}
-  \sum_{(\phi, U) \in \mathcal{D}}
-  \ell\!\bigl(\sigma(\mathbf{w}^\top \phi + b),\, U\bigr)
-  + \lambda \|\mathbf{w}\|_1,
-  \label{eq:lasso}
+\begin{aligned}
+\mathbf{w}^*, b^* = \argmin_{\mathbf{w}, b}\ 
+&\sum_{(\phi, U) \in \mathcal{D}}
+\ell\bigl(\sigma(\mathbf{w}^\top \phi + b),\, U\bigr)\\
+&+ \lambda \|\mathbf{w}\|_1
+\end{aligned}
+\label{eq:lasso}
 \end{equation}
 where $\ell$ is the binary cross-entropy loss and
 $\lambda$ controls sparsity over $\phi_{\text{cand}}$ so that

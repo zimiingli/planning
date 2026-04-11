@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.1.24)  8 APR 2026 18:15
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.1.24)  11 APR 2026 10:45
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -454,7 +454,7 @@ Document Style - pseudocode environments for use with the `algorithmicx' style
 \c@proposition=\count306
 \c@definition=\count307
 LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 3
-7.
+8.
  (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
@@ -470,24 +470,24 @@ LaTeX Warning: Label `alg:eaag' multiply defined.
 )
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
  (/usr/local/texlive/2023/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count309
@@ -548,24 +548,24 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring ON on input line 37.
+Package hyperref Info: Link coloring ON on input line 38.
 (./main.out) (./main.out)
 \@outlinefile=\write3
 \openout3 = `main.out'.
 
-LaTeX Font Info:    Trying to load font information for U+lasy on input line 38
+LaTeX Font Info:    Trying to load font information for U+lasy on input line 39
 .
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/base/ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 38.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 39.
 
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 38.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 39.
 
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/amsfonts/umsb.fd
@@ -727,47 +727,39 @@ Underfull \hbox (badness 2564) in paragraph at lines 65--69
  []
 
 [5]
-Overfull \hbox (198.81206pt too wide) detected at line 127
+Overfull \hbox (198.81206pt too wide) detected at line 126
 [][][]\OML/cmm/m/it/10.95 ^^^[]\OT1/cmr/m/n/10.95 (\OML/cmm/m/it/10.95 s\OT1/cm
 r/m/n/10.95 ) = [ []\OML/cmm/m/it/10.95 ;  [];  [];  [];  [] \OT1/cmr/m/n/10.95
  ]\OML/cmm/m/it/10.95 ;
  []
 
 
-Underfull \hbox (badness 2582) in paragraph at lines 127--132
+Underfull \hbox (badness 2582) in paragraph at lines 126--131
 \OT1/ptm/m/n/10.95 available in ev-ery en-vi-ron-ment with-out task-
  []
 
 
-Underfull \hbox (badness 3679) in paragraph at lines 133--139
+Underfull \hbox (badness 3679) in paragraph at lines 132--138
 []\OT1/ptm/m/n/10.95 For en-vi-ron-ments where uni-ver-sal fea-tures
  []
 
 
-Underfull \hbox (badness 1728) in paragraph at lines 133--139
+Underfull \hbox (badness 1728) in paragraph at lines 132--138
 \OT1/ptm/m/n/10.95 gat-ing ben-e-fits from task-specific sig-nals like
  []
 
-! Undefined control sequence.
-l.157   \mathbf{w}^*, b^* = \argmin
-                                   _{\mathbf{w}, b}
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
+
+Overfull \hbox (18.40967pt too wide) detected at line 161
+[][][]\OT1/cmr/bx/n/10.95 w[]\OML/cmm/m/it/10.95 ; b[] \OT1/cmr/m/n/10.95 = [] 
+[] \OML/cmm/m/it/10.95 ` []^^[\OT1/cmr/m/n/10.95 (\OT1/cmr/bx/n/10.95 w[]\OML/c
+mm/m/it/10.95 ^^^ \OT1/cmr/m/n/10.95 + \OML/cmm/m/it/10.95 b\OT1/cmr/m/n/10.95 
+)\OML/cmm/m/it/10.95 ;  U[] \OT1/cmr/m/n/10.95 + \OML/cmm/m/it/10.95 ^^U\OMS/cm
+sy/m/n/10.95 k\OT1/cmr/bx/n/10.95 w\OMS/cmsy/m/n/10.95 k[]\OML/cmm/m/it/10.95 ;
+
+ []
 
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 203.
-! Undefined control sequence.
-l.232   \argmin
-               _{\mathbf{w},b}
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
+put line 202.
 ) (./sections/experiments.tex
 Underfull \hbox (badness 2393) in paragraph at lines 10--15
 \OT1/ptm/m/n/10.95 We eval-u-ate EAAG along three axes: does
@@ -831,6 +823,11 @@ Underfull \hbox (badness 1024) in paragraph at lines 108--110
 
 Underfull \hbox (badness 2165) in paragraph at lines 116--118
 \OT1/ptm/m/n/10.95 fron-tier in ev-ery en-vi-ron-ment; fixed-direction
+ []
+
+
+Underfull \hbox (badness 1158) in paragraph at lines 125--140
+\OT1/ptm/m/n/10.95 where di-rec-tion mis-match is most se-vere: in
  []
 
 
@@ -1014,107 +1011,7 @@ Underfull \hbox (badness 1400) in paragraph at lines 432--439
 LaTeX Warning: Reference `fig:case-study' on page 11 undefined on input line 44
 0.
 
-) (./sections/discussion.tex) (./sections/conclusion.tex)
-Underfull \hbox (badness 10000) in paragraph at lines 5--55
-\OT1/ptm/m/n/10.95 All ex-ist-ing adap-tive gat-ing meth-ods for
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 5--55
-\OT1/ptm/m/n/10.95 LLM agents rest on an im-plicit as-sump-
- []
-
-
-Underfull \hbox (badness 3872) in paragraph at lines 5--55
-\OT1/ptm/m/n/10.95 tion: that un-cer-tainty sig-nals have a fixed
- []
-
-
-Underfull \hbox (badness 2253) in paragraph at lines 5--55
-\OT1/ptm/m/n/10.95 re-la-tion-ship with com-pute value. We show
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 5--55
-\OT1/ptm/m/n/10.95 that this as-sump-tion <<<<<<< HEAD re-flects
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 5--55
-\OT1/ptm/m/n/10.95 a struc-tural limitation---uncertainty sig-nals
- []
-
-
-Underfull \hbox (badness 3724) in paragraph at lines 5--55
-\OT1/ptm/m/n/10.95 are not ======= re-flects a struc-tural lim-i-
- []
-
-
-Underfull \hbox (badness 4739) in paragraph at lines 5--55
-\OT1/ptm/m/n/10.95 ta-tion: un-cer-tainty sig-nals are not >>>>>>>
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 5--55
-\OT1/ptm/m/n/10.95 cc1bc6e4f1be11f03658207b43893225ca507faf
- []
-
-
-Underfull \hbox (badness 1509) in paragraph at lines 5--55
-\OT1/ptm/m/n/10.95 suf-fi-cient statis-tics for the value of com-pu-ta-
- []
-
-
-Underfull \hbox (badness 4328) in paragraph at lines 5--55
-\OT1/ptm/m/n/10.95 Across eight en-vi-ron-ments and three model
- []
-
-
-Underfull \hbox (badness 3189) in paragraph at lines 5--55
-\OT1/ptm/m/n/10.95 A two-source model grounded in Simp-son's
- []
-
-
-Underfull \hbox (badness 1365) in paragraph at lines 5--55
-\OT1/ptm/m/n/10.95 <<<<<<< HEAD ro-bust-ness. EAAG in-stan-ti-ates
- []
-
-
-Underfull \hbox (badness 1024) in paragraph at lines 5--55
-\OT1/ptm/m/n/10.95 this prin-ci-ple through ex-plo-ration, LLM-based
- []
-
-
-Underfull \hbox (badness 1067) in paragraph at lines 5--55
-\OT1/ptm/m/n/10.95 rea-son-ing, and sparse di-rec-tion learn-ing, with
- []
-
-
-Underfull \hbox (badness 8056) in paragraph at lines 5--55
-\OT1/ptm/m/n/10.95 eval-u-ated set-tings, EAAG dom-i-nates fixed-
- []
-
-
-Underfull \hbox (badness 1097) in paragraph at lines 5--55
-\OT1/ptm/m/n/10.95 suppression---emerging from di-rec-tion learn-ing
- []
-
-
-Underfull \hbox (badness 1308) in paragraph at lines 5--55
-\OT1/ptm/m/n/10.95 un-bi-ased data through ran-dom-ized ex-plo-ration
- []
-
-
-Underfull \hbox (badness 4543) in paragraph at lines 5--55
-\OT1/ptm/m/n/10.95 sparse lin-ear learn-ing, adding zero per-step
- []
-
-
-Underfull \hbox (badness 1062) in paragraph at lines 5--55
-\OT1/ptm/m/n/10.95 ag-gres-sive trig-ger-ing to near-total sup-pres-sion,
- []
-
-[11] (./main.bbl
+) (./sections/discussion.tex) (./sections/conclusion.tex) [11] (./main.bbl
 Underfull \hbox (badness 1552) in paragraph at lines 17--20
 []\OT1/ptm/m/n/10 Armen Der Ki-ureghian and Ove Ditlevsen. 2009.
  []
@@ -1612,43 +1509,55 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: F69BE7A67A8178E2F14975787235BA6F;10969.
  ) 
 Here is how much of TeX's memory you used:
- 14193 strings out of 476025
- 227302 string characters out of 5790017
+ 14198 strings out of 476025
+ 227363 string characters out of 5790017
  1876388 words of memory out of 5000000
- 34192 multiletter control sequences out of 15000+600000
+ 34194 multiletter control sequences out of 15000+600000
  553520 words of font info for 129 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  90i,12n,90p,755b,644s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
-></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx6.pfb><
-/usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></u
-sr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr
-/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/
-local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex9.pfb></u
-sr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></us
-r/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/
-local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/lo
-cal/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/loca
-l/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/
-texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/tex
-live/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texliv
-e/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2
-023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/20
-23/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2023
-/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2023/t
-exmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2023/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2023/texmf
--dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2023/t
-exmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/20
-23/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2023/texmf
--dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2023/texmf-dist/font
-s/type1/urw/times/utmr8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/ur
-w/times/utmri8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/zapfdin
-g/uzdr.pfb>
-Output written on main.pdf (22 pages, 401519 bytes).
+
+pdfTeX warning (dest): name{table.caption.28} has been referenced but does not 
+exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{table.caption.16} has been referenced but does not 
+exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{table.caption.24} has been referenced but does not 
+exist, replaced by a fixed one
+
+</usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><
+/usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx6.pfb></u
+sr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr
+/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/l
+ocal/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/lo
+cal/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex9.pfb></usr
+/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/
+local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/lo
+cal/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/loca
+l/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/local/
+texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/te
+xlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texli
+ve/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/
+2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/202
+3/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2023
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2023/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2023/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2023/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2023/texmf-d
+ist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2023/tex
+mf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2023
+/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2023/texmf-d
+ist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/
+type1/urw/times/utmr8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/
+times/utmri8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/zapfding/
+uzdr.pfb>
+Output written on main.pdf (22 pages, 401122 bytes).
 PDF statistics:
- 877 PDF objects out of 1000 (max. 8388607)
- 792 compressed objects within 8 object streams
- 186 named destinations out of 1000 (max. 500000)
+ 881 PDF objects out of 1000 (max. 8388607)
+ 796 compressed objects within 8 object streams
+ 189 named destinations out of 1000 (max. 500000)
  417 words of extra memory for PDF output out of 10000 (max. 10000000)
 
