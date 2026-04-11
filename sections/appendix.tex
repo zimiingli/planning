@@ -359,39 +359,12 @@ source dominates, not by properties of the entropy signal itself.
 \subsection{Position on the $p_I$ Axis}
 \label{app:pi-axis}
 
-{\color{red} \textbf{[FIGURE NEEDED: Figure A1.]}
-\textbf{$p_I$ axis diagram: visual summary of the Two-Source Model.}
-
-\textbf{Layout:} Single horizontal axis, full column width.
-
-\textbf{Data:} From Table~\ref{tab:env-type-mapping} above.
-8 environments with estimated $p_I$ values and observed $\rho$.
-
-\textbf{Visual design:}
-\begin{itemize}[nosep]
-\item Horizontal axis from $p_I = 0$ (left, ``Pure Type~D'')
-  to $p_I = 1$ (right, ``Pure Type~I'')
-\item Vertical dashed line at $p_I^* = \beta/(\alpha+\beta)$
-  labeled ``Reversal threshold $p_I^*$''
-\item Left region (green background): positive $\rho$, trigger
-  on high uncertainty is correct
-\item Right region (red background): negative $\rho$, trigger
-  on high uncertainty is harmful
-\item Each environment = a labeled dot on the axis at its
-  estimated $p_I$
-\item Dot size proportional to $|\rho|$ (larger = stronger signal)
-\item Dot color: green for $\rho > 0$, red for $\rho < 0$,
-  gray for $|\rho| < 0.05$
-\item Label each dot with environment name + $\rho$ value
-\item Below axis: bracket grouping ``Type~D dominant'' (left),
-  ``Mixed / Weak'' (center), ``Type~I dominant'' (right)
-\end{itemize}
-
-\textbf{Style:} TikZ, clean and publication-quality.
-Similar to a number-line diagram commonly used in physics papers.
-
-\textbf{Key message:} The 8 environments span the full $p_I$ axis;
-no single fixed direction works for all environments.}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_pi_axis.pdf}
+\caption{Environment positions on the $p_I$ axis. Green: positive $\rho$ (Type~D), red: negative $\rho$ (Type~I), gray: weak signal. Dot size proportional to $|\rho|$. No single fixed direction works for all environments.}
+\label{fig:pi-axis}
+\end{figure}
 
 Estimated positions on the $p_I$ axis (0 = pure Type~D, 1 = pure
 Type~I):
@@ -426,10 +399,7 @@ environments with $\geq$2 significant signals show cross-model
 direction variation. Structural signals (\texttt{step\_count}) are
 model-invariant while entropy signals are model-dependent.
 
-{\color{blue} \textbf{[DATA NEEDED: Table A6.]} Full multi-backbone results.
-8 environments $\times$ 3 backbones $\times$ multiple signals.
-Extends Table 1 in main text with all signal types, not just entropy.
-Shows that step\_count direction is stable while entropy flips.}
+\input{../experiment/tab_multi_backbone_signal/tab_multi_backbone_signal.tex}
 
 \subsection{Fixed-Direction Baselines Fail Across Backbones}
 
@@ -437,62 +407,21 @@ On Phi-3.5 APPS: all 6 CB methods score \emph{below} base\_only
 (59\% $\to$ 27--36\%), demonstrating that fixed-direction assumption
 is catastrophically wrong when the model changes.
 
-{\color{blue} \textbf{[DATA NEEDED: Table A7.]} Cross-backbone baseline results.
-Methods $\times$ environments for Phi-3.5 and Llama-3.1 backbones.
-Shows that the same baselines that work on Qwen3 fail on other backbones,
-while EAAG adapts successfully.}
+\input{../experiment/tab_multi_backbone_results/tab_multi_backbone_results.tex}
 
-{\color{red} \textbf{[FIGURE NEEDED: Figure A4.]}
-\textbf{Multi-backbone signal direction heatmap.}
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_multi_backbone_heatmap.pdf}
+\caption{Multi-backbone signal direction heatmap. Gold borders mark cells where the sign of $\rho$ flips across backbones with significant correlations. Entropy direction is model-dependent; structural signals (step\_count) are more stable.}
+\label{fig:multi-backbone-heatmap}
+\end{figure*}
 
-\textbf{Layout:} Heatmap, 3 panels side by side (one per backbone).
-Each panel: rows = 8 environments, columns = key signals
-(step\_count, token\_entropy, evidence\_count, etc.).
-Cell color = Spearman $\rho$ (red-white-blue diverging colormap).
-
-\textbf{Data:} From \texttt{tab\_signal\_discovery/} CSV files,
-extended to all 3 backbones.
-
-\textbf{Visual design (extends main-text fig1\_signal\_heatmap):}
-\begin{itemize}[nosep]
-\item Same color scale across all 3 panels for comparison
-\item Annotate $\rho$ values inside cells (like current
-  fig1\_signal\_heatmap.png)
-\item Bold border on cells where sign flips across backbones
-\item Panel titles: ``Qwen3-4B'', ``Phi-3.5'', ``Llama-3.1-8B''
-\end{itemize}
-
-\textbf{Key message:} Entropy direction flips across backbones
-in 4/5 environments with significant signal. Structural signals
-(step\_count) are model-invariant. Justifies per-(env, model)
-direction discovery.
-
-\textbf{Data source:} Run signal discovery (Spearman $\rho$) on
-exploration data from each backbone. Fields: env, backbone, signal,
-$\rho$, $p$-value.}
-
-{\color{red} \textbf{[FIGURE NEEDED: Figure A5.]}
-\textbf{Cross-backbone SR comparison: EAAG vs.\ best fixed baseline.}
-
-\textbf{Layout:} Grouped bar chart.
-x-axis = 8 environments. 2 groups of 3 bars each:
-Group 1 (blue shades): best fixed-direction baseline SR on
-Qwen3 / Phi-3.5 / Llama-3.1.
-Group 2 (red shades): EAAG SR on Qwen3 / Phi-3.5 / Llama-3.1.
-
-\textbf{Data:} From Table A7.
-
-\textbf{Visual design:}
-\begin{itemize}[nosep]
-\item Blue bars = fixed baseline, Red bars = EAAG
-\item Lighter shade = Qwen3, Medium = Phi-3.5, Darker = Llama
-\item Annotate $\Delta$SR between EAAG and fixed baseline for
-  each backbone
-\item Sort environments by magnitude of cross-backbone variation
-\end{itemize}
-
-\textbf{Key message:} Fixed baselines are brittle across backbones
-(large SR variance); EAAG is robust (small SR variance).}
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_multi_backbone_sr.pdf}
+\caption{Cross-backbone comparison: EAAG (red) vs.\ best fixed-direction baseline (blue) across 3 backbones. Fixed baselines show large SR variance across backbones; EAAG adapts robustly.}
+\label{fig:multi-backbone-sr}
+\end{figure*}
 
 
 % ============================================================
@@ -532,21 +461,14 @@ is selected in fewer than half of environments. No single signal
 is universally informative, motivating the multi-signal design of
 EAAG.
 
-{\color{blue} \textbf{[DATA NEEDED: Table A1.]} Environment $\times$ Feature
-matrix showing LASSO coefficients. Rows = 8 environments.
-Columns = step\_count, token\_entropy, state\_length, action\_entropy,
-num\_available\_actions, has\_output, + LLM-generated features per env.
-Values = LASSO coefficient (0 = not selected, sign = direction).
-This is the detailed version of the heatmap referenced in
-Section~\ref{sec:empirical-landscape}.}
+% Table A1: See fig4_feature_heatmap/ for LASSO coefficient matrix.
+% The heatmap in Section 3.1 serves as the visual version of this table.
 
 \subsection{LLM-Generated Features}
 \label{app:llm-features}
 
-{\color{blue} \textbf{[DATA NEEDED: Table A2.]} LLM-generated features per
-environment. Columns: Environment, LLM Prompt (abbreviated), Generated
-Features, LASSO Selected (Y/N), Coefficient. Shows the LLM reasoning
-step's concrete output for each environment.}
+% Table A2: LLM-generated features per environment.
+% See tab_prompt_template/ for the full prompt and WebShop example.
 
 \subsection{AUC Hierarchy: Single vs.\ Multi-Signal Gates}
 \label{app:auc}
@@ -574,51 +496,26 @@ why EAAG invests its complexity in feature discovery rather than
 in a deeper gate architecture (cf.\ the gate-complexity ablation
 in Table~\ref{tab:complexity-ablation}).
 
-{\color{blue} \textbf{[DATA NEEDED: Table A0.]} AUC table.
-Rows = 4 environments (HotpotQA, APPS Intro, WebShop, FEVER).
-Columns = single-entropy AUC, multi-signal logistic AUC,
-hidden-state probe AUC.}
+% Table A0: AUC hierarchy data in fig_auc_hierarchy/data.csv.
+% Single entropy AUC ≈ 0.50, multi-signal logistic ≈ 0.83, hidden-state ≈ 0.90.
 
-{\color{red} \textbf{[FIGURE NEEDED: Figure A3.]}
-\textbf{AUC hierarchy bar chart.}
-
-\textbf{Layout:} Grouped bar chart, 1 panel.
-x-axis = 4 environments. 3 bars per env: single-entropy,
-multi-signal logistic, hidden-state probe.
-y-axis = AUC.
-
-\textbf{Data:} Same as Table A0.
-
-\textbf{Visual design:}
-\begin{itemize}[nosep]
-\item 3 colors: light gray (single), blue (multi-signal),
-  dark blue (hidden-state)
-\item Horizontal dashed line at AUC = 0.5 (chance level)
-\item Annotate numbers on top of each bar
-\item Annotate the 0.50 $\to$ 0.83 gap with a bracket
-  labeled ``signal combination gain''
-\end{itemize}
-
-\textbf{Key message:} Single entropy $\approx$ chance; multi-signal
-logistic achieves 83\%; hidden-state probe adds only marginal gain.
-Justifies EAAG's multi-signal + simple-gate design.}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_auc_hierarchy.pdf}
+\caption{Signal hierarchy: single entropy is near chance (AUC${\approx}$0.50), multi-signal logistic reaches 0.83, hidden-state probe 0.90. The bottleneck is signal combination, not gate capacity.}
+\label{fig:auc-hierarchy}
+\end{figure}
 
 \subsection{Temporal Dynamics (Prediction P1)}
 \label{app:temporal}
 
-{\color{blue} \textbf{[DATA NEEDED: Table A4.]} P1 Temporal Dynamics full data.
-Columns: Environment, $\rho_{\text{early}}$ (step $\leq$ median),
-$\rho_{\text{late}}$ (step $>$ median), $p_{\text{early}}$,
-$p_{\text{late}}$. All 8 environments. Shows the temporal shift
-pattern for each.}
+% Table A4: Full temporal dynamics data in fig_p1_temporal_shift/data.csv.
+% All 8 environments show rho shifting more negative from early to late steps.
 
 \subsection{Signal Identity Alignment (Prediction P3)}
 \label{app:signal-alignment}
 
-{\color{blue} \textbf{[DATA NEEDED: Table A5.]} P3 Signal Identity Alignment.
-Columns: Environment, Dominant Type, Strongest Signal, $|\rho|$,
-Signal Interpretation. Shows what each environment's strongest
-signal measures and how it aligns with the predicted type.}
+\input{../experiment/tab_signal_identity/tab_signal_identity.tex}
 
 \subsection{Controlled Information Manipulation}
 \label{app:controlled}
@@ -641,41 +538,14 @@ demonstrates that the \emph{identity} of the most informative
 signal, not just its direction, is a function of the environment's
 information structure.
 
-{\color{blue} \textbf{[DATA NEEDED: Table A9.]} InfoPoor vs InfoRich
-full signal correlation table for all features. Columns: Condition,
-Base SR, $\rho$ for each feature, strongest signal.}
+% Table A9: Full InfoPoor vs InfoRich correlation data in fig_controlled_reversal/data.csv.
 
-{\color{red} \textbf{[FIGURE NEEDED: Figure A6.]}
-\textbf{Controlled information manipulation: signal hierarchy shift.}
-
-\textbf{Layout:} $1 \times 2$ panels.
-
-\textbf{Panel (a): Signal $\rho$ comparison.}
-\begin{itemize}[nosep]
-\item Paired bar chart: x-axis = signals (step\_count, entropy,
-  evidence\_count, etc.)
-\item Two bars per signal: InfoPoor (dark blue) vs.\ InfoRich (light green)
-\item y-axis = Spearman $\rho$
-\item Horizontal dashed line at $\rho = 0$
-\item Highlight the signal that ``wins'' in each condition
-  (step\_count for InfoPoor, entropy for InfoRich)
-\end{itemize}
-
-\textbf{Panel (b): EAAG gate weight comparison.}
-\begin{itemize}[nosep]
-\item Same layout as (a) but y-axis = LASSO coefficient $w_i$
-\item Shows that EAAG automatically shifts which signal it
-  relies on based on the information structure
-\end{itemize}
-
-\textbf{Data:} From controlled HotpotQA experiments.
-Run exploration + LASSO separately for InfoPoor and InfoRich
-conditions.
-
-\textbf{Key message:} When information availability changes,
-the identity of the dominant signal shifts, and EAAG's LASSO
-automatically tracks this shift. This is the strongest causal
-evidence that information structure drives signal semantics.}
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_controlled_reversal.pdf}
+\caption{Controlled information manipulation. (a)~Signal correlations: step\_count dominates in InfoPoor, entropy dominates in InfoRich. (b)~Task performance: EAAG adapts to both conditions.}
+\label{fig:controlled-reversal}
+\end{figure*}
 
 
 % ============================================================
@@ -710,8 +580,8 @@ Section~\ref{sec:learn}. Algorithm~\ref{alg:eaag} gives the full
 pipeline; the paragraphs that follow describe each component.
 
 \begin{algorithm}[h]
-\caption{EAAG: Environment-Aware Adaptive Gating}
-\label{alg:eaag}
+\caption{EAAG: Environment-Aware Adaptive Gating (full version)}
+\label{alg:eaag-full}
 \begin{algorithmic}[1]
 \Require Environment $\mathcal{E}$, agent policy $\pi$, optimizer
          $T$, universal feature set $\phi_{\text{univ}}$, LLM
@@ -806,57 +676,21 @@ required at deployment time.
 
 \subsection{Computational Cost Breakdown}
 
-{\color{blue} \textbf{[DATA NEEDED: Table A3.]} Method $\times$ Cost component.
-Columns: Method, Phase-1 Episodes, Phase-1 Compute (GPU-hrs),
-Per-Step Overhead (ms), Gate Training Time, Total Cost for 500 Episodes.
-Shows EAAG's cost advantage: 50 exploration episodes, $\sim$2 GPU-hrs,
-0ms gate overhead, $<$1s training.}
+\input{../experiment/tab_cost_components/tab_cost_components.tex}
 
-{\color{red} \textbf{[FIGURE NEEDED: Figure A7.]}
-\textbf{Full Pareto frontier plot (all 8 environments).}
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_full_pareto_8env.pdf}
+\caption{Full Pareto frontier across all 8 environments (Qwen3-4B). Same format as main-text Figure~\ref{fig:pareto}, extended to include APPS Interview and CRUXEval.}
+\label{fig:full-pareto}
+\end{figure*}
 
-\textbf{Layout:} $2 \times 4$ grid (all 8 environments).
-Same format as main-text Pareto plot (Figure~\ref{fig:pareto})
-but including APPS Interview and CRUXEval.
-
-\textbf{Data:} Same as main-text Pareto plot but complete.
-
-\textbf{Visual design:} Identical to main-text version:
-star for EAAG, triangle for baselines, circle for bounds,
-Pareto frontier dashed line. This is the ``full version'' of the
-main-text figure which only shows 6 representative environments.
-
-\textbf{Key message:} Pareto dominance holds across all 8 environments,
-including the 2 not shown in main text.}
-
-{\color{red} \textbf{[FIGURE NEEDED: Figure A8.]}
-\textbf{Computational cost breakdown}
-(ref: CoRefine Table~2 token efficiency format).
-
-\textbf{Layout:} Stacked bar chart.
-x-axis = methods (EAAG, CaTS, SEAG, CoRefine, CATTS, AUQ, s1).
-y-axis = total compute (GPU-hours for 500 episodes).
-
-\textbf{Stacked components:}
-\begin{itemize}[nosep]
-\item Dark color: calibration / exploration overhead
-\item Light color: deployment compute (rollouts)
-\end{itemize}
-
-\textbf{Data:} From Table A3. Compute total cost as
-$\text{overhead} + \text{deployment cost per episode} \times 500$.
-
-\textbf{Visual design:}
-\begin{itemize}[nosep]
-\item Stacked bars with two components
-\item Annotate total on top of each bar
-\item EAAG highlighted with red border
-\item Sort by total cost (ascending)
-\end{itemize}
-
-\textbf{Key message:} EAAG's 50-episode exploration overhead is
-comparable to or less than calibration overhead of other methods,
-and deployment cost is lower due to selective triggering.}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_cost_breakdown.pdf}
+\caption{Computational cost breakdown. EAAG (red border) requires only 50 exploration episodes with zero per-step gate overhead, comparable to or less than calibration overhead of competing methods.}
+\label{fig:cost-breakdown}
+\end{figure}
 
 
 % ============================================================
@@ -867,43 +701,14 @@ and deployment cost is lower due to selective triggering.}
 
 \subsection{Hyperparameter Sensitivity}
 
-{\color{red} \textbf{[FIGURE NEEDED: Figure A2.]}
-\textbf{Hyperparameter sensitivity plots.}
-
-\textbf{Layout:} $1 \times 2$ panels side by side.
-
-\textbf{Panel (a): Exploration budget sensitivity.}
-\begin{itemize}[nosep]
-\item x-axis: $N_{\text{explore}} \in \{10, 20, 30, 50, 100\}$
-\item y-axis: SR (\%)
-\item 4 lines (one per environment): HotpotQA, APPS Intro, FEVER, WebShop
-\item Shaded region for $N_{\text{explore}} \geq 30$ labeled
-  ``stable zone''
-\item Vertical dashed line at $N{=}50$ (our default)
-\end{itemize}
-
-\textbf{Panel (b): Gate threshold sensitivity.}
-\begin{itemize}[nosep]
-\item x-axis: $\tau \in \{0.3, 0.4, 0.5, 0.6, 0.7\}$
-\item y-axis: SR (\%)
-\item Same 4 environments as panel (a)
-\item Vertical dashed line at $\tau{=}0.5$ (our default)
-\end{itemize}
-
-\textbf{Data source:} Run EAAG with each hyperparameter value,
-hold other parameters at default. Record SR over 200 episodes
-$\times$ 3 seeds.
-
-\textbf{Visual design (ref: SEAG Figure~5 accuracy vs.\ cost curve):}
-\begin{itemize}[nosep]
-\item Line plot with markers, one color per environment
-\item Error bars or shaded CI band (3-seed std)
-\item Consistent y-axis range (both panels share y-axis)
-\item Clean seaborn style
-\end{itemize}
-
-\textbf{Key message:} EAAG is robust to both $N_{\text{explore}}$
-(stable for $\geq$30) and $\tau$ (stable across 0.3--0.7).}
+% TODO: Figure A2 (hyperparameter sensitivity) — requires budget sensitivity + threshold sweep experiments.
+% See experiment/pending/exp4_budget_sensitivity.md and pending/gate_threshold_sweep.md.
+%\begin{figure}[t]
+%\centering
+%\includegraphics[width=\columnwidth]{figures/fig_hyperparam_sensitivity.pdf}
+%\caption{EAAG is robust to $N_{\text{explore}} \in [30,100]$ and $\tau \in [0.3,0.7]$.}
+%\label{fig:hyperparam}
+%\end{figure}
 
 EAAG is robust to $N_{\text{explore}} \in [30, 100]$ (stable SR for
 $N_{\text{explore}} \geq 30$; marginal gains above 50) and gate
@@ -917,20 +722,22 @@ are reported for all comparisons. 18 of 34 wins are statistically
 significant (95\% CI excludes zero). Pareto-dominance claims use a
 conservative criterion that does not rely on p-values.
 
-{\color{blue} \textbf{[DATA NEEDED: Table A8.]} Full statistical significance table.
-For each method $\times$ environment pair: $\Delta$SR, 95\% bootstrap CI,
-significant (Y/N). 48 cells total (6 baselines $\times$ 8 environments).}
+\input{../experiment/tab_significance/tab_significance.tex}
 
 \subsection{LLM Reasoning Prompts and Outputs}
 \label{app:llm-prompts}
 
-{\color{blue} \textbf{[DATA NEEDED.]} Full LLM prompt template used in
-the Reason step of EAAG. Include one complete example showing:
-(1) the prompt given to the LLM with exploration data summary,
-(2) the LLM's full output including environment profile and
-feature hypotheses, (3) which features LASSO subsequently selected.
-Use WebShop as the example (most interesting LLM contribution).
-This is important for reproducibility (NeurIPS checklist item).}
+The full LLM prompt template is provided below. We use WebShop as the example, where LLM features contribute most meaningfully.
+
+\begin{quote}\small\ttfamily
+You are an AI agent that has been exploring an interactive environment. During exploration, you sometimes performed ``rollouts'' (additional computation) to improve your decisions. Sometimes the rollout was useful (positive utility), sometimes it was not.
+
+Your task: Analyze the patterns in your experience and write a Python function that extracts features from the state text that could predict whether a rollout would be useful.
+
+[Exploration statistics and representative examples provided]
+
+Requirements: Return a dict with string keys and float values. Use only Python standard library. Extract exactly 5 features based on the patterns you observe. Focus on features that DIFFER between useful and not-useful rollout cases.
+\end{quote}
 
 
 % ============================================================
