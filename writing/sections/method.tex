@@ -116,15 +116,9 @@ that the gate will be fit over. Requirement~(ii) demands that
 this pool be rich enough to include each environment's relevant
 signals, but not so environment-specific that deployment
 requires manual engineering per task.
-
 EAAG's default is a fixed set of universal features:
-\begin{equation}
-  \phi_{\text{univ}}(s) = [\,\texttt{step\_count},\;
-  \texttt{token\_entropy},\; \texttt{state\_length},\;
-  \texttt{action\_entropy},\; \ldots\,],
-  \label{eq:universal}
-\end{equation}
-available in every environment without task-specific engineering.
+\texttt{step\_count}, \texttt{token\_entropy},
+\texttt{state\_length}, \texttt{action\_entropy}, and others. These are available in every environment without task-specific engineering.
 In the environments we study, this pool alone is sufficient to
 recover a gate that outperforms all fixed-direction baselines
 (\S\ref{sec:ablation}).
@@ -153,11 +147,13 @@ component the method depends on.
 Given $\mathcal{D}$ and $\phi_{\text{cand}}$, EAAG fits an
 $\ell_1$-regularized logistic regression:
 \begin{equation}
-  \mathbf{w}^*, b^* = \argmin_{\mathbf{w}, b}
-  \sum_{(\phi, U) \in \mathcal{D}}
-  \ell\!\bigl(\sigma(\mathbf{w}^\top \phi + b),\, U\bigr)
-  + \lambda \|\mathbf{w}\|_1,
-  \label{eq:lasso}
+\begin{aligned}
+\mathbf{w}^*, b^* = \argmin_{\mathbf{w}, b}\ 
+&\sum_{(\phi, U) \in \mathcal{D}}
+\ell\bigl(\sigma(\mathbf{w}^\top \phi + b),\, U\bigr)\\
+&+ \lambda \|\mathbf{w}\|_1
+\end{aligned}
+\label{eq:lasso}
 \end{equation}
 where $\ell$ is the binary cross-entropy loss and
 $\lambda$ controls sparsity over $\phi_{\text{cand}}$ so that

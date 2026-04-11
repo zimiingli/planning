@@ -44,20 +44,22 @@ comparison of runtime efficiency.
 $\Delta$: rollout headroom.}
 \label{tab:env-setup}
 \centering\small
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lcccl}
 \toprule
 Environment & Base SR & Always SR & $\Delta$ & Optimizer $T$ \\
 \midrule
-HotpotQA      & 49.0\% & 97.0\% & +48.0 & Per-action eval \\
-APPS Intro    & 58.5\% & 64.5\% &  +6.0 & $K$-variant sampling \\
-WebShop       &  7.2\% & 43.0\% & +35.8 & LLM-Propose-$K$ \\
-FEVER         & 37.0\% & 99.8\% & +62.8 & Per-action eval \\
-TWExpress     & 67.5\% & 99.3\% & +31.8 & Per-action eval \\
-Plancraft     & 29.8\% & 22.8\% &  $-$7.0 & Per-action eval \\
-APPS Interview& 60.5\% & 79.5\% & +19.0 & $K$-variant sampling \\
-CRUXEval      & 85.0\% & 99.5\% & +14.5 & $K$-variant sampling \\
+HotpotQA       & 49.0\% & 97.0\% & +48.0   & Per-action eval \\
+APPS Intro     & 58.5\% & 64.5\% &  +6.0   & $K$-variant sampling \\
+WebShop        &  7.2\% & 43.0\% & +35.8   & LLM-Propose-$K$ \\
+FEVER          & 37.0\% & 99.8\% & +62.8   & Per-action eval \\
+TWExpress      & 67.5\% & 99.3\% & +31.8   & Per-action eval \\
+Plancraft      & 29.8\% & 22.8\% & $-$7.0  & Per-action eval \\
+APPS Interview & 60.5\% & 79.5\% & +19.0   & $K$-variant sampling \\
+CRUXEval       & 85.0\% & 99.5\% & +14.5   & $K$-variant sampling \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
 

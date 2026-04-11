@@ -5,7 +5,7 @@
 All existing adaptive gating methods for LLM agents rest on an
 implicit assumption: that uncertainty signals have a fixed
 relationship with compute value. We show that this assumption
-reflects a structural limitation---uncertainty signals are not
+reflects a structural limitation. Uncertainty signals are not
 sufficient statistics for the value of computation, because their
 meaning depends on a latent state property (information poverty
 vs.\ decision difficulty) that the signal alone cannot identify.
@@ -20,6 +20,6 @@ pipeline that collects unbiased data through randomized
 exploration and recovers per-environment direction through sparse
 linear learning, adding zero per-step overhead at deployment.
 Across all evaluated settings, EAAG dominates fixed-direction
-baselines, with the full range of gating behavior---from aggressive
-triggering to near-total suppression---emerging from direction
+baselines, and the full range of gating behavior, from aggressive
+triggering to near-total suppression, emerges from direction
 learning alone.
