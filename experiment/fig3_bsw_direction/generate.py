@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
-"""Generate Figure 3: Cost of Wrong BSW Direction."""
+"""Generate Figure 5: Cost of wrong direction vs signal strength.
+
+Visual spec (experiments.tex L248-279):
+- Single panel scatter plot
+- x = |rho| per env, y = BSW degradation (pp)
+- Color by Two-Source type: blue=Type I, red=Type D, gray=mixed/weak
+- Dashed trend line with r value
+- Large, clear font for environment labels
+"""
 
 import matplotlib
 matplotlib.use('Agg')
@@ -7,76 +15,127 @@ import matplotlib.pyplot as plt
 import numpy as np
 import csv
 from pathlib import Path
+try:
+    from scipy import stats
+except ImportError:
+    stats = None
 
 HERE = Path(__file__).parent
 DATA_CSV = HERE / "data.csv"
 OUTPUT_PDF = HERE / "output.pdf"
 
+# Two-Source type classification
+ENV_TYPE = {
+    'FEVER': 'Type I',
+    'HotpotQA': 'Type I',
+    'TWExpress': 'Type I',
+    'WebShop': 'Mixed',
+    'APPS Intv': 'Type D',
+    'APPS': 'Mixed',
+    'APPS Intro': 'Mixed',
+    'CRUXEval': 'Weak',
+    'Plancraft': 'Weak',
+}
+
+TYPE_COLORS = {
+    'Type I': '#2166ac',    # blue
+    'Type D': '#b2182b',    # red
+    'Mixed': '#888888',     # gray
+    'Weak': '#aaaaaa',      # light gray
+}
+
+TYPE_MARKERS = {
+    'Type I': 'o',
+    'Type D': 's',
+    'Mixed': 'D',
+    'Weak': 'D',
+}
+
 
 def main():
-    # Read data
     rows = []
     with open(DATA_CSV, newline='') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
+        for row in csv.DictReader(f):
             rows.append(row)
 
-    # Separate safe and non-safe points
-    safe_x, safe_y, safe_labels = [], [], []
-    nonsafe_x, nonsafe_y, nonsafe_labels = [], [], []
+    fig, ax = plt.subplots(figsize=(7, 5))
 
+    xs, ys, labels, types = [], [], [], []
     for row in rows:
         x = float(row['abs_rho'])
         y = float(row['degradation_pp'])
         env = row['environment']
-        is_safe = row['rollout_safe'].strip().lower() == 'yes'
+        env_type = ENV_TYPE.get(env, 'Weak')
 
-        if is_safe:
-            safe_x.append(x)
-            safe_y.append(y)
-            safe_labels.append(env)
-        else:
-            nonsafe_x.append(x)
-            nonsafe_y.append(y)
-            nonsafe_labels.append(env)
+        xs.append(x)
+        ys.append(y)
+        labels.append(env)
+        types.append(env_type)
 
-    fig, ax = plt.subplots(figsize=(7, 5))
-
-    # Non-safe: red filled circles
-    ax.scatter(nonsafe_x, nonsafe_y, c='red', marker='o', s=80,
-               edgecolors='darkred', linewidths=0.8, zorder=5, label='Not Rollout-Safe')
-
-    # Safe: white diamonds with black edge
-    ax.scatter(safe_x, safe_y, c='white', marker='D', s=80,
-               edgecolors='black', linewidths=1.2, zorder=5, label='Rollout-Safe')
+        color = TYPE_COLORS[env_type]
+        marker = TYPE_MARKERS[env_type]
+        ax.scatter(x, y, c=color, marker=marker, s=100,
+                   edgecolors='white', linewidths=0.8, zorder=5)
 
     # Annotate environment names
-    offset = 0.012
-    for x, y, label in zip(nonsafe_x, nonsafe_y, nonsafe_labels):
+    for x, y, label, t in zip(xs, ys, labels, types):
+        color = TYPE_COLORS[t]
+        # Offset to avoid overlap
+        offset_x, offset_y = 8, 6
+        if label == 'FEVER':
+            offset_x, offset_y = -10, 8
+        elif label == 'HotpotQA':
+            offset_y = 8
+        elif label == 'APPS Intro':
+            offset_y = -12
         ax.annotate(label, (x, y), textcoords='offset points',
-                    xytext=(8, 5), fontsize=8, color='red')
-    for x, y, label in zip(safe_x, safe_y, safe_labels):
-        ax.annotate(label, (x, y), textcoords='offset points',
-                    xytext=(8, 5), fontsize=8, color='black')
+                    xytext=(offset_x, offset_y), fontsize=10, color=color,
+                    fontweight='bold')
 
-    # Linear trend line for non-safe points
-    if len(nonsafe_x) >= 2:
-        ns_x = np.array(nonsafe_x)
-        ns_y = np.array(nonsafe_y)
-        coeffs = np.polyfit(ns_x, ns_y, 1)
-        poly = np.poly1d(coeffs)
-        x_range = np.linspace(min(ns_x) - 0.05, max(ns_x) + 0.05, 100)
-        ax.plot(x_range, poly(x_range), '--', color='gray', linewidth=1, alpha=0.7,
-                label=f'Trend (non-safe): y={coeffs[0]:.1f}x{coeffs[1]:+.1f}')
+    # Trend line over all points with r value
+    xs_arr = np.array(xs)
+    ys_arr = np.array(ys)
+    if len(xs_arr) >= 2 and stats is not None:
+        slope, intercept, r_value, p_value, std_err = stats.linregress(xs_arr, ys_arr)
+    elif len(xs_arr) >= 2:
+        # Fallback: numpy polyfit + manual r
+        coeffs = np.polyfit(xs_arr, ys_arr, 1)
+        slope, intercept = coeffs
+        ss_res = np.sum((ys_arr - (slope * xs_arr + intercept)) ** 2)
+        ss_tot = np.sum((ys_arr - ys_arr.mean()) ** 2)
+        r_value = np.sqrt(1 - ss_res / ss_tot) if ss_tot > 0 else 0
+    if len(xs_arr) >= 2:
+        x_range = np.linspace(min(xs_arr) - 0.05, max(xs_arr) + 0.05, 100)
+        ax.plot(x_range, slope * x_range + intercept, '--', color='#666666',
+                linewidth=1.2, alpha=0.7)
+        # r value annotation
+        ax.text(0.03, 0.97, f'$r = {r_value:.2f}$', transform=ax.transAxes,
+                ha='left', va='top', fontsize=11, color='#444444',
+                bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
+                          alpha=0.8, edgecolor='#cccccc'))
 
-    ax.set_xlabel('|Spearman $\\rho$| (Signal Strength)', fontsize=11)
-    ax.set_ylabel('Degradation (pp)', fontsize=11)
-    ax.set_title('Cost of Wrong Direction', fontsize=13, fontweight='bold')
-    ax.legend(fontsize=9, loc='upper left')
-    ax.grid(True, alpha=0.3)
+    ax.set_xlabel(r'Signal Strength $|\rho|$', fontsize=12)
+    ax.set_ylabel('BSW Degradation (pp)', fontsize=12)
+    ax.tick_params(labelsize=10)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.grid(True, alpha=0.2)
+
+    # Legend for types
+    from matplotlib.lines import Line2D
+    legend_elements = [
+        Line2D([0], [0], marker='o', color='w', markerfacecolor='#2166ac',
+               markersize=10, label='Type I (Info-Poverty)'),
+        Line2D([0], [0], marker='s', color='w', markerfacecolor='#b2182b',
+               markersize=10, label='Type D (Decision-Diff)'),
+        Line2D([0], [0], marker='D', color='w', markerfacecolor='#888888',
+               markersize=9, label='Mixed / Weak'),
+    ]
+    ax.legend(handles=legend_elements, fontsize=9, loc='lower right',
+              framealpha=0.9, edgecolor='#cccccc')
 
     plt.tight_layout()
-    fig.savefig(OUTPUT_PDF, bbox_inches='tight', dpi=150)
+    fig.savefig(OUTPUT_PDF, bbox_inches='tight', dpi=200)
     plt.close(fig)
     print(f"Saved {OUTPUT_PDF}")
 

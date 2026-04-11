@@ -1,0 +1,245 @@
+backbone,environment,method,sr_pct,cost_ro_per_ep
+Phi-3.5-mini,HotpotQA,base_only,28.3,0.00
+Phi-3.5-mini,HotpotQA,always_trigger,98.8,1.18
+Phi-3.5-mini,HotpotQA,oracle,98.8,0.75
+Phi-3.5-mini,HotpotQA,CATTS,42.0,0.61
+Phi-3.5-mini,HotpotQA,SEAG,88.3,1.58
+Phi-3.5-mini,HotpotQA,CoRefine,87.7,1.58
+Phi-3.5-mini,HotpotQA,CaTS,68.3,0.99
+Phi-3.5-mini,HotpotQA,AUQ,31.2,0.09
+Phi-3.5-mini,HotpotQA,s1_budget,94.2,1.06
+Phi-3.5-mini,HotpotQA,EAAG,92.3,1.06
+Phi-3.5-mini,APPS,base_only,59.0,0.00
+Phi-3.5-mini,APPS,always_trigger,75.0,2.00
+Phi-3.5-mini,APPS,oracle,75.0,0.53
+Phi-3.5-mini,APPS,CATTS,28.0,0.15
+Phi-3.5-mini,APPS,SEAG,30.2,0.58
+Phi-3.5-mini,APPS,CoRefine,30.2,0.60
+Phi-3.5-mini,APPS,CaTS,36.5,2.70
+Phi-3.5-mini,APPS,AUQ,27.3,0.01
+Phi-3.5-mini,APPS,s1_budget,36.2,1.00
+Phi-3.5-mini,APPS,EAAG,37.2,2.06
+Phi-3.5-mini,WebShop,base_only,3.5,0.00
+Phi-3.5-mini,WebShop,always_trigger,53.5,3.82
+Phi-3.5-mini,WebShop,oracle,52.3,1.22
+Phi-3.5-mini,WebShop,CATTS,28.7,0.52
+Phi-3.5-mini,WebShop,SEAG,36.5,0.97
+Phi-3.5-mini,WebShop,CoRefine,35.8,0.96
+Phi-3.5-mini,WebShop,CaTS,41.7,1.12
+Phi-3.5-mini,WebShop,AUQ,7.0,0.23
+Phi-3.5-mini,WebShop,s1_budget,3.0,1.00
+Phi-3.5-mini,WebShop,EAAG,57.3,2.49
+Phi-3.5-mini,FEVER,base_only,7.2,0.00
+Phi-3.5-mini,FEVER,always_trigger,61.0,4.35
+Phi-3.5-mini,FEVER,oracle,61.2,0.59
+Phi-3.5-mini,FEVER,CATTS,12.7,0.46
+Phi-3.5-mini,FEVER,SEAG,13.5,1.17
+Phi-3.5-mini,FEVER,CoRefine,13.7,1.20
+Phi-3.5-mini,FEVER,CaTS,19.8,3.42
+Phi-3.5-mini,FEVER,AUQ,8.5,0.30
+Phi-3.5-mini,FEVER,s1_budget,23.0,1.89
+Phi-3.5-mini,FEVER,EAAG,16.5,2.40
+Phi-3.5-mini,TWExpress,base_only,66.7,0.00
+Phi-3.5-mini,TWExpress,always_trigger,96.5,4.78
+Phi-3.5-mini,TWExpress,oracle,96.5,0.91
+Phi-3.5-mini,TWExpress,CATTS,86.7,0.92
+Phi-3.5-mini,TWExpress,SEAG,94.5,2.17
+Phi-3.5-mini,TWExpress,CoRefine,94.7,2.16
+Phi-3.5-mini,TWExpress,CaTS,68.2,0.00
+Phi-3.5-mini,TWExpress,AUQ,94.5,1.68
+Phi-3.5-mini,TWExpress,s1_budget,95.7,1.06
+Phi-3.5-mini,TWExpress,EAAG,96.7,2.67
+Phi-3.5-mini,Plancraft,base_only,13.7,0.00
+Phi-3.5-mini,Plancraft,always_trigger,14.5,11.65
+Phi-3.5-mini,Plancraft,oracle,14.3,0.05
+Phi-3.5-mini,Plancraft,CATTS,13.5,0.07
+Phi-3.5-mini,Plancraft,SEAG,14.7,3.08
+Phi-3.5-mini,Plancraft,CoRefine,15.2,3.01
+Phi-3.5-mini,Plancraft,CaTS,13.5,0.00
+Phi-3.5-mini,Plancraft,AUQ,12.7,0.54
+Phi-3.5-mini,Plancraft,s1_budget,13.7,2.16
+Phi-3.5-mini,Plancraft,EAAG,13.8,0.71
+Phi-3.5-mini,APPS Intv,base_only,27.0,0.00
+Phi-3.5-mini,APPS Intv,always_trigger,79.5,1.82
+Phi-3.5-mini,APPS Intv,oracle,79.5,0.57
+Phi-3.5-mini,APPS Intv,CATTS,27.7,0.13
+Phi-3.5-mini,APPS Intv,SEAG,29.2,0.60
+Phi-3.5-mini,APPS Intv,CoRefine,28.3,0.61
+Phi-3.5-mini,APPS Intv,CaTS,36.7,2.63
+Phi-3.5-mini,APPS Intv,AUQ,27.2,0.03
+Phi-3.5-mini,APPS Intv,s1_budget,34.5,1.00
+Phi-3.5-mini,APPS Intv,EAAG,36.8,2.06
+Phi-3.5-mini,CRUXEval,base_only,99.5,0.00
+Phi-3.5-mini,CRUXEval,always_trigger,99.5,1.99
+Phi-3.5-mini,CRUXEval,oracle,99.5,0.01
+Phi-3.5-mini,CRUXEval,CATTS,99.5,0.11
+Phi-3.5-mini,CRUXEval,SEAG,99.5,0.53
+Phi-3.5-mini,CRUXEval,CoRefine,99.5,0.52
+Phi-3.5-mini,CRUXEval,CaTS,99.5,0.00
+Phi-3.5-mini,CRUXEval,AUQ,99.5,0.09
+Phi-3.5-mini,CRUXEval,s1_budget,99.5,1.00
+Phi-3.5-mini,CRUXEval,EAAG,99.5,0.25
+Llama-3.1-8B,HotpotQA,base_only,46.3,0.00
+Llama-3.1-8B,HotpotQA,always_trigger,99.5,1.23
+Llama-3.1-8B,HotpotQA,oracle,99.5,0.76
+Llama-3.1-8B,HotpotQA,CATTS,75.7,1.35
+Llama-3.1-8B,HotpotQA,SEAG,84.2,1.67
+Llama-3.1-8B,HotpotQA,CoRefine,84.5,1.60
+Llama-3.1-8B,HotpotQA,CaTS,86.0,0.85
+Llama-3.1-8B,HotpotQA,AUQ,97.7,1.44
+Llama-3.1-8B,HotpotQA,s1_budget,97.0,1.04
+Llama-3.1-8B,HotpotQA,EAAG,95.5,1.21
+Llama-3.1-8B,APPS,base_only,53.3,0.00
+Llama-3.1-8B,APPS,always_trigger,75.0,2.36
+Llama-3.1-8B,APPS,oracle,75.0,0.28
+Llama-3.1-8B,APPS,CATTS,57.3,0.61
+Llama-3.1-8B,APPS,SEAG,58.2,0.96
+Llama-3.1-8B,APPS,CoRefine,57.7,0.90
+Llama-3.1-8B,APPS,CaTS,56.0,1.02
+Llama-3.1-8B,APPS,AUQ,54.5,3.20
+Llama-3.1-8B,APPS,s1_budget,50.2,1.00
+Llama-3.1-8B,APPS,EAAG,55.0,2.17
+Llama-3.1-8B,WebShop,base_only,1.2,0.00
+Llama-3.1-8B,WebShop,always_trigger,42.8,4.61
+Llama-3.1-8B,WebShop,oracle,42.3,0.89
+Llama-3.1-8B,WebShop,CATTS,41.2,2.27
+Llama-3.1-8B,WebShop,SEAG,21.2,1.33
+Llama-3.1-8B,WebShop,CoRefine,21.7,1.28
+Llama-3.1-8B,WebShop,CaTS,34.8,2.33
+Llama-3.1-8B,WebShop,AUQ,43.3,4.49
+Llama-3.1-8B,WebShop,s1_budget,1.0,1.00
+Llama-3.1-8B,WebShop,EAAG,41.7,1.50
+Llama-3.1-8B,FEVER,base_only,13.2,0.00
+Llama-3.1-8B,FEVER,always_trigger,62.8,4.37
+Llama-3.1-8B,FEVER,oracle,63.0,0.71
+Llama-3.1-8B,FEVER,CATTS,30.7,2.89
+Llama-3.1-8B,FEVER,SEAG,29.7,2.93
+Llama-3.1-8B,FEVER,CoRefine,31.7,2.95
+Llama-3.1-8B,FEVER,CaTS,33.3,3.50
+Llama-3.1-8B,FEVER,AUQ,34.5,5.86
+Llama-3.1-8B,FEVER,s1_budget,29.7,1.91
+Llama-3.1-8B,FEVER,EAAG,34.7,4.48
+Llama-3.1-8B,TWExpress,base_only,36.5,0.00
+Llama-3.1-8B,TWExpress,always_trigger,99.5,8.10
+Llama-3.1-8B,TWExpress,oracle,99.0,1.12
+Llama-3.1-8B,TWExpress,CATTS,100.0,7.25
+Llama-3.1-8B,TWExpress,SEAG,100.0,6.62
+Llama-3.1-8B,TWExpress,EAAG,94.8,5.96
+Llama-3.1-8B,Plancraft,base_only,31.7,0.00
+Llama-3.1-8B,Plancraft,always_trigger,18.7,6.62
+Llama-3.1-8B,Plancraft,oracle,18.3,0.10
+Llama-3.1-8B,Plancraft,CATTS,25.3,1.88
+Llama-3.1-8B,Plancraft,SEAG,26.0,1.76
+Llama-3.1-8B,Plancraft,CoRefine,25.5,1.71
+Llama-3.1-8B,Plancraft,CaTS,17.3,2.44
+Llama-3.1-8B,Plancraft,AUQ,18.5,6.49
+Llama-3.1-8B,Plancraft,s1_budget,14.8,1.62
+Llama-3.1-8B,Plancraft,EAAG,27.0,1.56
+Llama-3.1-8B,APPS Intv,base_only,60.2,0.00
+Llama-3.1-8B,APPS Intv,always_trigger,79.5,2.32
+Llama-3.1-8B,APPS Intv,oracle,79.5,0.28
+Llama-3.1-8B,APPS Intv,CATTS,61.2,0.57
+Llama-3.1-8B,APPS Intv,SEAG,60.8,1.11
+Llama-3.1-8B,APPS Intv,CoRefine,62.3,1.09
+Llama-3.1-8B,APPS Intv,CaTS,60.0,0.97
+Llama-3.1-8B,APPS Intv,AUQ,55.5,3.21
+Llama-3.1-8B,APPS Intv,s1_budget,48.7,1.00
+Llama-3.1-8B,APPS Intv,EAAG,59.7,2.70
+Llama-3.1-8B,CRUXEval,base_only,99.0,0.00
+Llama-3.1-8B,CRUXEval,always_trigger,99.5,1.97
+Llama-3.1-8B,CRUXEval,oracle,99.5,0.04
+Llama-3.1-8B,CRUXEval,CATTS,99.5,0.82
+Llama-3.1-8B,CRUXEval,SEAG,99.0,0.48
+Llama-3.1-8B,CRUXEval,CoRefine,99.0,0.49
+Llama-3.1-8B,CRUXEval,CaTS,99.5,0.90
+Llama-3.1-8B,CRUXEval,AUQ,99.5,1.74
+Llama-3.1-8B,CRUXEval,s1_budget,99.5,1.00
+Llama-3.1-8B,CRUXEval,EAAG,99.3,0.32
+Qwen3-4B,HotpotQA,CaTS,93.2,1.06
+Qwen3-4B,APPS,CaTS,59.0,0.04
+Qwen3-4B,WebShop,CaTS,30.5,3.05
+Qwen3-4B,FEVER,CaTS,50.2,4.71
+Qwen3-4B,HotpotQA,SEAG,67.5,0.80
+Qwen3-4B,APPS,SEAG,58.5,0.01
+Qwen3-4B,WebShop,SEAG,28.0,2.28
+Qwen3-4B,FEVER,SEAG,49.3,3.12
+Qwen3-4B,HotpotQA,CoRefine,68.2,0.79
+Qwen3-4B,APPS,CoRefine,58.5,0.01
+Qwen3-4B,WebShop,CoRefine,27.5,2.21
+Qwen3-4B,FEVER,CoRefine,49.8,3.12
+Qwen3-4B,HotpotQA,CATTS,68.3,1.07
+Qwen3-4B,APPS,CATTS,58.5,0.03
+Qwen3-4B,WebShop,CATTS,16.0,0.19
+Qwen3-4B,FEVER,CATTS,34.2,0.06
+Qwen3-4B,HotpotQA,AUQ,97.0,1.69
+Qwen3-4B,APPS,AUQ,61.3,1.73
+Qwen3-4B,WebShop,AUQ,35.7,5.33
+Qwen3-4B,FEVER,AUQ,40.7,1.17
+Qwen3-4B,HotpotQA,s1_budget,97.0,1.04
+Qwen3-4B,APPS,s1_budget,63.7,1.00
+Qwen3-4B,WebShop,s1_budget,7.8,1.00
+Qwen3-4B,FEVER,s1_budget,46.2,1.58
+Qwen3-4B,TWExpress,CaTS,96.7,1.97
+Qwen3-4B,TWExpress,SEAG,97.3,2.30
+Qwen3-4B,TWExpress,CoRefine,97.5,2.26
+Qwen3-4B,TWExpress,CATTS,97.5,2.26
+Qwen3-4B,TWExpress,AUQ,95.5,1.24
+Qwen3-4B,TWExpress,s1_budget,95.0,1.09
+Qwen3-4B,Plancraft,CaTS,22.3,4.39
+Qwen3-4B,Plancraft,SEAG,24.8,2.16
+Qwen3-4B,Plancraft,CoRefine,22.8,2.06
+Qwen3-4B,Plancraft,CATTS,25.0,2.14
+Qwen3-4B,Plancraft,AUQ,24.2,6.78
+Qwen3-4B,Plancraft,s1_budget,18.3,1.68
+Qwen3-4B,APPS Intv,CaTS,66.2,0.54
+Qwen3-4B,APPS Intv,SEAG,66.0,0.64
+Qwen3-4B,APPS Intv,CoRefine,67.5,0.62
+Qwen3-4B,APPS Intv,CATTS,60.8,0.02
+Qwen3-4B,APPS Intv,AUQ,64.7,1.08
+Qwen3-4B,APPS Intv,s1_budget,69.0,1.00
+Qwen3-4B,CRUXEval,CaTS,95.0,0.73
+Qwen3-4B,CRUXEval,SEAG,85.8,0.73
+Qwen3-4B,CRUXEval,CoRefine,85.8,0.73
+Qwen3-4B,CRUXEval,CATTS,81.3,0.04
+Qwen3-4B,CRUXEval,AUQ,99.0,1.75
+Qwen3-4B,CRUXEval,s1_budget,86.5,1.00
+Qwen3-4B,HotpotQA,SCG,96.8,1.09
+Qwen3-4B,APPS,SCG,58.8,0.19
+Qwen3-4B,WebShop,SCG,43.0,1.47
+Qwen3-4B,FEVER,SCG,98.0,0.99
+Qwen3-4B,TWExpress,SCG,97.0,1.38
+Qwen3-4B,Plancraft,SCG,21.5,3.33
+Qwen3-4B,APPS Intv,SCG,79.5,1.00
+Qwen3-4B,CRUXEval,SCG,99.5,0.89
+Qwen3-4B,HotpotQA,BSW,58.2,
+Qwen3-4B,APPS,BSW,58.8,0.00
+Qwen3-4B,WebShop,BSW,20.6,
+Qwen3-4B,FEVER,BSW,63.0,4.30
+Qwen3-4B,TWExpress,BSW,99.0,3.23
+Qwen3-4B,Plancraft,BSW,25.5,5.87
+Qwen3-4B,APPS Intv,BSW,79.5,1.39
+Qwen3-4B,CRUXEval,BSW,87.5,1.00
+Qwen3-4B,HotpotQA,EAAG,95.2,1.34
+Qwen3-4B,APPS,EAAG,66.0,1.20
+Qwen3-4B,WebShop,EAAG,43.8,2.29
+Qwen3-4B,FEVER,EAAG,49.8,2.99
+Qwen3-4B,TWExpress,EAAG,99.0,2.84
+Qwen3-4B,Plancraft,EAAG,23.3,3.69
+Qwen3-4B,APPS Intv,EAAG,73.0,1.35
+Qwen3-4B,CRUXEval,EAAG,98.5,1.24
+Qwen3-4B,HotpotQA,base_only,49.0,0.00
+Qwen3-4B,APPS,base_only,58.5,0.00
+Qwen3-4B,WebShop,base_only,7.2,0.00
+Qwen3-4B,FEVER,base_only,37.0,0.00
+Qwen3-4B,TWExpress,base_only,67.5,0.00
+Qwen3-4B,Plancraft,base_only,29.8,0.00
+Qwen3-4B,APPS Intv,base_only,60.5,0.00
+Qwen3-4B,CRUXEval,base_only,85.0,0.00
+Qwen3-4B,HotpotQA,always_trigger,97.0,1.80
+Qwen3-4B,APPS,always_trigger,64.5,2.58
+Qwen3-4B,WebShop,always_trigger,43.0,5.63
+Qwen3-4B,FEVER,always_trigger,99.8,1.46
+Qwen3-4B,TWExpress,always_trigger,99.3,3.45
+Qwen3-4B,Plancraft,always_trigger,22.8,6.99
+Qwen3-4B,APPS Intv,always_trigger,79.5,2.19
+Qwen3-4B,CRUXEval,always_trigger,99.5,1.91

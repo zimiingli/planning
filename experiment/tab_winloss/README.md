@@ -4,18 +4,30 @@
 
 Section 5.2 Main text, alongside main results.
 
+## Writing Prompt
+> **[DATA NEEDED: Table tab:winloss]** Win/loss summary
+> over all baseline-environment pairs. Rows = baselines, columns = number
+> of environments where EAAG wins/ties/loses on SR and on Cost.
+
 ## Description
 
-EAAG vs 6 CB methods win/loss summary. Result: 34 wins, 2 losses across 38 comparisons. Only losses are HotpotQA vs AUQ and s1 (-1.8pp each, not statistically significant).
+EAAG vs 6 CB methods win/loss summary. Qwen3 result: 34 wins, 2 losses across 38 comparisons. Only losses are HotpotQA vs AUQ and s1 (-1.8pp each, not statistically significant).
 
 ## Data Status
 
-Complete.
+- Qwen3-4B: ✅ complete (data.csv, 7 rows)
+- Phi-3.5-mini: TODO — recompute from `tab_multi_backbone_results/` data
+- Llama-3.1-8B: TODO — recompute after TWExpress CB complete
 
-## Data Source
+**Multi-backbone win/loss needs recomputation once full results available.**
 
-Computed from SR comparisons in Section 2.1/Section 2.2 data.
+## Raw Data Source
+
+- Qwen3: Computed from `tab_main_results/data.csv`
+- Phi/Llama: Compute from `tab_multi_backbone_results/data.csv`
 
 ## Files in this folder
 
-- `data.csv`
+- `data.csv` — Qwen3 win/loss (cb_method, eaag_wins, eaag_losses, n_envs)
+- `generate.py`
+- `output.pdf`

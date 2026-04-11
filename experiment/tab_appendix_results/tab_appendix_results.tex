@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering
+\caption{Appendix environment results (Qwen3-4B): APPS Interview and CRUXEval.}
+\label{tab:appendix-results}
+\begin{tabular}{llcc}
+\toprule
+\textbf{Method} & \textbf{Environment} & \textbf{SR (\%)} & \textbf{Cost (ro/ep)} \\
+\midrule
+base\_only        & APPS Intv  & 60.5 & 0.00 \\
+SCG               & APPS Intv  & 79.5 & 3.19 \\
+AUQ               & APPS Intv  & 64.7 & 1.08 \\
+EAAG              & APPS Intv  & 73.0 & 1.35 \\
+\midrule
+base\_only        & CRUXEval   & 85.0 & 0.00 \\
+always\_trigger   & CRUXEval   & 99.5 & 1.91 \\
+SCG               & CRUXEval   & 99.5 & 2.80 \\
+AUQ               & CRUXEval   & 99.0 & 1.75 \\
+EAAG              & CRUXEval   & 98.5 & 1.24 \\
+\bottomrule
+\end{tabular}
+\end{table}

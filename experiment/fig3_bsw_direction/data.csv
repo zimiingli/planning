@@ -1,6 +1,5 @@
-environment,abs_rho,bsw_sr,always_sr,degradation_pp,rollout_safe
-FEVER,0.619,0.63,0.998,36.8,No
-HotpotQA,0.494,0.582,0.97,38.800000000000004,No
-WebShop,0.444,0.206,0.43,22.400000000000002,No
-APPS Intv,0.339,0.795,0.795,0.0,Yes
-CRUXEval,0.184,0.875,0.995,12.0,No
+environment,abs_rho,bsw_sr,eaag_sr,degradation_pp,two_source_type
+HotpotQA,0.494,0.582,0.952,37.0,Type I
+WebShop,0.444,0.214,0.438,22.4,Mixed
+FEVER,0.619,0.130,0.498,36.8,Type I
+APPS Intro,0.155,0.625,0.660,3.5,Mixed

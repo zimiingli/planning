@@ -4,19 +4,33 @@
 
 Section 5.2 Main text. Main Comparison (core table).
 
+## Writing Prompt
+> **[DATA NEEDED: Table tab:main]** Main results table.
+> Full method x environment grid. Rows = methods (base_only, always_trigger, oracle, CaTS, SEAG, CoRefine, CATTS, AUQ, s1_budget, BSW, EAAG).
+> Columns = 8 environments, each with SR(%) and Cost (ro/ep). Bold best SR per env.
+> Include +/- std if available. Add delta column showing SR improvement over base.
+
 ## Description
 
-Main results table: 4 primary environments x all methods (bounds, CB baselines, ablations, EAAG). Shows SR (%) and Total Cost (ro/ep, including Phase 1 amortized cost for CaTS/SEAG/CoRefine/SCG). FEVER EAAG SR is 49.8% (limited by exploration bias, discussed in Section 6.2). Phase 1 cost amortized at 200 ep always_trigger.
+Main results table: 8 environments x all methods (bounds, CB baselines, ablations, EAAG). Shows SR (%) and Total Cost (ro/ep, including Phase 1 amortized cost for CaTS/SEAG/CoRefine/SCG). Phase 1 cost amortized at 200 ep always_trigger.
 
 ## Data Status
 
-Complete.
+- Qwen3-4B: ✅ complete (data.csv, 89 rows)
+- Phi-3.5-mini: ✅ raw data complete — see `tab_multi_backbone_results/` for full table
+- Llama-3.1-8B: ~94% — TWExpress CB auq/cats/s1_budget missing
 
-## Data Source
+**Current data.csv contains Qwen3 only. Multi-backbone data in `tab_multi_backbone_results/`.**
 
-- EAAG and ablations: `results/phase6/path_e/{env}/*/seed_*/summary.json` (3 seeds averaged).
-- CB baselines: `results/phase5/competing_baselines/` and `results/phase6/new_baselines/`.
+## Raw Data Source
+
+- Qwen3 EAAG/ablations: `results/phase6/path_e/{env}/*/seed_*/summary.json` (3 seeds averaged)
+- Qwen3 CB baselines: `results/phase5/competing_baselines/` and `results/phase6/new_baselines/`
+- Phi-3.5: `results/review/phi35_mini/{env}/{env}/*/seed_*/summary.json`
+- Llama-3.1: `results/review/llama31_8b/{env}/{env}/*/seed_*/summary.json`
 
 ## Files in this folder
 
-- `data.csv`
+- `data.csv` — Qwen3-4B results (method, environment, sr_pct, cost_ro_per_ep)
+- `generate.py` — generation script
+- `output.pdf` — rendered table

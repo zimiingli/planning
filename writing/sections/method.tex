@@ -43,33 +43,17 @@ return on gate complexity is small compared to the return on
 getting direction right, so we invest complexity in exploration
 and feature selection and keep the deployed gate minimal.
 
-{\color{red} \textbf{[FIGURE NEEDED: Figure~\ref{fig:eaag-pipeline}.]}
-EAAG pipeline diagram. \textbf{Layout:} Horizontal three-stage pipeline
-with requirement mapping above and signed-weight example below.
-
-\textbf{Top row (requirements):} Three boxes labeled
-``Req~(iii): Signal-agnostic collection'',
-``Req~(ii): Multi-signal features'',
-``Req~(i): Direction must be learned'',
-each with a downward arrow to the corresponding pipeline stage.
-
-\textbf{Middle row (pipeline):} Three colored boxes connected by arrows:
-\textsc{Explore} (blue) $\to$ \textsc{Reason} (orange, dashed border for optional)
-$\to$ \textsc{Learn} (green) $\to$ \textsc{Deploy} (gray).
-Inside each box, 1--2 line summary:
-Explore: ``$\varepsilon{=}0.5$ random gating, 50 eps $\to$ $\mathcal{D}$'';
-Reason: ``LLM proposes task features $\to$ $\phi_{\text{cand}}$'';
-Learn: ``LASSO $\to$ gate $g(s)$ with signed $\mathbf{w}$'';
-Deploy: ``Zero overhead per step''.
-
-\textbf{Bottom annotation:} Two small boxes showing example signed weights:
-HotpotQA ($w_{\text{entropy}}{=}{-}0.34$, Type~I: high entropy $\to$ \emph{don't} trigger)
-vs.\ APPS Interview ($w_{\text{entropy}}{=}{+}0.32$, Type~D: high entropy $\to$ trigger).
-Use red/blue coloring to indicate direction.
-
-\textbf{Style:} Clean TikZ boxes similar to CATTS Figure~1 and CoRefine Figure~3.
-Rounded rectangles, minimal text, consistent color scheme.
-See drawing prompt in \texttt{figure\_prompts.md}.}
+% TODO: TikZ pipeline diagram (see figure_prompts.md for detailed spec)
+% Figure~\ref{fig:eaag-pipeline}: Explore → Reason → Learn → Deploy
+%\begin{figure*}[t]
+%\centering
+%\includegraphics[width=\textwidth]{figures/fig_eaag_pipeline.pdf}
+%\caption{EAAG pipeline. Explore collects unbiased $(s,U)$ pairs;
+%Reason (optional) proposes task-specific features via LLM;
+%Learn fits a sparse gate with signed weights $\mathbf{w}$;
+%Deploy adds zero overhead per step.}
+%\label{fig:eaag-pipeline}
+%\end{figure*}
 
 \subsection{Explore: Signal-Agnostic Data Collection}
 \label{sec:explore}

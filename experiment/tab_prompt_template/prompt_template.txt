@@ -1,0 +1,88 @@
+===== EAAG Reason Step: LLM Reflection Prompt Template =====
+Source: frvc/self_evolving_gate.py, method _build_reflection_prompt()
+
+--- PROMPT ---
+
+You are an AI agent that has been exploring an interactive environment. During exploration, you sometimes performed "rollouts" (additional computation) to improve your decisions. Sometimes the rollout was useful (positive utility), sometimes it was not.
+
+Your task: Analyze the patterns in your experience and write a Python function that extracts features from the state text that could predict whether a rollout would be useful.
+
+### Exploration Statistics:
+- Total decision points: {N}
+- Rollout was useful: {positive_rate:.1%} of the time
+- Mean utility when useful: {mean_pos_util:.3f}
+- Mean utility overall: {mean_util:.3f}
+- Step range: {step_min} to {step_max}
+
+### Episodes where rollout WAS useful (utility > 0):
+
+Example 1 (step {step}, utility={util:.2f}):
+State: {state_text[:500]}
+Action: {action_text}
+
+[... up to 3 positive examples ...]
+
+### Episodes where rollout was NOT useful (utility = 0):
+
+Example 1 (step {step}, utility=0.00):
+State: {state_text[:500]}
+Action: {action_text}
+
+[... up to 3 negative examples ...]
+
+## Task
+
+Write a Python function `extract_features` that takes the state text, step count, and action text, and returns a dictionary of numeric features that might predict rollout utility.
+
+```python
+def extract_features(state_text: str, step_count: int, action_text: str) -> dict:
+    """Extract features that predict rollout utility.
+
+    Args:
+        state_text: Current state observation text
+        step_count: Current step number in the episode
+        action_text: The proposed action text
+
+    Returns:
+        dict mapping feature names to float values
+    """
+    import re
+    features = {}
+
+    # Your analysis-based features here
+    # Example: features['text_length'] = len(state_text)
+
+    return features
+```
+
+Requirements:
+- Return a dict with string keys and float values
+- Use only Python standard library (re, math, len, etc.)
+- Extract exactly 5 features based on the patterns you observe
+- Features should be numeric (counts, ratios, booleans as 0/1)
+- Focus on features that DIFFER between useful and not-useful rollout cases
+- Quality over quantity -- each feature should capture a distinct, meaningful signal
+- Do NOT use any external libraries
+
+--- END PROMPT ---
+
+===== Configuration =====
+- Backend: local vLLM (Qwen3-4B-Instruct-2507) or OpenRouter (Claude)
+- Temperature: 0.3
+- Max tokens: 2000
+- Max retries: 3
+- Max LLM features: 5 (configurable via _max_llm_features)
+
+===== WebShop Example Output =====
+(WebShop has the most interesting LLM contribution: +9.1pp from LLM features)
+
+LLM-generated features for WebShop:
+- llm_action_is_click: 1.0 if action contains "click", 0.0 otherwise
+- llm_price_mentioned: 1.0 if state mentions a price, 0.0 otherwise
+- llm_already_open: 1.0 if product page is already open, 0.0 otherwise
+- llm_query_length: normalized length of search query
+- llm_text_length_normalized: state text length / 1000
+
+LASSO selected: llm_action_is_click (coeff=+0.42), llm_price_mentioned (coeff=+0.31)
+These task-specific features extend the universal pool (step_count, token_entropy)
+to capture WebShop's choice-dominated structure.

@@ -1,0 +1,22 @@
+\begin{table}[t]
+\centering
+\caption{Environment setup. Base/Always: SR without/with optimizer.
+$\Delta$: rollout headroom. Environments span QA, code, web, fact-checking, games, and planning.}
+\label{tab:env-setup}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lccccl}
+\toprule
+\textbf{Environment} & \textbf{Type} & \textbf{Base SR} & \textbf{Always SR} & $\bm{\Delta}$ & \textbf{Paper Role} \\
+\midrule
+HotpotQA   & QA       & 49.0\% & 97.0\% & +48.0 & Main \\
+APPS Intro & Code     & 58.5\% & 64.5\% &  +6.0 & Main (weak) \\
+WebShop    & Web      &  7.2\% & 43.0\% & +35.8 & Main \\
+FEVER      & Fact     & 37.0\% & 99.8\% & +62.8 & Main \\
+TWExpress  & Game     & 67.5\% & 99.3\% & +31.8 & Diagnostic (safe) \\
+Plancraft  & Planning & 29.8\% & 22.8\% & $-$7.0  & Diagnostic (harmful) \\
+APPS Intv  & Code     & 60.5\% & 79.5\% & +19.0 & Appendix \\
+CRUXEval   & Code     & 85.0\% & 99.5\% & +14.5 & Appendix \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}

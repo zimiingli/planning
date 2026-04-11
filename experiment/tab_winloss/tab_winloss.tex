@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering
+\caption{Win/loss summary: EAAG vs.\ each fixed-direction baseline across environments.
+A win means EAAG achieves higher SR; a loss means lower SR.
+EAAG wins 34 of 38 comparisons (Qwen3-4B backbone).}
+\label{tab:winloss}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Baseline} & \textbf{Wins} & \textbf{Losses} & \textbf{Envs} \\
+\midrule
+CaTS$^\dagger$     & 5 & 0 & 6 \\
+SEAG$^\dagger$     & 6 & 0 & 6 \\
+CoRefine$^\dagger$ & 5 & 0 & 6 \\
+CATTS              & 6 & 0 & 6 \\
+AUQ                & 6 & 1 & 7 \\
+s1\_budget         & 6 & 1 & 7 \\
+\midrule
+\textbf{Total}     & \textbf{34} & \textbf{2} & --- \\
+\bottomrule
+\end{tabular}
+\end{table}

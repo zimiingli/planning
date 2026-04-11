@@ -1,0 +1,158 @@
+backbone,environment,signal,rho,p_value,significant
+Qwen3-4B,HotpotQA,token_entropy,-0.3270,0.000100,Y
+Qwen3-4B,APPS Intro,token_entropy,0.1440,0.010000,Y
+Qwen3-4B,WebShop,token_entropy,0.1330,0.015000,Y
+Qwen3-4B,FEVER,token_entropy,-0.1190,0.048000,Y
+Qwen3-4B,TWExpress,token_entropy,-0.2900,0.000010,Y
+Qwen3-4B,Plancraft,token_entropy,-0.0160,0.790000,N
+Qwen3-4B,APPS Intv,token_entropy,0.3170,0.000001,Y
+Qwen3-4B,CRUXEval,token_entropy,-0.0480,0.450000,N
+Qwen3-4B,HotpotQA,step_count,-0.4940,0.000001,Y
+Qwen3-4B,FEVER,step_count,-0.6190,0.000001,Y
+Qwen3-4B,APPS Intro,step_count,-0.1550,0.015000,Y
+Qwen3-4B,APPS Intv,step_count,-0.3390,0.000001,Y
+Qwen3-4B,WebShop,step_count,0.0050,0.930000,N
+Qwen3-4B,TWExpress,step_count,-0.2700,0.000050,Y
+Qwen3-4B,Plancraft,step_count,-0.0100,0.870000,N
+Qwen3-4B,CRUXEval,step_count,-0.0300,0.640000,N
+Qwen3-4B,FEVER,evidence_count,-0.5460,0.000000,Y
+Qwen3-4B,FEVER,is_classify_proposed,0.0000,1.000000,N
+Qwen3-4B,FEVER,claim_length,-0.1980,0.000826,Y
+Qwen3-4B,FEVER,is_finish_proposed,-0.5547,0.000000,Y
+Qwen3-4B,FEVER,state_category,0.0000,1.000000,N
+Qwen3-4B,FEVER,action_type,0.0000,1.000000,N
+Qwen3-4B,APPS Intv,evidence_count,0.0000,1.000000,N
+Qwen3-4B,APPS Intv,is_finish_proposed,0.0000,1.000000,N
+Qwen3-4B,APPS Intv,state_category,0.0000,1.000000,N
+Qwen3-4B,APPS Intv,action_type,0.0000,1.000000,N
+Qwen3-4B,CRUXEval,function_complexity,-0.0147,0.775386,N
+Qwen3-4B,CRUXEval,has_loops,0.0240,0.640837,N
+Qwen3-4B,CRUXEval,evidence_count,0.1837,0.000312,Y
+Qwen3-4B,CRUXEval,is_finish_proposed,0.0000,1.000000,N
+Qwen3-4B,CRUXEval,state_category,0.0000,1.000000,N
+Qwen3-4B,CRUXEval,subtask_type,0.0000,1.000000,N
+Qwen3-4B,CRUXEval,action_type,0.0000,1.000000,N
+Phi-3.5-mini,HotpotQA,step_count,-0.5165,0.000000,Y
+Phi-3.5-mini,HotpotQA,token_entropy,0.1843,0.004017,Y
+Phi-3.5-mini,HotpotQA,evidence_count,0.0000,1.000000,N
+Phi-3.5-mini,HotpotQA,is_finish_proposed,0.0000,1.000000,N
+Phi-3.5-mini,HotpotQA,state_category,0.0000,1.000000,N
+Phi-3.5-mini,HotpotQA,action_type,0.0000,1.000000,N
+Phi-3.5-mini,APPS Intro,step_count,-0.5530,0.000000,Y
+Phi-3.5-mini,APPS Intro,token_entropy,-0.1289,0.009849,Y
+Phi-3.5-mini,APPS Intro,evidence_count,0.0000,1.000000,N
+Phi-3.5-mini,APPS Intro,is_finish_proposed,0.0000,1.000000,N
+Phi-3.5-mini,APPS Intro,state_category,0.0000,1.000000,N
+Phi-3.5-mini,APPS Intro,action_type,0.0000,1.000000,N
+Phi-3.5-mini,WebShop,step_count,0.3407,0.000000,Y
+Phi-3.5-mini,WebShop,token_entropy,0.3349,0.000000,Y
+Phi-3.5-mini,WebShop,evidence_count,0.3407,0.000000,Y
+Phi-3.5-mini,WebShop,is_finish_proposed,-0.0899,0.013766,Y
+Phi-3.5-mini,WebShop,num_available_actions,0.4138,0.000000,Y
+Phi-3.5-mini,WebShop,state_category,0.0000,1.000000,N
+Phi-3.5-mini,WebShop,page_type,0.0000,1.000000,N
+Phi-3.5-mini,WebShop,action_type,0.0000,1.000000,N
+Phi-3.5-mini,FEVER,step_count,-0.2272,0.000000,Y
+Phi-3.5-mini,FEVER,token_entropy,-0.1558,0.000007,Y
+Phi-3.5-mini,FEVER,evidence_count,0.8321,0.000000,Y
+Phi-3.5-mini,FEVER,is_classify_proposed,0.8362,0.000000,Y
+Phi-3.5-mini,FEVER,claim_length,-0.0153,0.661415,N
+Phi-3.5-mini,FEVER,is_finish_proposed,-0.0622,0.074545,N
+Phi-3.5-mini,FEVER,state_category,0.0000,1.000000,N
+Phi-3.5-mini,FEVER,action_type,0.0000,1.000000,N
+Phi-3.5-mini,TWExpress,step_count,0.0000,1.000000,N
+Phi-3.5-mini,TWExpress,token_entropy,0.0000,1.000000,N
+Phi-3.5-mini,TWExpress,score_fraction,0.0000,1.000000,N
+Phi-3.5-mini,TWExpress,num_admissible_commands,0.0000,1.000000,N
+Phi-3.5-mini,TWExpress,evidence_count,0.0000,1.000000,N
+Phi-3.5-mini,TWExpress,is_finish_proposed,0.0000,1.000000,N
+Phi-3.5-mini,TWExpress,state_category,0.0000,1.000000,N
+Phi-3.5-mini,TWExpress,action_type,0.0000,1.000000,N
+Phi-3.5-mini,Plancraft,step_count,-0.0574,0.006692,Y
+Phi-3.5-mini,Plancraft,token_entropy,0.0000,1.000000,N
+Phi-3.5-mini,Plancraft,crafting_progress,-0.0619,0.003433,Y
+Phi-3.5-mini,Plancraft,inventory_size,-0.0174,0.411324,N
+Phi-3.5-mini,Plancraft,grid_items,-0.0474,0.025269,Y
+Phi-3.5-mini,Plancraft,has_output,0.0597,0.004769,Y
+Phi-3.5-mini,Plancraft,optimal_path_length,-0.0284,0.179541,N
+Phi-3.5-mini,Plancraft,evidence_count,-0.0574,0.006692,Y
+Phi-3.5-mini,Plancraft,is_finish_proposed,0.0000,1.000000,N
+Phi-3.5-mini,Plancraft,state_category,0.0000,1.000000,N
+Phi-3.5-mini,Plancraft,action_type,0.0000,1.000000,N
+Phi-3.5-mini,APPS Intv,step_count,-0.5803,0.000000,Y
+Phi-3.5-mini,APPS Intv,token_entropy,-0.0237,0.651567,N
+Phi-3.5-mini,APPS Intv,evidence_count,0.0000,1.000000,N
+Phi-3.5-mini,APPS Intv,is_finish_proposed,0.0000,1.000000,N
+Phi-3.5-mini,APPS Intv,state_category,0.0000,1.000000,N
+Phi-3.5-mini,APPS Intv,action_type,0.0000,1.000000,N
+Phi-3.5-mini,CRUXEval,step_count,-0.0244,0.626938,N
+Phi-3.5-mini,CRUXEval,token_entropy,-0.0654,0.193008,N
+Phi-3.5-mini,CRUXEval,function_complexity,0.0905,0.071272,N
+Phi-3.5-mini,CRUXEval,has_loops,0.0338,0.501503,N
+Phi-3.5-mini,CRUXEval,evidence_count,-0.0244,0.626938,N
+Phi-3.5-mini,CRUXEval,is_finish_proposed,0.0000,1.000000,N
+Phi-3.5-mini,CRUXEval,state_category,0.0000,1.000000,N
+Phi-3.5-mini,CRUXEval,subtask_type,0.0000,1.000000,N
+Phi-3.5-mini,CRUXEval,action_type,0.0000,1.000000,N
+Llama-3.1-8B,HotpotQA,step_count,-0.4727,0.000000,Y
+Llama-3.1-8B,HotpotQA,token_entropy,-0.3456,0.000000,Y
+Llama-3.1-8B,HotpotQA,evidence_count,0.0000,1.000000,N
+Llama-3.1-8B,HotpotQA,is_finish_proposed,0.0000,1.000000,N
+Llama-3.1-8B,HotpotQA,state_category,0.0000,1.000000,N
+Llama-3.1-8B,HotpotQA,action_type,0.0000,1.000000,N
+Llama-3.1-8B,APPS Intro,step_count,-0.3661,0.000000,Y
+Llama-3.1-8B,APPS Intro,token_entropy,-0.2416,0.000000,Y
+Llama-3.1-8B,APPS Intro,evidence_count,0.0000,1.000000,N
+Llama-3.1-8B,APPS Intro,is_finish_proposed,0.0000,1.000000,N
+Llama-3.1-8B,APPS Intro,state_category,0.0000,1.000000,N
+Llama-3.1-8B,APPS Intro,action_type,0.0000,1.000000,N
+Llama-3.1-8B,WebShop,step_count,0.1143,0.000421,Y
+Llama-3.1-8B,WebShop,token_entropy,0.2870,0.000000,Y
+Llama-3.1-8B,WebShop,evidence_count,0.1143,0.000421,Y
+Llama-3.1-8B,WebShop,is_finish_proposed,-0.0220,0.498086,N
+Llama-3.1-8B,WebShop,num_available_actions,0.5337,0.000000,Y
+Llama-3.1-8B,WebShop,state_category,0.0000,1.000000,N
+Llama-3.1-8B,WebShop,page_type,0.0000,1.000000,N
+Llama-3.1-8B,WebShop,action_type,0.0000,1.000000,N
+Llama-3.1-8B,FEVER,step_count,-0.1853,0.000000,Y
+Llama-3.1-8B,FEVER,token_entropy,0.4279,0.000000,Y
+Llama-3.1-8B,FEVER,evidence_count,0.9083,0.000000,Y
+Llama-3.1-8B,FEVER,is_classify_proposed,0.9140,0.000000,Y
+Llama-3.1-8B,FEVER,claim_length,-0.0310,0.370262,N
+Llama-3.1-8B,FEVER,is_finish_proposed,-0.0224,0.516691,N
+Llama-3.1-8B,FEVER,state_category,0.0000,1.000000,N
+Llama-3.1-8B,FEVER,action_type,0.0000,1.000000,N
+Llama-3.1-8B,TWExpress,step_count,0.0000,1.000000,N
+Llama-3.1-8B,TWExpress,token_entropy,0.0000,1.000000,N
+Llama-3.1-8B,TWExpress,score_fraction,0.0000,1.000000,N
+Llama-3.1-8B,TWExpress,num_admissible_commands,0.0000,1.000000,N
+Llama-3.1-8B,TWExpress,evidence_count,0.0000,1.000000,N
+Llama-3.1-8B,TWExpress,is_finish_proposed,0.0000,1.000000,N
+Llama-3.1-8B,TWExpress,state_category,0.0000,1.000000,N
+Llama-3.1-8B,TWExpress,action_type,0.0000,1.000000,N
+Llama-3.1-8B,Plancraft,step_count,-0.1315,0.000001,Y
+Llama-3.1-8B,Plancraft,token_entropy,-0.1760,0.010000,Y
+Llama-3.1-8B,Plancraft,crafting_progress,-0.1324,0.000001,Y
+Llama-3.1-8B,Plancraft,inventory_size,-0.0446,0.102635,N
+Llama-3.1-8B,Plancraft,grid_items,-0.1343,0.000001,Y
+Llama-3.1-8B,Plancraft,has_output,0.0670,0.014212,Y
+Llama-3.1-8B,Plancraft,optimal_path_length,-0.0676,0.013336,Y
+Llama-3.1-8B,Plancraft,evidence_count,-0.1315,0.000001,Y
+Llama-3.1-8B,Plancraft,is_finish_proposed,0.0000,1.000000,N
+Llama-3.1-8B,Plancraft,state_category,0.0000,1.000000,N
+Llama-3.1-8B,Plancraft,action_type,0.0000,1.000000,N
+Llama-3.1-8B,APPS Intv,step_count,-0.3765,0.000000,Y
+Llama-3.1-8B,APPS Intv,token_entropy,-0.2491,0.000000,Y
+Llama-3.1-8B,APPS Intv,evidence_count,0.0000,1.000000,N
+Llama-3.1-8B,APPS Intv,is_finish_proposed,0.0000,1.000000,N
+Llama-3.1-8B,APPS Intv,state_category,0.0000,1.000000,N
+Llama-3.1-8B,APPS Intv,action_type,0.0000,1.000000,N
+Llama-3.1-8B,CRUXEval,step_count,-0.0394,0.435359,N
+Llama-3.1-8B,CRUXEval,token_entropy,-0.0454,0.369216,N
+Llama-3.1-8B,CRUXEval,function_complexity,-0.0664,0.188312,N
+Llama-3.1-8B,CRUXEval,has_loops,-0.0206,0.683862,N
+Llama-3.1-8B,CRUXEval,evidence_count,-0.0394,0.435359,N
+Llama-3.1-8B,CRUXEval,is_finish_proposed,0.0000,1.000000,N
+Llama-3.1-8B,CRUXEval,state_category,0.0000,1.000000,N
+Llama-3.1-8B,CRUXEval,subtask_type,0.0000,1.000000,N
+Llama-3.1-8B,CRUXEval,action_type,0.0000,1.000000,N
