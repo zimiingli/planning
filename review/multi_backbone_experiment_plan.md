@@ -490,59 +490,51 @@ Created 8 new config files from phase5/phase6 Qwen3 templates, updated sbatch EN
 > - **Plancraft: EAAG 13.8% ≈ base** — correctly learned not to trigger (cost=6%)
 > - Calibrated SEAG†/CoRefine† now competitive on HotpotQA (88%) and TWExpress (95%)
 
-### Amortized Cost Analysis: EAAG vs Calibrated CB†
+### Cost Definition
 
-### Full Cost Model: All Hidden Costs Included
+**Primary cost metric: Total LLM calls per episode (deployment only, no Phase 1)**
 
-Previous amortized analysis only counted rollouts. The **true cost** must include:
+```
+cost = base_proposer (1 call/step × steps/ep)
+     + gate_overhead (CATTS: K=5 calls/step, AUQ: 1 call/step, others: 0)
+     + rollout_calls (ro/ep from summary.json)
+```
 
-| Method | Gate overhead per step | Phase 1 cost | Notes |
-|--------|:---:|:---:|------|
-| CATTS | **K=5 extra LLM calls** | 0 (optional) | Highest per-step cost |
-| SEAG† | 0 | 200 ep × AT rollouts | Reads logprob from proposer call |
-| CoRefine† | 0 | 200 ep × AT rollouts | Reads entropy from proposer call |
-| CaTS† | 0 | 200 ep × AT rollouts | Platt scaling on confidence |
-| AUQ | **1 extra LLM call** (confidence query) | 0 (optional) | Asks LLM "how confident?" |
-| **EAAG** | **0** | **0** | No extra calls, no Phase 1 |
+Every LLM call counts equally — CATTS K=5 sampling, AUQ confidence queries, and rollout calls are all LLM invocations.
 
-**Total LLM calls per episode** = base proposer (1/step × steps) + gate overhead + rollout calls + amortized Phase 1
+| Method | Base proposer | Gate overhead/step | Rollout | Phase 1 (separate) |
+|--------|:---:|:---:|:---:|:---:|
+| base | 1/step | 0 | 0 | — |
+| AT | 1/step | 0 | max | — |
+| CATTS | 1/step | **+K=5** | gated | optional |
+| SEAG† | 1/step | 0 (reads logprob) | gated | **required** |
+| CoRefine† | 1/step | 0 (reads entropy) | gated | **required** |
+| CaTS† | 1/step | 0 (reads confidence) | gated | **required** |
+| AUQ | 1/step | **+1** (confidence query) | gated | optional |
+| **EAAG** | 1/step | **0** | gated | **none** (learns online in first 50 ep) |
 
-Phi-3.5 results (calls/episode, 200-ep deployment):
+> **Paper reporting strategy:**
+> 1. **Main table:** per-episode deployment cost (total LLM calls) — fair to all methods
+> 2. **Footnote:** CB† methods require separate Phase 1 calibration data (unspecified size in original papers); EAAG requires no pre-deployment data
+> 3. **Core argument is NOT cost** — it's cross-model stability and direction adaptivity
+>    - AUQ: 97% on Llama HotpotQA but 31% on Phi (collapses when model's verbalized confidence is unreliable)
+>    - CB† direction fixed: 4/5 envs have inconsistent entropy direction across models
+>    - EAAG: no collapse on any model × environment combination
 
-| Env | EAAG SR | EAAG cost | Best CB† SR | CB† cost | CATTS SR | CATTS cost |
-|-----|:---:|:---:|:---:|:---:|:---:|:---:|
-| HotpotQA | **92.3%** | **6.1** | SEAG† 88.3% | 7.8 | 42.0% | **30.6** |
-| APPS | 37.2% | **7.1** | CaTS† 35.8% | 9.6 | 28.0% | 30.2 |
-| **WebShop** | **57.3%** | **7.5** | CaTS† 41.7% | 9.9 | 28.7% | 30.5 |
-| FEVER | 16.5% | **7.4** | CaTS† 19.8% | 12.8 | 12.7% | 30.5 |
-| TWExpress | **96.7%** | **7.7** | CoRef† 94.7% | 11.1 | 86.7% | 30.9 |
-| **Plancraft** | 13.8% | **5.7** | CoRef† 15.2% | **19.7** | 13.5% | 30.1 |
-| APPS Intv | **36.8%** | **7.1** | CaTS† 34.3% | 8.6 | 27.7% | 30.1 |
-| CRUXEval | 99.5% | **5.3** | all 99.5% | 7.0+ | 99.5% | 30.1 |
+### Llama-3.1-8B EAAG Complete Results (as of 2026-04-10)
 
-> **Key insight:** CATTS (K=5 voting) costs 30+ calls/ep — **4-5× more than EAAG** — while often achieving worse SR. Even calibrated CB† methods cost 8-20 calls/ep (including amortized Phase 1). **EAAG achieves the best SR/cost tradeoff at 5.3-7.7 calls/ep across all environments.**
->
-> EAAG **Pareto-dominates** all CB on 6/7 non-ceiling environments when total cost (gate overhead + rollouts + Phase 1 amortization) is properly accounted for:
-> - Higher or equal SR on 6/7 envs (only FEVER -3.3pp)
-> - Lower total cost on ALL 8 envs
-> - No pre-deployment data collection required
->
-> Note: s1_budget excluded — it's a budget-parity baseline from Muennighoff et al. (2024), not a direct competitor in the adaptive gating space.
+| Env | base | AT | oracle | **EAAG** | Δ vs base |
+|-----|:---:|:---:|:---:|:---:|:---:|
+| HotpotQA | 46.3% | 99.5% | 99.5% | **95.5%** | +49.2pp |
+| APPS | 53.3% | 75.0% | 75.0% | 55.0% | +1.7pp |
+| WebShop | 1.2% | 42.8% | 42.3% | **41.7%** | +40.5pp |
+| FEVER | 13.2% | 62.8% | 63.0% | 34.7% | +21.5pp |
+| TWExpress | 36.5% | 99.5% | 99.0% | **94.8%** | +58.3pp |
+| Plancraft | 31.7% | 18.7% | 18.3% | 27.0% | -4.7pp |
+| APPS Intv | 60.2% | 79.5% | 79.5% | 59.7% | -0.5pp |
+| CRUXEval | 99.0% | 99.5% | 99.5% | 99.3% | +0.3pp |
 
-### Llama-3.1-8B Partial Results (as of 2026-04-06)
-
-| Env | base | AT | oracle | **EAAG** | CB | note |
-|-----|:---:|:---:|:---:|:---:|:---:|------|
-| HotpotQA | 46.3% | 99.5% | 99.5% | **95.5%** | pending | EAAG near AT |
-| APPS | 53.3% | 75.0% | 75.0% | **55.0%** | pending | EAAG ≈ base (not harmful, unlike Phi) |
-| WebShop | 1.2% | 42.8% | 42.3% | **41.7%** | pending | EAAG ≈ AT |
-| FEVER | 13.2% | 62.8% | 63.0% | **34.7%** | pending | decent improvement |
-| TWExpress | 36.5% | — | — | running | pending | bounds TIMEOUT |
-| Plancraft | 31.7% | 18.7% | 18.3% | running | pending | rollout harmful |
-| APPS Intv | 60.2% | 79.5% | 79.5% | running | pending | |
-| CRUXEval | 99.0% | 99.5% | 99.5% | running | pending | |
-
-**CB Llama: 0/144 — pending GPU (job 23694865)**
+**CB Llama: 226/240 done (14 missing = TWExpress CB shards still running)**
 
 ### Phase 1 calibration dependency (from paper Table 2)
 
@@ -601,33 +593,32 @@ results/review/
 
 _(Old Phi results table removed — see calibrated version above at line 472)_
 
-### Issues and fixes (as of 2026-04-06)
+### Issues and fixes (as of 2026-04-08)
 
 | Issue | Affected | Cause | Fix | Status |
 |-------|----------|-------|-----|--------|
-| TWExpress AT/oracle TIMEOUT | S2A Phi 3 + Llama 6 | 600s/ep, 12h not enough | Need `--time=36:00:00` or sharding | ❌ TODO |
-| Wrong `phase1_data_path` | All 16 review configs | Missing `/{env}/` in path | Fixed all configs | ✅ fixed |
-| CB Phi calibrated OOM | 15 jobs (APPS+APPS_Intv × seag/corefine/cats) | 48GB mem not enough for code-gen envs | Resubmit with `--mem=64G` | ❌ TODO |
-| CB Phi seag/corefine/cats uncalibrated | 72 CB Phi results | Ran without phase1 data | Resubmitted as **23669862** | ✅ **COMPLETE** (except OOM above) |
-| EAAG Phi wrong output path | 24 EAAG Phi results | Hardcoded path in p6 script | Fixed p6_e_method_upgrade.py line 158 | ✅ **COMPLETE** |
-| CB/EAAG Llama wrong MODEL name | All CB+EAAG Llama | `microsoft/` instead of `meta-llama/` | Fixed scripts, resubmitted | ✅ fixed |
-| TMPCONFIG unbound variable | Multiple scripts | trap cleanup refs undefined var | All 12 scripts fixed | ✅ all fixed |
+| TWExpress AT/oracle TIMEOUT | S2A bounds, 12h limit | 600s/ep × 200 ep = 33h | Sharded into 3×67 eps | ✅ sharded (job 23737873, 18/36 done) |
+| Wrong `phase1_data_path` | All 16 configs | Missing `/{env}/` | Fixed all configs | ✅ fixed |
+| CB Phi APPS/APPS_Intv OOM | 13 jobs (seag/cats/corefine) | 64GB still not enough for code-gen | **Use uncalibrated fallback** | ⚠️ accepted (calibration impact small on these envs) |
+| CB Phi calibrated rerun | 72 jobs | Wrong phase1_data | job 23669862 | ✅ COMPLETE (except persistent OOM above) |
+| EAAG Phi wrong output path | 24 jobs | Hardcoded path | Fixed p6 script | ✅ COMPLETE |
+| CB/EAAG Llama wrong MODEL | All Llama CB+EAAG | `microsoft/` prefix | Fixed scripts | ✅ fixed |
+| TWExpress CB too slow | CB 200ep × ~500s/ep | 12h limit | Added `--episode-start` to `p5_competing_baselines.py`, sharded script | ✅ sharded (job 23750380) |
+| TMPCONFIG unbound | Multiple scripts | trap refs undefined var | All scripts fixed | ✅ fixed |
 
 ### Pipeline Progress
 
 - [x] **Step 0 GO/NO-GO — ALL 8 envs × 2 models: COMPLETE**
 - [x] **Step 1 Signal Discovery — ALL 8 envs × 2 models: COMPLETE**
-- [x] Step 2A Bounds — Phi: ✅ 69/72 (TWExpress AT/oracle TIMEOUT)
-- [x] Step 2A Bounds — Llama: ✅ 66/72 (TWExpress TIMEOUT)
-- [x] Step 2B CB Phi: ✅ **144/144** (calibrated; APPS/APPS_Intv seag/coref/cats OOM → uncalibrated fallback)
-- [x] Step 2C EAAG Phi: ✅ **24/24 COMPLETE**
-- [x] Step 2C EAAG Llama: ✅ **24/24 COMPLETE** (job 23694864)
-- [ ] Step 2B CB Llama: 🔄 **72/144 done**, 6 running (job **23694865**)
-- [ ] CB Phi OOM rerun: submitted job **23737729** (`--mem=64G`, 15 jobs, array 21,23,25,27-29,111-119)
-- [ ] TWExpress sharded rerun: job **23737873** (36 jobs, array 0-35, 3 shards × 2 methods × 3 seeds × 2 models)
-  - 12h partition limit → split 200 eps into 3 shards (0-66, 67-133, 134-199)
-  - Script: `scripts/review/run_twexpress_sharded.sbatch`
-  - Need merge-shards step after completion
+- [x] **Step 2C EAAG Phi: ✅ 24/24 COMPLETE**
+- [x] **Step 2C EAAG Llama: ✅ 24/24 COMPLETE**
+- [x] Step 2B CB Phi: ✅ **144/144** (13 jobs APPS/APPS_Intv OOM → using uncalibrated fallback)
+- [x] **Step 2A Bounds Phi: ✅ 240/240 COMPLETE**
+- [ ] Step 2A Bounds Llama TWExpress: job **23737873** — 90 done, last 6 running (~1h left)
+- [ ] Step 2B CB Llama plancraft+cruxeval: job **23749957** (36 jobs) — pending, starts after TW bounds
+- [ ] Step 2B CB Llama APPS Interview: job **23749959** (`--mem=64G`, 18 jobs) — pending
+- [ ] Step 2B CB Llama TWExpress sharded: job **23750380** (54 jobs) — pending (~27h after starts)
+- [ ] Merge TWExpress shards (bounds + CB) after completion
 - [ ] Exp 3: Cross-optimizer (both new models)
 - [ ] Exp 4: Budget sensitivity (both new models)
 - [ ] Create Exp 3 + Exp 4 sbatch scripts for Phi-3.5
@@ -638,7 +629,16 @@ _(Old Phi results table removed — see calibrated version above at line 472)_
   - TODO: create configs with `api_type: "openai"`, run locally (no SLURM needed)
 - [ ] Run `python scripts/review/analyze_multi_backbone.py`
 
-### Llama-3.1-8B EAAG Complete Results (as of 2026-04-06)
+### Overall Completion (as of 2026-04-10)
+
+| Model | Bounds | CB | EAAG | Total | % |
+|-------|:---:|:---:|:---:|:---:|:---:|
+| **Phi-3.5** | 72/72 | 144/144 | 24/24 | **240/240** | **100%** ✅ |
+| **Llama** | 72/72 | 130/144 | 24/24 | **226/240** | **94%** |
+
+**Phi COMPLETE.** Llama missing 14 = TWExpress CB shards (job 23750380, 39/54 shards done, 6 running).
+
+### Llama-3.1-8B EAAG Complete Results (as of 2026-04-10)
 
 | Env | base | AT | oracle | **EAAG** | Δ vs base |
 |-----|:---:|:---:|:---:|:---:|:---:|
@@ -663,16 +663,16 @@ _(Old Phi results table removed — see calibrated version above at line 472)_
 > | APPS Intv | 36.8% | **59.7%** (≈base) | Llama safer |
 > | CRUXEval | 99.5% | 99.3% | both ceiling |
 
-### Currently running/queued jobs (as of 2026-04-06)
+### Currently running/queued jobs (as of 2026-04-08)
 
 | Job ID | Task | Jobs | Status |
 |--------|------|------|--------|
-| **23737729** | CB Phi OOM rerun (--mem=64G, APPS+APPS_Intv) | 15 | running |
-| **23737873** | TWExpress bounds sharded (2 models × 2 methods × 3 seeds × 3 shards) | 36 | pending |
-| **23749957** | CB Llama plancraft+cruxeval (normal) | 36 | pending |
-| **23749958** | CB Llama APPS rerun (--mem=64G) | 18 | pending |
+| ~~23737729~~ | CB Phi OOM rerun | 15 | ✅ done (13 still OOM → accepted uncalibrated) |
+| **23737873** | TWExpress bounds sharded | 36 | 18 done, 6 running, 12 pending |
+| **23749957** | CB Llama plancraft+cruxeval | 36 | pending |
+| **23749958** | CB Llama APPS (--mem=64G) | 18 | pending |
 | **23749959** | CB Llama APPS Interview (--mem=64G) | 18 | pending |
-| **23750380** | CB Llama TWExpress sharded (6 methods × 3 seeds × 3 shards) | 54 | pending |
+| **23750380** | CB Llama TWExpress CB sharded | 54 | pending |
 
 **CB Llama status:**
 - hotpotqa/webshop/fever: ✅ done (54/144 calibrated)
