@@ -1,0 +1,5 @@
+metric,scg_phase1,eaag_explore
+positive_rate,51.8,7.5
+episode_length_steps,1.4,5.0
+steps_observed,282,1054
+rollout_rate_exploit,68.2,3.0

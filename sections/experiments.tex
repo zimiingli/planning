@@ -78,6 +78,11 @@ gating behavior: its trigger rate, direction, and signal weights
 all adapt to the environment, as we analyze below.
 
 <<<<<<< HEAD
+\input{experiment/tab_main_results/tab_main_results.tex}
+
+\input{experiment/tab_winloss/tab_winloss.tex}
+=======
+<<<<<<< HEAD
 \input{../experiment/tab_main_results/tab_main_results.tex}
 
 \input{../experiment/tab_winloss/tab_winloss.tex}
@@ -86,25 +91,32 @@ all adapt to the environment, as we analyze below.
 
 % \input{../experiment/tab_winloss/tab_winloss.tex}
 >>>>>>> c318b77b01a6af94d21a1466266da0ba818eba5d
+>>>>>>> b8af530d0a459bc6ba61abeaa5180bd2409cc79e
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_pareto.pdf}
-\caption{Pareto frontier: SR vs.\ Cost across 6 representative environments.
+\caption{Pareto frontier: SR vs.\ Cost across 6 representative environments
+(full 8-environment version in Appendix~\ref{app:experiments}, Figure~\ref{fig:full-pareto}).
 $\circ$\,=\,bounds, $\triangle$\,=\,fixed-direction baselines, $\bigstar$\,=\,EAAG.
 Dashed line: Pareto frontier. EAAG sits on or near the frontier in every environment.}
 \label{fig:pareto}
 \end{figure*}
 
 \paragraph{Cross-environment patterns.}
-The results align with the Two-Source Model along three axes.
+Figure~\ref{fig:pareto} shows that the results align with the
+Two-Source Model along three axes.
 The gap between EAAG and baselines is largest where direction
 mismatch is most severe: in Type~I environments, all ``high
 uncertainty $\to$ trigger'' baselines fall below the no-trigger
 baseline because the assumed direction is wrong---no amount of
 calibration rescues them. Conversely, EAAG's advantage is smallest
 in high-headroom environments where most methods approach the
-oracle regardless of direction. Most tellingly, EAAG adapts not
+oracle regardless of direction.
+Figure~\ref{fig:entropy-bin} reveals the mechanism: in Type~I
+environments, utility \emph{decreases} with entropy, while in
+Type~D it increases---the same signal carries opposite meaning.
+Most tellingly, EAAG adapts not
 only direction but \emph{gating magnitude}: aggressive triggering
 in rollout-safe environments (TWExpress, RR\,=\,73\%),
 moderate triggering in mixed environments, and step-dependent
@@ -113,15 +125,15 @@ $<$20\% later). This full behavioral range---from near-always
 to near-never triggering---emerges from direction learning
 alone, without explicit headroom estimation.
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=\columnwidth]{figures/fig_entropy_bin.pdf}
+\includegraphics[width=\textwidth]{figures/fig_entropy_bin.pdf}
 \caption{Utility by entropy bin across environment types.
 In Type~I (FEVER, HotpotQA), utility decreases with entropy;
 in Type~D (APPS Intv), it increases. The same entropy level
 carries opposite meaning depending on the environment.}
 \label{fig:entropy-bin}
-\end{figure}
+\end{figure*}
 
 
 \subsection{Ablation Studies}
@@ -164,12 +176,15 @@ EAAG's trigger rate ranges from 73\% (TWExpress) to $<$20\%
 \end{figure*}
 
 \textbf{Gating magnitude emerges from direction learning alone.}
-The gate's trigger rate varies from 73\% (TWExpress) to $<$20\%
-(late-step Plancraft), with step-dependent decay in
-rollout-harmful environments. These patterns are not explicitly
-programmed: they follow from the per-environment signed weights
-fit in \S\ref{sec:learn}, which capture each environment's
-signal--utility structure.
+As Figure~\ref{fig:trigger-adapt} shows, the gate's trigger rate
+varies from 73\% (TWExpress) to $<$20\% (late-step Plancraft),
+with step-dependent decay in rollout-harmful environments. These
+patterns are not explicitly programmed: they follow from the
+per-environment signed weights fit in \S\ref{sec:learn}, which
+capture each environment's signal--utility structure.
+The cost of getting direction wrong is substantial:
+Figure~\ref{fig:direction-cost} shows that BSW degradation
+scales linearly with signal strength ($r{=}0.95$).
 
 \begin{figure}[t]
 \centering
@@ -215,7 +230,8 @@ uncertainty type, confirming temporal dynamics prediction.}
 \end{figure}
 
 \paragraph{P1: Temporal dynamics (confirmed).}
-We split trajectory data into early (step $\leq$ median) and late
+Figure~\ref{fig:temporal-shift} shows the result. We split trajectory
+data into early (step $\leq$ median) and late
 (step $>$ median) subsets. In HotpotQA, $\rho$ shifts from $-0.176$
 (early) to $-0.437$ (late): late-step entropy reflects deeper
 information poverty after failed evidence retrieval. In APPS Intro,

@@ -1,0 +1,10 @@
+method,signal_type,direction,needs_phase1,extra_cost,sr_win_loss
+CaTS,entropy,Fixed,Yes,0,0W/5L
+SEAG,entropy,Fixed,Yes,0,0W/6L
+CoRefine,entropy,Fixed,Yes,0,0W/5L
+CATTS,entropy,Fixed,No,K=5 calls,0W/6L
+AUQ,confidence,None,No,1 call/step,1W/6L
+s1_budget,length,None,No,0,1W/6L
+SCG,multi-signal,Learned,Yes,0,-
+BSW,multi-signal,Flipped,Yes,0,-
+EAAG,multi-signal,Auto-learned,No,0,34W/2L

@@ -352,9 +352,10 @@ Plancraft      & Weak signal & $\approx 0$ & $-0.016$ & Rollouts harmful; entrop
 }
 \end{table*}
 
-The mapping confirms the model's core prediction: the sign of the
-entropy--utility correlation is determined by which uncertainty
-source dominates, not by properties of the entropy signal itself.
+The mapping confirms the model's core prediction
+(Figure~\ref{fig:pi-axis}): the sign of the entropy--utility
+correlation is determined by which uncertainty source dominates,
+not by properties of the entropy signal itself.
 
 \subsection{Position on the $p_I$ Axis}
 \label{app:pi-axis}
@@ -399,15 +400,18 @@ environments with $\geq$2 significant signals show cross-model
 direction variation. Structural signals (\texttt{step\_count}) are
 model-invariant while entropy signals are model-dependent.
 
-\input{../experiment/tab_multi_backbone_signal/tab_multi_backbone_signal.tex}
+\input{experiment/tab_multi_backbone_signal/tab_multi_backbone_signal.tex}
 
 \subsection{Fixed-Direction Baselines Fail Across Backbones}
 
+Figure~\ref{fig:multi-backbone-heatmap} visualizes the direction
+variation across backbones, with gold borders marking sign flips.
 On Phi-3.5 APPS: all 6 CB methods score \emph{below} base\_only
-(59\% $\to$ 27--36\%), demonstrating that fixed-direction assumption
-is catastrophically wrong when the model changes.
+(59\% $\to$ 27--36\%), demonstrating that the fixed-direction
+assumption is catastrophically wrong when the model changes
+(Figure~\ref{fig:multi-backbone-sr}).
 
-\input{../experiment/tab_multi_backbone_results/tab_multi_backbone_results.tex}
+\input{experiment/tab_multi_backbone_results/tab_multi_backbone_results.tex}
 
 \begin{figure*}[t]
 \centering
@@ -491,9 +495,10 @@ by combining cheap, interpretable features. Hidden-state probes
 push this further to AUC${\approx}$0.90, but at the cost of opacity
 and per-step inference overhead. The 0.50~$\to$~0.83 gap is the
 relevant one for our method design: it shows that the bottleneck
-is signal \emph{combination}, not gate \emph{capacity}, which is
-why EAAG invests its complexity in feature discovery rather than
-in a deeper gate architecture (cf.\ the gate-complexity ablation
+is signal \emph{combination}, not gate \emph{capacity}
+(Figure~\ref{fig:auc-hierarchy}), which is why EAAG invests its
+complexity in feature discovery rather than in a deeper gate
+architecture (cf.\ the gate-complexity ablation
 in Table~\ref{tab:complexity-ablation}).
 
 % Table A0: AUC hierarchy data in fig_auc_hierarchy/data.csv.
@@ -515,7 +520,7 @@ in Table~\ref{tab:complexity-ablation}).
 \subsection{Signal Identity Alignment (Prediction P3)}
 \label{app:signal-alignment}
 
-\input{../experiment/tab_signal_identity/tab_signal_identity.tex}
+\input{experiment/tab_signal_identity/tab_signal_identity.tex}
 
 \subsection{Controlled Information Manipulation}
 \label{app:controlled}
@@ -536,7 +541,7 @@ becomes the dominant positive signal ($\rho{=}{+}0.311$) while
 \texttt{step\_count} weakens ($\rho{=}{-}0.147$). This
 demonstrates that the \emph{identity} of the most informative
 signal, not just its direction, is a function of the environment's
-information structure.
+information structure (Figure~\ref{fig:controlled-reversal}).
 
 % Table A9: Full InfoPoor vs InfoRich correlation data in fig_controlled_reversal/data.csv.
 
@@ -676,7 +681,10 @@ required at deployment time.
 
 \subsection{Computational Cost Breakdown}
 
-\input{../experiment/tab_cost_components/tab_cost_components.tex}
+Table~\ref{tab:cost-components} and Figure~\ref{fig:cost-breakdown}
+break down the computational cost per method.
+
+\input{experiment/tab_cost_components/tab_cost_components.tex}
 
 \begin{figure*}[t]
 \centering
@@ -722,7 +730,7 @@ are reported for all comparisons. 18 of 34 wins are statistically
 significant (95\% CI excludes zero). Pareto-dominance claims use a
 conservative criterion that does not rely on p-values.
 
-\input{../experiment/tab_significance/tab_significance.tex}
+\input{experiment/tab_significance/tab_significance.tex}
 
 \subsection{LLM Reasoning Prompts and Outputs}
 \label{app:llm-prompts}

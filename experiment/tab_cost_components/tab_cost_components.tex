@@ -1,0 +1,26 @@
+\begin{table}[t]
+\centering
+\caption{Computational cost breakdown per method. Phase~1 = pre-deployment calibration or exploration.
+Per-step overhead = additional LLM calls beyond the base proposer.
+EAAG requires only 50 exploration episodes with zero per-step gate overhead.}
+\label{tab:cost-components}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcclcc}
+\toprule
+\textbf{Method} & \textbf{Phase~1} & \textbf{Type} & \textbf{Gate OH/step} & \textbf{Rollouts/ep} \\
+\midrule
+base\_only        & 0   & ---            & 0     & 0.00 \\
+always\_trigger   & 0   & ---            & 0     & 1.80 \\
+\midrule
+CATTS             & 0   & optional       & +$K{=}5$ calls & 1.07 \\
+SEAG$^\dagger$    & 200 & calibration    & 0 (logprob)    & 1.02 \\
+CoRefine$^\dagger$& 200 & calibration    & 0 (entropy)    & 1.05 \\
+CaTS$^\dagger$    & 200 & calibration    & 0 (confidence) & 1.77 \\
+AUQ               & 0   & optional       & +1 query       & 1.69 \\
+s1\_budget        & 0   & ---            & 0              & 1.04 \\
+\midrule
+\textbf{EAAG}     & \textbf{50} & exploration & \textbf{0} & \textbf{1.08} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}

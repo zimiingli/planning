@@ -1,0 +1,4 @@
+variant,base_sr,always_sr,entropy_rho,step_count_rho,eaag_sr,n_probe
+Original,49.0,97.0,-0.041,-0.494,95.2,1117
+InfoPoor,44.0,98.5,0.119,-0.608,94.0,317
+InfoRich,82.0,100.0,0.311,-0.147,88.3,221

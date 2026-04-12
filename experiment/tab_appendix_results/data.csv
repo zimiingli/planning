@@ -1,0 +1,10 @@
+method,environment,sr_pct,total_cost_ro_per_ep
+base_only,APPS Intv,60.5,0.0
+base_only,CRUXEval,85.0,0.0
+EAAG,APPS Intv,73.0,1.35
+SCG,APPS Intv,79.5,3.19
+SCG,CRUXEval,99.5,2.8
+AUQ,APPS Intv,64.7,1.08
+AUQ,CRUXEval,99.0,1.75
+EAAG,CRUXEval,98.5,1.24
+always_trigger,CRUXEval,99.5,1.91

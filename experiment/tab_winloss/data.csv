@@ -1,0 +1,7 @@
+cb_method,eaag_wins,eaag_losses,n_envs
+CaTS,5,0,6
+SEAG,6,0,6
+CoRefine,5,0,6
+CATTS,6,0,6
+AUQ,6,1,7
+s1_budget,6,1,7

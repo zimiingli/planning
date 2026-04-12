@@ -1,0 +1,7 @@
+gate,direction,sr_pct,auc
+Base (no gate),-,49.0,0.5
+Logistic (5 feat),Correct,95.2,0.851
+MLP (5 feat),Correct,~95,0.869
+Hidden state LR,Correct,~95,0.869
+Logistic (5 feat),Wrong,62.0,-
+MLP (5 feat),Wrong,45.3,-
