@@ -1,0 +1,7 @@
+environment,C_base,C_rollout,C_vote_catts,C_conf_auq,base_avg_steps,base_tokens_per_ep,measured
+HotpotQA,216,7743,1063,216,6.24,1347,yes
+WebShop,705,9089,3385,705,14.06,9912,yes
+FEVER,250,7500,1250,250,5.75,1437,estimated
+TWExpress,524,8002,2620,524,26.07,13660,yes
+Plancraft,1120,10651,5598,1120,11.98,13417,yes
+APPS,840,3306,4198,840,2.96,2486,yes

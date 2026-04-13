@@ -88,7 +88,7 @@ def main():
             cat = categorize(m)
             if cat == 'other':
                 continue
-            cost = float(row['cost_ro_per_ep']) if row['cost_ro_per_ep'] else 0
+            cost = float(row.get('cost_xbase', row.get('cost_ro_per_ep', 0)) or 0)
             sr = float(row['sr_pct'])
             points.append((cost, sr, cat, m))
 

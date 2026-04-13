@@ -20,13 +20,14 @@ environments = list(OrderedDict.fromkeys(r[1] for r in rows))
 # Build lookup: (method, env) -> (sr, cost)
 lookup = {}
 for r in rows:
-    method, env, sr, cost = r[0], r[1], r[2], r[3]
+    method, env, sr = r[0], r[1], r[2]
+    cost = r[4] if len(r) > 4 else r[3]  # cost_xbase (col 4) or cost_ro_per_ep (col 3)
     lookup[(method, env)] = (sr, cost)
 
 # Build two-row header: first row has env names (merged visually), second row has SR/Cost
 # We'll create the env header row as a data row and style it specially
 env_header_row = [''] + [env if k % 2 == 0 else '' for env in environments for k in range(2)]
-sub_header = ['Method'] + ['SR (%)' if k % 2 == 0 else 'Cost' for k in range(len(environments) * 2)]
+sub_header = ['Method'] + ['SR (%)' if k % 2 == 0 else '×base' for k in range(len(environments) * 2)]
 
 pivot_rows = []
 for method in methods:
