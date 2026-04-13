@@ -62,11 +62,14 @@ Appendix~\ref{app:cost}.
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_pareto.pdf}
-\caption{Pareto frontier: SR vs.\ Cost across all 6 environments
-(Qwen3-4B).
-$\circ$\,=\,bounds, $\triangle$\,=\,fixed-direction baselines, $\bigstar$\,=\,EAAG.
-Dashed line: Pareto frontier. EAAG sits on or near the frontier in every environment.
-Full numerical results across three backbones are in Table~\ref{tab:full-results}.}
+\caption{Pareto frontier: SR vs.\ Cost ($\times$base) across all 6
+environments (Qwen3-4B).
+$\triangle$\,=\,fixed-direction baselines,
+$\bigstar$\,=\,EAAG.
+Dotted lines: base\_only (lower) and always\_trigger (upper) bounds.
+EAAG sits on or near the Pareto frontier in every environment.
+Full numerical results across three backbones are in
+Table~\ref{tab:full-results}.}
 \label{fig:pareto}
 \end{figure*}
 
@@ -92,6 +95,43 @@ Third, in the rollout-harmful environment Plancraft
 recovers near base\_only performance (23.3\% vs.\ 29.8\%),
 while most baselines that trigger aggressively fall below
 base\_only (s1\_budget: 18.3\%).
+
+\textbf{EAAG bridges the gap between base\_only and
+always\_trigger.}
+Table~\ref{tab:bounds-comparison} compares EAAG against the two
+bounds across all 6 environments on Qwen3-4B. EAAG recovers
+70--97\% of the oracle headroom ($\Delta$) in 4 of 6 environments
+at 1.81--8.02$\times$base cost, substantially below
+always\_trigger (2.15--10.63$\times$). In WebShop, EAAG
+\emph{exceeds} always\_trigger SR (43.8\% vs.\ 43.0\%) at 45\% of
+the cost. In the rollout-harmful environment Plancraft
+($\Delta{=}{-}7.0$), EAAG correctly learns to suppress triggering
+(3.63$\times$ vs.\ always\_trigger 6.13$\times$), losing only
+6.5\,pp relative to base\_only while always\_trigger loses
+7.0\,pp.
+
+\begin{table}[t]
+\caption{EAAG vs.\ bounds on Qwen3-4B. $\Delta$: rollout headroom
+(always$-$base). Recovery: (EAAG$-$base)/$\Delta$.}
+\label{tab:bounds-comparison}
+\centering\small
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{2}{c}{\textbf{base\_only}} & \multicolumn{2}{c}{\textbf{always\_trigger}} & \multicolumn{2}{c}{\textbf{EAAG}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+\textbf{Env} & SR & $\times$b & SR & $\times$b & SR & $\times$b \\
+\midrule
+HotpotQA  & 49.0 & 1.00 & 97.0 & 10.63 & \textbf{95.2} & 8.02 \\
+WebShop   &  7.2 & 1.00 & 43.0 &  5.56 & \textbf{43.8} & 2.50 \\
+FEVER     & 37.0 & 1.00 & 99.8 &  7.87 & 49.8 & 16.51 \\
+TWExpress & 67.5 & 1.00 & 99.3 &  2.15 & \textbf{99.0} & 1.81 \\
+Plancraft & 29.8 & 1.00 & 22.8 &  6.13 & 23.3 & 3.63 \\
+APPS      & 60.5 & 1.00 & 79.5 &  3.65 & \textbf{73.0} & 2.61 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
 
 
 \subsection{Ablation Studies}

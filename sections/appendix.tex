@@ -473,20 +473,20 @@ APPS       &   840 &  3{,}306 & 4{,}198 & 2{,}486 & \\
 Table~\ref{tab:full-results} reports SR and Cost ($\times$base)
 for all methods across 6 environments and 3 backbones. Cost
 includes all deployment LLM calls (base proposer, gate overhead,
-rollouts) normalized by base\_only cost. Several patterns are
-consistent across backbones.
+rollouts) normalized by base\_only cost. Bounds comparison is in
+Table~\ref{tab:bounds-comparison} (\S\ref{sec:main-results}).
+Several patterns are consistent across backbones.
 
 \input{experiment/tab_full_results/tab_full_results.tex}
 
 \paragraph{Qwen3-4B.} EAAG achieves the highest SR in 4 of 6
-environments (HotpotQA, WebShop, TWExpress, APPS). On WebShop, it
-matches always\_trigger SR (43.8\% vs.\ 43.0\%) at less than half
-the cost (2.50$\times$ vs.\ 5.56$\times$). The $\times$base
-metric reveals hidden costs: CATTS on APPS costs 6.00$\times$ base
-(due to $K{=}5$ voting) despite barely triggering rollouts
-(due to $K{=}5$ per-step voting), while EAAG costs only 2.61$\times$ at 12.2\,pp
-higher SR. FEVER is the main exception, where EAAG (49.8\%)
-underperforms CaTS (50.2\%); this failure mode is analyzed in
+environments (HotpotQA, WebShop, TWExpress, APPS). The
+$\times$base metric reveals hidden costs: CATTS on APPS costs
+6.00$\times$base (due to $K{=}5$ per-step voting) despite
+barely triggering rollouts, while EAAG costs only
+2.61$\times$ at 12.2\,pp higher SR. FEVER is the main
+exception, where EAAG (49.8\%) underperforms CaTS (50.2\%);
+this failure mode is analyzed in
 \S\ref{sec:discussion}.
 
 \paragraph{Phi-3.5-mini.} Fixed-direction baselines degrade
