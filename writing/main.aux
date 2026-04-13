@@ -120,7 +120,6 @@
 \@writefile{toc}{\contentsline {paragraph}{P3: Signal identity alignment.}{8}{section*.19}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {6}Limitations}{8}{section.6}\protected@file@percent }
 \newlabel{sec:discussion}{{6}{8}{Limitations}{section.6}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{8}{section.7}\protected@file@percent }
 \bibdata{references}
 \bibcite{yadkori2024believe}{{1}{2024}{{Abbasi~Yadkori et~al.}}{{Abbasi~Yadkori, Kuzborskij, and Gy{\"o}rgy}}}
 \bibcite{aggarwal2025l1}{{2}{2025}{{Aggarwal and Welleck}}{{}}}
@@ -138,6 +137,7 @@
 \bibcite{cats2025}{{14}{2026}{{Huang et~al.}}{{Huang, Huang, Leng, Liu, and Huang}}}
 \bibcite{jansen2023twexpress}{{15}{2023}{{Jansen and C{\^o}t{\'e}}}{{}}}
 \bibcite{corefine2026}{{16}{2026}{{Jin et~al.}}{{Jin, Tanno, Diethe, and Teare}}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{9}{section.7}\protected@file@percent }
 \bibcite{kadavath2022knowwhat}{{17}{2022}{{Kadavath et~al.}}{{Kadavath, Conerly, Askell, Henighan, Drain, Perez, Schiefer, Hatfield{-}Dodds, DasSarma, Tran{-}Johnson, Johnston, Showk, Jones, Elhage, Hume, Chen, Bai, Bowman, Fort, Ganguli, Hernandez, Jacobson, Kernion, Kravec, Lovitt, Ndousse, Olsson, Ringer, Amodei, Brown, Clark, Joseph, Mann, McCandlish, Olah, and Kaplan}}}
 \bibcite{catts2026}{{18}{2026}{{Lee et~al.}}{{Lee, Erdogan, John, Krishnapillai, Mahoney, Keutzer, and Gholami}}}
 \bibcite{seag2025}{{19}{2025}{{Lee et~al.}}{{Lee, Park, Kim, and Ok}}}
@@ -236,57 +236,63 @@
 \newlabel{app:llm-prompts}{{C.4}{14}{LLM Reasoning Prompts}{subsection.C.4}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {C.5}Computational Cost Breakdown}{14}{subsection.C.5}\protected@file@percent }
 \newlabel{app:cost}{{C.5}{14}{Computational Cost Breakdown}{subsection.C.5}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Computational cost breakdown per method. Phase\nobreakspace  {}1 = pre-deployment calibration or exploration. Per-step overhead = additional LLM calls beyond the base proposer. EAAG requires only 50 exploration episodes with zero per-step gate overhead.\relax }}{15}{table.caption.29}\protected@file@percent }
-\newlabel{tab:cost-components}{{6}{15}{Computational cost breakdown per method. Phase~1 = pre-deployment calibration or exploration. Per-step overhead = additional LLM calls beyond the base proposer. EAAG requires only 50 exploration episodes with zero per-step gate overhead.\relax }{table.caption.29}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Computational cost breakdown. EAAG (red border) requires only 50 exploration episodes with zero per-step gate overhead, comparable to or less than calibration overhead of competing methods.\relax }}{15}{figure.caption.30}\protected@file@percent }
-\newlabel{fig:cost-breakdown}{{3}{15}{Computational cost breakdown. EAAG (red border) requires only 50 exploration episodes with zero per-step gate overhead, comparable to or less than calibration overhead of competing methods.\relax }{figure.caption.30}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Computational cost breakdown per method. Phase\nobreakspace  {}1 = pre-deployment calibration or exploration. Gate OH = additional LLM calls per step beyond the base proposer. Cost ($\times $base) = total deployment tokens normalized by base\_only tokens per episode, averaged across 6 environments. $^\dagger $Requires calibration data.\relax }}{15}{table.caption.29}\protected@file@percent }
+\newlabel{tab:cost-components}{{6}{15}{Computational cost breakdown per method. Phase~1 = pre-deployment calibration or exploration. Gate OH = additional LLM calls per step beyond the base proposer. Cost ($\times $base) = total deployment tokens normalized by base\_only tokens per episode, averaged across 6 environments. $^\dagger $Requires calibration data.\relax }{table.caption.29}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Token cost constants per environment. $C_{\text  {base}}$: tokens per base proposer step. $C_{\text  {rollout}}$: tokens per rollout trigger. $C_{\text  {vote}}$: CATTS $K{=}5$ voting tokens per step. $^\ddagger $Estimated from HotpotQA (same optimizer type).\relax }}{15}{table.caption.30}\protected@file@percent }
+\newlabel{tab:token-constants}{{7}{15}{Token cost constants per environment. $C_{\text {base}}$: tokens per base proposer step. $C_{\text {rollout}}$: tokens per rollout trigger. $C_{\text {vote}}$: CATTS $K{=}5$ voting tokens per step. $^\ddagger $Estimated from HotpotQA (same optimizer type).\relax }{table.caption.30}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Computational cost breakdown ($\times $base). EAAG (red border) requires only 50 exploration episodes with zero per-step gate overhead. CATTS's $K{=}5$ voting overhead dominates its cost even when rollouts are rarely triggered (e.g., APPS: $C_{\text  {vote}}{=}4{,}198 > C_{\text  {rollout}}{=}3{,}306$).\relax }}{15}{figure.caption.31}\protected@file@percent }
+\newlabel{fig:cost-breakdown}{{3}{15}{Computational cost breakdown ($\times $base). EAAG (red border) requires only 50 exploration episodes with zero per-step gate overhead. CATTS's $K{=}5$ voting overhead dominates its cost even when rollouts are rarely triggered (e.g., APPS: $C_{\text {vote}}{=}4{,}198 > C_{\text {rollout}}{=}3{,}306$).\relax }{figure.caption.31}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {D}Full Results}{15}{appendix.D}\protected@file@percent }
 \newlabel{app:full-results}{{D}{15}{Full Results}{appendix.D}{}}
-\@writefile{toc}{\contentsline {paragraph}{Qwen3-4B.}{15}{section*.32}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Phi-3.5-mini.}{15}{section*.33}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Llama-3.1-8B.}{15}{section*.34}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Qwen3-4B.}{15}{section*.33}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Phi-3.5-mini.}{15}{section*.34}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Llama-3.1-8B.}{15}{section*.35}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {E}Signal and Feature Analyses}{15}{appendix.E}\protected@file@percent }
 \newlabel{app:signal-analyses}{{E}{15}{Signal and Feature Analyses}{appendix.E}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {E.1}Per-Environment Feature Selection}{15}{subsection.E.1}\protected@file@percent }
 \newlabel{app:feature-selection}{{E.1}{15}{Per-Environment Feature Selection}{subsection.E.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.2}\textcolor {red}{LLM-Generated Features}}{15}{subsection.E.2}\protected@file@percent }
-\newlabel{app:llm-features}{{E.2}{15}{\textcolor {red}{LLM-Generated Features}}{subsection.E.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.3}AUC Hierarchy: Single vs.\ Multi-Signal Gates}{15}{subsection.E.3}\protected@file@percent }
-\newlabel{app:auc}{{E.3}{15}{AUC Hierarchy: Single vs.\ Multi-Signal Gates}{subsection.E.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces AUC by gate family. Single entropy is near chance; multi-signal gates close most of the gap to hidden-state probes. FEVER and TWExpress are omitted because their short episodes yield insufficient held-out data for reliable AUC estimation.\relax }}{15}{table.caption.35}\protected@file@percent }
-\newlabel{tab:auc-hierarchy}{{8}{15}{AUC by gate family. Single entropy is near chance; multi-signal gates close most of the gap to hidden-state probes. FEVER and TWExpress are omitted because their short episodes yield insufficient held-out data for reliable AUC estimation.\relax }{table.caption.35}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {F}Robustness and Additional Experiments}{15}{appendix.F}\protected@file@percent }
-\newlabel{app:robustness}{{F}{15}{Robustness and Additional Experiments}{appendix.F}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {F.1}\textcolor {red}{Temporal Dynamics (P1)}}{15}{subsection.F.1}\protected@file@percent }
-\newlabel{app:temporal}{{F.1}{15}{\textcolor {red}{Temporal Dynamics (P1)}}{subsection.F.1}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Full results across 6 environments and 3 backbones. SR (\%) and Cost (rollouts/episode). \textbf  {Bold}: best SR per environment (excluding oracle). $\dagger $: methods requiring calibration data.\relax }}{16}{table.caption.31}\protected@file@percent }
-\newlabel{tab:full-results}{{7}{16}{Full results across 6 environments and 3 backbones. SR (\%) and Cost (rollouts/episode). \textbf {Bold}: best SR per environment (excluding oracle). $\dagger $: methods requiring calibration data.\relax }{table.caption.31}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {F.2}Signal Identity Alignment (P3)}{16}{subsection.F.2}\protected@file@percent }
-\newlabel{app:signal-alignment}{{F.2}{16}{Signal Identity Alignment (P3)}{subsection.F.2}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces P3 Signal identity alignment. The strongest signal in each environment matches the Two-Source Model prediction: information-sufficiency proxies dominate in Type\nobreakspace  {}I environments; decision-complexity proxies dominate in mixed/Type\nobreakspace  {}D.\relax }}{16}{table.caption.36}\protected@file@percent }
-\newlabel{tab:signal-identity}{{9}{16}{P3 Signal identity alignment. The strongest signal in each environment matches the Two-Source Model prediction: information-sufficiency proxies dominate in Type~I environments; decision-complexity proxies dominate in mixed/Type~D.\relax }{table.caption.36}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {F.3}Controlled Information Manipulation}{17}{subsection.F.3}\protected@file@percent }
-\newlabel{app:controlled}{{F.3}{17}{Controlled Information Manipulation}{subsection.F.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Controlled information manipulation on HotpotQA. Manipulating information availability shifts which signal dominates, confirming the Two-Source Model's prediction.\relax }}{17}{table.caption.37}\protected@file@percent }
-\newlabel{tab:controlled}{{10}{17}{Controlled information manipulation on HotpotQA. Manipulating information availability shifts which signal dominates, confirming the Two-Source Model's prediction.\relax }{table.caption.37}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {F.4}Multi-Backbone Verification}{17}{subsection.F.4}\protected@file@percent }
-\newlabel{app:multi-backbone}{{F.4}{17}{Multi-Backbone Verification}{subsection.F.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {F.5}Stratified Analysis: Controlling for Trajectory Length}{17}{subsection.F.5}\protected@file@percent }
-\newlabel{app:stratified}{{F.5}{17}{Stratified Analysis: Controlling for Trajectory Length}{subsection.F.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {F.6}Gate Complexity Ablation}{17}{subsection.F.6}\protected@file@percent }
-\newlabel{app:gate-complexity}{{F.6}{17}{Gate Complexity Ablation}{subsection.F.6}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces Gate complexity ablation on HotpotQA. Direction matters more than model capacity: a logistic gate with correct direction outperforms an MLP with wrong direction by 49.9\,pp.\relax }}{17}{table.caption.40}\protected@file@percent }
-\newlabel{tab:capacity}{{11}{17}{Gate complexity ablation on HotpotQA. Direction matters more than model capacity: a logistic gate with correct direction outperforms an MLP with wrong direction by 49.9\,pp.\relax }{table.caption.40}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {F.7}Environment-Adaptive Trigger Behavior}{17}{subsection.F.7}\protected@file@percent }
-\newlabel{app:trigger-rate}{{F.7}{17}{Environment-Adaptive Trigger Behavior}{subsection.F.7}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {F.8}\textcolor {red}{Hyperparameter Sensitivity}}{17}{subsection.F.8}\protected@file@percent }
-\newlabel{app:hyperparam}{{F.8}{17}{\textcolor {red}{Hyperparameter Sensitivity}}{subsection.F.8}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Multi-backbone signal direction heatmap. Gold borders mark cells where the sign of $\rho $ flips across backbones with significant correlations. Entropy direction is model-dependent; structural signals (step\_count) are more stable.\relax }}{18}{figure.caption.38}\protected@file@percent }
-\newlabel{fig:multi-backbone-heatmap}{{4}{18}{Multi-backbone signal direction heatmap. Gold borders mark cells where the sign of $\rho $ flips across backbones with significant correlations. Entropy direction is model-dependent; structural signals (step\_count) are more stable.\relax }{figure.caption.38}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Cross-backbone comparison: EAAG (red) vs.\ best fixed-direction baseline (blue) across 3 backbones. Fixed baselines show large SR variance across backbones; EAAG adapts robustly.\relax }}{18}{figure.caption.39}\protected@file@percent }
-\newlabel{fig:multi-backbone-sr}{{5}{18}{Cross-backbone comparison: EAAG (red) vs.\ best fixed-direction baseline (blue) across 3 backbones. Fixed baselines show large SR variance across backbones; EAAG adapts robustly.\relax }{figure.caption.39}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {G}Broader Impact}{18}{appendix.G}\protected@file@percent }
-\newlabel{app:impact}{{G}{18}{Broader Impact}{appendix.G}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Environment-adaptive trigger behavior. Panels ordered by rollout headroom $\Delta $. Solid line: per-step trigger rate with 95\% CI band. Dashed gray: 50\% reference. RR: overall trigger rate. EAAG's trigger rate ranges from 73\% (TWExpress) to $<$20\% (late-step Plancraft), emerging from direction learning alone.\relax }}{19}{figure.caption.41}\protected@file@percent }
-\newlabel{fig:trigger-adapt}{{6}{19}{Environment-adaptive trigger behavior. Panels ordered by rollout headroom $\Delta $. Solid line: per-step trigger rate with 95\% CI band. Dashed gray: 50\% reference. RR: overall trigger rate. EAAG's trigger rate ranges from 73\% (TWExpress) to $<$20\% (late-step Plancraft), emerging from direction learning alone.\relax }{figure.caption.41}{}}
-\gdef \@abspage@last{19}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.2}LLM-Generated Features}{15}{subsection.E.2}\protected@file@percent }
+\newlabel{app:llm-features}{{E.2}{15}{LLM-Generated Features}{subsection.E.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Full results across 6 environments and 3 backbones. SR (\%) and Cost ($\times $base, total deployment tokens normalized by base\_only). \textbf  {Bold}: best SR per environment (excluding oracle). $\dagger $: methods requiring calibration data. Cost includes all LLM calls: base proposer, gate overhead (CATTS $K{=}5$ voting, AUQ confidence query), and rollout calls. FEVER token costs are estimated.\relax }}{16}{table.caption.32}\protected@file@percent }
+\newlabel{tab:full-results}{{8}{16}{Full results across 6 environments and 3 backbones. SR (\%) and Cost ($\times $base, total deployment tokens normalized by base\_only). \textbf {Bold}: best SR per environment (excluding oracle). $\dagger $: methods requiring calibration data. Cost includes all LLM calls: base proposer, gate overhead (CATTS $K{=}5$ voting, AUQ confidence query), and rollout calls. FEVER token costs are estimated.\relax }{table.caption.32}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces LLM-generated features per environment. Each environment receives 5 LLM-proposed features; LASSO selects those with non-zero coefficients. Environments with richer task-specific structure (WebShop, TWExpress) retain more LLM features.\relax }}{16}{table.caption.36}\protected@file@percent }
+\newlabel{tab:llm-features}{{9}{16}{LLM-generated features per environment. Each environment receives 5 LLM-proposed features; LASSO selects those with non-zero coefficients. Environments with richer task-specific structure (WebShop, TWExpress) retain more LLM features.\relax }{table.caption.36}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.3}AUC Hierarchy: Single vs.\ Multi-Signal Gates}{17}{subsection.E.3}\protected@file@percent }
+\newlabel{app:auc}{{E.3}{17}{AUC Hierarchy: Single vs.\ Multi-Signal Gates}{subsection.E.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces AUC by gate family. Single entropy is near chance; multi-signal gates close most of the gap to hidden-state probes. FEVER and TWExpress are omitted because their short episodes yield insufficient held-out data for reliable AUC estimation.\relax }}{17}{table.caption.38}\protected@file@percent }
+\newlabel{tab:auc-hierarchy}{{10}{17}{AUC by gate family. Single entropy is near chance; multi-signal gates close most of the gap to hidden-state probes. FEVER and TWExpress are omitted because their short episodes yield insufficient held-out data for reliable AUC estimation.\relax }{table.caption.38}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {F}Robustness and Additional Experiments}{17}{appendix.F}\protected@file@percent }
+\newlabel{app:robustness}{{F}{17}{Robustness and Additional Experiments}{appendix.F}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {F.1}Temporal Dynamics (P1)}{17}{subsection.F.1}\protected@file@percent }
+\newlabel{app:temporal}{{F.1}{17}{Temporal Dynamics (P1)}{subsection.F.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces Temporal shift in $\rho $(entropy, $U$). All environments show $\rho $ shifting more negative from early to late steps, consistent with P1. Plancraft omitted ($|\rho |{=}0.016$, too weak for meaningful comparison).\relax }}{17}{table.caption.39}\protected@file@percent }
+\newlabel{tab:temporal}{{11}{17}{Temporal shift in $\rho $(entropy, $U$). All environments show $\rho $ shifting more negative from early to late steps, consistent with P1. Plancraft omitted ($|\rho |{=}0.016$, too weak for meaningful comparison).\relax }{table.caption.39}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {F.2}Signal Identity Alignment (P3)}{18}{subsection.F.2}\protected@file@percent }
+\newlabel{app:signal-alignment}{{F.2}{18}{Signal Identity Alignment (P3)}{subsection.F.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces P3 Signal identity alignment. The strongest signal in each environment matches the Two-Source Model prediction: information-sufficiency proxies dominate in Type\nobreakspace  {}I environments; decision-complexity proxies dominate in mixed/Type\nobreakspace  {}D.\relax }}{18}{table.caption.40}\protected@file@percent }
+\newlabel{tab:signal-identity}{{12}{18}{P3 Signal identity alignment. The strongest signal in each environment matches the Two-Source Model prediction: information-sufficiency proxies dominate in Type~I environments; decision-complexity proxies dominate in mixed/Type~D.\relax }{table.caption.40}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {F.3}Controlled Information Manipulation}{18}{subsection.F.3}\protected@file@percent }
+\newlabel{app:controlled}{{F.3}{18}{Controlled Information Manipulation}{subsection.F.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces Controlled information manipulation on HotpotQA. Manipulating information availability shifts which signal dominates, confirming the Two-Source Model's prediction.\relax }}{18}{table.caption.41}\protected@file@percent }
+\newlabel{tab:controlled}{{13}{18}{Controlled information manipulation on HotpotQA. Manipulating information availability shifts which signal dominates, confirming the Two-Source Model's prediction.\relax }{table.caption.41}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {F.4}Multi-Backbone Verification}{18}{subsection.F.4}\protected@file@percent }
+\newlabel{app:multi-backbone}{{F.4}{18}{Multi-Backbone Verification}{subsection.F.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {F.5}Stratified Analysis: Controlling for Trajectory Length}{18}{subsection.F.5}\protected@file@percent }
+\newlabel{app:stratified}{{F.5}{18}{Stratified Analysis: Controlling for Trajectory Length}{subsection.F.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {F.6}Gate Complexity Ablation}{18}{subsection.F.6}\protected@file@percent }
+\newlabel{app:gate-complexity}{{F.6}{18}{Gate Complexity Ablation}{subsection.F.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {14}{\ignorespaces Gate complexity ablation on HotpotQA. Direction matters more than model capacity: a logistic gate with correct direction outperforms an MLP with wrong direction by 49.9\,pp.\relax }}{18}{table.caption.44}\protected@file@percent }
+\newlabel{tab:capacity}{{14}{18}{Gate complexity ablation on HotpotQA. Direction matters more than model capacity: a logistic gate with correct direction outperforms an MLP with wrong direction by 49.9\,pp.\relax }{table.caption.44}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Multi-backbone signal direction heatmap. Gold borders mark cells where the sign of $\rho $ flips across backbones with significant correlations. Entropy direction is model-dependent; structural signals (step\_count) are more stable.\relax }}{19}{figure.caption.42}\protected@file@percent }
+\newlabel{fig:multi-backbone-heatmap}{{4}{19}{Multi-backbone signal direction heatmap. Gold borders mark cells where the sign of $\rho $ flips across backbones with significant correlations. Entropy direction is model-dependent; structural signals (step\_count) are more stable.\relax }{figure.caption.42}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Cross-backbone comparison: EAAG (red) vs.\ best fixed-direction baseline (blue) across 3 backbones. Fixed baselines show large SR variance across backbones; EAAG adapts robustly.\relax }}{19}{figure.caption.43}\protected@file@percent }
+\newlabel{fig:multi-backbone-sr}{{5}{19}{Cross-backbone comparison: EAAG (red) vs.\ best fixed-direction baseline (blue) across 3 backbones. Fixed baselines show large SR variance across backbones; EAAG adapts robustly.\relax }{figure.caption.43}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {F.7}Environment-Adaptive Trigger Behavior}{19}{subsection.F.7}\protected@file@percent }
+\newlabel{app:trigger-rate}{{F.7}{19}{Environment-Adaptive Trigger Behavior}{subsection.F.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {F.8}Hyperparameter Sensitivity}{19}{subsection.F.8}\protected@file@percent }
+\newlabel{app:hyperparam}{{F.8}{19}{Hyperparameter Sensitivity}{subsection.F.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {G}Broader Impact}{19}{appendix.G}\protected@file@percent }
+\newlabel{app:impact}{{G}{19}{Broader Impact}{appendix.G}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Environment-adaptive trigger behavior. Panels ordered by rollout headroom $\Delta $. Solid line: per-step trigger rate with 95\% CI band. Dashed gray: 50\% reference. RR: overall trigger rate. EAAG's trigger rate ranges from 73\% (TWExpress) to $<$20\% (late-step Plancraft), emerging from direction learning alone.\relax }}{20}{figure.caption.45}\protected@file@percent }
+\newlabel{fig:trigger-adapt}{{6}{20}{Environment-adaptive trigger behavior. Panels ordered by rollout headroom $\Delta $. Solid line: per-step trigger rate with 95\% CI band. Dashed gray: 50\% reference. RR: overall trigger rate. EAAG's trigger rate ranges from 73\% (TWExpress) to $<$20\% (late-step Plancraft), emerging from direction learning alone.\relax }{figure.caption.45}{}}
+\gdef \@abspage@last{20}
