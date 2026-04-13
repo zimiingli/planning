@@ -14,45 +14,45 @@ Repeated entry---line 412 of file references.bib
  :                                  ,
 I'm skipping whatever remains of this entry
 Warning--missing publisher in DBLP:books/acm/22/Pearl22n
-You've used 45 entries,
+You've used 46 entries,
             3764 wiz_defined-function locations,
-            903 strings with 14224 characters,
-and the built_in function-call counts, 35752 in all, are:
-= -- 2765
-> -- 2491
-< -- 15
-+ -- 1023
-- -- 772
-* -- 2489
-:= -- 5446
-add.period$ -- 180
-call.type$ -- 45
-change.case$ -- 532
-chr.to.int$ -- 50
-cite$ -- 46
-duplicate$ -- 2075
-empty$ -- 2169
-format.name$ -- 909
-if$ -- 7441
-int.to.chr$ -- 3
+            904 strings with 14170 characters,
+and the built_in function-call counts, 35710 in all, are:
+= -- 2770
+> -- 2458
+< -- 12
++ -- 1006
+- -- 760
+* -- 2471
+:= -- 5461
+add.period$ -- 184
+call.type$ -- 46
+change.case$ -- 533
+chr.to.int$ -- 49
+cite$ -- 47
+duplicate$ -- 2085
+empty$ -- 2187
+format.name$ -- 900
+if$ -- 7437
+int.to.chr$ -- 2
 int.to.str$ -- 2
 missing$ -- 516
-newline$ -- 229
-num.names$ -- 180
-pop$ -- 1491
+newline$ -- 234
+num.names$ -- 184
+pop$ -- 1492
 preamble$ -- 1
 purify$ -- 442
 quote$ -- 0
-skip$ -- 1796
+skip$ -- 1803
 stack$ -- 0
-substring$ -- 535
-swap$ -- 1023
-text.length$ -- 1
+substring$ -- 512
+swap$ -- 1011
+text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 402
+type$ -- 411
 warning$ -- 1
 while$ -- 138
 width$ -- 0
-write$ -- 544
+write$ -- 555
 (There was 1 error message)

@@ -1,9 +1,7 @@
 environment,strongest_signal,rho,entropy_direction,entropy_rho,two_source_type
 HotpotQA,step_count,-0.494,negative,-0.327,Information-Poverty
 FEVER,step_count,-0.619,negative,-0.119,Information-Poverty
-APPS Intro,step_count,-0.155,positive,0.144,Mixed
-APPS Intv,step_count,-0.339,positive,0.317,Decision-Difficulty
+APPS,step_count,-0.339,positive,0.317,Decision-Difficulty
 WebShop,num_available_actions,0.444,positive,0.133,Mixed
 TWExpress,step_count,-0.477,negative,-0.29,Information-Poverty
-CRUXEval,step_count,0.184,negative,-0.048,Weak
 Plancraft,has_output,0.162,negative,-0.016,Weak (harmful)

@@ -1,16 +1,21 @@
-\begin{thebibliography}{45}
+\begin{thebibliography}{46}
 \providecommand{\natexlab}[1]{#1}
 
 \bibitem[{Abbasi~Yadkori et~al.(2024)Abbasi~Yadkori, Kuzborskij, and
   Gy{\"o}rgy}]{yadkori2024believe}
 Yasin Abbasi~Yadkori, Ilja Kuzborskij, and Andr{\'a}s Gy{\"o}rgy. 2024.
 \newblock To believe or not to believe your {LLM}.
-\newblock \emph{arXiv preprint arXiv:2406.02543}.
+\newblock \emph{CoRR}.
 
 \bibitem[{Aggarwal and Welleck(2025)}]{aggarwal2025l1}
 Pranjal Aggarwal and Sean Welleck. 2025.
 \newblock {L1:} controlling how long {A} reasoning model thinks with
   reinforcement learning.
+\newblock \emph{CoRR}.
+
+\bibitem[{Dagan et~al.(2024)Dagan, Keller, and Lascarides}]{dagan2024plancraft}
+Gautier Dagan, Frank Keller, and Alex Lascarides. 2024.
+\newblock Plancraft: an evaluation dataset for planning with {LLM} agents.
 \newblock \emph{CoRR}.
 
 \bibitem[{Der~Kiureghian and Ditlevsen(2009)}]{der2009aleatory}
@@ -60,22 +65,12 @@ Shibo Hao, Yi~Gu, Haodi Ma, Joshua~Jiahua Hong, Zhen Wang, Daisy~Zhe Wang, and
 \newblock Reasoning with language model is planning with world model.
 \newblock In \emph{EMNLP}.
 
-\bibitem[{Hendrycks et~al.(2021{\natexlab{a}})Hendrycks, Basart, Kadavath,
-  Mazeika, Arora, Guo, Burns, Puranik, He, Song, and
-  Steinhardt}]{yao2022webshop}
-Dan Hendrycks, Steven Basart, Saurav Kadavath, Mantas Mazeika, Akul Arora,
-  Ethan Guo, Collin Burns, Samir Puranik, Horace He, Dawn Song, and Jacob
-  Steinhardt. 2021{\natexlab{a}}.
-\newblock Measuring coding challenge competence with {APPS}.
-\newblock In \emph{NeurIPs}.
-
-\bibitem[{Hendrycks et~al.(2021{\natexlab{b}})Hendrycks, Basart, Kadavath,
-  Mazeika, Zou, Song, and Steinhardt}]{hendrycks2021apps}
+\bibitem[{Hendrycks et~al.(2021)Hendrycks, Basart, Kadavath, Mazeika, Zou,
+  Song, and Steinhardt}]{hendrycks2021apps}
 Dan Hendrycks, Steven Basart, Saurav Kadavath, Mantas Mazeika, Andy Zou, Dawn
-  Song, and Jacob Steinhardt. 2021{\natexlab{b}}.
+  Song, and Jacob Steinhardt. 2021.
 \newblock Measuring coding challenge competence with {APPS}.
-\newblock In \emph{Advances in Neural Information Processing Systems (Datasets
-  and Benchmarks Track)}.
+\newblock In \emph{NeurIPS}.
 
 \bibitem[{Heo et~al.(2025)Heo, Xiong, Heinze{-}Deml, and
   Narain}]{heo2025llmuncertainty}
@@ -192,7 +187,7 @@ Nicol{\`{o}}~De Sabbata, Theodore~R. Sumers, and Thomas~L. Griffiths. 2024.
   Koyejo}]{schaeffer2023emergent}
 Rylan Schaeffer, Brando Miranda, and Sanmi Koyejo. 2023.
 \newblock Are emergent abilities of large language models a mirage?
-\newblock In \emph{NeurIPs}.
+\newblock In \emph{NeurIPS}.
 
 \bibitem[{Sharma and Chopra(2025)}]{thinkjustenough2025}
 Aman Sharma and Paras Chopra. 2025.
@@ -213,13 +208,12 @@ Noam Shazeer, Azalia Mirhoseini, Krzysztof Maziarz, Andy Davis, Quoc~V. Le,
 Noah Shinn, Federico Cassano, Ashwin Gopinath, Karthik Narasimhan, and Shunyu
   Yao. 2023.
 \newblock Reflexion: language agents with verbal reinforcement learning.
-\newblock In \emph{NeurIPs}.
+\newblock In \emph{NeurIPS}.
 
 \bibitem[{Simpson(1951)}]{simpson1951interpretation}
 Edward~H Simpson. 1951.
 \newblock The interpretation of interaction in contingency tables.
-\newblock \emph{Journal of the Royal Statistical Society: Series B
-  (Methodological)}.
+\newblock \emph{Journal of the Royal Statistical Society}.
 
 \bibitem[{Snell et~al.(2024)Snell, Lee, Xu, and Kumar}]{snell2024scaling}
 Charlie Snell, Jaehoon Lee, Kelvin Xu, and Aviral Kumar. 2024.
@@ -247,7 +241,7 @@ Surat Teerapittayanon, Bradley McDanel, and H.~T. Kung. 2017.
 James Thorne, Andreas Vlachos, Christos Christodoulopoulos, and Arpit Mittal.
   2018.
 \newblock Fever: a large-scale dataset for fact extraction and verification.
-\newblock In \emph{NAACL}, pages 809--819.
+\newblock In \emph{NAACL}.
 
 \bibitem[{Wang et~al.(2023)Wang, He, Xu, Li, and Chu}]{kdd2023simpson}
 Jingwei Wang, Jianshan He, Weidi Xu, Ruopeng Li, and Wei Chu. 2023.
@@ -270,13 +264,19 @@ Zhilin Yang, Peng Qi, Saizheng Zhang, Yoshua Bengio, William~W. Cohen, Ruslan
   answering.
 \newblock In \emph{EMNLP}.
 
+\bibitem[{Yao et~al.(2022)Yao, Chen, Yang, and Narasimhan}]{yao2022webshop}
+Shunyu Yao, Howard Chen, John Yang, and Karthik Narasimhan. 2022.
+\newblock Webshop: Towards scalable real-world web interaction with grounded
+  language agents.
+\newblock In \emph{NeurIPS}.
+
 \bibitem[{Yao et~al.(2023{\natexlab{a}})Yao, Yu, Zhao, Shafran, Griffiths, Cao,
   and Narasimhan}]{yao2023tree}
 Shunyu Yao, Dian Yu, Jeffrey Zhao, Izhak Shafran, Tom Griffiths, Yuan Cao, and
   Karthik Narasimhan. 2023{\natexlab{a}}.
 \newblock Tree of thoughts: Deliberate problem solving with large language
   models.
-\newblock In \emph{NeurIPs}.
+\newblock In \emph{NeurIPS}.
 
 \bibitem[{Yao et~al.(2023{\natexlab{b}})Yao, Zhao, Yu, Du, Shafran, Narasimhan,
   and Cao}]{yao2023react}

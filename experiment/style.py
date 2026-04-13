@@ -62,12 +62,12 @@ HEATMAP_VMAX = 0.7
 ENTROPY_BIN_COLORS = ['#2980B9', '#5DADE2', '#F5B041', '#E74C3C']
 
 # ── Typography ────────────────────────────────────────────────
-FONT_TITLE   = 12
-FONT_LABEL   = 11
-FONT_TICK    = 9
-FONT_ANNOT   = 9
-FONT_LEGEND  = 9
-FONT_CELL    = 8   # heatmap cell annotations
+FONT_TITLE   = 9
+FONT_LABEL   = 8
+FONT_TICK    = 7
+FONT_ANNOT   = 7
+FONT_LEGEND  = 7
+FONT_CELL    = 6   # heatmap cell annotations
 
 # ── Grid ──────────────────────────────────────────────────────
 GRID_ALPHA   = 0.25

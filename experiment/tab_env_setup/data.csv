@@ -1,9 +1,7 @@
 environment,type,base_sr_pct,always_sr_pct,paper_role
 HotpotQA,QA,49.0,97.0,Main
-APPS Intro,Code,58.5,64.5,Main (weak signal)
 WebShop,Web,7.2,43.0,Main
 FEVER,Fact,37.0,99.8,Main
 TWExpress,Game,67.5,99.3,Diagnostic (safe)
 Plancraft,Planning,29.8,22.8,Diagnostic (harmful)
-APPS Intv,Code,60.5,79.5,Appendix
-CRUXEval,Code,85.0,99.5,Appendix
+APPS,Code,60.5,79.5,Appendix

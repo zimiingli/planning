@@ -17,7 +17,7 @@ from pathlib import Path
 HERE = Path(__file__).parent
 df = pd.read_csv(HERE / "data.csv")
 
-env_order = ["HotpotQA", "TWExpress", "APPS Intv", "APPS"]
+env_order = ["HotpotQA", "TWExpress", "APPS", "WebShop"]
 difficulty_order = ["Easy", "Medium", "Hard"]
 
 fig, axes = plt.subplots(2, 2, figsize=(3.5, 3), sharey=True)
@@ -40,18 +40,17 @@ for idx, env in enumerate(env_order):
                 f"{v:+.3f}", ha="center", va=va, fontsize=8)
 
     ax.axhline(y=0, color="black", linewidth=0.7)
-    ax.set_title(env, fontsize=10, fontweight="bold")
+    ax.set_title(env, fontweight="bold")
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
     add_ygrid(ax)
 
     if idx >= 2:
-        ax.set_xlabel("Difficulty Bin", fontsize=9)
+        ax.set_xlabel("Difficulty Bin")
     if idx % 2 == 0:
-        ax.set_ylabel(r"$\Delta U$ (high - low entropy)", fontsize=9)
+        ax.set_ylabel(r"$\Delta U$ (high - low entropy)")
 
-fig.suptitle("Same Entropy Level, Opposite Utility Effect", fontsize=12, fontweight="bold")
-plt.tight_layout(rect=[0, 0, 1, 0.95])
+plt.tight_layout()
 fig.savefig(HERE / "output.pdf", bbox_inches="tight")
 plt.close(fig)
 print("Saved", HERE / "output.pdf")

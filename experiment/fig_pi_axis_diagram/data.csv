@@ -1,9 +1,7 @@
 environment,pI_estimate,rho_entropy,abs_rho,type,rho_sign
-APPS Intv,0.2,0.317,0.317,Decision-Difficulty,positive
+APPS,0.2,0.317,0.317,Decision-Difficulty,positive
 WebShop,0.35,0.133,0.133,Mixed,positive
-APPS Intro,0.45,0.144,0.144,Mixed,positive
 Plancraft,0.5,-0.016,0.016,Weak (harmful),negative
-CRUXEval,0.55,-0.048,0.048,Weak,negative
 TWExpress,0.75,-0.290,0.290,Information-Poverty,negative
 HotpotQA,0.8,-0.327,0.327,Information-Poverty,negative
 FEVER,0.9,-0.119,0.119,Information-Poverty,negative

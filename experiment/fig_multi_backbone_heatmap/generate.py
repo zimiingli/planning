@@ -24,7 +24,7 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 
-ENV_ORDER = ['HotpotQA', 'APPS', 'WebShop', 'FEVER', 'TWExpress', 'Plancraft', 'APPS Intv', 'CRUXEval']
+ENV_ORDER = ['HotpotQA', 'WebShop', 'FEVER', 'TWExpress', 'Plancraft', 'APPS']
 BACKBONES = ['Qwen3-4B', 'Phi-3.5-mini', 'Llama-3.1-8B']
 BB_TITLES = ['Qwen3-4B', 'Phi-3.5-mini', 'Llama-3.1-8B']
 # Focus on key signals only
@@ -34,7 +34,8 @@ def main():
     with open(HERE / 'data.csv', newline='') as f:
         rows = list(csv.DictReader(f))
 
-    fig, axes = plt.subplots(1, 3, figsize=(7, 3.2), sharey=True)
+    fig, axes = plt.subplots(1, 3, figsize=(7, 3.2), sharey=True,
+                              gridspec_kw={'wspace': 0.15, 'right': 0.88})
 
     for bidx, (bb, title) in enumerate(zip(BACKBONES, BB_TITLES)):
         ax = axes[bidx]
@@ -57,11 +58,11 @@ def main():
         im = ax.imshow(matrix, cmap='RdBu_r', vmin=-0.7, vmax=0.7, aspect='auto')
 
         ax.set_xticks(range(len(KEY_SIGNALS)))
-        ax.set_xticklabels(KEY_SIGNALS, rotation=45, ha='right', fontsize=9)
+        ax.set_xticklabels(KEY_SIGNALS, rotation=0, ha='center', fontsize=7)
         if bidx == 0:
             ax.set_yticks(range(len(ENV_ORDER)))
-            ax.set_yticklabels(ENV_ORDER, fontsize=9)
-        ax.set_title(title, fontsize=11, fontweight='bold')
+            ax.set_yticklabels(ENV_ORDER, fontsize=7)
+        ax.set_title(title, fontsize=9, fontweight='bold')
 
         # Annotate values
         for i in range(len(ENV_ORDER)):
@@ -72,7 +73,7 @@ def main():
                 color = 'white' if abs(val) > 0.35 else 'black'
                 star = '*' if pvals[i, j] < 0.05 else ''
                 ax.text(j, i, f'{val:+.2f}{star}', ha='center', va='center',
-                        fontsize=8, color=color, fontweight='bold')
+                        fontsize=6.5, color=color, fontweight='bold')
 
     # Check sign flips and mark them
     for i in range(len(ENV_ORDER)):
@@ -95,11 +96,9 @@ def main():
                                              facecolor='none', zorder=10)
                         axes[bidx].add_patch(rect)
 
-    cbar = fig.colorbar(im, ax=axes, shrink=0.7, pad=0.02)
-    cbar.set_label(r'Spearman $\rho$', fontsize=10)
-
-    fig.suptitle('Signal Direction Across Three Backbones', fontsize=13, fontweight='bold', y=1.02)
-    plt.tight_layout()
+    cbar_ax = fig.add_axes([0.90, 0.15, 0.015, 0.7])
+    cbar = fig.colorbar(im, cax=cbar_ax)
+    cbar.set_label(r'Spearman $\rho$', fontsize=7)
     fig.savefig(HERE / 'output.pdf', bbox_inches='tight', dpi=200)
     plt.close(fig)
     print(f'Saved {HERE / "output.pdf"}')

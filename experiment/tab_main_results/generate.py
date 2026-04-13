@@ -76,6 +76,5 @@ for i, method in enumerate(methods):
         for j in range(n_cols):
             table[i + 2, j].set_text_props(fontweight='bold')
 
-plt.title("Main Results: SR (%) and Total Cost (ro/ep)", fontsize=12, fontweight='bold', pad=20)
 plt.savefig(DIR / "output.pdf", bbox_inches='tight', dpi=150)
 plt.close()

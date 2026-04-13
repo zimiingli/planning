@@ -5,12 +5,6 @@ HotpotQA,CoRefine,27.0,23.0,31.2,Yes
 HotpotQA,CATTS,26.8,22.7,30.8,Yes
 HotpotQA,AUQ,-1.8,-4.0,0.3,No
 HotpotQA,s1,-1.8,-4.2,0.3,No
-APPS,CaTS,7.8,2.5,13.3,Yes
-APPS,SEAG,7.5,2.2,13.0,Yes
-APPS,CoRefine,7.8,2.3,13.2,Yes
-APPS,CATTS,7.5,2.0,13.0,Yes
-APPS,AUQ,4.7,-1.0,10.2,No
-APPS,s1,2.3,-3.2,7.7,No
 WebShop,CaTS,36.3,32.0,40.7,Yes
 WebShop,SEAG,36.5,31.8,41.0,Yes
 WebShop,CoRefine,36.7,32.2,41.0,Yes

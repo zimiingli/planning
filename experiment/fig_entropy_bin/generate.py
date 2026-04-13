@@ -34,8 +34,7 @@ def main():
 
     type_labels = {'HotpotQA': '(a) Type I: HotpotQA',
                    'FEVER': '(a) Type I: FEVER',
-                   'APPS Intv': '(c) Type D: APPS Intv',
-                   'APPS': '(b) Mixed: APPS'}
+                   'APPS': '(c) Type D: APPS'}
     # Use whatever envs are in data
     n_envs = len(envs)
     fig, axes = plt.subplots(1, n_envs, figsize=(7, 3), sharey=True)
@@ -68,21 +67,19 @@ def main():
         for i, (bar, u) in enumerate(zip(bars, utilities)):
             if u > 0.05:
                 ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() / 2,
-                        f'{u:.2f}', ha='center', va='center', fontsize=9,
+                        f'{u:.2f}', ha='center', va='center', fontsize=7,
                         color='white', fontweight='bold')
 
         ax.set_xticks(x)
-        ax.set_xticklabels(bins, fontsize=9)
-        ax.set_xlabel('Entropy Bin', fontsize=10)
+        ax.set_xticklabels(bins)
+        ax.set_xlabel('Entropy Bin')
         title = type_labels.get(env, env)
-        ax.set_title(title, fontsize=11, fontweight='bold')
+        ax.set_title(title, fontweight='bold')
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         add_ygrid(ax)
 
-    axes[0].set_ylabel('Mean Utility', fontsize=11)
-    fig.suptitle('Utility by Entropy Bin Across Environment Types',
-                 fontsize=13, fontweight='bold', y=1.02)
+    axes[0].set_ylabel('Mean Utility')
 
     plt.tight_layout()
     fig.savefig(HERE / 'output.pdf', bbox_inches='tight', dpi=200)

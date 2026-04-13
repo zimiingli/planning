@@ -35,15 +35,9 @@ Phi-3.5-mini,Plancraft,best_fixed,CoRefine,15.2
 Phi-3.5-mini,Plancraft,EAAG,EAAG,13.8
 Llama-3.1-8B,Plancraft,best_fixed,SEAG,26.0
 Llama-3.1-8B,Plancraft,EAAG,EAAG,27.0
-Qwen3-4B,APPS Intv,best_fixed,s1_budget,69.0
-Qwen3-4B,APPS Intv,EAAG,EAAG,73.0
-Phi-3.5-mini,APPS Intv,best_fixed,CaTS,36.7
-Phi-3.5-mini,APPS Intv,EAAG,EAAG,36.8
-Llama-3.1-8B,APPS Intv,best_fixed,CoRefine,62.3
-Llama-3.1-8B,APPS Intv,EAAG,EAAG,59.7
-Qwen3-4B,CRUXEval,best_fixed,AUQ,99.0
-Qwen3-4B,CRUXEval,EAAG,EAAG,98.5
-Phi-3.5-mini,CRUXEval,best_fixed,CATTS,99.5
-Phi-3.5-mini,CRUXEval,EAAG,EAAG,99.5
-Llama-3.1-8B,CRUXEval,best_fixed,CATTS,99.5
-Llama-3.1-8B,CRUXEval,EAAG,EAAG,99.3
+Qwen3-4B,APPS,best_fixed,s1_budget,69.0
+Qwen3-4B,APPS,EAAG,EAAG,73.0
+Phi-3.5-mini,APPS,best_fixed,CaTS,36.7
+Phi-3.5-mini,APPS,EAAG,EAAG,36.8
+Llama-3.1-8B,APPS,best_fixed,CoRefine,62.3
+Llama-3.1-8B,APPS,EAAG,EAAG,59.7

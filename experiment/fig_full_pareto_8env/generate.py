@@ -77,7 +77,7 @@ def main():
                     key = (backbone, alt)
                     break
         if key not in env_data:
-            ax.set_title(env, fontsize=10, fontweight='bold')
+            ax.set_title(env, fontweight='bold')
             ax.text(0.5, 0.5, 'No data', ha='center', va='center', transform=ax.transAxes)
             continue
 
@@ -111,16 +111,14 @@ def main():
             ax.plot(fp[:, 0], fp[:, 1], '--', color='#333', linewidth=0.8, alpha=0.5)
             ax.fill_between(fp[:, 0], 0, fp[:, 1], alpha=0.03, color='#333')
 
-        ax.set_title(env, fontsize=10, fontweight='bold')
-        ax.set_xlabel('Cost', fontsize=8)
+        ax.set_title(env, fontweight='bold')
+        ax.set_xlabel('Cost')
         if idx % 4 == 0:
-            ax.set_ylabel('SR (%)', fontsize=9)
+            ax.set_ylabel('SR (%)')
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         ax.tick_params(labelsize=7)
 
-    fig.suptitle(f'Pareto Frontier — All 8 Environments ({backbone})',
-                 fontsize=13, fontweight='bold', y=1.01)
     plt.tight_layout()
     fig.savefig(HERE / 'output.pdf', bbox_inches='tight', dpi=200)
     plt.close(fig)

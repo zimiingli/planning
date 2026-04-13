@@ -2,18 +2,15 @@ environment,stratum,rho,p_value,n
 HotpotQA,Early,-0.1758,0.000066,509
 HotpotQA,Mid,-0.4594,0.000000,317
 HotpotQA,Late,-0.4181,0.000000,382
-APPS,Early,-0.0006,0.988625,600
-APPS,Mid,-0.1814,0.000019,550
-APPS,Late,-0.0331,0.500660,417
 WebShop,Early,0.0757,0.001313,1800
 WebShop,Mid,-0.0314,0.352354,880
 WebShop,Late,0.0458,0.110283,1219
 TWExpress,Early,0.3178,0.000000,336
 TWExpress,Mid,-0.3570,0.000000,204
 TWExpress,Late,-0.0334,0.593747,258
-APPS Intv,Early,0.0463,0.514828,200
-APPS Intv,Mid,nan,nan,116
-APPS Intv,Late,nan,nan,123
+APPS,Early,0.0463,0.514828,200
+APPS,Mid,nan,nan,116
+APPS,Late,nan,nan,123
 FEVER,Early,0.0542,0.445926,200
 FEVER,Mid,0.0735,0.563749,64
 FEVER,Late,nan,nan,18

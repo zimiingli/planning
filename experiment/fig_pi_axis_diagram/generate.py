@@ -62,7 +62,7 @@ def main():
         # Label
         y_offset = 0.35 if (pi > 0.4 and pi < 0.6) else 0.3
         # Stagger labels to avoid overlap
-        if env in ['Plancraft', 'CRUXEval']:
+        if env in ['Plancraft']:
             y_offset = -0.35
         ax.annotate(f'{env}\n$\\rho$={rho:+.2f}', (pi, 0),
                     textcoords='offset points',
@@ -73,7 +73,7 @@ def main():
     # Axis labels
     ax.set_xlim(-0.05, 1.05)
     ax.set_ylim(-0.6, 0.6)
-    ax.set_xlabel(r'Fraction of Type I states $p_I$', fontsize=11)
+    ax.set_xlabel(r'Fraction of Type I states $p_I$')
     ax.set_yticks([])
 
     # Bracket labels
@@ -87,9 +87,6 @@ def main():
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     ax.spines['left'].set_visible(False)
-
-    fig.suptitle('Environment Positions on the Two-Source Model $p_I$ Axis',
-                 fontsize=13, fontweight='bold')
 
     plt.tight_layout()
     fig.savefig(HERE / 'output.pdf', bbox_inches='tight', dpi=200)

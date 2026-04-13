@@ -77,10 +77,9 @@ def main():
                 fontweight='bold')
 
     ax.set_xticks(x)
-    ax.set_xticklabels(methods, fontsize=9, rotation=30, ha='right')
-    ax.set_ylabel('Total Cost (episodes equivalent)', fontsize=11)
-    ax.set_title('Computational Cost Breakdown by Method', fontsize=13, fontweight='bold')
-    ax.legend(fontsize=9, loc='upper left')
+    ax.set_xticklabels(methods, rotation=30, ha='right')
+    ax.set_ylabel('Total Cost (episodes equivalent)')
+    ax.legend(loc='upper left')
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
 

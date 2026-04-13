@@ -62,10 +62,8 @@ legend_elements = [
 ]
 ax.legend(handles=legend_elements, fontsize=9, loc="lower right")
 
-ax.set_xlabel(r"|$\rho$|  (entropy-utility correlation strength)", fontsize=11)
-ax.set_ylabel("Degradation (pp)", fontsize=11)
-ax.set_title(r"Stronger Signals $\rightarrow$ Higher Wrong-Direction Penalty",
-             fontsize=11, fontweight="bold")
+ax.set_xlabel(r"|$\rho$|  (entropy-utility correlation strength)")
+ax.set_ylabel("Degradation (pp)")
 ax.spines["top"].set_visible(False)
 ax.spines["right"].set_visible(False)
 

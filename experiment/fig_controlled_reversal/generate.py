@@ -69,24 +69,16 @@ def main():
         for bar in bars:
             h = bar.get_height()
             va = 'bottom' if h >= 0 else 'top'
-            y_off = 0.01 if h >= 0 else -0.01
+            y_off = 0.015 if h >= 0 else -0.015
             ax1.text(bar.get_x() + bar.get_width() / 2, h + y_off,
-                     f'{h:+.3f}', ha='center', va=va, fontsize=8, fontweight='bold')
-
-    # Highlight dominant signal per condition
-    # InfoPoor: step_count dominates (|rho|=0.608 > 0.119)
-    # InfoRich: entropy dominates (|rho|=0.311 > 0.147)
-    ax1.annotate('dominant', xy=(0, rho_infopoor[0]), xytext=(0, rho_infopoor[0] - 0.12),
-                 fontsize=7, color='#2166ac', ha='center', fontstyle='italic')
-    ax1.annotate('dominant', xy=(1 + width, rho_inforich[1]), xytext=(1 + width, rho_inforich[1] + 0.05),
-                 fontsize=7, color='#4dac26', ha='center', fontstyle='italic')
+                     f'{h:+.3f}', ha='center', va=va, fontsize=5.5)
 
     ax1.axhline(y=0, color='black', linewidth=0.7)
     ax1.set_xticks(x)
-    ax1.set_xticklabels(signal_labels, fontsize=10)
-    ax1.set_ylabel(r'Spearman $\rho$', fontsize=11)
-    ax1.set_title('(a) Signal Correlations', fontsize=11, fontweight='bold')
-    ax1.legend(fontsize=9, loc='lower left')
+    ax1.set_xticklabels(signal_labels)
+    ax1.set_ylabel(r'Spearman $\rho$')
+    ax1.set_title('(a) Signal Correlations', fontweight='bold')
+    ax1.legend(loc='upper left')
     ax1.spines['top'].set_visible(False)
     ax1.spines['right'].set_visible(False)
 
@@ -96,25 +88,22 @@ def main():
 
     ax2.bar(x2 - width2, base_srs, width2, label='Base', color='#92c5de', edgecolor='white')
     ax2.bar(x2, always_srs, width2, label='Always Trigger', color='#f4a582', edgecolor='white')
-    ax2.scatter(x2 + width2, eaag_srs, color='crimson', marker='*', s=200,
+    ax2.scatter(x2 + width2, eaag_srs, color='crimson', marker='*', s=120,
                 zorder=5, edgecolors='darkred', linewidths=0.5, label='EAAG')
 
     # Value labels for EAAG
     for i, (c, sr) in enumerate(zip(conditions, eaag_srs)):
         ax2.text(x2[i] + width2, sr + 1.5, f'{sr:.1f}%', ha='center', va='bottom',
-                 fontsize=9, color='crimson', fontweight='bold')
+                 fontsize=6, color='crimson')
 
     ax2.set_xticks(x2)
-    ax2.set_xticklabels(conditions, fontsize=10)
-    ax2.set_ylabel('SR (%)', fontsize=11)
-    ax2.set_title('(b) Task Performance', fontsize=11, fontweight='bold')
-    ax2.legend(fontsize=9, loc='upper left')
+    ax2.set_xticklabels(conditions)
+    ax2.set_ylabel('SR (%)')
+    ax2.set_title('(b) Task Performance', fontweight='bold')
+    ax2.legend(loc='lower right')
     ax2.spines['top'].set_visible(False)
     ax2.spines['right'].set_visible(False)
     ax2.set_ylim(0, 108)
-
-    fig.suptitle('Controlled Information Manipulation: Signal Hierarchy Shift',
-                 fontsize=13, fontweight='bold', y=1.02)
 
     add_ygrid(ax1)
     add_ygrid(ax2)

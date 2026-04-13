@@ -37,6 +37,5 @@ for i, row in enumerate(rows):
         for j in range(len(headers)):
             table[i + 1, j].set_text_props(fontweight='bold')
 
-plt.title("Method Classification", fontsize=12, fontweight='bold', pad=20)
 plt.savefig(DIR / "output.pdf", bbox_inches='tight', dpi=150)
 plt.close()
