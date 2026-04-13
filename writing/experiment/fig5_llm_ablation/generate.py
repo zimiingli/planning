@@ -55,8 +55,7 @@ def main():
 
     ax.set_xticks(x)
     ax.set_xticklabels(envs, fontsize=9)
-    ax.set_ylabel('Success Rate (%)', fontsize=11)
-    ax.set_title('LLM Feature Ablation', fontsize=13, fontweight='bold')
+    ax.set_ylabel('Success Rate (%)')
     ax.legend(fontsize=9)
     ax.grid(axis='y', alpha=0.3)
 

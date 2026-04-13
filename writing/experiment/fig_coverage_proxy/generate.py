@@ -72,10 +72,8 @@ legend_elements = [
 ]
 ax.legend(handles=legend_elements, fontsize=8, loc="upper right")
 
-ax.set_xlabel("Mean Information Coverage", fontsize=11)
-ax.set_ylabel(r"$\rho$(entropy, utility)", fontsize=11)
-ax.set_title("Information Coverage Predicts Entropy-Utility Direction",
-             fontsize=11, fontweight="bold")
+ax.set_xlabel("Mean Information Coverage")
+ax.set_ylabel(r"$\rho$(entropy, utility)")
 ax.spines["top"].set_visible(False)
 ax.spines["right"].set_visible(False)
 

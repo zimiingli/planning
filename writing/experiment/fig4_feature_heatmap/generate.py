@@ -64,8 +64,6 @@ def main():
     ax.grid(which='minor', color='white', linewidth=1.5)
     ax.tick_params(which='minor', size=0)
 
-    ax.set_title("EAAG Feature Selection Across Environments", fontsize=12, pad=10)
-
     # Colorbar
     cbar = fig.colorbar(im, ax=ax, shrink=0.6, pad=0.02, ticks=[0, 1])
     cbar.ax.set_yticklabels(['Not Selected', 'Selected'], fontsize=8)

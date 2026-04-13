@@ -36,6 +36,5 @@ for i in range(1, len(rows) + 1):
     for j in range(len(headers)):
         table[i, j].set_facecolor(base_color)
 
-plt.title("Statistical Significance: EAAG vs CB Methods", fontsize=12, fontweight='bold', pad=20)
 plt.savefig(DIR / "output.pdf", bbox_inches='tight', dpi=150)
 plt.close()

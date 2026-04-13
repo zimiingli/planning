@@ -1,8 +1,6 @@
 environment,signal,spearman_rho
 HotpotQA,token_entropy,-0.0407
 HotpotQA,step_count,-0.4944
-APPS,token_entropy,0.0121
-APPS,step_count,-0.1551
 WebShop,token_entropy,-0.0192
 WebShop,step_count,-0.1297
 FEVER,step_count,-0.6194
@@ -15,21 +13,12 @@ FEVER,state_category,0.0000
 FEVER,action_type,0.0000
 TWExpress,token_entropy,-0.2898
 TWExpress,step_count,-0.4773
-APPS Intv,step_count,-0.3386
-APPS Intv,token_entropy,0.3175
-APPS Intv,evidence_count,0.0000
-APPS Intv,is_finish_proposed,0.0000
-APPS Intv,state_category,0.0000
-APPS Intv,action_type,0.0000
-CRUXEval,step_count,0.1837
-CRUXEval,token_entropy,-0.0481
-CRUXEval,function_complexity,-0.0147
-CRUXEval,has_loops,0.0240
-CRUXEval,evidence_count,0.1837
-CRUXEval,is_finish_proposed,0.0000
-CRUXEval,state_category,0.0000
-CRUXEval,subtask_type,0.0000
-CRUXEval,action_type,0.0000
+APPS,step_count,-0.3386
+APPS,token_entropy,0.3175
+APPS,evidence_count,0.0000
+APPS,is_finish_proposed,0.0000
+APPS,state_category,0.0000
+APPS,action_type,0.0000
 Plancraft,step_count,-0.0077
 Plancraft,token_entropy,-0.0159
 Plancraft,crafting_progress,-0.0171

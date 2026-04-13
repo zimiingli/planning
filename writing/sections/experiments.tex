@@ -13,23 +13,33 @@ Pareto-dominate fixed-direction baselines
 (\S\ref{sec:ablation}); and do the Two-Source Model's predictions
 hold on held-out data (\S\ref{sec:theory-verification}).
 
-\paragraph{Environments.} We evaluate on 8 environments spanning QA,
-code generation, web navigation, fact verification, text games, and
-crafting planning (Table~\ref{tab:env-setup}): HotpotQA,
-APPS Intro, WebShop, FEVER, TWExpress, Plancraft, APPS Interview,
-and CRUXEval. These environments are selected to cover the full
-range of the Two-Source Model, from pure Type~I (FEVER) through
-mixed ($\approx p_I^*$, APPS Intro) to Type~D (APPS Interview),
-including extreme rollout properties (TWExpress: rollout-safe;
-Plancraft: rollout-harmful).
+\paragraph{Environments.} We evaluate on 6 environments:
+HotpotQA~\cite{yang2018hotpotqa},
+APPS~\cite{hendrycks2021apps},
+WebShop~\cite{yao2022webshop},
+FEVER~\cite{thorne2018fever},
+TWExpress~\cite{jansen2023twexpress}, and
+Plancraft~\cite{dagan2024plancraft}, spanning QA, code generation,
+web navigation, fact verification, text games, and crafting planning.
+These cover the full range of the Two-Source
+Model, from pure Type~I (FEVER) through mixed (WebShop) to
+Type~D (APPS), including extreme rollout properties
+(TWExpress: rollout-safe; Plancraft: rollout-harmful).
+Full environment specifications are in
+Appendix~\ref{app:environment}.
 
 \paragraph{Baselines.} All methods share the same agent and
-optimizer $T$; only the gating decision differs. Bounds:
-base\_only (never trigger), always\_trigger, oracle.
-Fixed-direction baselines: CaTS, SEAG, CoRefine, CATTS, AUQ,
-s1\_budget---all assuming high uncertainty warrants compute.
-Ablation: BSW (direction intentionally reversed). Full
-specifications in Appendix~\ref{app:experiments}.
+optimizer $T$; only the gating decision differs.
+We include three bounds: \emph{base\_only}, which never triggers
+the optimizer; \emph{always\_trigger}; and \emph{oracle}.
+Six fixed-direction baselines all assume that high uncertainty
+warrants additional compute:
+CaTS~\cite{cats2025}, SEAG~\cite{seag2025},
+CoRefine~\cite{corefine2026}, CATTS~\cite{catts2026},
+AUQ~\cite{auq2026}, and s1\_budget~\cite{s1_2025}.
+We also evaluate BSW, which intentionally reverses the learned
+direction to quantify the cost of direction mismatch.
+Full specifications are in Appendix~\ref{app:method-comparison}.
 
 \paragraph{Metrics.} SR (success rate, $\uparrow$) and Cost
 (rollouts per episode during deployment, $\downarrow$).
@@ -39,162 +49,103 @@ Cost measures only the \emph{deployment} rollout budget; calibration
 or exploration overhead is excluded for all methods, ensuring a fair
 comparison of runtime efficiency.
 
-\begin{table}[t]
-\caption{Environment setup. Base/Always: SR without/with optimizer.
-$\Delta$: rollout headroom.}
-\label{tab:env-setup}
-\centering\small
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{lcccl}
-\toprule
-Environment & Base SR & Always SR & $\Delta$ & Optimizer $T$ \\
-\midrule
-HotpotQA       & 49.0\% & 97.0\% & +48.0   & Per-action eval \\
-APPS Intro     & 58.5\% & 64.5\% &  +6.0   & $K$-variant sampling \\
-WebShop        &  7.2\% & 43.0\% & +35.8   & LLM-Propose-$K$ \\
-FEVER          & 37.0\% & 99.8\% & +62.8   & Per-action eval \\
-TWExpress      & 67.5\% & 99.3\% & +31.8   & Per-action eval \\
-Plancraft      & 29.8\% & 22.8\% & $-$7.0  & Per-action eval \\
-APPS Interview & 60.5\% & 79.5\% & +19.0   & $K$-variant sampling \\
-CRUXEval       & 85.0\% & 99.5\% & +14.5   & $K$-variant sampling \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
+
 
 
 \subsection{Main Results}
 \label{sec:main-results}
 
-\textbf{EAAG Pareto-dominates fixed-direction baselines.}
-Table~\ref{tab:main} reports SR and cost across 8 environments
-(summary in Table~\ref{tab:winloss}). EAAG matches or exceeds
-every fixed-direction baseline in SR while using fewer rollouts;
-the two exceptions occur in ceiling-effect environments where EAAG
-already approaches the oracle. No calibration data is required
-(statistical details in Appendix~\ref{app:additional}). Beyond
-aggregate numbers, EAAG exhibits \emph{qualitatively different}
-gating behavior: its trigger rate, direction, and signal weights
-all adapt to the environment, as we analyze below.
-
-<<<<<<< HEAD
-\input{experiment/tab_main_results/tab_main_results.tex}
-
-\input{experiment/tab_winloss/tab_winloss.tex}
-=======
-<<<<<<< HEAD
-\input{../experiment/tab_main_results/tab_main_results.tex}
-
-\input{../experiment/tab_winloss/tab_winloss.tex}
-=======
-% \input{../experiment/tab_main_results/tab_main_results.tex}
-
-% \input{../experiment/tab_winloss/tab_winloss.tex}
->>>>>>> c318b77b01a6af94d21a1466266da0ba818eba5d
->>>>>>> b8af530d0a459bc6ba61abeaa5180bd2409cc79e
-
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_pareto.pdf}
-\caption{Pareto frontier: SR vs.\ Cost across 6 representative environments
-(full 8-environment version in Appendix~\ref{app:experiments}, Figure~\ref{fig:full-pareto}).
+\caption{Pareto frontier: SR vs.\ Cost across all 6 environments
+(Qwen3-4B).
 $\circ$\,=\,bounds, $\triangle$\,=\,fixed-direction baselines, $\bigstar$\,=\,EAAG.
-Dashed line: Pareto frontier. EAAG sits on or near the frontier in every environment.}
+Dashed line: Pareto frontier. EAAG sits on or near the frontier in every environment.
+Full numerical results across three backbones are in Table~\ref{tab:full-results}.}
 \label{fig:pareto}
 \end{figure*}
 
-\paragraph{Cross-environment patterns.}
-Figure~\ref{fig:pareto} shows that the results align with the
-Two-Source Model along three axes.
-The gap between EAAG and baselines is largest where direction
-mismatch is most severe: in Type~I environments, all ``high
-uncertainty $\to$ trigger'' baselines fall below the no-trigger
-baseline because the assumed direction is wrong---no amount of
-calibration rescues them. Conversely, EAAG's advantage is smallest
-in high-headroom environments where most methods approach the
-oracle regardless of direction.
-Figure~\ref{fig:entropy-bin} reveals the mechanism: in Type~I
-environments, utility \emph{decreases} with entropy, while in
-Type~D it increases---the same signal carries opposite meaning.
-Most tellingly, EAAG adapts not
-only direction but \emph{gating magnitude}: aggressive triggering
-in rollout-safe environments (TWExpress, RR\,=\,73\%),
-moderate triggering in mixed environments, and step-dependent
-decay in rollout-harmful ones (Plancraft: 49\% at step~0 $\to$
-$<$20\% later). This full behavioral range---from near-always
-to near-never triggering---emerges from direction learning
-alone, without explicit headroom estimation.
+\textbf{EAAG Pareto-dominates fixed-direction baselines.}
+Figure~\ref{fig:pareto} shows the SR--Cost Pareto frontier across
+all 6 environments on Qwen3-4B; full numerical results across
+three backbones are in
+Table~\ref{tab:full-results} (Appendix~\ref{app:full-results}).
 
-\begin{figure*}[t]
-\centering
-\includegraphics[width=\textwidth]{figures/fig_entropy_bin.pdf}
-\caption{Utility by entropy bin across environment types.
-In Type~I (FEVER, HotpotQA), utility decreases with entropy;
-in Type~D (APPS Intv), it increases. The same entropy level
-carries opposite meaning depending on the environment.}
-\label{fig:entropy-bin}
-\end{figure*}
+Three patterns emerge. First, fixed-direction baselines
+catastrophically fail when the assumed direction is wrong: on
+FEVER (Type~I), CATTS triggers almost never (SR\,=\,34.2\%,
+below the 37.0\% no-trigger baseline) because it mistakes
+information poverty for low uncertainty. Second, EAAG achieves
+competitive SR at substantially lower cost than always-triggering.
+On WebShop, EAAG reaches 43.8\% SR at 2.29 rollouts/episode,
+matching always\_trigger (43.0\%) at less than half the cost
+(5.63). On APPS, EAAG outperforms the best baseline
+(s1\_budget, 69.0\%) by 4\,pp while using comparable cost.
+Third, in the rollout-harmful environment Plancraft
+($\Delta{=}{-}7.0$), EAAG learns to suppress triggering and
+recovers near base\_only performance (23.3\% vs.\ 29.8\%),
+while most baselines that trigger aggressively fall below
+base\_only (s1\_budget: 18.3\%).
 
 
 \subsection{Ablation Studies}
 \label{sec:ablation}
 
 The main results show \emph{that} EAAG works; we now ask
-\emph{why}. We ablate the two components of EAAG that \S\ref{sec:signal-landscape}
-identified as necessary: direction learning and the LLM feature
-layer.
+\emph{why}. We ablate the two key components: direction learning
+and the LLM feature layer.
 
 \textbf{Direction is the primary determinant of gate quality.}
-Intentionally reversing the learned direction (BSW ablation) causes
-catastrophic failure across environments, with an MLP gate using the
-wrong direction falling \emph{below} the no-trigger baseline. This
-confirms the central prediction of Proposition~\ref{prop:necessity}:
-direction is not a minor calibration detail but the primary
-determinant of gate quality. The magnitude of degradation correlates
-with signal strength (Appendix~\ref{app:wrong-direction}), as the
-Two-Source Model predicts.
+Intentionally reversing the learned direction (BSW ablation)
+causes large SR drops in every environment with strong signal:
+FEVER falls from 49.8\% to 13.0\% ($-$36.8\,pp),
+HotpotQA from 95.2\% to 58.2\% ($-$37.0\,pp), and WebShop
+from 43.8\% to 20.6\% ($-$23.2\,pp). In contrast,
+weak-signal environments like Plancraft ($|\rho|{=}0.016$)
+are unaffected ($+$2.2\,pp). The degradation scales with
+signal strength: wrong direction is not a minor calibration
+error but a structural failure, as
+Proposition~\ref{prop:necessity} predicts.
+Full per-environment results are in
+Appendix~\ref{app:wrong-direction}.
 
 \textbf{The LLM feature layer is an automation convenience, not
-a core component.} Removing the LLM layer changes SR by
-${<}$1\,pp in most environments; the gains concentrate in
-settings like WebShop where task-specific signals meaningfully
-extend the universal feature pool. In one environment LLM
-features even introduce noise. Consistent with the framing in
-\S\ref{sec:reason}, the LLM is best viewed as an automation
-convenience that enables zero-shot deployment on new environments
-rather than a component the method's main claims depend on.
+a core component.} Table~\ref{tab:llm-ablation} compares EAAG
+with and without the LLM feature layer. In 4 of 6 environments,
+removing LLM features changes SR by ${<}$1\,pp. In Plancraft,
+LLM features even hurt performance ($-$3.9\,pp). The one
+environment where the LLM contributes meaningfully is FEVER
+(+9.1\,pp), where task-specific signals extend the universal
+feature pool. The LLM layer is best viewed as an automation
+convenience for zero-shot deployment rather than a component
+the method depends on.
 
-\begin{figure*}[t]
-\centering
-\includegraphics[width=\textwidth]{figures/fig_trigger_adapt.pdf}
-\caption{Environment-adaptive trigger behavior. Panels ordered by
-rollout headroom $\Delta$. Solid line: per-step trigger rate with
-95\% CI band. Dashed gray: 50\% reference. RR: overall trigger rate.
-EAAG's trigger rate ranges from 73\% (TWExpress) to $<$20\%
-(late-step Plancraft), emerging from direction learning alone.}
-\label{fig:trigger-adapt}
-\end{figure*}
+\begin{table}[t]
+\caption{LLM feature ablation. SR (\%) with and without
+LLM-generated features. The contribution is ${<}$1\,pp in
+most environments; FEVER is the exception.}
+\label{tab:llm-ablation}
+\centering\small
+\begin{tabular}{lccc}
+\toprule
+Environment & w/ LLM & w/o LLM & $\Delta$ \\
+\midrule
+HotpotQA  & 95.2 & 95.8 & $-$0.6 \\
+WebShop   & 43.8 & 43.7 & +0.1 \\
+FEVER     & 49.8 & 40.7 & +9.1 \\
+TWExpress & 99.0 & 99.2 & $-$0.2 \\
+Plancraft & 23.3 & 27.2 & $-$3.9 \\
+APPS      & 66.0 & 65.8 & +0.2 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\textbf{Gating magnitude emerges from direction learning alone.}
-As Figure~\ref{fig:trigger-adapt} shows, the gate's trigger rate
-varies from 73\% (TWExpress) to $<$20\% (late-step Plancraft),
-with step-dependent decay in rollout-harmful environments. These
-patterns are not explicitly programmed: they follow from the
-per-environment signed weights fit in \S\ref{sec:learn}, which
-capture each environment's signal--utility structure.
-The cost of getting direction wrong is substantial:
-Figure~\ref{fig:direction-cost} shows that BSW degradation
-scales linearly with signal strength ($r{=}0.95$).
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/fig_direction_cost.pdf}
-\caption{Cost of wrong direction scales with signal strength ($r{=}0.95$).
-Blue: Type~I, gray: mixed/weak. Environments with
-$|\rho|{>}0.3$ suffer ${>}15$\,pp degradation, validating
-Proposition~\ref{prop:necessity}.}
-\label{fig:direction-cost}
-\end{figure}
+Beyond direction and features, EAAG's trigger rate also adapts
+per environment, ranging from 73\% (TWExpress) to ${<}$20\%
+(late-step Plancraft). This behavior emerges from direction
+learning alone and is analyzed in
+Appendix~\ref{app:trigger-rate}.
 
 
 \subsection{Two-Source Model Verification}
@@ -203,7 +154,7 @@ Proposition~\ref{prop:necessity}.}
 The ablations confirm EAAG's practical advantage; we now test
 whether the Two-Source Model (\S\ref{sec:toy-model}) makes correct
 predictions on held-out data. Following
-\citet{schaeffer2023emergent}, we derive three testable predictions
+\cite{schaeffer2023emergent}, we derive three testable predictions
 and verify each:
 \begin{enumerate}[nosep,label=\textbf{P\arabic*:}]
 \item \textbf{Temporal dynamics.} Within the same environment,
@@ -225,116 +176,46 @@ and verify each:
 \caption{P1 verification: $\rho$(entropy, U) shifts from early to
 late steps. Blue: early (step $\leq$ median), red: late.
 $\Delta$ annotations show consistent shift toward the dominant
-uncertainty type, confirming temporal dynamics prediction.}
+uncertainty type, confirming temporal dynamics prediction.
+Plancraft is omitted because its entropy signal is too weak
+($|\rho|{=}0.016$) for a meaningful early/late comparison.}
 \label{fig:temporal-shift}
 \end{figure}
 
-\paragraph{P1: Temporal dynamics (confirmed).}
-Figure~\ref{fig:temporal-shift} shows the result. We split trajectory
-data into early (step $\leq$ median) and late
-(step $>$ median) subsets. In HotpotQA, $\rho$ shifts from $-0.176$
-(early) to $-0.437$ (late): late-step entropy reflects deeper
-information poverty after failed evidence retrieval. In APPS Intro,
-$\rho$ shifts from $+0.102$ (early, non-significant) to $-0.144$
-(late, $p{=}0.04$): early exploration diversity gives way to
-debugging frustration. In WebShop, the strong positive early-phase
-signal ($\rho{=}{+}0.285$) vanishes in the late phase. The pattern
-is consistent across all environments with sufficient signal (full
-data in Appendix~\ref{app:model-derivation}): early steps mix both
-uncertainty sources, while late steps isolate the dominant type.
+\paragraph{P1: Temporal dynamics.}
+Figure~\ref{fig:temporal-shift} shows that within each
+environment, $\rho$ shifts between early and late steps. In
+HotpotQA, $\rho$ moves from $-0.176$ (early) to $-0.437$ (late):
+late-step entropy reflects deeper information poverty after failed
+evidence retrieval. In WebShop, the strong positive early-phase
+signal ($\rho{=}{+}0.285$) vanishes in the late phase. In APPS,
+the positive $\rho$ strengthens over steps as decision complexity
+accumulates. The pattern holds across all environments with
+sufficient signal (Appendix~\ref{app:temporal}).
 
-\paragraph{P2: Cross-environment consistency (confirmed).}
-We compare same-family pairs. FEVER ($\rho{=}{-}0.119$) and HotpotQA
-($\rho{=}{-}0.041$), both search-based QA tasks requiring evidence
-retrieval, share negative entropy--utility direction.
-APPS Intro ($\rho{=}{+}0.012$) and APPS Interview
-($\rho{=}{+}0.317$), both code generation tasks, share non-negative
-direction. The magnitude difference within each pair reflects the
-degree of Type~I contamination; FEVER has more early-step
-information poverty than HotpotQA.
+\paragraph{P2: Cross-environment consistency.}
+Same-family environments share the same direction
+(Table~\ref{tab:signal-discovery}).
+FEVER and HotpotQA, both search-based QA, share negative $\rho$;
+WebShop and APPS, both involving active choice among alternatives,
+share positive $\rho$. Magnitude differences within each pair
+reflect the degree of Type~I contamination.
 
-\paragraph{P3: Signal identity alignment (confirmed).}
-We examine the sparse-selected features per environment.
-In Type~I environments (HotpotQA, FEVER), the strongest signal
-(\texttt{step\_count}, $|\rho|{=}0.494$ and $0.619$) measures
-trajectory progress, a proxy for information accumulation.
-In WebShop (mixed, choice-dominated),
-\texttt{num\_available\_actions} ($\rho{=}{+}0.444$) measures the
-decision space size, a proxy for decision complexity. All three
-predictions are confirmed, providing converging evidence for the
-Two-Source Model.
+\paragraph{P3: Signal identity alignment.}
+The strongest signal per environment matches the Two-Source Model
+prediction (Appendix~\ref{app:signal-alignment}):
+\texttt{step\_count} dominates in Type~I environments as an
+information-accumulation proxy, while
+\texttt{num\_available\_actions} dominates in WebShop as a
+decision-complexity proxy. A controlled manipulation experiment
+within HotpotQA further confirms that signal identity shifts
+with information structure (Appendix~\ref{app:controlled}).
 
-As a supplementary test, we manipulate information availability
-within HotpotQA itself (InfoPoor vs.\ InfoRich conditions) and
-confirm that the identity of the most informative signal shifts
-accordingly, consistent with the signal-identity finding in
-\S\ref{sec:empirical-landscape}. Full results are reported in
-Appendix~\ref{app:controlled}.
-
-
-\subsection{Robustness of Direction Reversal}
-\label{sec:robustness}
-
-Is direction reversal a genuine phenomenon or a confounding
-artifact? We rule this out through three analyses, plus
-multi-backbone verification (Appendix~\ref{app:multi-backbone})
-showing that direction depends on the
-\emph{environment~$\times$~model} interaction, not on either
-factor alone.
-
-\paragraph{Stratified analysis: controlling for trajectory length.}
-Trajectory length varies across environments and correlates with both
-entropy and utility. To rule out length as a confounder, we stratify
-by step count and recompute $\rho(\text{entropy}, U)$ within each
-stratum.
-\emph{Result}: Direction reversal persists within trajectory-length
-strata where utility variance is non-zero. In HotpotQA, $\rho$ remains
-negative across all three strata ($-0.18$/$-0.46$/$-0.42$).
-The reversal is not an artifact of trajectory length.
-
-\paragraph{Interventional evidence.}
-The BSW ablation (\S\ref{sec:ablation}) provides
-\emph{interventional} evidence: reversing the gate's learned
-direction causes catastrophic SR degradation across environments,
-with the MLP gate falling below the no-trigger baseline. If
-direction reversal were merely correlational, this manipulation
-should have no systematic effect. The observed damage confirms
-that direction encodes a causal relationship.
-
-\paragraph{Gate complexity ablation: direction outweighs capacity.}
-To verify that the bottleneck is direction rather than gate
-complexity, we compare gate architectures with correct vs.\ wrong
-direction (Table~\ref{tab:capacity}).
-
-\begin{table}[t]
-\caption{Gate complexity ablation on HotpotQA. Direction matters
-more than model capacity: a logistic gate with correct direction
-outperforms an MLP with wrong direction by 49.9\,pp.}
-\label{tab:capacity}
-\centering\small
-\begin{tabular}{lccc}
-\toprule
-Gate & Direction & SR (\%) & $\Delta$ \\
-\midrule
-Logistic (5 feat) & Correct & 95.2 & +46.2 \\
-MLP (5 feat)      & Correct & $\sim$95 & $\sim$+46 \\
-Hidden state (2560-d) & Correct & $\sim$95 & $\sim$+46 \\
-\midrule
-Logistic (5 feat) & Wrong & 62.0 & +13.0 \\
-MLP (5 feat)      & Wrong & 45.3 & $-$3.7 \\
-\midrule
-No gate (base)    & n/a & 49.0 & 0 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-With correct direction, all architectures achieve $\sim$95\% SR;
-the jump from logistic to MLP to hidden-state probe adds $<$1\,pp.
-With wrong direction, higher capacity makes performance \emph{worse}
-(MLP 45.3\% $<$ logistic 62.0\%), because the more powerful gate
-more precisely targets harmful states. Across the gate architectures
-we tested, signal direction consistently outweighs both signal count
-and gate complexity as a determinant of gate quality.
+All three predictions are supported. Additional robustness
+checks are in Appendix~\ref{app:robustness}: multi-backbone
+verification (\S\ref{app:multi-backbone}), stratified analysis
+(\S\ref{app:stratified}), and gate complexity ablations
+(\S\ref{app:gate-complexity}).
 
 % TODO: Figure~\ref{fig:case-study} — trajectory-level gate decision visualization.
 % Requires joining decision_log.json with phase1_signal_data.json for per-step entropy.

@@ -27,21 +27,10 @@ recovers per-environment direction from the resulting dataset.
 Algorithm~\ref{alg:eaag} summarizes the full pipeline
 and its connection to requirements~(i)--(iii).
 
-\paragraph{Why a minimal gate suffices.}
-The real difficulty identified in Section~\ref{sec:signal-landscape}
-is identifying signal direction per environment, not
-classification capacity. Once exploration and feature selection
-have produced unbiased $(s, U)$ data and a usable feature pool,
-the remaining task is well-posed for a standard sparse linear
-model. On HotpotQA (Table~\ref{tab:capacity}), a logistic gate,
-an MLP, and a $2560$-dimensional hidden-state probe all reach
-$\sim$$95\%$ SR \emph{with the correct direction}; under a
-reversed direction, the MLP falls \emph{below} the no-trigger
-baseline because a more expressive gate more precisely targets
-harmful states. In the environments we study, the marginal
-return on gate complexity is small compared to the return on
-getting direction right, so we invest complexity in exploration
-and feature selection and keep the deployed gate minimal.
+Since the primary bottleneck is signal direction rather than
+classification capacity (\S\ref{sec:ablation}), we invest
+complexity in exploration and feature selection and keep the
+deployed gate deliberately minimal.
 
 % TODO: TikZ pipeline diagram (see figure_prompts.md for detailed spec)
 % Figure~\ref{fig:eaag-pipeline}: Explore → Reason → Learn → Deploy
@@ -177,44 +166,5 @@ environments, which are the setting of our main experiments,
 we recommend skipping online adaptation and relying on the
 offline-fitted gate.
 
-% --- Algorithm Box ---
-\begin{algorithm}[t]
-\caption{EAAG: Environment-Aware Adaptive Gating}
-\label{alg:eaag}
-\small
-\begin{algorithmic}[1]
-\Require Environment~$E$, agent~$M$, optimizer~$T$,
-  $N_{\text{explore}}$ episodes, $\varepsilon_{\text{explore}}{=}0.5$
-\Ensure Fitted gate $g(s)$
-\Statex
-\Statex \textbf{Phase 1: Explore} \hfill\textit{// Req~(iii)}
-\State $\mathcal{D} \gets \emptyset$
-\For{episode $i = 1, \ldots, N_{\text{explore}}$}
-  \For{step $t$ in episode $i$}
-    \State $z_t \sim \mathrm{Bernoulli}(\varepsilon_{\text{explore}})$
-    \State Execute $T$ if $z_t{=}1$, else base action
-    \State $\mathcal{D} \gets \mathcal{D} \cup
-      \{(\phi(s_t),\, U_t,\, z_t)\}$
-  \EndFor
-\EndFor
-\Statex
-\Statex \textbf{Phase 2: Reason} (optional) \hfill\textit{// Req~(ii)}
-\State $\phi_{\text{univ}} \gets
-  [\texttt{step\_count}, \texttt{entropy}, \ldots]$
-\State $\phi_{\text{LLM}} \gets
-  \textsc{LLM\_Propose}(\mathrm{summary}(\mathcal{D}))$
-\State $\phi_{\text{cand}} \gets
-  \phi_{\text{univ}} \cup \phi_{\text{LLM}}$
-\Statex
-\Statex \textbf{Phase 3: Learn} \hfill\textit{// Req~(i)}
-\State $\mathbf{w}^*, b^* \gets
-  \argmin_{\mathbf{w},b}
-  \sum \ell(\sigma(\mathbf{w}^\top\phi + b), U)
-  + \lambda\|\mathbf{w}\|_1$
-\State $g(s) \gets
-  \mathbf{1}[\sigma(\mathbf{w}^{*\top}\phi(s) + b^*) > \tau]$
-\Statex
-\State \Return $g(s)$
-  \hfill\textit{// Deploy: zero per-step overhead}
-\end{algorithmic}
-\end{algorithm}
+The complete three-phase procedure is summarized in
+Algorithm~\ref{alg:eaag} (Appendix~\ref{app:eaag-details}).

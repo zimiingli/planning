@@ -55,9 +55,7 @@ for i, stratum in enumerate(strata):
 ax.axhline(y=0, color="black", linewidth=0.7)
 ax.set_xticks(x)
 ax.set_xticklabels(env_order, fontsize=9, rotation=15, ha="right")
-ax.set_ylabel(r"$\rho$ within stratum", fontsize=11)
-ax.set_title("Direction Reversal Persists Across Step-Count Strata",
-             fontsize=11, fontweight="bold")
+ax.set_ylabel(r"$\rho$ within stratum")
 ax.legend(fontsize=9, title="Stratum")
 ax.spines["top"].set_visible(False)
 ax.spines["right"].set_visible(False)

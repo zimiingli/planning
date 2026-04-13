@@ -71,9 +71,7 @@ def main():
 
     # Colorbar
     cbar = fig.colorbar(im, ax=ax, shrink=0.8, pad=0.02)
-    cbar.set_label('Spearman $\\rho$', fontsize=10)
-
-    ax.set_title("Signal-Utility Direction Varies Across Environments", fontsize=12, pad=10)
+    cbar.set_label('Spearman $\\rho$')
 
     plt.tight_layout()
     fig.savefig(OUTPUT_PDF, bbox_inches='tight', dpi=150)

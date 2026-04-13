@@ -28,14 +28,14 @@ MAIN_CSV = HERE.parent / "tab_main_results" / "data.csv"
 OUTPUT_PDF = HERE / "output.pdf"
 
 # Environment order for 2x3 grid
-ENV_ORDER = ['hotpotqa', 'apps', 'webshop', 'fever', 'plancraft', 'apps_interview']
+ENV_ORDER = ['hotpotqa', 'webshop', 'fever', 'twexpress', 'plancraft', 'apps_interview']
 ENV_LABELS = {
-    'hotpotqa': 'HotpotQA', 'apps': 'APPS Intro', 'webshop': 'WebShop',
-    'fever': 'FEVER', 'plancraft': 'Plancraft', 'apps_interview': 'APPS Intv',
+    'hotpotqa': 'HotpotQA', 'webshop': 'WebShop',
+    'fever': 'FEVER', 'plancraft': 'Plancraft', 'apps_interview': 'APPS',
     'twexpress': 'TWExpress',
     # tab_main_results uses display names
-    'HotpotQA': 'HotpotQA', 'APPS Intro': 'APPS Intro', 'WebShop': 'WebShop',
-    'FEVER': 'FEVER', 'Plancraft': 'Plancraft', 'APPS Intv': 'APPS Intv',
+    'HotpotQA': 'HotpotQA', 'WebShop': 'WebShop',
+    'FEVER': 'FEVER', 'Plancraft': 'Plancraft', 'APPS': 'APPS',
     'TWExpress': 'TWExpress',
 }
 
@@ -92,9 +92,9 @@ def main():
     rows = []
     if MAIN_CSV.exists():
         env_remap = {
-            'HotpotQA': 'hotpotqa', 'APPS Intro': 'apps', 'WebShop': 'webshop',
+            'HotpotQA': 'hotpotqa', 'WebShop': 'webshop',
             'FEVER': 'fever', 'TWExpress': 'twexpress', 'Plancraft': 'plancraft',
-            'APPS Intv': 'apps_interview', 'CRUXEval': 'cruxeval',
+            'APPS': 'apps_interview',
         }
         with open(MAIN_CSV, newline='') as f:
             for row in csv.DictReader(f):
@@ -129,7 +129,7 @@ def main():
     for idx, env_key in enumerate(ENV_ORDER):
         ax = axes[idx]
         if env_key not in env_data:
-            ax.set_title(ENV_LABELS.get(env_key, env_key), fontsize=11, fontweight='bold')
+            ax.set_title(ENV_LABELS.get(env_key, env_key), fontweight='bold')
             ax.text(0.5, 0.5, 'No data', ha='center', va='center', transform=ax.transAxes)
             continue
 
@@ -187,7 +187,7 @@ def main():
             ax.fill_between(front_pts[:, 0], 0, front_pts[:, 1],
                             alpha=0.04, color='#333333', zorder=1)
 
-        ax.set_title(ENV_LABELS.get(env_key, env_key), fontsize=11, fontweight='bold')
+        ax.set_title(ENV_LABELS.get(env_key, env_key), fontweight='bold')
         ax.set_xlabel('Cost (rollouts/episode)', fontsize=9)
         ax.set_ylabel('SR (%)', fontsize=9)
         ax.tick_params(labelsize=8)

@@ -1,9 +1,7 @@
 environment,dominant_type,strongest_signal,abs_rho,interpretation
 HotpotQA,Information-Poverty,step_count,0.494,Trajectory progress (proxy for information accumulation)
 FEVER,Information-Poverty,step_count,0.619,Trajectory progress (failed evidence retrieval)
-APPS Intro,Mixed,step_count,0.155,Trajectory progress (weak signal)
-APPS Intv,Decision-Difficulty,step_count,0.339,Trajectory progress (debugging depth)
+APPS,Decision-Difficulty,step_count,0.339,Trajectory progress (debugging depth)
 WebShop,Mixed,num_available_actions,0.444,Decision space size (choice complexity)
 TWExpress,Information-Poverty,step_count,0.477,Trajectory progress (exploration depth)
-CRUXEval,Weak,step_count,0.184,Trajectory progress (weak signal at ceiling)
 Plancraft,Weak (harmful),has_output,0.162,Output presence (rollout harmful)

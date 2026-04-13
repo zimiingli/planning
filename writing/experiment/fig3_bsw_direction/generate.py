@@ -36,10 +36,7 @@ ENV_TYPE = {
     'HotpotQA': 'Type I',
     'TWExpress': 'Type I',
     'WebShop': 'Mixed',
-    'APPS Intv': 'Type D',
-    'APPS': 'Mixed',
-    'APPS Intro': 'Mixed',
-    'CRUXEval': 'Weak',
+    'APPS': 'Type D',
     'Plancraft': 'Weak',
 }
 
@@ -92,10 +89,10 @@ def main():
             offset_x, offset_y = -10, 8
         elif label == 'HotpotQA':
             offset_y = 8
-        elif label == 'APPS Intro':
+        elif label == 'APPS':
             offset_y = -12
         ax.annotate(label, (x, y), textcoords='offset points',
-                    xytext=(offset_x, offset_y), fontsize=10, color=color,
+                    xytext=(offset_x, offset_y), color=color,
                     fontweight='bold')
 
     # Trend line over all points with r value
@@ -116,13 +113,13 @@ def main():
                 linewidth=1.2, alpha=0.7)
         # r value annotation
         ax.text(0.03, 0.97, f'$r = {r_value:.2f}$', transform=ax.transAxes,
-                ha='left', va='top', fontsize=11, color='#444444',
+                ha='left', va='top', color='#444444',
                 bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
                           alpha=0.8, edgecolor='#cccccc'))
 
-    ax.set_xlabel(r'Signal Strength $|\rho|$', fontsize=12)
-    ax.set_ylabel('BSW Degradation (pp)', fontsize=12)
-    ax.tick_params(labelsize=10)
+    ax.set_xlabel(r'Signal Strength $|\rho|$')
+    ax.set_ylabel('BSW Degradation (pp)')
+    ax.tick_params()
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     ax.grid(True, alpha=0.2)

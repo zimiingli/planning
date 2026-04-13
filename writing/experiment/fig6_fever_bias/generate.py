@@ -56,8 +56,7 @@ def main():
     display_labels = [m.replace('_', ' ').title() for m in metrics]
     ax.set_xticks(x)
     ax.set_xticklabels(display_labels, fontsize=9, rotation=20, ha='right')
-    ax.set_ylabel('Value', fontsize=11)
-    ax.set_title('FEVER Exploration Bias: SCG vs EAAG Data', fontsize=13, fontweight='bold')
+    ax.set_ylabel('Value')
     ax.legend(fontsize=9)
     ax.grid(axis='y', alpha=0.3)
 

@@ -48,11 +48,9 @@ ax.axhline(y=0.5, color="black", linestyle="--", linewidth=0.8, alpha=0.6, label
 
 ax.set_ylim(0.4, 1.0)
 ax.set_xticks(x)
-ax.set_xticklabels(env_order, fontsize=10)
-ax.set_ylabel("AUC", fontsize=11)
-ax.set_title(r"Signal Hierarchy: Single Entropy $\approx$ Random, Multi-Signal >> Single",
-             fontsize=11, fontweight="bold")
-ax.legend(fontsize=8, loc="upper left")
+ax.set_xticklabels(env_order)
+ax.set_ylabel("AUC")
+ax.legend(loc="upper left")
 ax.spines["top"].set_visible(False)
 ax.spines["right"].set_visible(False)
 

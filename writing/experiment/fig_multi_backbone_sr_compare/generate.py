@@ -21,7 +21,7 @@ import csv
 from pathlib import Path
 
 HERE = Path(__file__).parent
-ENV_ORDER = ['HotpotQA', 'APPS', 'WebShop', 'FEVER', 'TWExpress', 'Plancraft', 'APPS Intv', 'CRUXEval']
+ENV_ORDER = ['HotpotQA', 'WebShop', 'FEVER', 'TWExpress', 'Plancraft', 'APPS']
 BACKBONES = ['Qwen3-4B', 'Phi-3.5-mini', 'Llama-3.1-8B']
 BB_FIXED_COLORS = ['#92c5de', '#4393c3', '#2166ac']  # light to dark blue
 BB_EAAG_COLORS = ['#f4a582', '#d6604d', '#b2182b']   # light to dark red
@@ -37,28 +37,28 @@ def main():
         data[key] = float(row['sr_pct'])
 
     x = np.arange(len(ENV_ORDER))
-    width = 0.12
-    fig, ax = plt.subplots(figsize=(7, 3))
+    w = 0.10          # single bar width
+    gap = 0.08        # gap between blue group and red group
+    fig, ax = plt.subplots(figsize=(8, 2.8))
 
+    # 6 bar positions: [-2.5w-gap/2, -1.5w-gap/2, -0.5w-gap/2,
+    #                    +0.5w+gap/2, +1.5w+gap/2, +2.5w+gap/2]
     for bidx, bb in enumerate(BACKBONES):
-        # Best fixed
+        # Best fixed (left group: positions 0,1,2)
         fixed_srs = [data.get((bb, env, 'best_fixed'), np.nan) for env in ENV_ORDER]
-        offset_f = -1.5 * width + bidx * width
-        ax.bar(x + offset_f, fixed_srs, width * 0.9,
-               color=BB_FIXED_COLORS[bidx], edgecolor='white', linewidth=0.3,
-               label=f'Best Fixed ({bb.split("-")[0]})' if bidx == 0 else None)
+        off_f = -(1.5 - bidx) * w - gap / 2
+        ax.bar(x + off_f, fixed_srs, w * 0.92,
+               color=BB_FIXED_COLORS[bidx], edgecolor='white', linewidth=0.3)
 
-        # EAAG
+        # EAAG (right group: positions 3,4,5)
         eaag_srs = [data.get((bb, env, 'EAAG'), np.nan) for env in ENV_ORDER]
-        offset_e = 1.5 * width + bidx * width
-        ax.bar(x + offset_e, eaag_srs, width * 0.9,
-               color=BB_EAAG_COLORS[bidx], edgecolor='white', linewidth=0.3,
-               label=f'EAAG ({bb.split("-")[0]})' if bidx == 0 else None)
+        off_e = (0.5 + bidx) * w + gap / 2
+        ax.bar(x + off_e, eaag_srs, w * 0.92,
+               color=BB_EAAG_COLORS[bidx], edgecolor='white', linewidth=0.3)
 
     ax.set_xticks(x)
-    ax.set_xticklabels(ENV_ORDER, fontsize=10, rotation=15, ha='right')
-    ax.set_ylabel('SR (%)', fontsize=12)
-    ax.set_title('Cross-Backbone: EAAG vs Best Fixed-Direction Baseline', fontsize=13, fontweight='bold')
+    ax.set_xticklabels(ENV_ORDER, rotation=0, ha='center')
+    ax.set_ylabel('SR (%)')
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
 
@@ -72,7 +72,7 @@ def main():
         Patch(facecolor=BB_EAAG_COLORS[1], label='EAAG (Phi-3.5)'),
         Patch(facecolor=BB_EAAG_COLORS[2], label='EAAG (Llama)'),
     ]
-    ax.legend(handles=legend_elements, fontsize=8, ncol=2, loc='upper right',
+    ax.legend(handles=legend_elements, ncol=2, loc='upper right',
               framealpha=0.9, edgecolor='#cccccc')
 
     add_ygrid(ax)

@@ -60,9 +60,7 @@ for j, env in enumerate(env_order):
 ax.axhline(y=0, color="black", linewidth=0.7)
 ax.set_xticks(x)
 ax.set_xticklabels(env_order, fontsize=9, rotation=15, ha="right")
-ax.set_ylabel(r"$\rho$(entropy, U)", fontsize=11)
-ax.set_title(r"P1: Entropy-Utility Correlation Shifts with Episode Progress",
-             fontsize=11, fontweight="bold")
+ax.set_ylabel(r"$\rho$(entropy, U)")
 ax.legend(fontsize=9)
 ax.spines["top"].set_visible(False)
 ax.spines["right"].set_visible(False)

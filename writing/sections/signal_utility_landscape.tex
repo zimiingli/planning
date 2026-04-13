@@ -4,7 +4,7 @@
 \section{Why Fixed-Direction Gating Fails}
 \label{sec:signal-landscape}
 \begin{table}[!t]
-\caption{Signal--utility correlations across 8 environments and
+\caption{Signal--utility correlations across 6 environments and
 3 backbones. $\rho$: Spearman correlation of token entropy with
 optimizer utility $U$. $^*$: significant at $p{<}0.05$.
 Direction varies across \emph{both} environments and model
@@ -18,13 +18,11 @@ backbones.}
 Environment & Qwen3 & Phi-3.5 & Llama-3.1 & Cons. \\
 \midrule
 HotpotQA   & $-$0.327$^*$ & $+$0.184$^*$ & $-$0.346$^*$ & \xmark \\
-APPS Intro & $+$0.144$^*$ & $-$0.129$^*$ & $-$0.242$^*$ & \xmark \\
 WebShop    & $+$0.133$^*$ & $+$0.335$^*$ & $+$0.287$^*$ & \cmark \\
 FEVER      & $-$0.119$^*$ & $-$0.156$^*$ & $+$0.428$^*$ & \xmark \\
-APPS Intv. & $+$0.317$^*$ & $-$0.024     & $-$0.249$^*$ & \xmark \\
 TWExpress  & $-$0.290$^*$ & $+$0.000     & $+$0.000     & --- \\
-CRUXEval   & $-$0.048     & $-$0.065     & $-$0.045     & --- \\
 Plancraft  & $-$0.016     & $+$0.000     & $-$0.176$^*$ & --- \\
+APPS       & $+$0.317$^*$ & $-$0.024     & $-$0.249$^*$ & \xmark \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -56,14 +54,14 @@ $g: \mathcal{S} \to \{0, 1\}$ that triggers $T$ only when $U > 0$.
 
 \textbf{The signal--utility direction is not fixed.}
 Table~\ref{tab:signal-discovery} reports Spearman correlations
-between token entropy and optimizer utility across 8 environments
+between token entropy and optimizer utility across 6 environments
 and 3 model backbones. Two patterns stand out. First, even within
 a single backbone, the direction varies across environments: on
 Qwen3, entropy is negatively correlated with utility in
 fact-verification environments (FEVER, TWExpress) but positively
-in code generation (APPS Interview), with near-zero correlation in
-mixed environments. Second, the same signal in the same environment
-can reverse across backbones: in 4 out of 5 environments with
+in code generation (APPS) and web navigation (WebShop),
+with near-zero correlation in weak-signal environments (Plancraft). Second, the same signal in the same environment
+can reverse across backbones: in 3 out of 4 environments with
 multiple significant correlations, models disagree on the sign.
 Most strikingly, FEVER flips from $\rho{=}{-}0.156$ on Phi-3.5 to
 $\rho{=}{+}0.428$ on Llama-3.1. Structural signals such as
@@ -134,17 +132,15 @@ environment $\mathcal{E}$. The marginal correlation becomes
   \label{eq:direction}
 \end{equation}
 which reverses sign at the critical threshold
-$p_I^* = \beta/(\alpha+\beta)$ (full derivation in
-Appendix~\ref{app:model-derivation}). Environments with
+$p_I^* = \beta/(\alpha+\beta)$. Environments with
 $p_I > p_I^*$ exhibit negative $\rho$ (Type~I dominated); those
 with $p_I < p_I^*$ exhibit positive $\rho$ (Type~D dominated);
 near $p_I^*$, the two effects cancel and entropy carries
 negligible signal. This prediction is consistent with the observed
 Qwen3 pattern in Table~\ref{tab:signal-discovery}: search-based QA
 (FEVER, HotpotQA, TWExpress) shows negative $\rho$, code generation
-(APPS Interview) shows positive $\rho$, and mixed environments
-cluster near zero. A full per-environment mapping is provided in
-Appendix~\ref{app:env-mapping}. Multi-backbone results
+(APPS) shows positive $\rho$, and weak-signal environments
+(Plancraft) cluster near zero. Multi-backbone results
 (Appendix~\ref{app:multi-backbone}) further show that the model
 backbone modulates the effective $p_I$, making direction
 unpredictable from environment structure alone. We treat this
@@ -187,7 +183,4 @@ real-world deployments span both environment types, no
 fixed-direction strategy can deliver non-negative value of
 computation universally---direction discovery is a necessary
 precondition for cross-environment robustness, not a refinement
-of it. The full proof is in Appendix~\ref{app:proof-necessity},
-and as Section~\ref{sec:main-results} will show, every
-fixed-direction baseline empirically underperforms the no-trigger
-baseline in at least 2 of 8 environments.
+of it. The full proof is in Appendix~\ref{app:proof-necessity}.
