@@ -149,18 +149,26 @@ def main():
             cat = categorize(method)
             all_points.append((cost, sr, cat, method))
 
-        # Filter: only keep paper-reported methods (bounds + CB + EAAG)
-        paper_methods = BOUNDS | FIXED_CB | EAAG_METHODS
+        # Filter: only keep CB baselines + EAAG (no bounds)
         paper_points = [(c, s, cat, m) for c, s, cat, m in all_points
-                        if cat != 'other']
+                        if cat in ('cb', 'eaag')]
+
+        # Add reference lines for bounds (not as scatter points)
+        bounds_pts = {m: (c, s) for c, s, cat, m in all_points if cat == 'bounds'}
+        if 'base_only' in bounds_pts:
+            _, base_sr = bounds_pts['base_only']
+            ax.axhline(base_sr, color='#aaaaaa', linestyle=':', linewidth=0.8, zorder=1)
+            ax.text(ax.get_xlim()[0] if ax.get_xlim()[0] > 0 else 0.5, base_sr + 1.5,
+                    'base', fontsize=7, color='#888888', va='bottom')
+        if 'always_trigger' in bounds_pts:
+            at_cost, at_sr = bounds_pts['always_trigger']
+            ax.axhline(at_sr, color='#aaaaaa', linestyle=':', linewidth=0.8, zorder=1)
+            ax.text(ax.get_xlim()[0] if ax.get_xlim()[0] > 0 else 0.5, at_sr - 3,
+                    'always', fontsize=7, color='#888888', va='top')
 
         # Plot by category
         for cost, sr, cat, method in paper_points:
-            if cat == 'bounds':
-                h = ax.scatter(cost, sr, c='#888888', marker='o', s=50, alpha=0.8,
-                               edgecolors='#555555', linewidths=0.5, zorder=3)
-                legend_handles['Bounds'] = h
-            elif cat == 'cb':
+            if cat == 'cb':
                 color = CB_COLORS.get(method, '#17becf')
                 label = CB_LABELS.get(method, method)
                 h = ax.scatter(cost, sr, c=color, marker='^', s=55, alpha=0.85,
@@ -172,7 +180,7 @@ def main():
                                edgecolors='darkred', linewidths=0.6, zorder=10)
                 legend_handles['EAAG'] = h
 
-        # Pareto frontier (over paper methods only)
+        # Pareto frontier (over CB + EAAG only)
         paper_pts = [(c, s) for c, s, cat, m in paper_points]
         if len(paper_pts) >= 2:
             pts_arr = np.array(paper_pts)
@@ -195,8 +203,8 @@ def main():
         ax.spines['right'].set_visible(False)
         add_ygrid(ax)
 
-    # Shared legend — ordered: Bounds, CBs, EAAG
-    desired_order = ['Bounds', 'CaTS', 'SEAG', 'CoRefine', 'CATTS', 'AUQ', 's1_budget', 'EAAG']
+    # Shared legend — ordered: CBs, EAAG
+    desired_order = ['CaTS', 'SEAG', 'CoRefine', 'CATTS', 'AUQ', 's1_budget', 'EAAG']
     handles = []
     labels = []
     for name in desired_order:
