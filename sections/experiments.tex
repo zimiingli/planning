@@ -42,12 +42,16 @@ direction to quantify the cost of direction mismatch.
 Full specifications are in Appendix~\ref{app:method-comparison}.
 
 \paragraph{Metrics.} SR (success rate, $\uparrow$) and Cost
-(rollouts per episode during deployment, $\downarrow$).
+($\times$base, $\downarrow$): total deployment tokens normalized by
+base\_only tokens per episode. This metric counts \emph{all} LLM
+calls---base proposer, gate overhead (CATTS $K{=}5$ voting, AUQ
+confidence queries), and rollout calls---ensuring that per-step
+overhead is not hidden. Calibration or exploration overhead is
+excluded for all methods.
 A method Pareto-dominates another if $\text{SR} \geq$ and
 $\text{Cost} \leq$ with at least one strict inequality.
-Cost measures only the \emph{deployment} rollout budget; calibration
-or exploration overhead is excluded for all methods, ensuring a fair
-comparison of runtime efficiency.
+Token cost constants are reported in
+Appendix~\ref{app:cost}.
 
 
 
@@ -75,13 +79,14 @@ Table~\ref{tab:full-results} (Appendix~\ref{app:full-results}).
 Three patterns emerge. First, fixed-direction baselines
 catastrophically fail when the assumed direction is wrong: on
 FEVER (Type~I), CATTS triggers almost never (SR\,=\,34.2\%,
-below the 37.0\% no-trigger baseline) because it mistakes
-information poverty for low uncertainty. Second, EAAG achieves
-competitive SR at substantially lower cost than always-triggering.
-On WebShop, EAAG reaches 43.8\% SR at 2.29 rollouts/episode,
-matching always\_trigger (43.0\%) at less than half the cost
-(5.63). On APPS, EAAG outperforms the best baseline
-(s1\_budget, 69.0\%) by 4\,pp while using comparable cost.
+below the 37.0\% no-trigger baseline) yet still costs
+6.46$\times$base due to its $K{=}5$ per-step voting overhead.
+Second, EAAG achieves competitive SR at substantially lower cost
+than always-triggering. On WebShop, EAAG reaches 43.8\% SR at
+2.50$\times$base, matching always\_trigger (43.0\%) at less than
+half the cost (5.56$\times$). On APPS, EAAG outperforms the best
+baseline (s1\_budget, 69.0\%) by 4\,pp while using comparable
+cost.
 Third, in the rollout-harmful environment Plancraft
 ($\Delta{=}{-}7.0$), EAAG learns to suppress triggering and
 recovers near base\_only performance (23.3\% vs.\ 29.8\%),

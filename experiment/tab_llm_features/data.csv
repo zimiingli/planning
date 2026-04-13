@@ -1,0 +1,7 @@
+environment,llm_generated,lasso_selected,selected_count,generated_count,sr_with_llm,sr_without_llm,delta_sr
+WebShop,"action_is_click, filter_count, instruction_keyword_count, price_mentioned, step_early","price_mentioned, action_is_click, step_early, instruction_keyword_count",4,5,43.8,43.7,0.1
+TWExpress,"action_look_around, already_open, closed_ratio, step_count, text_length","text_length, closed_ratio, action_look_around, already_open",4,5,99.0,99.2,-0.2
+HotpotQA,"action_is_lookup, entity_count, fact_keyword_count, has_question, step_proximity_useful","has_question, entity_count, fact_keyword_count",3,5,95.2,95.8,-0.6
+FEVER,"action_type_search, has_claim, has_named_entity, step_early, text_length_normalized","text_length_normalized, has_claim",2,5,49.8,40.7,9.1
+APPS,"action_type, has_function_f, has_input_parsing, has_tree, step_count",action_type,1,5,66.0,65.8,0.2
+Plancraft,"action_inventory_to_bench, distinct_inventory_items, dye_item_count, has_crafting_table, step_count",(none),0,5,23.3,27.2,-3.9

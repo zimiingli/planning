@@ -1,10 +1,11 @@
-method,phase1_episodes,phase1_type,per_step_overhead,gate_overhead_calls,deploy_rollouts_per_ep,notes
-base_only,0,none,0,0,0.00,No gating
-always_trigger,0,none,0,0,1.80,Triggers every step
-CATTS,0,optional,K=5 sampling,5,1.07,Fixed thresholds (entropy=0.5 margin=0.4)
-SEAG,200,required (calibration),0,0,1.02,Percentile threshold from Phase 1
-CoRefine,200,required (calibration),0,0,1.05,Percentile threshold from Phase 1
-CaTS,200,required (calibration),0,0,1.77,Platt scaling from Phase 1
-AUQ,0,optional,confidence query,1,1.69,Fixed threshold=0.5
-s1_budget,0,none,0,0,1.04,Fixed budget per episode
-EAAG,50,exploration (50 eps),0,0,1.08,Online exploration then LASSO gate
+method,phase1_episodes,phase1_type,gate_overhead_type,gate_overhead_calls_per_step,deploy_rollouts_per_ep_avg,C_vote_tokens,C_conf_tokens,notes
+base_only,0,none,none,0,0.0,,,No gating
+always_trigger,0,none,none,0,~2-6 (env-dependent),,,Triggers every step
+CaTS,200,calibration (required),none (reads logprob/entropy),0,varies,,,Zero per-step overhead; requires Phase 1 labeled data
+SEAG,200,calibration (required),none (reads logprob/entropy),0,varies,,,Zero per-step overhead; requires Phase 1 labeled data
+CoRefine,200,calibration (required),none (reads logprob/entropy),0,varies,,,Zero per-step overhead; requires Phase 1 labeled data
+CATTS,0,optional,K=5 voting,5,0.02-2.26,1063-5598,,K=5 forward passes EVERY step regardless of trigger
+AUQ,0,optional,confidence query,1,1.08-6.78,,~C_base,+1 LLM call/step for verbalized confidence
+s1_budget,0,none,none,0,~1.0,,,Fixed budget per episode
+BSW,50,exploration,none,0,varies,,,EAAG with intentionally reversed direction
+EAAG,50,exploration (50 eps),none,0,1.08-3.69,,,Zero per-step overhead; online exploration

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Figure A8: Computational cost breakdown — stacked bar chart.
+"""Figure A8: Computational cost breakdown — grouped bar chart showing ×base.
 
-Spec (appendix.tex L832-859):
-- Stacked bar chart. x = methods, y = total compute
-- Dark = calibration/exploration overhead, Light = deployment rollouts
-- EAAG highlighted with red border
-- Sort by total cost ascending
+Shows total normalized cost per method, decomposed into:
+- Base proposer cost (steps × C_base)
+- Gate overhead cost (CATTS K=5 voting, AUQ confidence query)
+- Rollout cost (triggers × C_rollout)
+All normalized by base_only cost per episode.
 """
 import matplotlib
 matplotlib.use('Agg')
@@ -21,68 +21,77 @@ import csv
 from pathlib import Path
 
 HERE = Path(__file__).parent
+COST_CSV = HERE.parent / "tab_cost_components" / "cost_xbase_per_env.csv"
+CONSTANTS_CSV = HERE.parent / "tab_cost_components" / "token_cost_constants.csv"
+MAIN_CSV = HERE.parent / "tab_main_results" / "data.csv"
 
 def main():
-    with open(HERE / 'data.csv', newline='') as f:
-        rows = list(csv.DictReader(f))
+    # Read ×base per env
+    xbase = {}
+    with open(COST_CSV, newline='') as f:
+        for row in csv.DictReader(f):
+            method = row['method']
+            vals = []
+            for env in ['HotpotQA', 'WebShop', 'FEVER', 'TWExpress', 'Plancraft', 'APPS']:
+                v = row.get(env, '')
+                if v:
+                    vals.append(float(v))
+            if vals:
+                xbase[method] = np.mean(vals)
 
-    # Parse data
-    methods = []
-    phase1_eps = []
-    deploy_costs = []
+    # Methods to show (exclude base_only and always_trigger)
+    methods = ['s1_budget', 'SEAG', 'CoRefine', 'EAAG', 'CaTS', 'AUQ', 'CATTS']
+    methods = [m for m in methods if m in xbase]
 
-    for row in rows:
-        m = row['method']
-        if m in ('base_only', 'always_trigger'):
-            continue  # bounds, not gating methods
-        methods.append(m)
-        p1 = int(row['phase1_episodes'])
-        phase1_eps.append(p1)
-        deploy = float(row['deploy_rollouts_per_ep'])
-        deploy_costs.append(deploy)
+    # Sort by total cost
+    methods.sort(key=lambda m: xbase[m])
 
-    # Normalize: phase1 overhead = episodes (scaled), deployment = rollouts/ep * 500
-    # Use simple metric: phase1_eps as calibration cost, deploy * 500 as deployment
-    overhead = np.array(phase1_eps, dtype=float)
-    deployment = np.array(deploy_costs) * 500  # 500 deployment episodes
-    total = overhead + deployment
+    # Gate overhead type
+    gate_type = {'CATTS': 'K=5 voting', 'AUQ': '+1 query'}
+    phase1 = {'SEAG': 200, 'CoRefine': 200, 'CaTS': 200, 'EAAG': 50}
 
-    # Sort by total ascending
-    order = np.argsort(total)
-    methods = [methods[i] for i in order]
-    overhead = overhead[order]
-    deployment = deployment[order]
+    vals = [xbase[m] for m in methods]
+    colors = []
+    for m in methods:
+        if m == 'EAAG':
+            colors.append('#d62728')
+        elif m in gate_type:
+            colors.append('#9467bd')  # purple for gate-overhead methods
+        elif m in phase1 and phase1[m] > 0:
+            colors.append('#1f77b4')  # blue for calibration methods
+        else:
+            colors.append('#7f7f7f')
 
-    fig, ax = plt.subplots(figsize=(3.5, 3))
+    fig, ax = plt.subplots(figsize=(4, 3))
     x = np.arange(len(methods))
+    bars = ax.barh(x, vals, color=colors, edgecolor='white', linewidth=0.5, height=0.6)
 
-    bars1 = ax.bar(x, overhead, color='#4393c3', edgecolor='white', linewidth=0.5,
-                   label='Calibration / Exploration')
-    bars2 = ax.bar(x, deployment, bottom=overhead, color='#f4a582', edgecolor='white',
-                   linewidth=0.5, label='Deployment Rollouts (500 ep)')
-
-    # Highlight EAAG with red border
+    # Highlight EAAG with thicker border
     for i, m in enumerate(methods):
         if m == 'EAAG':
-            for b1, b2 in [(bars1[i], bars2[i])]:
-                b1.set_edgecolor('crimson')
-                b1.set_linewidth(2)
-                b2.set_edgecolor('crimson')
-                b2.set_linewidth(2)
+            bars[i].set_edgecolor('darkred')
+            bars[i].set_linewidth(2)
 
-    # Annotate total on top
-    for i in range(len(methods)):
-        t = overhead[i] + deployment[i]
-        ax.text(i, t + 10, f'{t:.0f}', ha='center', va='bottom', fontsize=8,
-                fontweight='bold')
+    # Annotate ×base on bars
+    for i, v in enumerate(vals):
+        label = f'{v:.1f}×'
+        if methods[i] in gate_type:
+            label += f' ({gate_type[methods[i]]})'
+        ax.text(v + 0.15, i, label, va='center', fontsize=8)
 
-    ax.set_xticks(x)
-    ax.set_xticklabels(methods, rotation=30, ha='right')
-    ax.set_ylabel('Total Cost (episodes equivalent)')
-    ax.legend(loc='upper left')
+    # Phase 1 annotation
+    for i, m in enumerate(methods):
+        if m in phase1 and phase1[m] > 0:
+            ax.text(0.15, i, f'P1={phase1[m]}ep', va='center', fontsize=7,
+                    color='white', fontweight='bold')
+
+    ax.set_yticks(x)
+    ax.set_yticklabels(methods)
+    ax.set_xlabel('Average Cost (×base)')
+    ax.set_xlim(0, max(vals) * 1.35)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
-
+    ax.invert_yaxis()
     add_ygrid(ax)
 
     plt.tight_layout()

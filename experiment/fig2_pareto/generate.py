@@ -98,7 +98,7 @@ def main():
         }
         with open(MAIN_CSV, newline='') as f:
             for row in csv.DictReader(f):
-                cost = row.get('cost_ro_per_ep', '')
+                cost = row.get('cost_xbase', '')
                 if cost == '' or cost == '---':
                     continue
                 env_key = env_remap.get(row['environment'], row['environment'])
@@ -106,7 +106,7 @@ def main():
                     'environment': env_key,
                     'method': row['method'],
                     'success_rate': str(float(row['sr_pct']) / 100),
-                    'avg_rollouts_per_ep': cost,
+                    'cost_xbase': cost,
                 })
 
     # No longer loading data.csv (it has too many dev variants).
@@ -139,7 +139,7 @@ def main():
         # Collect by category
         for row in data:
             method = row['method']
-            cost_str = row.get('avg_rollouts_per_ep', '0')
+            cost_str = row.get('cost_xbase', '0')
             if cost_str == '' or cost_str == '---':
                 continue
             cost = float(cost_str)
@@ -188,7 +188,7 @@ def main():
                             alpha=0.04, color='#333333', zorder=1)
 
         ax.set_title(ENV_LABELS.get(env_key, env_key), fontweight='bold')
-        ax.set_xlabel('Cost (rollouts/episode)', fontsize=9)
+        ax.set_xlabel('Cost ($\\times$base)', fontsize=9)
         ax.set_ylabel('SR (%)', fontsize=9)
         ax.tick_params(labelsize=8)
         ax.spines['top'].set_visible(False)
