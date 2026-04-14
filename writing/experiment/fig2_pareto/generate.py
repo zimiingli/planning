@@ -52,6 +52,14 @@ CB_COLORS = {
     'AUQ': '#8c564b', 'auq': '#8c564b',
     's1_budget': '#e377c2',
 }
+CB_MARKERS = {
+    'CaTS': '^', 'cats': '^',
+    'SEAG': 'v', 'seag': 'v',
+    'CoRefine': 's', 'corefine': 's',
+    'CATTS': 'D', 'catts': 'D',
+    'AUQ': 'o', 'auq': 'o',
+    's1_budget': 'P',
+}
 CB_LABELS = {
     'cats': 'CaTS', 'seag': 'SEAG', 'corefine': 'CoRefine',
     'catts': 'CATTS', 'auq': 'AUQ', 's1_budget': 's1_budget',
@@ -149,53 +157,86 @@ def main():
             cat = categorize(method)
             all_points.append((cost, sr, cat, method))
 
-        # Filter: only keep CB baselines + EAAG (no bounds)
+        # Separate bounds and methods
         paper_points = [(c, s, cat, m) for c, s, cat, m in all_points
                         if cat in ('cb', 'eaag')]
-
-        # Add reference lines for bounds (not as scatter points)
         bounds_pts = {m: (c, s) for c, s, cat, m in all_points if cat == 'bounds'}
-        if 'base_only' in bounds_pts:
-            _, base_sr = bounds_pts['base_only']
-            ax.axhline(base_sr, color='#aaaaaa', linestyle=':', linewidth=0.8, zorder=1)
-            ax.text(ax.get_xlim()[0] if ax.get_xlim()[0] > 0 else 0.5, base_sr + 1.5,
-                    'base', fontsize=7, color='#888888', va='bottom')
-        if 'always_trigger' in bounds_pts:
-            at_cost, at_sr = bounds_pts['always_trigger']
-            ax.axhline(at_sr, color='#aaaaaa', linestyle=':', linewidth=0.8, zorder=1)
-            ax.text(ax.get_xlim()[0] if ax.get_xlim()[0] > 0 else 0.5, at_sr - 3,
-                    'always', fontsize=7, color='#888888', va='top')
 
-        # Plot by category
-        for cost, sr, cat, method in paper_points:
+        # Plot methods with jitter for overlapping points
+        marker_size = 60
+        # Detect overlaps: group by (cost, sr) proximity
+        pts_for_jitter = [(c, s, cat, m) for c, s, cat, m in paper_points]
+        cost_range = max(c for c, s, _, _ in pts_for_jitter) - min(c for c, s, _, _ in pts_for_jitter) if len(pts_for_jitter) > 1 else 1
+        sr_range = max(s for _, s, _, _ in pts_for_jitter) - min(s for _, s, _, _ in pts_for_jitter) if len(pts_for_jitter) > 1 else 1
+        cost_thresh = max(cost_range * 0.05, 0.3)
+        sr_thresh = max(sr_range * 0.05, 1.0)
+
+        # Assign jitter offsets to overlapping points
+        jitter_offsets = {}
+        used = []
+        for i, (c1, s1, cat1, m1) in enumerate(pts_for_jitter):
+            cluster = [i]
+            for j, (c2, s2, cat2, m2) in enumerate(pts_for_jitter):
+                if i != j and abs(c1 - c2) < cost_thresh and abs(s1 - s2) < sr_thresh:
+                    cluster.append(j)
+            cluster = sorted(set(cluster))
+            if len(cluster) > 1 and tuple(cluster) not in used:
+                used.append(tuple(cluster))
+                for k, idx in enumerate(cluster):
+                    angle = 2 * np.pi * k / len(cluster)
+                    jitter_offsets[idx] = (
+                        np.cos(angle) * cost_thresh * 0.4,
+                        np.sin(angle) * sr_thresh * 0.4
+                    )
+
+        for i, (cost, sr, cat, method) in enumerate(paper_points):
+            dc, ds = jitter_offsets.get(i, (0, 0))
             if cat == 'cb':
                 color = CB_COLORS.get(method, '#17becf')
+                marker = CB_MARKERS.get(method, '^')
                 label = CB_LABELS.get(method, method)
-                h = ax.scatter(cost, sr, c=color, marker='^', s=55, alpha=0.85,
-                               edgecolors='none', zorder=4)
+                h = ax.scatter(cost + dc, sr + ds, c=color, marker=marker,
+                               s=marker_size, alpha=0.85, edgecolors='white',
+                               linewidths=0.5, zorder=4)
                 if label not in legend_handles:
                     legend_handles[label] = h
             elif cat == 'eaag':
-                h = ax.scatter(cost, sr, c='crimson', marker='*', s=280,
-                               edgecolors='darkred', linewidths=0.6, zorder=10)
+                h = ax.scatter(cost + dc, sr + ds, c='crimson', marker='*',
+                               s=marker_size * 2, edgecolors='darkred',
+                               linewidths=0.5, zorder=10)
                 legend_handles['EAAG'] = h
 
-        # Pareto frontier (over CB + EAAG only)
-        paper_pts = [(c, s) for c, s, cat, m in paper_points]
-        if len(paper_pts) >= 2:
-            pts_arr = np.array(paper_pts)
-            front_idx = pareto_front(pts_arr)
-            front_pts = pts_arr[front_idx]
-            # Sort by cost for line
-            order = front_pts[:, 0].argsort()
-            front_pts = front_pts[order]
-            ax.plot(front_pts[:, 0], front_pts[:, 1], '--', color='#333333',
-                    linewidth=1.0, alpha=0.5, zorder=2)
-            # Light shading below
-            ax.fill_between(front_pts[:, 0], 0, front_pts[:, 1],
-                            alpha=0.04, color='#333333', zorder=1)
+        # Set x-axis with padding
+        all_costs = [c for c, s, cat, m in paper_points]
+        if all_costs:
+            x_min = max(0, min(all_costs) - 0.5)
+            x_max = max(all_costs) + 1.0
+            ax.set_xlim(x_min, x_max)
 
-        ax.set_title(ENV_LABELS.get(env_key, env_key), fontweight='bold')
+        # Set y-axis to zoom into the data range with padding
+        all_srs = [s for _, s, _, _ in paper_points]
+        if all_srs:
+            sr_min = min(all_srs)
+            sr_max = max(all_srs)
+            sr_pad = max((sr_max - sr_min) * 0.15, 2.0)
+            ax.set_ylim(max(0, sr_min - sr_pad), min(100, sr_max + sr_pad))
+
+        # EAAG-dominated region (use original positions, not jittered)
+        eaag_pts = [(c, s) for c, s, cat, m in paper_points if cat == 'eaag']
+        if eaag_pts:
+            eaag_cost, eaag_sr = eaag_pts[0]
+            ax.fill_between([eaag_cost, x_max + 5], ax.get_ylim()[0], eaag_sr,
+                            color='crimson', alpha=0.06, zorder=0)
+            ax.axvline(eaag_cost, color='crimson', linestyle=':', linewidth=0.5,
+                       alpha=0.3, ymax=(eaag_sr - ax.get_ylim()[0]) /
+                       (ax.get_ylim()[1] - ax.get_ylim()[0]) if ax.get_ylim()[1] != ax.get_ylim()[0] else 0.5,
+                       zorder=0)
+            ax.axhline(eaag_sr, color='crimson', linestyle=':', linewidth=0.5,
+                       alpha=0.3, xmin=(eaag_cost - ax.get_xlim()[0]) /
+                       (ax.get_xlim()[1] - ax.get_xlim()[0]) if ax.get_xlim()[1] != ax.get_xlim()[0] else 0.5,
+                       zorder=0)
+
+        ax.set_title(ENV_LABELS.get(env_key, env_key))
         ax.set_xlabel('Cost ($\\times$base)', fontsize=9)
         ax.set_ylabel('SR (%)', fontsize=9)
         ax.tick_params(labelsize=8)
@@ -212,8 +253,7 @@ def main():
             handles.append(legend_handles[name])
             labels.append(name)
     fig.legend(handles, labels, loc='upper center', ncol=len(labels),
-               fontsize=9, bbox_to_anchor=(0.5, 1.01), frameon=True,
-               edgecolor='#cccccc', fancybox=True)
+               fontsize=9, bbox_to_anchor=(0.5, 1.01), frameon=False)
 
     plt.tight_layout(rect=[0, 0, 1, 0.95])
     fig.savefig(OUTPUT_PDF, bbox_inches='tight', dpi=200)

@@ -4,15 +4,16 @@
 matches the Two-Source Model prediction: information-sufficiency proxies dominate
 in Type~I environments; decision-complexity proxies dominate in mixed/Type~D.}
 \label{tab:signal-identity}
+\small
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{lllcl}
 \toprule
-\textbf{Environment} & \textbf{Type} & \textbf{Strongest Signal} & $|\rho|$ & \textbf{Interpretation} \\
+\textbf{Env} & \textbf{Type} & \textbf{Strongest Signal} & $|\rho|$ & \textbf{Interpretation} \\
 \midrule
 HotpotQA   & Info-Poverty    & step\_count             & 0.494 & Info accumulation \\
 FEVER      & Info-Poverty    & step\_count             & 0.619 & Info accumulation \\
 TWExpress  & Info-Poverty    & step\_count             & 0.477 & Exploration depth \\
-WebShop    & Mixed           & num\_available\_actions  & 0.444 & Decision-space size \\
+WebShop    & Mixed           & num\_avail\_actions      & 0.444 & Decision-space size \\
 APPS       & Decision-Diff   & step\_count             & 0.339 & Debugging depth \\
 Plancraft  & Weak (harmful)  & has\_output             & 0.162 & Rollout harmful \\
 \bottomrule

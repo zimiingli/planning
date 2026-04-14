@@ -1,26 +1,29 @@
 \begin{table}[H]
 \centering
-\caption{Computational cost breakdown per method. Phase~1 = pre-deployment calibration or exploration.
+\caption{Computational cost breakdown per method.
 Gate OH = additional LLM calls per step beyond the base proposer.
-Cost ($\times$base) = total deployment tokens normalized by base\_only tokens per episode, averaged across 6 environments.
-$^\dagger$Requires calibration data.}
+Cost ($\times$base) = total \emph{deployment} tokens normalized by
+base\_only tokens per episode, averaged across 6 environments.
+Calibration/exploration overhead is excluded for all methods.
+$^\dagger$Requires separate calibration data.}
 \label{tab:cost-components}
+\small
 \resizebox{\columnwidth}{!}{%
-\begin{tabular}{lccllc}
+\begin{tabular}{lclc}
 \toprule
-\textbf{Method} & \textbf{Phase~1} & \textbf{Type} & \textbf{Gate OH/step} & \textbf{OH source} & \textbf{Avg $\times$base} \\
+\textbf{Method} & \textbf{Gate OH/step} & \textbf{OH source} & \textbf{Avg $\times$b} \\
 \midrule
-base\_only        & 0   & ---            & 0          & ---                    & 1.00 \\
-always\_trigger   & 0   & ---            & 0          & ---                    & 5.97 \\
+base\_only        & 0          & ---                    & 1.00 \\
+always\_trigger   & 0          & ---                    & 6.00 \\
 \midrule
-CATTS             & 0   & optional       & $+K{=}5$ calls & Voting (forward pass)  & 6.32 \\
-SEAG$^\dagger$    & 200 & calibration    & 0          & Reads logprob          & 5.21 \\
-CoRefine$^\dagger$& 200 & calibration    & 0          & Reads entropy          & 5.16 \\
-CaTS$^\dagger$    & 200 & calibration    & 0          & Reads confidence       & 7.75 \\
-AUQ               & 0   & optional       & $+1$ query & Confidence question    & 5.90 \\
-s1\_budget        & 0   & ---            & 0          & ---                    & 2.38 \\
+CATTS             & $+K{=}5$ calls & Voting (fwd pass)  & 7.98 \\
+SEAG$^\dagger$    & 0          & Reads logprob          & 6.37 \\
+CoRefine$^\dagger$& 0          & Reads entropy          & 6.33 \\
+CaTS$^\dagger$    & 0          & Reads confidence       & 8.26 \\
+AUQ               & $+1$ query & Confidence question    & 7.67 \\
+s1\_budget        & 0          & ---                    & 6.35 \\
 \midrule
-\textbf{EAAG}     & \textbf{50} & exploration & \textbf{0} & \textbf{Learned gate} & \textbf{5.58} \\
+\textbf{EAAG}     & \textbf{0} & \textbf{Learned gate} & \textbf{5.85} \\
 \bottomrule
 \end{tabular}%
 }

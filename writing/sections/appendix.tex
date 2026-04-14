@@ -107,6 +107,14 @@ proportion $p_I(\mathcal{E})$, which varies across environments.
 This makes direction reversal a structural consequence of
 aggregating heterogeneous uncertainty sources.
 
+\subsection{Search-Based Optimizers}
+
+Search methods such as Tree of Thoughts~\cite{yao2023tree},
+LATS~\cite{zhou2024lats}, RAP~\cite{hao2023reasoning}, and
+FLARE~\cite{wang2026flare} improve \emph{what} the optimizer does
+through tree search, value propagation, and lookahead evaluation.
+These are orthogonal to our work: we control \emph{when} to invoke
+the optimizer, and our gate composes with any such procedure.
 
 % ============================================================
 % B. THEORETICAL MATERIAL
@@ -188,7 +196,7 @@ $|\rho(\mathcal{E})|$.
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{lcccc}
 \toprule
-Environment & Correct SR & Wrong SR & $\Delta$ SR & $|\rho|$ (strongest) \\
+Environment & Correct SR & Wrong SR & $\Delta$ SR & $|\rho|$ \\
 \midrule
 FEVER          & 49.8\% & 13.0\% & $-$36.8 & 0.619 \\
 HotpotQA       & 95.2\% & 58.2\% & $-$37.0 & 0.494 \\
@@ -379,9 +387,7 @@ across heterogeneous features (e.g., \texttt{step\_count} and
 \texttt{token\_entropy} live on very different scales).
 
 \paragraph{Sparse solver.}
-We induce sparsity using $\ell_1$-regularized logistic regression
-(\texttt{scikit-learn}'s \texttt{LogisticRegression} with
-\texttt{liblinear} solver). The regularization strength $C$ is
+We induce sparsity using $\ell_1$-regularized logistic regression. The regularization strength $C$ is
 selected by 5-fold cross-validation over the grid
 $C \in \{0.01, 0.03, 0.1, 0.3, 1.0, 3.0, 10.0\}$, optimizing
 held-out log-loss on $\mathcal{D}$. Features with zero coefficient
@@ -418,50 +424,18 @@ Requirements: Return a dict with string keys and float values. Use only Python s
 \subsection{Computational Cost Breakdown}
 \label{app:cost}
 
-Table~\ref{tab:cost-components} and Figure~\ref{fig:cost-breakdown}
-break down the computational cost per method. Cost is reported as
-$\times$base: total deployment tokens (base proposer + gate overhead +
-rollout calls) normalized by base\_only tokens per episode. This metric
-captures hidden per-step overhead that rollouts-per-episode misses:
-CATTS incurs $K{=}5$ forward passes \emph{every step} regardless of
-the gating decision, and AUQ issues a confidence query every step.
-
-Table~\ref{tab:token-constants} reports the per-environment token
-cost constants used to compute $\times$base. All constants are
-empirically measured except FEVER, which is estimated from HotpotQA
-(same optimizer type).
+Table~\ref{tab:cost-components} breaks down the per-method cost
+structure. Cost is reported as $\times$base: total
+\emph{deployment} tokens normalized by base\_only tokens per
+episode. Calibration or exploration overhead is excluded for all
+methods, ensuring a fair comparison of runtime efficiency. This
+metric captures hidden per-step overhead that raw rollout counts
+miss: CATTS incurs $K{=}5$ forward passes every step regardless
+of the gating decision, and AUQ issues a confidence query every
+step. EAAG requires 50 exploration episodes for calibration but
+adds zero per-step gate overhead at deployment.
 
 \input{experiment/tab_cost_components/tab_cost_components.tex}
-
-\begin{table}[H]
-\centering
-\caption{Token cost constants per environment. $C_{\text{base}}$:
-tokens per base proposer step. $C_{\text{rollout}}$: tokens per
-rollout trigger. $C_{\text{vote}}$: CATTS $K{=}5$ voting tokens
-per step. $^\ddagger$Estimated from HotpotQA (same optimizer type).}
-\label{tab:token-constants}
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{lrrrrl}
-\toprule
-\textbf{Environment} & $C_{\text{base}}$ & $C_{\text{rollout}}$ & $C_{\text{vote}}$ & \textbf{Base tokens/ep} & \\
-\midrule
-HotpotQA   &   216 &  7{,}743 & 1{,}063 & 1{,}348 & \\
-WebShop    &   705 &  9{,}089 & 3{,}385 & 9{,}870 & \\
-FEVER$^\ddagger$ & 250 & 7{,}500 & 1{,}250 & 1{,}438 & estimated \\
-TWExpress  &   524 &  8{,}002 & 2{,}620 & 13{,}660 & \\
-Plancraft  & 1{,}120 & 10{,}651 & 5{,}598 & 13{,}418 & \\
-APPS       &   840 &  3{,}306 & 4{,}198 & 2{,}486 & \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\columnwidth]{figures/fig_cost_breakdown.pdf}
-\caption{Computational cost breakdown ($\times$base). EAAG (red border) requires only 50 exploration episodes with zero per-step gate overhead. CATTS's $K{=}5$ voting overhead dominates its cost even when rollouts are rarely triggered (e.g., APPS: $C_{\text{vote}}{=}4{,}198 > C_{\text{rollout}}{=}3{,}306$).}
-\label{fig:cost-breakdown}
-\end{figure}
 
 
 % ============================================================
@@ -485,21 +459,24 @@ $\times$base metric reveals hidden costs: CATTS on APPS costs
 6.00$\times$base (due to $K{=}5$ per-step voting) despite
 barely triggering rollouts, while EAAG costs only
 2.61$\times$ at 12.2\,pp higher SR. FEVER is the main
-exception, where EAAG (49.8\%) underperforms CaTS (50.2\%);
-this failure mode is analyzed in
-\S\ref{sec:discussion}.
+exception: EAAG achieves the highest SR (49.8\%) but at
+16.51$\times$base, the highest cost among all environments.
+This failure mode is analyzed in \S\ref{sec:discussion}.
 
 \paragraph{Phi-3.5-mini.} Fixed-direction baselines degrade
-sharply on this backbone. On FEVER, all six baselines score below
-24\% (base: 7.2\%), while EAAG reaches 16.5\%. On WebShop, EAAG
-(57.3\%) exceeds the best baseline (CaTS, 41.7\%) by 15.6\,pp.
+sharply on this backbone. On FEVER, all six baselines score at or
+below 20\% (base: 7.2\%), while EAAG reaches 20.5\%. On WebShop,
+EAAG (57.3\%) exceeds the best baseline (s1\_budget, 43.0\%) by
+14.3\,pp at lower cost (2.56$\times$ vs.\ 3.89$\times$).
 
 \paragraph{Llama-3.1-8B.} Direction reversal interacts with model
 capacity. On TWExpress, CaTS collapses to near-base performance
-(35.8\% vs.\ base 36.5\%) because it never triggers, while EAAG
-achieves 94.8\%. On HotpotQA and APPS, most baselines perform
-comparably to EAAG because the high base SR leaves little room for
-gating to help.
+(35.8\% vs.\ base 36.5\%) because it rarely triggers, while EAAG
+achieves 94.8\%. On FEVER, EAAG (54.7\%) is competitive with CaTS
+(56.3\%), unlike Qwen3 where FEVER is the weakest environment.
+On APPS, AUQ drops to
+46.0\% (below base 60.2\%), demonstrating that wrong-direction
+gating actively harms performance on this backbone.
 
 
 % ============================================================
@@ -534,14 +511,14 @@ then produces a Python function extracting 5 task-specific features
 subsequently selects or discards each feature based on its predictive
 value for rollout utility.
 
-\begin{table}[H]
+\begin{table*}[h!]
 \centering
 \caption{LLM-generated features per environment. Each environment
 receives 5 LLM-proposed features; LASSO selects those with non-zero
 coefficients. Environments with richer task-specific structure
 (WebShop, TWExpress) retain more LLM features.}
 \label{tab:llm-features}
-\resizebox{\columnwidth}{!}{%
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{lcl}
 \toprule
 \textbf{Environment} & \textbf{Sel./Gen.} & \textbf{LASSO-Selected LLM Features} \\
@@ -555,7 +532,7 @@ Plancraft  & 0/5 & (none selected) \\
 \bottomrule
 \end{tabular}%
 }
-\end{table}
+\end{table*}
 
 Environments with rich task-specific structure benefit most from LLM
 features: WebShop's choice-dominated interface is well captured by
@@ -637,7 +614,6 @@ Hidden-state probe  & 0.87 & 0.79 & 0.99 & 0.95 \\
 \end{tabular}%
 }
 \end{table}
-
 
 % ============================================================
 % F. ROBUSTNESS AND ADDITIONAL EXPERIMENTS

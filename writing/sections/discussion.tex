@@ -4,13 +4,16 @@
 \section{Limitations}
 \label{sec:discussion}
 
-EAAG underperforms on FEVER, where rollout value concentrates in the
-first one or two steps and random exploration misses these critical
-steps with 50\% probability. This failure mode is itself predicted by
-the Two-Source Model: FEVER is the most extreme Type~I environment,
-where undirected exploration is least efficient. Addressing this
-through curriculum-based exploration is an important direction for
-future work. We verify our findings on three backbones (4B--8B)
+EAAG's weakest result is on FEVER, where all methods incur high
+cost due to the environment's extreme Type~I structure: EAAG costs
+16.51$\times$base and achieves 49.8\% SR, while cheaper alternatives
+like SEAG (47.3\% at 17.19$\times$) are only marginally lower in both
+SR and cost. Rollout value in FEVER concentrates in the first one
+or two steps, and random exploration misses these critical steps with
+50\% probability. This failure mode is predicted by the Two-Source
+Model: FEVER is the most extreme Type~I environment, where undirected
+exploration is least efficient. Addressing this through
+curriculum-based exploration is an important direction for future work. We verify our findings on three backbones (4B--8B)
 across all six environments
 (Appendix~\ref{app:multi-backbone}); testing on larger models (70B+)
 remains future work. The Two-Source Model assumes linear conditional
