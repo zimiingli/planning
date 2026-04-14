@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.1.24)  13 APR 2026 18:47
+=======
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.1.24)  13 APR 2026 14:47
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1241,6 +1245,7 @@ Underfull \hbox (badness 1194) in paragraph at lines 466--471
  []
 
 
+<<<<<<< HEAD
 Underfull \hbox (badness 1975) in paragraph at lines 466--471
 \OT1/ptm/m/n/10.95 43.0%) by 14.3pp at lower cost (2.56$\OMS/cmsy/m/n/10.95 ^^B
 $ \OT1/ptm/m/n/10.95 vs.
@@ -1248,11 +1253,18 @@ $ \OT1/ptm/m/n/10.95 vs.
 
 
 Underfull \hbox (badness 8151) in paragraph at lines 495--502
+=======
+Underfull \hbox (badness 8151) in paragraph at lines 518--525
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 \OT1/ptm/m/n/10.95 The LASSO co-ef-fi-cient ma-trix shows that
  []
 
 
+<<<<<<< HEAD
 Underfull \hbox (badness 10000) in paragraph at lines 495--502
+=======
+Underfull \hbox (badness 10000) in paragraph at lines 518--525
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 \OT1/pcr/m/n/10.95 action[]is[]click\OT1/ptm/m/n/10.95 ) re-flect-ing its choic
 e-
  []
@@ -1262,39 +1274,67 @@ e-
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
+<<<<<<< HEAD
 Underfull \hbox (badness 1097) in paragraph at lines 537--549
+=======
+Underfull \hbox (badness 1097) in paragraph at lines 560--572
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 \OT1/ptm/m/n/10.95 ben-e-fit most from LLM fea-tures: Web-Shop's
  []
 
 
+<<<<<<< HEAD
 Underfull \hbox (badness 10000) in paragraph at lines 537--549
+=======
+Underfull \hbox (badness 10000) in paragraph at lines 560--572
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 \OT1/ptm/m/n/10.95 while TWEx-press's ex-plo-ration me-chan-
  []
 
 
+<<<<<<< HEAD
 Underfull \hbox (badness 10000) in paragraph at lines 537--549
+=======
+Underfull \hbox (badness 10000) in paragraph at lines 560--572
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 \OT1/ptm/m/n/10.95 ics are re-flected in \OT1/pcr/m/n/10.95 closed[]ratio \OT1/
 ptm/m/n/10.95 and
  []
 
 
+<<<<<<< HEAD
 Underfull \hbox (badness 2384) in paragraph at lines 537--549
+=======
+Underfull \hbox (badness 2384) in paragraph at lines 560--572
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 \OT1/pcr/m/n/10.95 action[]look[]around\OT1/ptm/m/n/10.95 . In con-trast, Plan-
 
  []
 
 
+<<<<<<< HEAD
 Underfull \hbox (badness 1694) in paragraph at lines 537--549
+=======
+Underfull \hbox (badness 1694) in paragraph at lines 560--572
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 \OT1/ptm/m/n/10.95 craft's rollout-harmful na-ture means no LLM
  []
 
 
+<<<<<<< HEAD
 Underfull \hbox (badness 1142) in paragraph at lines 537--549
+=======
+Underfull \hbox (badness 1142) in paragraph at lines 560--572
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 \OT1/ptm/m/n/10.95 fea-ture im-proves prediction---LASSO cor-rectly
  []
 
 
+<<<<<<< HEAD
 Underfull \hbox (badness 1117) in paragraph at lines 537--549
+=======
+Underfull \hbox (badness 1117) in paragraph at lines 560--572
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 \OT1/ptm/m/n/10.95 fil-ters all five pro-pos-als. This pat-tern aligns
  []
 
@@ -1302,6 +1342,7 @@ Underfull \hbox (badness 1117) in paragraph at lines 537--549
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 LaTeX Font Info:    Trying to load font information for OMS+pcr on input line 5
+<<<<<<< HEAD
 57.
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/omspcr.fd
@@ -1311,74 +1352,137 @@ LaTeX Font Info:    Font shape `OMS/pcr/m/n' in size <9> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 557.
 LaTeX Font Info:    Trying to load font information for TS1+pcr on input line 5
 74.
+=======
+80.
+ (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/omspcr.fd
+File: omspcr.fd 
+)
+LaTeX Font Info:    Font shape `OMS/pcr/m/n' in size <9> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 580.
+LaTeX Font Info:    Trying to load font information for TS1+pcr on input line 5
+97.
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ts1pcr.fd
 File: ts1pcr.fd 2001/06/04 font definitions for TS1/pcr.
 )
+<<<<<<< HEAD
 Underfull \hbox (badness 10000) in paragraph at lines 555--585
+=======
+Underfull \hbox (badness 10000) in paragraph at lines 578--608
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 []\OT1/pcr/m/n/9 def extract[]features(state[]text,
  []
 
 
+<<<<<<< HEAD
 Underfull \hbox (badness 10000) in paragraph at lines 555--585
+=======
+Underfull \hbox (badness 10000) in paragraph at lines 578--608
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 [] \OT1/pcr/m/n/9 keywords = ["gluten free",
  []
 
 
+<<<<<<< HEAD
 Underfull \hbox (badness 10000) in paragraph at lines 555--585
+=======
+Underfull \hbox (badness 10000) in paragraph at lines 578--608
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 []  \OT1/pcr/m/n/9 "price lower than", "size",
  []
 
 
+<<<<<<< HEAD
 Underfull \hbox (badness 10000) in paragraph at lines 555--585
+=======
+Underfull \hbox (badness 10000) in paragraph at lines 578--608
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 [] \OT1/pcr/m/n/9 matches = sum(1 for kw in
  []
 
 
+<<<<<<< HEAD
 Overfull \hbox (29.19377pt too wide) in paragraph at lines 555--585
+=======
+Overfull \hbox (29.19377pt too wide) in paragraph at lines 578--608
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 [] \OT1/pcr/m/n/9 features['instruction[]keyword[]count']
  []
 
 
+<<<<<<< HEAD
 Underfull \hbox (badness 10000) in paragraph at lines 555--585
+=======
+Underfull \hbox (badness 10000) in paragraph at lines 578--608
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 []  \OT1/pcr/m/n/9 float(matches) /
  []
 
 
+<<<<<<< HEAD
 Underfull \hbox (badness 10000) in paragraph at lines 555--585
+=======
+Underfull \hbox (badness 10000) in paragraph at lines 578--608
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 []  \OT1/pcr/m/n/9 1.0 if step[]count <= 2 else
  []
 
 
+<<<<<<< HEAD
 Underfull \hbox (badness 10000) in paragraph at lines 555--585
+=======
+Underfull \hbox (badness 10000) in paragraph at lines 578--608
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 []  \OT1/pcr/m/n/9 1.0 if
  []
 
 
+<<<<<<< HEAD
 Underfull \hbox (badness 10000) in paragraph at lines 555--585
+=======
+Underfull \hbox (badness 10000) in paragraph at lines 578--608
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 []  \OT1/pcr/m/n/9 r"price lower
  []
 
 
+<<<<<<< HEAD
 Underfull \hbox (badness 10000) in paragraph at lines 555--585
+=======
+Underfull \hbox (badness 10000) in paragraph at lines 578--608
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 [] \OT1/pcr/m/n/9 filter[]kws =
  []
 
 
+<<<<<<< HEAD
 Underfull \hbox (badness 10000) in paragraph at lines 555--585
+=======
+Underfull \hbox (badness 10000) in paragraph at lines 578--608
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 []  \OT1/pcr/m/n/9 if kw in state[]text.lower())
  []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
+<<<<<<< HEAD
  [16]
 Underfull \hbox (badness 1237) in paragraph at lines 670--679
+=======
+
+Underfull \hbox (badness 1237) in paragraph at lines 694--703
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 \OT1/ptm/m/n/10.95 en-vi-ron-ments: Hot-potQA shows the strongest
  []
 
 
+<<<<<<< HEAD
 Underfull \hbox (badness 1831) in paragraph at lines 670--679
+=======
+Underfull \hbox (badness 1831) in paragraph at lines 694--703
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 \OT1/ptm/m/n/10.95 shift ($\OT1/cmr/m/n/10.95 ^^A[][]0\OML/cmm/m/it/10.95 :\OT1
 /cmr/m/n/10.95 261$\OT1/ptm/m/n/10.95 ), with late-step en-tropy re-
  []
@@ -1389,7 +1493,11 @@ Underfull \hbox (badness 2726) in paragraph at lines 5--5
  []
 
 )
+<<<<<<< HEAD
 Underfull \hbox (badness 1077) in paragraph at lines 695--708
+=======
+Underfull \hbox (badness 1077) in paragraph at lines 719--732
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 \OT1/ptm/m/n/10.95 To pro-vide stronger ev-i-dence that in-for-ma-tion
  []
 
@@ -1397,13 +1505,21 @@ Underfull \hbox (badness 1077) in paragraph at lines 695--708
 File: figures/fig_multi_backbone_heatmap.pdf Graphic file (type pdf)
 <use figures/fig_multi_backbone_heatmap.pdf>
 Package pdftex.def Info: figures/fig_multi_backbone_heatmap.pdf  used on input 
+<<<<<<< HEAD
 line 739.
+=======
+line 763.
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 (pdftex.def)             Requested size: 455.24411pt x 201.43216pt.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
+<<<<<<< HEAD
 Underfull \hbox (badness 1067) in paragraph at lines 744--750
+=======
+Underfull \hbox (badness 1067) in paragraph at lines 768--774
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 \OT1/ptm/m/n/10.95 or be-low base[]only (7.2% base $\OMS/cmsy/m/n/10.95 !$ \OT1
 /ptm/m/n/10.95 8.5--23%),
  []
@@ -1412,13 +1528,22 @@ Underfull \hbox (badness 1067) in paragraph at lines 744--750
 File: figures/fig_multi_backbone_sr.pdf Graphic file (type pdf)
 <use figures/fig_multi_backbone_sr.pdf>
 Package pdftex.def Info: figures/fig_multi_backbone_sr.pdf  used on input line 
+<<<<<<< HEAD
 753.
 (pdftex.def)             Requested size: 455.24411pt x 268.05443pt.
+=======
+777.
+(pdftex.def)             Requested size: 455.24411pt x 158.73132pt.
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
+<<<<<<< HEAD
 Underfull \hbox (badness 1400) in paragraph at lines 801--808
+=======
+Underfull \hbox (badness 1400) in paragraph at lines 825--832
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 \OT1/ptm/m/n/10.95 (MLP 45.3% $\OML/cmm/m/it/10.95 <$ \OT1/ptm/m/n/10.95 lo-gis
 -tic 62.0%), be-cause the
  []
@@ -1429,7 +1554,11 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 <figures/fig_trigger_adapt.pdf, id=859, 504.85918pt x 274.38448pt>
 File: figures/fig_trigger_adapt.pdf Graphic file (type pdf)
 <use figures/fig_trigger_adapt.pdf>
+<<<<<<< HEAD
 Package pdftex.def Info: figures/fig_trigger_adapt.pdf  used on input line 831.
+=======
+Package pdftex.def Info: figures/fig_trigger_adapt.pdf  used on input line 855.
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 
 (pdftex.def)             Requested size: 455.24411pt x 247.4252pt.
 
@@ -1471,6 +1600,7 @@ ive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive
 texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2023/te
 xmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2023/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2023/texmf-
+<<<<<<< HEAD
 dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2023/te
 xmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2023/texmf-dist
 /fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/typ
@@ -1478,6 +1608,16 @@ e1/urw/times/utmr8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/tim
 es/utmri8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/zapfding/uzd
 r.pfb>
 Output written on main.pdf (21 pages, 468958 bytes).
+=======
+dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2023/te
+xmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/202
+3/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2023/texmf-
+dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2023/texmf-dist/fonts
+/type1/urw/times/utmr8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw
+/times/utmri8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/zapfding
+/uzdr.pfb>
+Output written on main.pdf (20 pages, 498308 bytes).
+>>>>>>> 6f934364a1e541379f06e8dd1b33c1bf9148e95e
 PDF statistics:
  1219 PDF objects out of 1440 (max. 8388607)
  842 compressed objects within 9 object streams
