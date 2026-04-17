@@ -7,4 +7,4 @@ CoRefine,200,required (calibration),0,0,1.05,Percentile threshold from Phase 1
 CaTS,200,required (calibration),0,0,1.77,Platt scaling from Phase 1
 AUQ,0,optional,confidence query,1,1.69,Fixed threshold=0.5
 s1_budget,0,none,0,0,1.04,Fixed budget per episode
-EAAG,50,exploration (50 eps),0,0,1.08,Online exploration then LASSO gate
+DIAL,50,exploration (50 eps),0,0,1.08,Online exploration then LASSO gate

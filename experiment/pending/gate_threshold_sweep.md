@@ -1,7 +1,7 @@
 # Gate Threshold Sensitivity Sweep
 
 ## What
-Test EAAG's robustness to the gate threshold parameter tau. Sweep tau in {0.3, 0.4, 0.5, 0.6, 0.7} on representative environments. This is Panel (b) of Figure A2 in the appendix.
+Test DIAL's robustness to the gate threshold parameter tau. Sweep tau in {0.3, 0.4, 0.5, 0.6, 0.7} on representative environments. This is Panel (b) of Figure A2 in the appendix.
 
 ## Models
 - Qwen3-4B (primary, matches main paper)
@@ -20,7 +20,7 @@ Test EAAG's robustness to the gate threshold parameter tau. Sweep tau in {0.3, 0
 - [ ] Collect SR vs tau curves
 
 ## Implementation Note
-The gate threshold is set in the EAAG method config. Need to either add `--gate-threshold` CLI arg to `p6_e_method_upgrade.py` or sed-patch the config file per job.
+The gate threshold is set in the DIAL method config. Need to either add `--gate-threshold` CLI arg to `p6_e_method_upgrade.py` or sed-patch the config file per job.
 
 ## Raw Data Location (when done)
 ```

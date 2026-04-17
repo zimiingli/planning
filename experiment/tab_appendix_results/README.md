@@ -6,11 +6,11 @@ Appendix. Additional Environments.
 
 ## Description
 
-Results for APPS Interview and CRUXEval. EAAG achieves 73.0% on APPS Intv. CRUXEval EAAG data pending (Job 23292522).
+Results for APPS Interview and CRUXEval. DIAL achieves 73.0% on APPS Intv. CRUXEval DIAL data pending (Job 23292522).
 
 ## Data Status
 
-Partially complete. APPS Intv has EAAG/SCG/AUQ data. CRUXEval missing EAAG results (pending GPU job).
+Partially complete. APPS Intv has DIAL/SCG/AUQ data. CRUXEval missing DIAL results (pending GPU job).
 
 ## Data Source
 

@@ -7,11 +7,11 @@ Section 5.2 Main text, alongside main results.
 ## Writing Prompt
 > **[DATA NEEDED: Table tab:winloss]** Win/loss summary
 > over all baseline-environment pairs. Rows = baselines, columns = number
-> of environments where EAAG wins/ties/loses on SR and on Cost.
+> of environments where DIAL wins/ties/loses on SR and on Cost.
 
 ## Description
 
-EAAG vs 6 CB methods win/loss summary. Qwen3 result: 34 wins, 2 losses across 38 comparisons. Only losses are HotpotQA vs AUQ and s1 (-1.8pp each, not statistically significant).
+DIAL vs 6 CB methods win/loss summary. Qwen3 result: 34 wins, 2 losses across 38 comparisons. Only losses are HotpotQA vs AUQ and s1 (-1.8pp each, not statistically significant).
 
 ## Data Status
 
@@ -28,6 +28,6 @@ EAAG vs 6 CB methods win/loss summary. Qwen3 result: 34 wins, 2 losses across 38
 
 ## Files in this folder
 
-- `data.csv` — Qwen3 win/loss (cb_method, eaag_wins, eaag_losses, n_envs)
+- `data.csv` — Qwen3 win/loss (cb_method, dial_wins, dial_losses, n_envs)
 - `generate.py`
 - `output.pdf`

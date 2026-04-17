@@ -4,8 +4,8 @@
 \section{Limitations}
 \label{sec:discussion}
 
-EAAG's weakest result is on FEVER, where all methods incur high
-cost due to the environment's extreme Type~I structure: EAAG costs
+DIAL's weakest result is on FEVER, where all methods incur high
+cost due to the environment's extreme Type~I structure: DIAL costs
 16.51$\times$base and achieves 49.8\% SR, while cheaper alternatives
 like SEAG (47.3\% at 17.19$\times$) are only marginally lower in both
 SR and cost. Rollout value in FEVER concentrates in the first one
@@ -18,6 +18,6 @@ across all six environments
 (Appendix~\ref{app:multi-backbone}); testing on larger models (70B+)
 remains future work. The Two-Source Model assumes linear conditional
 relationships and serves as an explanatory framework rather than a
-precise predictor of $\rho$ values. EAAG requires 50 exploration
+precise predictor of $\rho$ values. DIAL requires 50 exploration
 episodes per new environment, a modest but non-zero cost amortized
 over subsequent deployment.

@@ -11,11 +11,11 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 # ── Core palette ──────────────────────────────────────────────
-# EAAG (our method) — always prominent
-EAAG_COLOR   = '#C0392B'   # crimson-red
-EAAG_EDGE    = '#922B21'
-EAAG_MARKER  = '*'
-EAAG_SIZE    = 260
+# DIAL (our method) — always prominent
+DIAL_COLOR   = '#C0392B'   # crimson-red
+DIAL_EDGE    = '#922B21'
+DIAL_MARKER  = '*'
+DIAL_SIZE    = 260
 
 # Two-Source Model types
 TYPE_I_COLOR = '#2471A3'   # steel blue  (Info-Poverty)
@@ -42,7 +42,7 @@ CB_SIZE   = 55
 
 # Phase / temporal
 EARLY_COLOR = '#2980B9'    # same blue as CaTS
-LATE_COLOR  = '#C0392B'    # same crimson as EAAG
+LATE_COLOR  = '#C0392B'    # same crimson as DIAL
 
 # Positive / negative direction
 POS_COLOR = '#27AE60'      # green  (ρ > 0, Type D side)
@@ -51,7 +51,7 @@ ZERO_COLOR = '#95A5A6'     # silver-gray
 
 # Multi-backbone shades (light → dark)
 BB_FIXED = ['#AED6F1', '#5DADE2', '#2471A3']   # blue gradient: Qwen, Phi, Llama
-BB_EAAG  = ['#F5B7B1', '#E74C3C', '#922B21']   # red  gradient: Qwen, Phi, Llama
+BB_DIAL  = ['#F5B7B1', '#E74C3C', '#922B21']   # red  gradient: Qwen, Phi, Llama
 
 # Heatmap
 HEATMAP_CMAP = 'RdBu_r'
@@ -106,11 +106,11 @@ def add_ygrid(ax):
 
 def categorize_method(method):
     """Return category string for a method name."""
-    eaag = {'se_few5_filter_local', 'principled_adaptive', 'EAAG'}
+    dial = {'se_few5_filter_local', 'principled_adaptive', 'DIAL'}
     bounds = {'base_only', 'always_trigger', 'oracle'}
     cb = set(CB_PALETTE.keys()) | {k.lower() for k in CB_PALETTE}
-    if method in eaag:
-        return 'eaag'
+    if method in dial:
+        return 'dial'
     if method in bounds:
         return 'bounds'
     if method in cb:

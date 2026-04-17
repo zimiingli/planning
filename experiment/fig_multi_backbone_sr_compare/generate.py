@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Figure: Cross-backbone SR comparison — EAAG vs best fixed baseline.
+"""Figure: Cross-backbone SR comparison — DIAL vs best fixed baseline.
 Per-environment subplots with auto y-axis range."""
 import matplotlib
 matplotlib.use('Agg')
@@ -20,7 +20,7 @@ ENV_ORDER = ['HotpotQA', 'WebShop', 'FEVER', 'TWExpress', 'Plancraft', 'APPS']
 BACKBONES = ['Qwen3-4B', 'Phi-3.5-mini', 'Llama-3.1-8B']
 BB_LABELS = ['Qwen3', 'Phi-3.5', 'Llama']
 BB_FIXED_COLORS = ['#92c5de', '#4393c3', '#2166ac']
-BB_EAAG_COLORS = ['#f4a582', '#d6604d', '#b2182b']
+BB_DIAL_COLORS = ['#f4a582', '#d6604d', '#b2182b']
 
 def main():
     with open(HERE / 'data.csv', newline='') as f:
@@ -41,15 +41,15 @@ def main():
         ax = axes[idx]
 
         fixed_srs = [data.get((bb, env, 'best_fixed'), np.nan) for bb in BACKBONES]
-        eaag_srs = [data.get((bb, env, 'EAAG'), np.nan) for bb in BACKBONES]
+        dial_srs = [data.get((bb, env, 'DIAL'), np.nan) for bb in BACKBONES]
 
         ax.bar(x - w/2, fixed_srs, w, color='#4393c3', edgecolor='white',
                linewidth=0.5, label='Best Fixed')
-        ax.bar(x + w/2, eaag_srs, w, color='#d6604d', edgecolor='white',
-               linewidth=0.5, label='EAAG')
+        ax.bar(x + w/2, dial_srs, w, color='#d6604d', edgecolor='white',
+               linewidth=0.5, label='DIAL')
 
         # Auto y-axis zoom
-        all_vals = [v for v in fixed_srs + eaag_srs if not np.isnan(v)]
+        all_vals = [v for v in fixed_srs + dial_srs if not np.isnan(v)]
         if all_vals:
             v_min = min(all_vals)
             v_max = max(all_vals)
@@ -57,7 +57,7 @@ def main():
             ax.set_ylim(max(0, v_min - pad), min(100, v_max + pad))
 
         # Value labels on bars
-        for xi, (fv, ev) in enumerate(zip(fixed_srs, eaag_srs)):
+        for xi, (fv, ev) in enumerate(zip(fixed_srs, dial_srs)):
             if not np.isnan(fv):
                 ax.text(xi - w/2, fv + 0.5, f'{fv:.0f}', ha='center', va='bottom',
                         fontsize=6, color='#333333')
@@ -77,7 +77,7 @@ def main():
     # Shared legend
     legend_elements = [
         Patch(facecolor='#4393c3', label='Best Fixed'),
-        Patch(facecolor='#d6604d', label='EAAG'),
+        Patch(facecolor='#d6604d', label='DIAL'),
     ]
     fig.legend(handles=legend_elements, loc='upper center', ncol=2,
                fontsize=9, bbox_to_anchor=(0.5, 1.02), frameon=False)

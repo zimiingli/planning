@@ -71,9 +71,9 @@ for i in range(2, n_data_rows + 1):
     for j in range(n_cols):
         table[i, j].set_facecolor(color)
 
-# Highlight EAAG row (bold)
+# Highlight DIAL row (bold)
 for i, method in enumerate(methods):
-    if method == 'EAAG':
+    if method == 'DIAL':
         for j in range(n_cols):
             table[i + 2, j].set_text_props(fontweight='bold')
 

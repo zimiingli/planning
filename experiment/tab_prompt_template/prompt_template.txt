@@ -1,4 +1,4 @@
-===== EAAG Reason Step: LLM Reflection Prompt Template =====
+===== DIAL Reason Step: LLM Reflection Prompt Template =====
 Source: frvc/self_evolving_gate.py, method _build_reflection_prompt()
 
 --- PROMPT ---

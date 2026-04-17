@@ -40,7 +40,7 @@ def main():
                 xbase[method] = np.mean(vals)
 
     # Methods to show (exclude base_only and always_trigger)
-    methods = ['s1_budget', 'SEAG', 'CoRefine', 'EAAG', 'CaTS', 'AUQ', 'CATTS']
+    methods = ['s1_budget', 'SEAG', 'CoRefine', 'DIAL', 'CaTS', 'AUQ', 'CATTS']
     methods = [m for m in methods if m in xbase]
 
     # Sort by total cost
@@ -48,12 +48,12 @@ def main():
 
     # Gate overhead type
     gate_type = {'CATTS': 'K=5 voting', 'AUQ': '+1 query'}
-    phase1 = {'SEAG': 200, 'CoRefine': 200, 'CaTS': 200, 'EAAG': 50}
+    phase1 = {'SEAG': 200, 'CoRefine': 200, 'CaTS': 200, 'DIAL': 50}
 
     vals = [xbase[m] for m in methods]
     colors = []
     for m in methods:
-        if m == 'EAAG':
+        if m == 'DIAL':
             colors.append('#d62728')
         elif m in gate_type:
             colors.append('#9467bd')  # purple for gate-overhead methods
@@ -66,9 +66,9 @@ def main():
     x = np.arange(len(methods))
     bars = ax.barh(x, vals, color=colors, edgecolor='white', linewidth=0.5, height=0.6)
 
-    # Highlight EAAG with thicker border
+    # Highlight DIAL with thicker border
     for i, m in enumerate(methods):
-        if m == 'EAAG':
+        if m == 'DIAL':
             bars[i].set_edgecolor('darkred')
             bars[i].set_linewidth(2)
 

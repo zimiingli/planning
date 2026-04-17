@@ -6,7 +6,7 @@ Section 5.5 Main text. Diagnostic Environments.
 
 ## Description
 
-Results for TWExpress (rollout-safe) and Plancraft (rollout-harmful). EAAG achieves 99.0% on TWExpress (near oracle) and 23.3% on Plancraft (correctly learns to rarely trigger, avoiding harmful rollouts).
+Results for TWExpress (rollout-safe) and Plancraft (rollout-harmful). DIAL achieves 99.0% on TWExpress (near oracle) and 23.3% on Plancraft (correctly learns to rarely trigger, avoiding harmful rollouts).
 
 ## Data Status
 

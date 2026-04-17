@@ -7,7 +7,7 @@
 \subsection{Experimental Setup}
 \label{sec:setup}
 
-We evaluate EAAG along three axes: does environment-aware gating
+We evaluate DIAL along three axes: does environment-aware gating
 Pareto-dominate fixed-direction baselines
 (\S\ref{sec:main-results}); which components drive the gains
 (\S\ref{sec:ablation}); and do the Two-Source Model's predictions
@@ -64,13 +64,13 @@ Appendix~\ref{app:cost}.
 \includegraphics[width=\textwidth]{figures/fig_pareto.pdf}
 \caption{SR vs.\ Cost ($\times$base) across all 6 environments
 (Qwen3-4B). Each method uses a distinct marker shape.
-Shaded region: dominated by EAAG (lower SR \emph{and} higher cost).
+Shaded region: dominated by DIAL (lower SR \emph{and} higher cost).
 Full numerical results across three backbones are in
 Table~\ref{tab:full-results}.}
 \label{fig:pareto}
 \end{figure*}
 
-\textbf{EAAG Pareto-dominates fixed-direction baselines.}
+\textbf{DIAL Pareto-dominates fixed-direction baselines.}
 Figure~\ref{fig:pareto} shows the SR--Cost Pareto frontier across
 all 6 environments on Qwen3-4B; full numerical results across
 three backbones are in
@@ -81,40 +81,40 @@ catastrophically fail when the assumed direction is wrong: on
 FEVER (Type~I), CATTS achieves only 32.2\% SR (below the 37.0\%
 no-trigger baseline) yet costs 16.46$\times$base due to its
 $K{=}5$ per-step voting overhead.
-Second, EAAG achieves competitive SR at substantially lower cost.
-On WebShop, EAAG reaches 43.8\% SR at 2.50$\times$base, matching
+Second, DIAL achieves competitive SR at substantially lower cost.
+On WebShop, DIAL reaches 43.8\% SR at 2.50$\times$base, matching
 always\_trigger (43.0\%) at less than half the cost
-(5.56$\times$). On APPS, EAAG outperforms the best baseline
+(5.56$\times$). On APPS, DIAL outperforms the best baseline
 (s1\_budget, 69.0\%) by 4\,pp at comparable cost.
 Third, in the rollout-harmful environment Plancraft
-($\Delta{=}{-}7.0$), EAAG learns to suppress triggering and
+($\Delta{=}{-}7.0$), DIAL learns to suppress triggering and
 recovers near base\_only performance (23.3\% vs.\ 29.8\%),
 while most baselines that trigger aggressively fall below
 base\_only (s1\_budget: 16.3\%).
 
-\textbf{EAAG bridges the gap between base\_only and
+\textbf{DIAL bridges the gap between base\_only and
 always\_trigger.}
-Table~\ref{tab:bounds-comparison} compares EAAG against the two
-bounds across all 6 environments on Qwen3-4B. EAAG recovers
+Table~\ref{tab:bounds-comparison} compares DIAL against the two
+bounds across all 6 environments on Qwen3-4B. DIAL recovers
 70--97\% of the oracle headroom ($\Delta$) in 4 of 6 environments
 at 1.81--8.02$\times$base cost, substantially below
-always\_trigger (2.15--10.63$\times$). In WebShop, EAAG
+always\_trigger (2.15--10.63$\times$). In WebShop, DIAL
 \emph{exceeds} always\_trigger SR (43.8\% vs.\ 43.0\%) at 45\% of
 the cost. In the rollout-harmful environment Plancraft
-($\Delta{=}{-}7.0$), EAAG correctly learns to suppress triggering
+($\Delta{=}{-}7.0$), DIAL correctly learns to suppress triggering
 (3.63$\times$ vs.\ always\_trigger 6.13$\times$), losing only
 6.5\,pp relative to base\_only while always\_trigger loses
 7.0\,pp.
 
 \begin{table}[t]
-\caption{EAAG vs.\ bounds on Qwen3-4B. $\Delta$: rollout headroom
-(always$-$base). Recovery: (EAAG$-$base)/$\Delta$.}
+\caption{DIAL vs.\ bounds on Qwen3-4B. $\Delta$: rollout headroom
+(always$-$base). Recovery: (DIAL$-$base)/$\Delta$.}
 \label{tab:bounds-comparison}
 \centering\small
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{lcccccc}
 \toprule
-& \multicolumn{2}{c}{\textbf{base\_only}} & \multicolumn{2}{c}{\textbf{always\_trigger}} & \multicolumn{2}{c}{\textbf{EAAG}} \\
+& \multicolumn{2}{c}{\textbf{base\_only}} & \multicolumn{2}{c}{\textbf{always\_trigger}} & \multicolumn{2}{c}{\textbf{DIAL}} \\
 \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
 \textbf{Env} & SR & $\times$b & SR & $\times$b & SR & $\times$b \\
 \midrule
@@ -133,7 +133,7 @@ APPS      & 60.5 & 1.00 & 79.5 &  3.65 & \textbf{73.0} & 2.61 \\
 \subsection{Ablation Studies}
 \label{sec:ablation}
 
-The main results show \emph{that} EAAG works; we now ask
+The main results show \emph{that} DIAL works; we now ask
 \emph{why}. We ablate the two key components: direction learning
 and the LLM feature layer.
 
@@ -152,7 +152,7 @@ Full per-environment results are in
 Appendix~\ref{app:wrong-direction}.
 
 \textbf{The LLM feature layer is an automation convenience, not
-a core component.} Table~\ref{tab:llm-ablation} compares EAAG
+a core component.} Table~\ref{tab:llm-ablation} compares DIAL
 with and without LLM-generated features. FEVER is the only
 environment where LLM features contribute meaningfully
 (+9.1\,pp), where task-specific signals (\texttt{has\_claim},
@@ -185,7 +185,7 @@ APPS      & 73.0 & 73.0 & $+$0.0 \\
 }
 \end{table}
 
-Beyond direction and features, EAAG's trigger rate also adapts
+Beyond direction and features, DIAL's trigger rate also adapts
 per environment, ranging from 73\% (TWExpress) to ${<}$20\%
 (late-step Plancraft). This behavior emerges from direction
 learning alone and is analyzed in
@@ -195,7 +195,7 @@ Appendix~\ref{app:trigger-rate}.
 \subsection{Two-Source Model Verification}
 \label{sec:theory-verification}
 
-The ablations confirm EAAG's practical advantage; we now test
+The ablations confirm DIAL's practical advantage; we now test
 whether the Two-Source Model (\S\ref{sec:toy-model}) makes correct
 predictions on held-out data. Following
 \cite{schaeffer2023emergent}, we derive three testable predictions
@@ -232,9 +232,11 @@ HotpotQA, $\rho$ moves from $-0.176$ (early) to $-0.437$ (late):
 late-step entropy reflects deeper information poverty after failed
 evidence retrieval. In WebShop, the strong positive early-phase
 signal ($\rho{=}{+}0.285$) vanishes in the late phase. In APPS,
-the positive $\rho$ strengthens over steps as decision complexity
-accumulates. The pattern holds across all environments with
-sufficient signal (Appendix~\ref{app:temporal}).
+$\rho$ reverses from marginally positive ($+$0.102, early) to
+negative ($-$0.144, late), as residual information poverty
+dominates once initial decision complexity is resolved. The
+pattern holds across all environments with sufficient signal
+(Appendix~\ref{app:temporal}).
 
 \paragraph{P2: Cross-environment consistency.}
 Same-family environments share the same direction
@@ -266,8 +268,8 @@ verification (\S\ref{app:multi-backbone}), stratified analysis
 %\begin{figure*}[t]
 %\centering
 %\includegraphics[width=\textwidth]{figures/fig_case_study.pdf}
-%\caption{Trajectory-level gate decisions. (a)~HotpotQA (Type~I): EAAG
-%skips high-entropy late steps. (b)~APPS Interview (Type~D): EAAG
+%\caption{Trajectory-level gate decisions. (a)~HotpotQA (Type~I): DIAL
+%skips high-entropy late steps. (b)~APPS Interview (Type~D): DIAL
 %triggers at high-entropy steps. Same signal, opposite decisions.}
 %\label{fig:case-study}
 %\end{figure*}

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate Figure 6: FEVER Exploration Bias -- SCG vs EAAG Data."""
+"""Generate Figure 6: FEVER Exploration Bias -- SCG vs DIAL Data."""
 
 import matplotlib
 matplotlib.use('Agg')
@@ -29,7 +29,7 @@ def main():
 
     metrics = [row['metric'] for row in rows]
     scg_vals = [float(row['scg_phase1']) for row in rows]
-    eaag_vals = [float(row['eaag_explore']) for row in rows]
+    dial_vals = [float(row['dial_explore']) for row in rows]
 
     n = len(metrics)
     x = np.arange(n)
@@ -39,8 +39,8 @@ def main():
 
     bars1 = ax.bar(x - width / 2, scg_vals, width, color='#e07b54',
                    edgecolor='white', label='SCG Phase-1')
-    bars2 = ax.bar(x + width / 2, eaag_vals, width, color='#5b9bd5',
-                   edgecolor='white', label='EAAG Explore')
+    bars2 = ax.bar(x + width / 2, dial_vals, width, color='#5b9bd5',
+                   edgecolor='white', label='DIAL Explore')
 
     # Add value labels on each bar
     for bar in bars1:

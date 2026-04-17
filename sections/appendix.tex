@@ -312,22 +312,22 @@ s1\_budget~\cite{s1_2025} & Token budget & Fixed budget $\to$ stop
 AUQ~\cite{auq2026} & Verbalized uncertainty & High uncert.\ $\to$ reflect
   & Per-step & Uncertainty-aware memory + reflection \\
 \midrule
-\textbf{EAAG} & \textbf{Multi (auto)} & \textbf{Learned}
+\textbf{DIAL} & \textbf{Multi (auto)} & \textbf{Learned}
   & \textbf{Per-step} & Explore + reason + LASSO direction learning \\
 \bottomrule
 \end{tabularx}
 \end{table*}
 
-\subsection{EAAG Implementation Details}
-\label{app:eaag-details}
+\subsection{DIAL Implementation Details}
+\label{app:dial-details}
 
 This subsection expands on the implementation details deferred from
-Section~\ref{sec:learn}. Algorithm~\ref{alg:eaag} gives the full
+Section~\ref{sec:learn}. Algorithm~\ref{alg:dial} gives the full
 pipeline; the paragraphs that follow describe each component.
 
 \begin{algorithm}[H]
-	\caption{EAAG: Environment-Aware Adaptive Gating}
-	\label{alg:eaag}
+	\caption{DIAL: Direction-Informed Adaptive Learning}
+	\label{alg:dial}
 	\small
 	\begin{algorithmic}[1]
 		\Require Environment $\mathcal{E}$, agent policy $\pi$, optimizer
@@ -432,7 +432,7 @@ methods, ensuring a fair comparison of runtime efficiency. This
 metric captures hidden per-step overhead that raw rollout counts
 miss: CATTS incurs $K{=}5$ forward passes every step regardless
 of the gating decision, and AUQ issues a confidence query every
-step. EAAG requires 50 exploration episodes for calibration but
+step. DIAL requires 50 exploration episodes for calibration but
 adds zero per-step gate overhead at deployment.
 
 \input{experiment/tab_cost_components/tab_cost_components.tex}
@@ -453,26 +453,26 @@ Several patterns are consistent across backbones.
 
 \input{experiment/tab_full_results/tab_full_results.tex}
 
-\paragraph{Qwen3-4B.} EAAG achieves the highest SR in 4 of 6
+\paragraph{Qwen3-4B.} DIAL achieves the highest SR in 4 of 6
 environments (HotpotQA, WebShop, TWExpress, APPS). The
 $\times$base metric reveals hidden costs: CATTS on APPS costs
 6.00$\times$base (due to $K{=}5$ per-step voting) despite
-barely triggering rollouts, while EAAG costs only
+barely triggering rollouts, while DIAL costs only
 2.61$\times$ at 12.2\,pp higher SR. FEVER is the main
-exception: EAAG achieves the highest SR (49.8\%) but at
+exception: DIAL achieves the highest SR (49.8\%) but at
 16.51$\times$base, the highest cost among all environments.
 This failure mode is analyzed in \S\ref{sec:discussion}.
 
 \paragraph{Phi-3.5-mini.} Fixed-direction baselines degrade
 sharply on this backbone. On FEVER, all six baselines score at or
-below 20\% (base: 7.2\%), while EAAG reaches 20.5\%. On WebShop,
-EAAG (57.3\%) exceeds the best baseline (s1\_budget, 43.0\%) by
+below 20\% (base: 7.2\%), while DIAL reaches 20.5\%. On WebShop,
+DIAL (57.3\%) exceeds the best baseline (s1\_budget, 43.0\%) by
 14.3\,pp at lower cost (2.56$\times$ vs.\ 3.89$\times$).
 
 \paragraph{Llama-3.1-8B.} Direction reversal interacts with model
 capacity. On TWExpress, CaTS collapses to near-base performance
-(35.8\% vs.\ base 36.5\%) because it rarely triggers, while EAAG
-achieves 94.8\%. On FEVER, EAAG (54.7\%) is competitive with CaTS
+(35.8\% vs.\ base 36.5\%) because it rarely triggers, while DIAL
+achieves 94.8\%. On FEVER, DIAL (54.7\%) is competitive with CaTS
 (56.3\%), unlike Qwen3 where FEVER is the weakest environment.
 On APPS, AUQ drops to
 46.0\% (below base 60.2\%), demonstrating that wrong-direction
@@ -703,7 +703,7 @@ dominant signal ($\rho{=}{+}0.311$) while \texttt{step\_count}
 weakens ($\rho{=}{-}0.147$). This demonstrates that the
 \emph{identity} of the most informative signal, not just its
 direction, is a function of the environment's information
-structure. EAAG adapts to both conditions without manual
+structure. DIAL adapts to both conditions without manual
 reconfiguration.
 
 \begin{table}[H]
@@ -715,7 +715,7 @@ dominates, confirming the Two-Source Model's prediction.}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{lccccc}
 \toprule
-Condition & Base SR & $\rho$(entropy) & $\rho$(step\_count) & EAAG SR & $n$ \\
+Condition & Base SR & $\rho$(entropy) & $\rho$(step\_count) & DIAL SR & $n$ \\
 \midrule
 Original  & 49.0\% & $-$0.041 & $-$0.494 & 95.2\% & 1117 \\
 InfoPoor  & 44.0\% & $+$0.119 & $\mathbf{-0.608}$ & 94.0\% & 317 \\
@@ -751,7 +751,7 @@ the fixed-direction assumption is brittle when the model changes
 \begin{figure*}[h!]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_multi_backbone_sr.pdf}
-\caption{Cross-backbone comparison: EAAG (red) vs.\ best fixed-direction baseline (blue) across 3 backbones. Fixed baselines show large SR variance across backbones; EAAG adapts robustly.}
+\caption{Cross-backbone comparison: DIAL (red) vs.\ best fixed-direction baseline (blue) across 3 backbones. Fixed baselines show large SR variance across backbones; DIAL adapts robustly.}
 \label{fig:multi-backbone-sr}
 \end{figure*}
 
@@ -804,17 +804,17 @@ With wrong direction, higher capacity makes performance \emph{worse}
 (MLP 45.3\% $<$ logistic 62.0\%), because the more powerful gate
 more precisely targets harmful states. This confirms that signal
 direction consistently outweighs gate complexity, and explains why
-EAAG's minimal gate design suffices.
+DIAL's minimal gate design suffices.
 
 % --- F.7: referenced by ablation in main text ---
 \subsection{Environment-Adaptive Trigger Behavior}
 \label{app:trigger-rate}
 
-Beyond direction and feature selection, EAAG's gating magnitude
+Beyond direction and feature selection, DIAL's gating magnitude
 also adapts to each environment without explicit programming.
 Figure~\ref{fig:trigger-adapt} shows the per-step trigger rate
 across all 6 environments, ordered by rollout headroom~$\Delta$.
-In rollout-safe TWExpress ($\Delta{=}{+}31.8$), EAAG triggers
+In rollout-safe TWExpress ($\Delta{=}{+}31.8$), DIAL triggers
 aggressively (RR\,=\,73\%), consistent with the high headroom.
 In rollout-harmful Plancraft ($\Delta{=}{-}7.0$), the trigger
 rate decays from 49\% at step~0 to ${<}$20\% in later steps,
@@ -832,16 +832,16 @@ additional computation.
 \caption{Environment-adaptive trigger behavior. Panels ordered by
 rollout headroom $\Delta$. Solid line: per-step trigger rate with
 95\% CI band. Dashed gray: 50\% reference. RR: overall trigger rate.
-EAAG's trigger rate ranges from 73\% (TWExpress) to $<$20\%
+DIAL's trigger rate ranges from 73\% (TWExpress) to $<$20\%
 (late-step Plancraft), emerging from direction learning alone.}
 \label{fig:trigger-adapt}
 \end{figure*}
 
-% --- F.8: referenced by EAAG details ---
+% --- F.8: referenced by DIAL details ---
 \subsection{Hyperparameter Sensitivity}
 \label{app:hyperparam}
 
-EAAG is robust to $N_{\text{explore}} \in [30, 100]$ (stable SR for
+DIAL is robust to $N_{\text{explore}} \in [30, 100]$ (stable SR for
 $N_{\text{explore}} \geq 30$; marginal gains above 50) and gate
 threshold $\tau \in [0.3, 0.7]$.
 
@@ -864,7 +864,7 @@ threshold $\tau \in [0.3, 0.7]$.
 \label{app:impact}
 
 This work addresses computational efficiency in LLM agent
-deployment. By reducing unnecessary optimizer invocations, EAAG
+deployment. By reducing unnecessary optimizer invocations, DIAL
 lowers the energy and cost footprint of test-time compute without
 sacrificing task performance. The prescriptive framework
 (characterize information structure before designing gates) may

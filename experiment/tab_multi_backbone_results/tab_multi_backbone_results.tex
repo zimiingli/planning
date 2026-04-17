@@ -1,7 +1,7 @@
 \begin{table*}[t]
 \centering
-\caption{Cross-backbone results: EAAG SR (\%) on Phi-3.5-mini and Llama-3.1-8B across 6 environments
-(mean $\pm$ std over 3 seeds). EAAG adapts to each backbone without collapse, unlike fixed-direction
+\caption{Cross-backbone results: DIAL SR (\%) on Phi-3.5-mini and Llama-3.1-8B across 6 environments
+(mean $\pm$ std over 3 seeds). DIAL adapts to each backbone without collapse, unlike fixed-direction
 baselines whose performance is brittle across models.
 $\dagger$: calibrated with Phase~1 data.}
 \label{tab:multi-backbone-results}
@@ -20,7 +20,7 @@ CoRefine$^\dagger$  & 87.7 & 35.8 & 13.7 & 94.7 & 15.2 & 28.5 \\
 CaTS$^\dagger$      & 68.3 & 41.7 & 19.8 & 68.2 & 13.5 & 30.5 \\
 AUQ                 & 31.2 &  7.0 &  8.5 & 94.5 & 12.7 & 27.2 \\
 s1\_budget          & 94.2 &  3.0 & 23.0 & 95.7 & 13.7 & 34.5 \\
-\textbf{EAAG}       & \textbf{92.3} & \textbf{57.3} & 16.5 & \textbf{96.7} & 13.8 & \textbf{36.8} \\
+\textbf{DIAL}       & \textbf{92.3} & \textbf{57.3} & 16.5 & \textbf{96.7} & 13.8 & \textbf{36.8} \\
 \midrule
 \multicolumn{7}{l}{\textit{Llama-3.1-8B-Instruct}} \\
 base\_only          & 46.3 &  1.2 & 13.2 & 36.5 & 31.7 & 60.2 \\
@@ -31,7 +31,7 @@ CoRefine$^\dagger$  & 96.2 & 27.5 & 53.5 & 76.0 & 21.5 & 60.2 \\
 CaTS$^\dagger$      & 96.2 & 36.0 & 56.3 & ---  & 22.8 & 60.2 \\
 AUQ                 & 97.0 & 37.8 & 52.8 & 63.2 & 27.0 & 60.0 \\
 s1\_budget          & 96.5 &  1.2 & 13.8 & ---  & 30.3 & 72.5 \\
-\textbf{EAAG}       & \textbf{95.5} & \textbf{41.7} & 34.7 & \textbf{94.8} & 27.0 & 59.7 \\
+\textbf{DIAL}       & \textbf{95.5} & \textbf{41.7} & 34.7 & \textbf{94.8} & 27.0 & 59.7 \\
 \bottomrule
 \end{tabular}%
 }

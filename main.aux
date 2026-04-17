@@ -38,6 +38,7 @@
 \@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{section.2}\protected@file@percent }
 \newlabel{sec:related}{{2}{2}{Related Work}{section.2}{}}
 \@writefile{toc}{\contentsline {paragraph}{Gating on uncertainty signals.}{2}{section*.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Gating on learned difficulty.}{2}{section*.2}\protected@file@percent }
 \citation{russell1991right,desabbata2024metareasoning}
 \citation{tao2025revisiting}
 \citation{heo2025llmuncertainty}
@@ -45,7 +46,6 @@
 \@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Signal--utility correlations across 6 environments and 3 backbones. $\rho $: Spearman correlation of token entropy with optimizer utility $U$. $^*$: significant at $p{<}0.05$. Direction varies across \emph  {both} environments and model backbones.\relax }}{3}{table.caption.4}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
 \newlabel{tab:signal-discovery}{{1}{3}{Signal--utility correlations across 6 environments and 3 backbones. $\rho $: Spearman correlation of token entropy with optimizer utility $U$. $^*$: significant at $p{<}0.05$. Direction varies across \emph {both} environments and model backbones.\relax }{table.caption.4}{}}
-\@writefile{toc}{\contentsline {paragraph}{Gating on learned difficulty.}{3}{section*.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Metareasoning and uncertainty semantics.}{3}{section*.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {3}Why Fixed-Direction Gating Fails}{3}{section.3}\protected@file@percent }
 \newlabel{sec:signal-landscape}{{3}{3}{Why Fixed-Direction Gating Fails}{section.3}{}}
@@ -63,8 +63,8 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Necessity of Direction Discovery}{4}{subsection.3.3}\protected@file@percent }
 \newlabel{sec:necessity}{{3.3}{4}{Necessity of Direction Discovery}{subsection.3.3}{}}
 \newlabel{prop:necessity}{{1}{4}{Necessity of Direction Discovery}{proposition.1}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Method: Environment-Aware Adaptive Gating}{5}{section.4}\protected@file@percent }
-\newlabel{sec:method}{{4}{5}{Method: Environment-Aware Adaptive Gating}{section.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Method: Direction-Informed Adaptive Learning}{4}{section.4}\protected@file@percent }
+\newlabel{sec:method}{{4}{4}{Method: Direction-Informed Adaptive Learning}{section.4}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Explore: Signal-Agnostic Data Collection}{5}{subsection.4.1}\protected@file@percent }
 \newlabel{sec:explore}{{4.1}{5}{Explore: Signal-Agnostic Data Collection}{subsection.4.1}{}}
 \newlabel{eq:explore}{{3}{5}{Explore: Signal-Agnostic Data Collection}{equation.4.3}{}}
@@ -76,6 +76,7 @@
 \newlabel{sec:learn}{{4.3}{5}{Learn: Sparse Linear Gate}{subsection.4.3}{}}
 \newlabel{eq:lasso}{{6}{5}{Learn: Sparse Linear Gate}{equation.4.6}{}}
 \newlabel{eq:gate}{{7}{5}{Learn: Sparse Linear Gate}{equation.4.7}{}}
+\@writefile{toc}{\contentsline {paragraph}{Signed weights as a diagnostic.}{5}{section*.8}\protected@file@percent }
 \citation{yang2018hotpotqa}
 \citation{hendrycks2021apps}
 \citation{yao2022webshop}
@@ -88,7 +89,6 @@
 \citation{catts2026}
 \citation{auq2026}
 \citation{s1_2025}
-\@writefile{toc}{\contentsline {paragraph}{Signed weights as a diagnostic.}{6}{section*.8}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Online adaptation.}{6}{section*.9}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {5}Experiments}{6}{section.5}\protected@file@percent }
 \newlabel{sec:experiments}{{5}{6}{Experiments}{section.5}{}}
@@ -99,20 +99,20 @@
 \@writefile{toc}{\contentsline {paragraph}{Metrics.}{6}{section*.12}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Main Results}{6}{subsection.5.2}\protected@file@percent }
 \newlabel{sec:main-results}{{5.2}{6}{Main Results}{subsection.5.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces SR vs.\ Cost ($\times $base) across all 6 environments (Qwen3-4B). Each method uses a distinct marker shape. Shaded region: dominated by EAAG (lower SR \emph  {and} higher cost). Full numerical results across three backbones are in Table\nobreakspace  {}\ref {tab:full-results}.\relax }}{7}{figure.caption.13}\protected@file@percent }
-\newlabel{fig:pareto}{{1}{7}{SR vs.\ Cost ($\times $base) across all 6 environments (Qwen3-4B). Each method uses a distinct marker shape. Shaded region: dominated by EAAG (lower SR \emph {and} higher cost). Full numerical results across three backbones are in Table~\ref {tab:full-results}.\relax }{figure.caption.13}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces EAAG vs.\ bounds on Qwen3-4B. $\Delta $: rollout headroom (always$-$base). Recovery: (EAAG$-$base)/$\Delta $.\relax }}{7}{table.caption.14}\protected@file@percent }
-\newlabel{tab:bounds-comparison}{{2}{7}{EAAG vs.\ bounds on Qwen3-4B. $\Delta $: rollout headroom (always$-$base). Recovery: (EAAG$-$base)/$\Delta $.\relax }{table.caption.14}{}}
+\citation{schaeffer2023emergent}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces SR vs.\ Cost ($\times $base) across all 6 environments (Qwen3-4B). Each method uses a distinct marker shape. Shaded region: dominated by DIAL (lower SR \emph  {and} higher cost). Full numerical results across three backbones are in Table\nobreakspace  {}\ref {tab:full-results}.\relax }}{7}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:pareto}{{1}{7}{SR vs.\ Cost ($\times $base) across all 6 environments (Qwen3-4B). Each method uses a distinct marker shape. Shaded region: dominated by DIAL (lower SR \emph {and} higher cost). Full numerical results across three backbones are in Table~\ref {tab:full-results}.\relax }{figure.caption.13}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces DIAL vs.\ bounds on Qwen3-4B. $\Delta $: rollout headroom (always$-$base). Recovery: (DIAL$-$base)/$\Delta $.\relax }}{7}{table.caption.14}\protected@file@percent }
+\newlabel{tab:bounds-comparison}{{2}{7}{DIAL vs.\ bounds on Qwen3-4B. $\Delta $: rollout headroom (always$-$base). Recovery: (DIAL$-$base)/$\Delta $.\relax }{table.caption.14}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Ablation Studies}{7}{subsection.5.3}\protected@file@percent }
 \newlabel{sec:ablation}{{5.3}{7}{Ablation Studies}{subsection.5.3}{}}
-\citation{schaeffer2023emergent}
 \@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces LLM feature ablation. SR (\%) with and without LLM-generated features. FEVER is the only environment with meaningful LLM contribution.\relax }}{8}{table.caption.15}\protected@file@percent }
 \newlabel{tab:llm-ablation}{{3}{8}{LLM feature ablation. SR (\%) with and without LLM-generated features. FEVER is the only environment with meaningful LLM contribution.\relax }{table.caption.15}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces P1 verification: $\rho $(entropy, U) shifts from early to late steps. Blue: early (step $\leq $ median), red: late. Values on each bar show the Spearman $\rho $ for that phase. Plancraft is omitted because its entropy signal is too weak ($|\rho |{=}0.016$) for a meaningful early/late comparison.\relax }}{8}{figure.caption.16}\protected@file@percent }
+\newlabel{fig:temporal-shift}{{2}{8}{P1 verification: $\rho $(entropy, U) shifts from early to late steps. Blue: early (step $\leq $ median), red: late. Values on each bar show the Spearman $\rho $ for that phase. Plancraft is omitted because its entropy signal is too weak ($|\rho |{=}0.016$) for a meaningful early/late comparison.\relax }{figure.caption.16}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Two-Source Model Verification}{8}{subsection.5.4}\protected@file@percent }
 \newlabel{sec:theory-verification}{{5.4}{8}{Two-Source Model Verification}{subsection.5.4}{}}
 \@writefile{toc}{\contentsline {paragraph}{P1: Temporal dynamics.}{8}{section*.17}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces P1 verification: $\rho $(entropy, U) shifts from early to late steps. Blue: early (step $\leq $ median), red: late. Values on each bar show the Spearman $\rho $ for that phase. Plancraft is omitted because its entropy signal is too weak ($|\rho |{=}0.016$) for a meaningful early/late comparison.\relax }}{8}{figure.caption.16}\protected@file@percent }
-\newlabel{fig:temporal-shift}{{2}{8}{P1 verification: $\rho $(entropy, U) shifts from early to late steps. Blue: early (step $\leq $ median), red: late. Values on each bar show the Spearman $\rho $ for that phase. Plancraft is omitted because its entropy signal is too weak ($|\rho |{=}0.016$) for a meaningful early/late comparison.\relax }{figure.caption.16}{}}
 \@writefile{toc}{\contentsline {paragraph}{P2: Cross-environment consistency.}{8}{section*.18}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{P3: Signal identity alignment.}{8}{section*.19}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {6}Limitations}{8}{section.6}\protected@file@percent }
@@ -223,12 +223,12 @@
 \newlabel{tab:env-setup}{{5}{13}{Environment setup. Base/Always: SR without/with optimizer. $\Delta $: rollout headroom.\relax }{table.caption.22}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {C.2}Detailed Baseline Comparison}{13}{subsection.C.2}\protected@file@percent }
 \newlabel{app:method-comparison}{{C.2}{13}{Detailed Baseline Comparison}{subsection.C.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {C.3}EAAG Implementation Details}{13}{subsection.C.3}\protected@file@percent }
-\newlabel{app:eaag-details}{{C.3}{13}{EAAG Implementation Details}{subsection.C.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C.3}DIAL Implementation Details}{13}{subsection.C.3}\protected@file@percent }
+\newlabel{app:dial-details}{{C.3}{13}{DIAL Implementation Details}{subsection.C.3}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Detailed comparison of baselines. All methods assume a fixed signal--utility direction. $^\dagger $Requires a separate labeled dataset for calibration.\relax }}{14}{table.caption.23}\protected@file@percent }
 \newlabel{tab:baseline-detail}{{6}{14}{Detailed comparison of baselines. All methods assume a fixed signal--utility direction. $^\dagger $Requires a separate labeled dataset for calibration.\relax }{table.caption.23}{}}
-\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces EAAG: Environment-Aware Adaptive Gating\relax }}{14}{algorithm.1}\protected@file@percent }
-\newlabel{alg:eaag}{{1}{14}{EAAG: Environment-Aware Adaptive Gating\relax }{algorithm.1}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces DIAL: Direction-Informed Adaptive Learning\relax }}{14}{algorithm.1}\protected@file@percent }
+\newlabel{alg:dial}{{1}{14}{DIAL: Direction-Informed Adaptive Learning\relax }{algorithm.1}{}}
 \@writefile{toc}{\contentsline {paragraph}{Exploration budget.}{14}{section*.24}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Feature standardization.}{14}{section*.25}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Sparse solver.}{14}{section*.26}\protected@file@percent }
@@ -283,14 +283,14 @@
 \newlabel{tab:capacity}{{14}{18}{Gate complexity ablation on HotpotQA. Direction matters more than model capacity: a logistic gate with correct direction outperforms an MLP with wrong direction by 49.9\,pp.\relax }{table.caption.42}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Multi-backbone signal direction heatmap. Gold borders mark cells where the sign of $\rho $ flips across backbones with significant correlations. Entropy direction is model-dependent; structural signals (step\_count) are more stable.\relax }}{19}{figure.caption.40}\protected@file@percent }
 \newlabel{fig:multi-backbone-heatmap}{{3}{19}{Multi-backbone signal direction heatmap. Gold borders mark cells where the sign of $\rho $ flips across backbones with significant correlations. Entropy direction is model-dependent; structural signals (step\_count) are more stable.\relax }{figure.caption.40}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Cross-backbone comparison: EAAG (red) vs.\ best fixed-direction baseline (blue) across 3 backbones. Fixed baselines show large SR variance across backbones; EAAG adapts robustly.\relax }}{19}{figure.caption.41}\protected@file@percent }
-\newlabel{fig:multi-backbone-sr}{{4}{19}{Cross-backbone comparison: EAAG (red) vs.\ best fixed-direction baseline (blue) across 3 backbones. Fixed baselines show large SR variance across backbones; EAAG adapts robustly.\relax }{figure.caption.41}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Cross-backbone comparison: DIAL (red) vs.\ best fixed-direction baseline (blue) across 3 backbones. Fixed baselines show large SR variance across backbones; DIAL adapts robustly.\relax }}{19}{figure.caption.41}\protected@file@percent }
+\newlabel{fig:multi-backbone-sr}{{4}{19}{Cross-backbone comparison: DIAL (red) vs.\ best fixed-direction baseline (blue) across 3 backbones. Fixed baselines show large SR variance across backbones; DIAL adapts robustly.\relax }{figure.caption.41}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {F.7}Environment-Adaptive Trigger Behavior}{19}{subsection.F.7}\protected@file@percent }
 \newlabel{app:trigger-rate}{{F.7}{19}{Environment-Adaptive Trigger Behavior}{subsection.F.7}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {F.8}Hyperparameter Sensitivity}{20}{subsection.F.8}\protected@file@percent }
 \newlabel{app:hyperparam}{{F.8}{20}{Hyperparameter Sensitivity}{subsection.F.8}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {G}Broader Impact}{20}{appendix.G}\protected@file@percent }
 \newlabel{app:impact}{{G}{20}{Broader Impact}{appendix.G}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Environment-adaptive trigger behavior. Panels ordered by rollout headroom $\Delta $. Solid line: per-step trigger rate with 95\% CI band. Dashed gray: 50\% reference. RR: overall trigger rate. EAAG's trigger rate ranges from 73\% (TWExpress) to $<$20\% (late-step Plancraft), emerging from direction learning alone.\relax }}{21}{figure.caption.43}\protected@file@percent }
-\newlabel{fig:trigger-adapt}{{5}{21}{Environment-adaptive trigger behavior. Panels ordered by rollout headroom $\Delta $. Solid line: per-step trigger rate with 95\% CI band. Dashed gray: 50\% reference. RR: overall trigger rate. EAAG's trigger rate ranges from 73\% (TWExpress) to $<$20\% (late-step Plancraft), emerging from direction learning alone.\relax }{figure.caption.43}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Environment-adaptive trigger behavior. Panels ordered by rollout headroom $\Delta $. Solid line: per-step trigger rate with 95\% CI band. Dashed gray: 50\% reference. RR: overall trigger rate. DIAL's trigger rate ranges from 73\% (TWExpress) to $<$20\% (late-step Plancraft), emerging from direction learning alone.\relax }}{21}{figure.caption.43}\protected@file@percent }
+\newlabel{fig:trigger-adapt}{{5}{21}{Environment-adaptive trigger behavior. Panels ordered by rollout headroom $\Delta $. Solid line: per-step trigger rate with 95\% CI band. Dashed gray: 50\% reference. RR: overall trigger rate. DIAL's trigger rate ranges from 73\% (TWExpress) to $<$20\% (late-step Plancraft), emerging from direction learning alone.\relax }{figure.caption.43}{}}
 \gdef \@abspage@last{21}

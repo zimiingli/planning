@@ -144,7 +144,7 @@ def csv_fig5():
     ]
     rows = [[d[0], d[1], d[2], d[1] - d[2]] for d in data]
     write_csv("fig5_llm_ablation", "data.csv",
-              ["environment", "eaag_sr", "v2_no_llm_sr", "llm_contribution_pp"], rows)
+              ["environment", "dial_sr", "v2_no_llm_sr", "llm_contribution_pp"], rows)
 
 
 # ── 6. fig6_fever_bias ──
@@ -155,7 +155,7 @@ def csv_fig6():
         ["steps_observed", 282, 1054],
         ["rollout_rate_exploit", 68.2, 3.0],
     ]
-    write_csv("fig6_fever_bias", "data.csv", ["metric", "scg_phase1", "eaag_explore"], rows)
+    write_csv("fig6_fever_bias", "data.csv", ["metric", "scg_phase1", "dial_explore"], rows)
 
 
 # ── 7. fig_auc_hierarchy ──
@@ -391,8 +391,8 @@ def csv_tab_main():
         ["SCG", "WebShop", 43.0, 7.10], ["SCG", "FEVER", 98.0, 2.45],
         ["BSW", "HotpotQA", 58.2, None], ["BSW", "WebShop", 20.6, None],
         ["BSW", "FEVER", 63.0, 5.76],
-        ["EAAG", "HotpotQA", 95.2, 1.34], ["EAAG", "APPS", 66.0, 1.20],
-        ["EAAG", "WebShop", 43.8, 2.29], ["EAAG", "FEVER", 49.8, 2.99],
+        ["DIAL", "HotpotQA", 95.2, 1.34], ["DIAL", "APPS", 66.0, 1.20],
+        ["DIAL", "WebShop", 43.8, 2.29], ["DIAL", "FEVER", 49.8, 2.99],
     ]
     write_csv("tab_main_results", "data.csv",
               ["method", "environment", "sr_pct", "total_cost_ro_per_ep"], data)
@@ -409,7 +409,7 @@ def csv_tab_method_class():
         ["s1_budget", "length", "None", "No", "0", "1W/6L"],
         ["SCG", "multi-signal", "Learned", "Yes", "0", "-"],
         ["BSW", "multi-signal", "Flipped", "Yes", "0", "-"],
-        ["EAAG", "multi-signal", "Auto-learned", "No", "0", "34W/2L"],
+        ["DIAL", "multi-signal", "Auto-learned", "No", "0", "34W/2L"],
     ]
     write_csv("tab_method_classification", "data.csv",
               ["method", "signal_type", "direction", "needs_phase1", "extra_cost", "sr_win_loss"], data)
@@ -450,7 +450,7 @@ def csv_tab_winloss():
         ["CaTS", 5, 0, 6], ["SEAG", 6, 0, 6], ["CoRefine", 5, 0, 6],
         ["CATTS", 6, 0, 6], ["AUQ", 6, 1, 7], ["s1_budget", 6, 1, 7],
     ]
-    write_csv("tab_winloss", "data.csv", ["cb_method", "eaag_wins", "eaag_losses", "n_envs"], data)
+    write_csv("tab_winloss", "data.csv", ["cb_method", "dial_wins", "dial_losses", "n_envs"], data)
 
 
 # ── 23. tab_significance ──
@@ -479,17 +479,17 @@ def csv_tab_sig():
         return np.array(succ) if succ else None
     rng = np.random.RandomState(42)
     for env in envs:
-        eaag = load_ep(env, "se_online_decay_local")
-        if eaag is None:
+        dial = load_ep(env, "se_online_decay_local")
+        if dial is None:
             continue
         for cb_k, cb_l in cb_methods.items():
             cb = load_ep(env, cb_k)
             if cb is None:
                 continue
-            delta = (eaag.mean() - cb.mean()) * 100
+            delta = (dial.mean() - cb.mean()) * 100
             boots = []
             for _ in range(5000):
-                boots.append((rng.choice(eaag, len(eaag), True).mean() - rng.choice(cb, len(cb), True).mean()) * 100)
+                boots.append((rng.choice(dial, len(dial), True).mean() - rng.choice(cb, len(cb), True).mean()) * 100)
             ci_lo, ci_hi = np.percentile(boots, 2.5), np.percentile(boots, 97.5)
             sig = "Yes" if (ci_lo > 0 or ci_hi < 0) else "No"
             rows.append([env_labels[env], cb_l, f"{delta:.1f}", f"{ci_lo:.1f}", f"{ci_hi:.1f}", sig])
@@ -502,7 +502,7 @@ def csv_tab_diag():
     data = [
         ["base_only", "TWExpress", 67.5, 0.00], ["base_only", "Plancraft", 29.8, 0.00],
         ["always_trigger", "TWExpress", 99.3, 3.45], ["always_trigger", "Plancraft", 22.8, 6.99],
-        ["EAAG", "TWExpress", 99.0, 2.84], ["EAAG", "Plancraft", 23.3, 3.69],
+        ["DIAL", "TWExpress", 99.0, 2.84], ["DIAL", "Plancraft", 23.3, 3.69],
         ["SCG", "TWExpress", 97.0, 4.83], ["SCG", "Plancraft", 21.5, 10.32],
     ]
     write_csv("tab_diagnostic_results", "data.csv",
@@ -513,7 +513,7 @@ def csv_tab_diag():
 def csv_tab_appendix():
     data = [
         ["base_only", "APPS Intv", 60.5, 0.00], ["base_only", "CRUXEval", 85.0, 0.00],
-        ["EAAG", "APPS Intv", 73.0, 1.35],
+        ["DIAL", "APPS Intv", 73.0, 1.35],
         ["SCG", "APPS Intv", 79.5, 3.19], ["SCG", "CRUXEval", 99.5, 2.80],
         ["AUQ", "APPS Intv", 64.7, 1.08], ["AUQ", "CRUXEval", 99.0, 1.75],
     ]

@@ -11,7 +11,7 @@
 3. **Enriched adaptive exploration paragraph** (guide lines 1344-1347): Added concrete example ("search-based QA tasks have early-step critical windows") and explicit mention of maintaining direction discovery while reducing the budget.
 
 ### Limitations
-4. **Strengthened backbone diversity limitation** (guide lines 1366-1377): Reframed as "stronger" finding, added explicit statement that fixed-direction methods fail across backbones too, and positioned EAAG as the only approach that can handle this unpredictability.
+4. **Strengthened backbone diversity limitation** (guide lines 1366-1377): Reframed as "stronger" finding, added explicit statement that fixed-direction methods fail across backbones too, and positioned DIAL as the only approach that can handle this unpredictability.
 5. **Clarified model value description** (guide lines 1382-1383): Changed "explanatory and prescriptive" to include parenthetical explanations of each.
 6. **Expanded exploration cost limitation** (guide line 1393-1394): Added note that re-exploration is also needed when the model backbone changes, connecting to multi-backbone findings.
 

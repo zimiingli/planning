@@ -31,9 +31,9 @@ for i in range(1, len(rows) + 1):
     for j in range(len(headers)):
         table[i, j].set_facecolor(color)
 
-# Highlight EAAG row
+# Highlight DIAL row
 for i, row in enumerate(rows):
-    if row[0] == 'EAAG':
+    if row[0] == 'DIAL':
         for j in range(len(headers)):
             table[i + 1, j].set_text_props(fontweight='bold')
 

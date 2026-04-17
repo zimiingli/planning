@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate Figure 4: EAAG Feature Selection Heatmap."""
+"""Generate Figure 4: DIAL Feature Selection Heatmap."""
 
 import matplotlib
 matplotlib.use('Agg')

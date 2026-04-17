@@ -7,7 +7,7 @@ Section 5.3 Main text, Ablation. Figure fig:direction-cost.
 ## Writing Prompt
 > **[FIGURE NEEDED: Figure fig:direction-cost]**
 > Cost of wrong direction scales with signal strength (ref: CATTS Figure 3).
-> Layout: Single panel scatter. x = |rho| per env, y = BSW degradation (pp SR drop vs EAAG).
+> Layout: Single panel scatter. x = |rho| per env, y = BSW degradation (pp SR drop vs DIAL).
 > Color by type: blue=Type I, red=Type D, gray=mixed. Dashed trend line with r value.
 > Key message: Wrong direction more damaging when signal stronger. |rho|>0.3 => >15pp degradation.
 

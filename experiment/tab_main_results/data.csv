@@ -47,9 +47,9 @@ s1_budget,FEVER,44.2,19.21
 s1_budget,TWExpress,95.0,2.02
 s1_budget,Plancraft,16.3,3.02
 s1_budget,APPS,69.0,2.65
-EAAG,HotpotQA,95.2,8.02
-EAAG,WebShop,43.8,2.50
-EAAG,FEVER,49.8,16.51
-EAAG,TWExpress,99.0,1.81
-EAAG,Plancraft,23.3,3.63
-EAAG,APPS,73.0,2.61
+DIAL,HotpotQA,95.2,8.02
+DIAL,WebShop,43.8,2.50
+DIAL,FEVER,49.8,16.51
+DIAL,TWExpress,99.0,1.81
+DIAL,Plancraft,23.3,3.63
+DIAL,APPS,73.0,2.61

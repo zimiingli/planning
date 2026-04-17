@@ -7,9 +7,9 @@ experiments.tex, line ~143. Section 5.2 Main Results, cross-environment patterns
 > **[FIGURE NEEDED: Figure fig:entropy-bin]**
 > SR by entropy bin (ref: SEAG Figure 4 + CATTS Figure 4).
 > Layout: 1x3 panels: (a) Type I (FEVER or HotpotQA), (b) Mixed (APPS Intro), (c) Type D (APPS Interview).
-> Data: Bin steps by entropy into 4-5 bins, compute SR of EAAG/best-fixed/AT/base per bin.
+> Data: Bin steps by entropy into 4-5 bins, compute SR of DIAL/best-fixed/AT/base per bin.
 > Grouped bar chart, annotate proportion of steps per bin.
-> Key message: In Type I, EAAG maintains SR at high entropy while baselines degrade; in Type D, both improve but EAAG is more selective.
+> Key message: In Type I, DIAL maintains SR at high entropy while baselines degrade; in Type D, both improve but DIAL is more selective.
 
 ## Data Status
 - Qwen3-4B: TODO (data exists in exploration logs, needs processing)

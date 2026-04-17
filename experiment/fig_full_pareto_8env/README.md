@@ -7,7 +7,7 @@ appendix.tex, line ~815. Appendix E (Computational Analysis), Figure A7.
 > **[FIGURE NEEDED: Figure A7]**
 > Full Pareto frontier plot (all 8 environments).
 > Layout: 2x4 grid. Same format as main-text fig:pareto but including APPS Interview and CRUXEval.
-> Star for EAAG, triangle for baselines, circle for bounds, Pareto frontier dashed line.
+> Star for DIAL, triangle for baselines, circle for bounds, Pareto frontier dashed line.
 > Key message: Pareto dominance holds across all 8 environments.
 
 ## Data Status

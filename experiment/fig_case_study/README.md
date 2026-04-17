@@ -9,7 +9,7 @@ experiments.tex, line ~442. Section 5.4 Robustness, after gate complexity ablati
 > Layout: Two horizontal trajectory strips: (a) HotpotQA (Type I), (b) APPS Interview (Type D).
 > Each step = colored circle on timeline. Green = correct trigger, Gray = correct skip, Red = baseline harmful trigger.
 > Circle size proportional to entropy. Entropy curve below, annotations above.
-> Key message: Same high entropy -> opposite gate decisions -> EAAG adapts correctly in both cases.
+> Key message: Same high entropy -> opposite gate decisions -> DIAL adapts correctly in both cases.
 
 ## Data Status
 - Qwen3-4B: **needs generate.py** — decision logs exist but need join with phase1_signal_data for per-step entropy

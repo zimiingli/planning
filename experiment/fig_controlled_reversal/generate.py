@@ -4,7 +4,7 @@
 Visual spec (appendix.tex L648-678):
 - Panel (a): x = signals, paired bars InfoPoor(dark blue) vs InfoRich(light green)
   y = Spearman rho. Highlight winning signal per condition.
-- Panel (b): SR performance by condition (base, always, EAAG)
+- Panel (b): SR performance by condition (base, always, DIAL)
 
 Data: from data.csv (variant, rho values, SR values) + step1_signal_discovery.json
 """
@@ -49,7 +49,7 @@ def main():
     conditions = ['Original', 'InfoPoor', 'InfoRich']
     base_srs = [float(rows[c]['base_sr']) for c in conditions]
     always_srs = [float(rows[c]['always_sr']) for c in conditions]
-    eaag_srs = [float(rows[c]['eaag_sr']) for c in conditions]
+    dial_srs = [float(rows[c]['dial_sr']) for c in conditions]
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(7, 3))
 
@@ -88,11 +88,11 @@ def main():
 
     ax2.bar(x2 - width2, base_srs, width2, label='Base', color='#92c5de', edgecolor='white')
     ax2.bar(x2, always_srs, width2, label='Always Trigger', color='#f4a582', edgecolor='white')
-    ax2.scatter(x2 + width2, eaag_srs, color='crimson', marker='*', s=120,
-                zorder=5, edgecolors='darkred', linewidths=0.5, label='EAAG')
+    ax2.scatter(x2 + width2, dial_srs, color='crimson', marker='*', s=120,
+                zorder=5, edgecolors='darkred', linewidths=0.5, label='DIAL')
 
-    # Value labels for EAAG
-    for i, (c, sr) in enumerate(zip(conditions, eaag_srs)):
+    # Value labels for DIAL
+    for i, (c, sr) in enumerate(zip(conditions, dial_srs)):
         ax2.text(x2[i] + width2, sr + 1.5, f'{sr:.1f}%', ha='center', va='bottom',
                  fontsize=6, color='crimson')
 

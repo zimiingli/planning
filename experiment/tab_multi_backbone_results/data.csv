@@ -8,7 +8,7 @@ Phi-3.5-mini,HotpotQA,CoRefine,87.7,2.3,1.58,3
 Phi-3.5-mini,HotpotQA,CaTS,68.3,2.2,0.99,3
 Phi-3.5-mini,HotpotQA,AUQ,31.2,1.2,0.09,3
 Phi-3.5-mini,HotpotQA,s1_budget,94.2,2.4,1.06,3
-Phi-3.5-mini,HotpotQA,EAAG,92.3,2.2,1.06,3
+Phi-3.5-mini,HotpotQA,DIAL,92.3,2.2,1.06,3
 Phi-3.5-mini,WebShop,base_only,3.5,1.4,0.00,3
 Phi-3.5-mini,WebShop,always_trigger,53.5,4.3,3.82,3
 Phi-3.5-mini,WebShop,oracle,52.3,5.4,1.22,3
@@ -18,7 +18,7 @@ Phi-3.5-mini,WebShop,CoRefine,35.8,2.7,0.96,3
 Phi-3.5-mini,WebShop,CaTS,41.7,3.1,1.12,3
 Phi-3.5-mini,WebShop,AUQ,7.0,1.6,0.23,3
 Phi-3.5-mini,WebShop,s1_budget,3.0,1.1,1.00,3
-Phi-3.5-mini,WebShop,EAAG,57.3,3.7,2.49,3
+Phi-3.5-mini,WebShop,DIAL,57.3,3.7,2.49,3
 Phi-3.5-mini,FEVER,base_only,7.2,1.0,0.00,3
 Phi-3.5-mini,FEVER,always_trigger,61.0,2.9,4.35,3
 Phi-3.5-mini,FEVER,oracle,61.2,3.0,0.59,3
@@ -28,7 +28,7 @@ Phi-3.5-mini,FEVER,CoRefine,13.7,2.7,1.20,3
 Phi-3.5-mini,FEVER,CaTS,19.8,1.6,3.42,3
 Phi-3.5-mini,FEVER,AUQ,8.5,1.9,0.30,3
 Phi-3.5-mini,FEVER,s1_budget,23.0,2.5,1.89,3
-Phi-3.5-mini,FEVER,EAAG,16.5,4.4,2.40,3
+Phi-3.5-mini,FEVER,DIAL,16.5,4.4,2.40,3
 Phi-3.5-mini,TWExpress,base_only,66.7,2.5,0.00,3
 Phi-3.5-mini,TWExpress,always_trigger,96.5,1.9,4.78,3
 Phi-3.5-mini,TWExpress,oracle,96.5,1.9,0.91,3
@@ -38,7 +38,7 @@ Phi-3.5-mini,TWExpress,CoRefine,94.7,1.2,2.16,3
 Phi-3.5-mini,TWExpress,CaTS,68.2,3.4,0.00,3
 Phi-3.5-mini,TWExpress,AUQ,94.5,1.2,1.68,3
 Phi-3.5-mini,TWExpress,s1_budget,95.7,0.6,1.06,3
-Phi-3.5-mini,TWExpress,EAAG,96.7,0.6,2.67,3
+Phi-3.5-mini,TWExpress,DIAL,96.7,0.6,2.67,3
 Phi-3.5-mini,Plancraft,base_only,13.7,0.2,0.00,3
 Phi-3.5-mini,Plancraft,always_trigger,14.5,0.7,11.65,3
 Phi-3.5-mini,Plancraft,oracle,14.3,0.8,0.05,3
@@ -48,7 +48,7 @@ Phi-3.5-mini,Plancraft,CoRefine,15.2,0.6,3.01,3
 Phi-3.5-mini,Plancraft,CaTS,13.5,0.4,0.00,3
 Phi-3.5-mini,Plancraft,AUQ,12.7,0.2,0.54,3
 Phi-3.5-mini,Plancraft,s1_budget,13.7,0.6,2.16,3
-Phi-3.5-mini,Plancraft,EAAG,13.8,1.0,0.71,3
+Phi-3.5-mini,Plancraft,DIAL,13.8,1.0,0.71,3
 Phi-3.5-mini,APPS,base_only,27.0,0.0,0.00,3
 Phi-3.5-mini,APPS,always_trigger,79.5,0.0,1.82,3
 Phi-3.5-mini,APPS,oracle,79.5,0.0,0.57,3
@@ -58,7 +58,7 @@ Phi-3.5-mini,APPS,CoRefine,28.3,0.9,0.61,3
 Phi-3.5-mini,APPS,CaTS,36.7,0.6,2.63,3
 Phi-3.5-mini,APPS,AUQ,27.2,0.5,0.03,3
 Phi-3.5-mini,APPS,s1_budget,34.5,1.1,1.00,3
-Phi-3.5-mini,APPS,EAAG,36.8,1.7,2.06,3
+Phi-3.5-mini,APPS,DIAL,36.8,1.7,2.06,3
 Llama-3.1-8B,HotpotQA,base_only,46.3,1.5,0.00,3
 Llama-3.1-8B,HotpotQA,always_trigger,99.5,0.4,1.23,3
 Llama-3.1-8B,HotpotQA,oracle,99.5,0.4,0.76,3
@@ -68,7 +68,7 @@ Llama-3.1-8B,HotpotQA,CoRefine,84.5,1.2,1.60,3
 Llama-3.1-8B,HotpotQA,CaTS,86.0,1.1,0.85,3
 Llama-3.1-8B,HotpotQA,AUQ,97.7,0.2,1.44,3
 Llama-3.1-8B,HotpotQA,s1_budget,97.0,0.4,1.04,3
-Llama-3.1-8B,HotpotQA,EAAG,95.5,1.4,1.21,3
+Llama-3.1-8B,HotpotQA,DIAL,95.5,1.4,1.21,3
 Llama-3.1-8B,WebShop,base_only,1.2,0.5,0.00,3
 Llama-3.1-8B,WebShop,always_trigger,42.8,2.2,4.61,3
 Llama-3.1-8B,WebShop,oracle,42.3,4.1,0.89,3
@@ -78,7 +78,7 @@ Llama-3.1-8B,WebShop,CoRefine,21.7,3.1,1.28,3
 Llama-3.1-8B,WebShop,CaTS,34.8,5.2,2.33,3
 Llama-3.1-8B,WebShop,AUQ,43.3,3.5,4.49,3
 Llama-3.1-8B,WebShop,s1_budget,1.0,0.4,1.00,3
-Llama-3.1-8B,WebShop,EAAG,41.7,4.5,1.50,3
+Llama-3.1-8B,WebShop,DIAL,41.7,4.5,1.50,3
 Llama-3.1-8B,FEVER,base_only,13.2,2.2,0.00,3
 Llama-3.1-8B,FEVER,always_trigger,62.8,2.1,4.37,3
 Llama-3.1-8B,FEVER,oracle,63.0,2.3,0.71,3
@@ -88,13 +88,13 @@ Llama-3.1-8B,FEVER,CoRefine,31.7,2.7,2.95,3
 Llama-3.1-8B,FEVER,CaTS,33.3,1.9,3.50,3
 Llama-3.1-8B,FEVER,AUQ,34.5,1.9,5.86,3
 Llama-3.1-8B,FEVER,s1_budget,29.7,0.8,1.91,3
-Llama-3.1-8B,FEVER,EAAG,34.7,2.6,4.48,3
+Llama-3.1-8B,FEVER,DIAL,34.7,2.6,4.48,3
 Llama-3.1-8B,TWExpress,base_only,36.5,2.2,0.00,3
 Llama-3.1-8B,TWExpress,always_trigger,99.5,0.7,8.10,3
 Llama-3.1-8B,TWExpress,oracle,99.0,0.7,1.12,3
 Llama-3.1-8B,TWExpress,CATTS,100.0,0.0,7.25,3
 Llama-3.1-8B,TWExpress,SEAG,100.0,0.0,6.62,2
-Llama-3.1-8B,TWExpress,EAAG,94.8,4.2,5.96,3
+Llama-3.1-8B,TWExpress,DIAL,94.8,4.2,5.96,3
 Llama-3.1-8B,Plancraft,base_only,31.7,1.4,0.00,3
 Llama-3.1-8B,Plancraft,always_trigger,18.7,1.4,6.62,3
 Llama-3.1-8B,Plancraft,oracle,18.3,1.0,0.10,3
@@ -104,7 +104,7 @@ Llama-3.1-8B,Plancraft,CoRefine,25.5,1.8,1.71,3
 Llama-3.1-8B,Plancraft,CaTS,17.3,0.2,2.44,3
 Llama-3.1-8B,Plancraft,AUQ,18.5,1.2,6.49,3
 Llama-3.1-8B,Plancraft,s1_budget,14.8,0.6,1.62,3
-Llama-3.1-8B,Plancraft,EAAG,27.0,3.6,1.56,3
+Llama-3.1-8B,Plancraft,DIAL,27.0,3.6,1.56,3
 Llama-3.1-8B,APPS,base_only,60.2,0.2,0.00,3
 Llama-3.1-8B,APPS,always_trigger,79.5,0.0,2.32,3
 Llama-3.1-8B,APPS,oracle,79.5,0.0,0.28,3
@@ -114,4 +114,4 @@ Llama-3.1-8B,APPS,CoRefine,62.3,0.6,1.09,3
 Llama-3.1-8B,APPS,CaTS,60.0,1.9,0.97,3
 Llama-3.1-8B,APPS,AUQ,55.5,0.0,3.21,2
 Llama-3.1-8B,APPS,s1_budget,48.7,0.2,1.00,3
-Llama-3.1-8B,APPS,EAAG,59.7,1.9,2.70,3
+Llama-3.1-8B,APPS,DIAL,59.7,1.9,2.70,3

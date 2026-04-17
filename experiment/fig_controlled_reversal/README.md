@@ -23,7 +23,7 @@ Interpretation: Results support **Signal Replacement** more than simple Directio
   - `step0_go_nogo.json` (base_sr, always_sr)
   - `step1_signal_discovery.json` (correlations)
   - `phase1_signal_data.json` (per-step probe data)
-- EAAG: `results/phase6/path_e/hotpotqa_{infopoor,inforich}/se_online_decay_local/seed_{42,123,456}/summary.json`
+- DIAL: `results/phase6/path_e/hotpotqa_{infopoor,inforich}/se_online_decay_local/seed_{42,123,456}/summary.json`
 - Code changes: `frvc/envs/hotpotqa_env.py` (variant parameter)
 - Configs: `configs/phase6_hotpotqa_{infopoor,inforich}.yaml`
 - Sbatch: `scripts/phase6/run_controlled_reversal.sbatch`
