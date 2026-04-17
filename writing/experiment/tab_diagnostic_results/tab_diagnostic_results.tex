@@ -1,7 +1,7 @@
 \begin{table}[t]
 \centering
 \caption{Diagnostic environment results (Qwen3-4B). TWExpress is rollout-safe;
-Plancraft is rollout-harmful. EAAG adapts in both cases.}
+Plancraft is rollout-harmful. DIAL adapts in both cases.}
 \label{tab:diagnostic}
 \begin{tabular}{llcc}
 \toprule
@@ -9,12 +9,12 @@ Plancraft is rollout-harmful. EAAG adapts in both cases.}
 \midrule
 base\_only        & TWExpress  & 67.5 & 0.00 \\
 always\_trigger   & TWExpress  & 99.3 & 3.45 \\
-EAAG              & TWExpress  & 99.0 & 2.84 \\
+DIAL              & TWExpress  & 99.0 & 2.84 \\
 SCG               & TWExpress  & 97.0 & 4.83 \\
 \midrule
 base\_only        & Plancraft  & 29.8 & 0.00 \\
 always\_trigger   & Plancraft  & 22.8 & 6.99 \\
-EAAG              & Plancraft  & 23.3 & 3.69 \\
+DIAL              & Plancraft  & 23.3 & 3.69 \\
 SCG               & Plancraft  & 21.5 & 10.32 \\
 \bottomrule
 \end{tabular}

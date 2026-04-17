@@ -94,25 +94,25 @@ STYLE:
 
 ---
 
-#### (c) 右栏：EAAG 的效果 mini-summary
+#### (c) 右栏：DIAL 的效果 mini-summary
 
 **Prompt for matplotlib:**
 
 ```python
 """
-Figure 1(c): Compact win/loss summary showing EAAG vs baselines.
+Figure 1(c): Compact win/loss summary showing DIAL vs baselines.
 
 OPTION A — Stacked horizontal bar (preferred):
 - One bar per baseline (CaTS, SEAG, CoRefine, CATTS, AUQ, s1)
-- Each bar split into: green (EAAG wins), gray (tie), red (EAAG loses)
+- Each bar split into: green (DIAL wins), gray (tie), red (DIAL loses)
 - x-axis: number of environments (0-8)
 - Sorted by total wins descending
-- Annotation: "EAAG wins X/8" title
+- Annotation: "DIAL wins X/8" title
 
 OPTION B — Compact radar/spider chart:
 - 8 axes = 8 environments
-- EAAG line (red, filled) vs best baseline (gray, dashed)
-- Show EAAG encompassing baselines
+- DIAL line (red, filled) vs best baseline (gray, dashed)
+- Show DIAL encompassing baselines
 
 DATA SOURCE:
 - From tab_winloss/ CSV files
@@ -148,11 +148,11 @@ STYLE:
   between FEVER ($\rho{=}{-}0.62$) and APPS Intv ($\rho{=}{+}0.32$).}
 \end{subfigure}
 \hfill
-% (c) EAAG summary — matplotlib
+% (c) DIAL summary — matplotlib
 \begin{subfigure}[t]{0.24\textwidth}
   \centering
   \includegraphics[width=\textwidth]{figures/fig1c_winloss.pdf}
-  \caption{EAAG Pareto-dominates all fixed-direction baselines.}
+  \caption{DIAL Pareto-dominates all fixed-direction baselines.}
 \end{subfigure}
 \caption{\textbf{Same Signal, Opposite Meaning.}
 (a)~High entropy reflects information poverty (Type~I) or decision
@@ -160,7 +160,7 @@ difficulty (Type~D); the same signal predicts opposite value of
 computation.
 (b)~This reversal is empirically confirmed: entropy--utility
 correlation flips sign across environments.
-(c)~EAAG, which learns direction per environment, dominates all
+(c)~DIAL, which learns direction per environment, dominates all
 fixed-direction baselines across 8 environments.}
 \label{fig:teaser}
 \end{figure*}
@@ -168,16 +168,16 @@ fixed-direction baselines across 8 environments.}
 
 ---
 
-## Figure 4: EAAG Method Pipeline Diagram
+## Figure 4: DIAL Method Pipeline Diagram
 
 ### 设计概要
-展示 EAAG 的三阶段 pipeline 及其与 Section 3 requirements 的映射关系。
+展示 DIAL 的三阶段 pipeline 及其与 Section 3 requirements 的映射关系。
 参考 CATTS Figure 1 的干净方框风格 + CoRefine Figure 3 的 pipeline 对比。
 
 ### 画图 Prompt (TikZ)
 
 ```
-Draw a method pipeline diagram for EAAG with the following structure:
+Draw a method pipeline diagram for DIAL with the following structure:
 
 === TOP ROW: Requirements from Section 3 ===
 Three small rounded boxes in a row, with light gray background:
@@ -345,14 +345,14 @@ Between them: "Same feature, learned opposite direction"
 
 \end{tikzpicture}
 }
-\caption{\textbf{EAAG pipeline.} Each stage addresses a requirement
+\caption{\textbf{DIAL pipeline.} Each stage addresses a requirement
 from \S\ref{sec:signal-landscape}:
 \textsc{Explore} collects signal-agnostic data (Req~iii),
 \textsc{Reason} builds a multi-signal feature pool (Req~ii),
 and \textsc{Learn} recovers per-environment direction via LASSO (Req~i).
 The signed weights reveal whether each signal follows a
 Type~I or Type~D pattern (bottom).}
-\label{fig:eaag-pipeline}
+\label{fig:dial-pipeline}
 \end{figure*}
 ```
 
@@ -380,7 +380,7 @@ Marker scheme:
 - Fixed-direction baselines: tab10 colormap, marker='^', size=60
   - CaTS, SEAG, CoRefine, CATTS, AUQ, s1_budget
 - BSW ablation: marker='x', black, size=50
-- EAAG: red/crimson, marker='*', size=200 (prominent!)
+- DIAL: red/crimson, marker='*', size=200 (prominent!)
 
 Pareto frontier:
 - Identify non-dominated points
@@ -412,7 +412,7 @@ Data source: tab_main_results/ CSV files
 
 ```python
 """
-SR by entropy bin, showing EAAG's adaptive advantage.
+SR by entropy bin, showing DIAL's adaptive advantage.
 参考 SEAG Figure 4 grouped bar chart.
 
 Layout: 1×3 panels
@@ -428,7 +428,7 @@ Methods shown (4 bars per bin):
 1. base_only (gray)
 2. Best fixed-direction baseline (blue)
 3. always_trigger (light blue, dashed edge)
-4. EAAG (red/crimson)
+4. DIAL (red/crimson)
 
 Annotations:
 - On top of each bin group: proportion of steps in that bin
@@ -436,11 +436,11 @@ Annotations:
 - Number on top of each bar (SR value)
 
 Key visual patterns to highlight:
-- Panel (a) FEVER: At HIGH entropy bin, EAAG >> fixed baseline
-  (EAAG doesn't trigger; baseline triggers and gets harmed)
+- Panel (a) FEVER: At HIGH entropy bin, DIAL >> fixed baseline
+  (DIAL doesn't trigger; baseline triggers and gets harmed)
 - Panel (b) APPS: All methods similar (mixed direction)
-- Panel (c) APPS Intv: At HIGH entropy, EAAG ≈ fixed baseline
-  (both correctly trigger), but EAAG more selective at LOW entropy
+- Panel (c) APPS Intv: At HIGH entropy, DIAL ≈ fixed baseline
+  (both correctly trigger), but DIAL more selective at LOW entropy
 
 Style:
 - figsize=(14, 4)
@@ -475,11 +475,11 @@ For each trajectory:
 MAIN ELEMENT: Horizontal timeline of steps (circles on a line)
 - Each circle = one step
 - Circle color:
-  * Green filled: EAAG triggers AND U=1 (beneficial trigger)
-  * Green hollow: EAAG triggers AND U=0 (wasted trigger)
-  * Gray filled: EAAG doesn't trigger AND correct (no need)
+  * Green filled: DIAL triggers AND U=1 (beneficial trigger)
+  * Green hollow: DIAL triggers AND U=0 (wasted trigger)
+  * Gray filled: DIAL doesn't trigger AND correct (no need)
   * Red X overlay: where fixed baseline would trigger AND U=0
-    (harmful trigger avoided by EAAG)
+    (harmful trigger avoided by DIAL)
 - Circle size: proportional to entropy at that step (larger = higher entropy)
 
 BELOW TIMELINE: Small line plot of entropy over steps
@@ -487,18 +487,18 @@ BELOW TIMELINE: Small line plot of entropy over steps
 
 ABOVE TIMELINE: Annotations at key moments
 - "High entropy" label at high-entropy steps
-- "EAAG: skip" or "EAAG: trigger" decision labels
+- "DIAL: skip" or "DIAL: trigger" decision labels
 - "Baseline: trigger → harm!" for harmful baseline decisions
 
 RIGHT SIDE: Outcome summary
 - Episode result: Success/Fail
-- EAAG SR / Baseline SR
+- DIAL SR / Baseline SR
 
 KEY VISUAL CONTRAST:
 - In HotpotQA (Type I): Late steps have HIGH entropy (large circles)
-  but EAAG shows gray (skip) while baseline shows red X (harmful trigger)
+  but DIAL shows gray (skip) while baseline shows red X (harmful trigger)
 - In APPS Intv (Type D): High-entropy steps show green (beneficial trigger)
-  for both EAAG and baseline
+  for both DIAL and baseline
 
 Style:
 - figsize=(14, 6)
@@ -508,7 +508,7 @@ Style:
 
 Data source:
 - Select 1 episode per environment from deployment logs
-- Need: step, entropy, eaag_decision, baseline_decision, U
+- Need: step, entropy, dial_decision, baseline_decision, U
 - Choose episodes with clear direction contrast
 """
 ```
@@ -612,19 +612,19 @@ Files: tab_signal_discovery/ extended to all 3 backbones.
 
 ```python
 """
-Grouped bar chart: EAAG vs best fixed baseline across 3 backbones.
+Grouped bar chart: DIAL vs best fixed baseline across 3 backbones.
 
 x-axis: 8 environments
 Two groups per environment:
   Group 1 (blue shades): Best fixed baseline on Qwen3 / Phi-3.5 / Llama
-  Group 2 (red shades): EAAG on Qwen3 / Phi-3.5 / Llama
+  Group 2 (red shades): DIAL on Qwen3 / Phi-3.5 / Llama
 
 3 shade levels: light=Qwen3, medium=Phi-3.5, dark=Llama
 
 y-axis: SR (%)
 
 Annotations:
-- Arrow or bracket showing Δ between EAAG and baseline for each backbone
+- Arrow or bracket showing Δ between DIAL and baseline for each backbone
 - Environments sorted by cross-backbone variance
 
 figsize=(14, 5)
@@ -652,7 +652,7 @@ Panel (a): Signal ρ comparison
 
 Panel (b): LASSO coefficient comparison
 - Same layout as (a) but y-axis = LASSO weight w_i
-- Shows EAAG's automatic signal selection shift
+- Shows DIAL's automatic signal selection shift
 
 figsize=(12, 4)
 
@@ -688,12 +688,12 @@ Data: Same source as main-text Pareto plot.
 Stacked bar chart showing total compute cost per method.
 
 x-axis: methods (sorted by total cost, ascending)
-  EAAG, s1, CATTS, CaTS, SEAG, CoRefine, AUQ
+  DIAL, s1, CATTS, CaTS, SEAG, CoRefine, AUQ
 y-axis: Total compute (GPU-hours for 500 episodes)
 
 Two stacked components per bar:
 1. Dark color: Calibration/exploration overhead
-   - EAAG: 50 exploration episodes
+   - DIAL: 50 exploration episodes
    - CaTS/SEAG/CoRefine: calibration data collection
    - CATTS: no overhead (uses runtime signals)
    - s1: no overhead (uses budget)
@@ -702,8 +702,8 @@ Two stacked components per bar:
 
 Annotations:
 - Total hours on top of each bar
-- EAAG bar highlighted with red border
-- Label "zero per-step overhead" arrow pointing to EAAG
+- DIAL bar highlighted with red border
+- Label "zero per-step overhead" arrow pointing to DIAL
 
 figsize=(10, 5)
 
@@ -737,7 +737,7 @@ Style:
 - Consistent color per environment across panels
 - Shared y-axis range
 
-Data: Run EAAG with each hyperparameter sweep value.
+Data: Run DIAL with each hyperparameter sweep value.
 200 episodes × 3 seeds per setting.
 """
 ```

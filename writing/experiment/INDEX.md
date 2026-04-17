@@ -38,7 +38,7 @@
 
 | Paper Ref | Label | Folder | DTPG | Notes |
 |-----------|-------|--------|:----:|-------|
-| Fig (pipeline) | fig:eaag-pipeline | `fig_method_diagram/` | ---- | Conceptual TikZ diagram |
+| Fig (pipeline) | fig:dial-pipeline | `fig_method_diagram/` | ---- | Conceptual TikZ diagram |
 
 ## Signal Utility Landscape (signal_utility_landscape.tex)
 
@@ -122,7 +122,7 @@
 
 ## Multi-Backbone Data Completeness
 
-| Model | Step 0+1 | Bounds | CB | EAAG | Total | % |
+| Model | Step 0+1 | Bounds | CB | DIAL | Total | % |
 |-------|:--------:|:------:|:--:|:----:|:-----:|:-:|
 | **Qwen3-4B** | ✅ 8/8 | ✅ | ✅ | ✅ | — | 100% |
 | **Phi-3.5-mini** | ✅ 8/8 | ✅ 72/72 | ✅ 144/144 | ✅ 24/24 | 240/240 | **100%** |

@@ -1,7 +1,7 @@
 # Exp 4: Budget Sensitivity (Exploration Budget N_explore)
 
 ## What
-Test EAAG's robustness to the exploration budget parameter N_explore. Sweep N_explore in {10, 20, 30, 50, 100} on two environments with strong signals, using EAAG (se_few5_filter_local) method only.
+Test DIAL's robustness to the exploration budget parameter N_explore. Sweep N_explore in {10, 20, 30, 50, 100} on two environments with strong signals, using DIAL (se_few5_filter_local) method only.
 
 ## Models
 - Phi-3.5-mini-instruct
@@ -40,7 +40,7 @@ results/review/{model}/budget_sensitivity/{env}/N{budget}/seed_{seed}/
 
 ## Depends On
 - Existing sbatch template: `scripts/review/run_budget_sensitivity_llama31.sbatch`
-- EAAG pipeline code: `experiments/p6_e_method_upgrade.py`
+- DIAL pipeline code: `experiments/p6_e_method_upgrade.py`
 
 ## Target experiment/ Folder
 Data feeds into: `fig_hyperparam_sensitivity/` (Panel a: exploration budget)

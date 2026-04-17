@@ -7,7 +7,7 @@ appendix.tex, line ~440. Appendix C (Multi-Backbone Verification), Table A7.
 > **[DATA NEEDED: Table A7]** Cross-backbone baseline results.
 > Methods x environments for Phi-3.5 and Llama-3.1 backbones.
 > Shows that the same baselines that work on Qwen3 fail on other backbones,
-> while EAAG adapts successfully.
+> while DIAL adapts successfully.
 
 ## Data Status
 - Qwen3-4B: ✅ from existing tab_main_results
@@ -19,7 +19,7 @@ appendix.tex, line ~440. Appendix C (Multi-Backbone Verification), Table A7.
 ## Key Results (from multi_backbone_experiment_plan.md)
 
 ### Phi-3.5-mini Complete
-| Env | base | AT | CATTS | SEAG† | CoRef† | CaTS† | AUQ | s1Bgt | **EAAG** |
+| Env | base | AT | CATTS | SEAG† | CoRef† | CaTS† | AUQ | s1Bgt | **DIAL** |
 |-----|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | HotpotQA | 28.3% | 98.8% | 42.0% | 88.3% | 87.7% | 68.3% | 31.2% | 94.2% | **92.3%** |
 | APPS | 59.0% | 75.0% | 28.0% | 30.0% | 30.3% | 35.8% | 27.3% | 36.2% | 37.2% |
@@ -30,8 +30,8 @@ appendix.tex, line ~440. Appendix C (Multi-Backbone Verification), Table A7.
 | APPS Intv | 27.0% | 79.5% | 27.7% | 27.8% | 28.5% | 30.5% | 27.2% | 34.5% | **36.8%** |
 | CRUXEval | 99.5% | 99.5% | 99.5% | 99.5% | 99.5% | 99.5% | 99.5% | 99.5% | 99.5% |
 
-### Llama-3.1-8B EAAG
-| Env | base | AT | **EAAG** | delta |
+### Llama-3.1-8B DIAL
+| Env | base | AT | **DIAL** | delta |
 |-----|:---:|:---:|:---:|:---:|
 | HotpotQA | 46.3% | 99.5% | **95.5%** | +49.2pp |
 | APPS | 53.3% | 75.0% | 55.0% | +1.7pp |

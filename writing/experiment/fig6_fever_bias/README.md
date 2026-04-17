@@ -6,11 +6,11 @@ Section 6.2 Main text, Discussion (FEVER Case Study).
 
 ## Description
 
-Analysis of why EAAG achieves only ~50% on FEVER despite oracle being 99.8%. Online exploration's random 50% skip at step 0 creates biased training data.
+Analysis of why DIAL achieves only ~50% on FEVER despite oracle being 99.8%. Online exploration's random 50% skip at step 0 creates biased training data.
 
 ## Data Status
 
-Complete. Compares SCG (Phase 1 data) vs EAAG (explore data) calibration statistics.
+Complete. Compares SCG (Phase 1 data) vs DIAL (explore data) calibration statistics.
 
 ## Data Source
 

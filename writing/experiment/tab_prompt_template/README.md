@@ -4,7 +4,7 @@
 appendix.tex, line ~927. Appendix E.3 (LLM Reasoning Prompts), no table number.
 
 ## Writing Prompt
-> **[DATA NEEDED]** Full LLM prompt template used in the Reason step of EAAG.
+> **[DATA NEEDED]** Full LLM prompt template used in the Reason step of DIAL.
 > Include one complete example showing:
 > (1) the prompt given to the LLM with exploration data summary,
 > (2) the LLM's full output including environment profile and feature hypotheses,

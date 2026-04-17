@@ -5,15 +5,15 @@ appendix.tex, line ~474. Appendix C (Multi-Backbone Verification), Figure A5.
 
 ## Writing Prompt
 > **[FIGURE NEEDED: Figure A5]**
-> Cross-backbone SR comparison: EAAG vs. best fixed baseline.
+> Cross-backbone SR comparison: DIAL vs. best fixed baseline.
 > Layout: Grouped bar chart. x = 8 environments.
 > 2 groups of 3 bars each:
 > Group 1 (blue): best fixed-direction baseline SR on Qwen3/Phi-3.5/Llama-3.1.
-> Group 2 (red): EAAG SR on Qwen3/Phi-3.5/Llama-3.1.
+> Group 2 (red): DIAL SR on Qwen3/Phi-3.5/Llama-3.1.
 > Lighter shade = Qwen3, Medium = Phi-3.5, Darker = Llama.
-> Annotate delta-SR between EAAG and fixed baseline per backbone.
+> Annotate delta-SR between DIAL and fixed baseline per backbone.
 > Sort by cross-backbone variation magnitude.
-> Key message: Fixed baselines brittle across backbones; EAAG robust.
+> Key message: Fixed baselines brittle across backbones; DIAL robust.
 
 ## Data Status
 - Qwen3-4B: ✅ from existing tab_main_results

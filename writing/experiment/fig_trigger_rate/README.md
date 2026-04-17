@@ -14,7 +14,7 @@ Section 5.3 Main text, Ablation / Gate Behavior. Figure fig:trigger-adapt.
 
 ## Description
 
-2x3 grid showing per-step trigger probability for EAAG (exploitation phase) across 6 environments.
+2x3 grid showing per-step trigger probability for DIAL (exploitation phase) across 6 environments.
 
 ## Data Status
 

@@ -7,5 +7,5 @@ CoRefine,200,calibration (required),none (reads logprob/entropy),0,varies,,,Zero
 CATTS,0,optional,K=5 voting,5,0.02-2.26,1063-5598,,K=5 forward passes EVERY step regardless of trigger
 AUQ,0,optional,confidence query,1,1.08-6.78,,~C_base,+1 LLM call/step for verbalized confidence
 s1_budget,0,none,none,0,~1.0,,,Fixed budget per episode
-BSW,50,exploration,none,0,varies,,,EAAG with intentionally reversed direction
-EAAG,50,exploration (50 eps),none,0,1.08-3.69,,,Zero per-step overhead; online exploration
+BSW,50,exploration,none,0,varies,,,DIAL with intentionally reversed direction
+DIAL,50,exploration (50 eps),none,0,1.08-3.69,,,Zero per-step overhead; online exploration

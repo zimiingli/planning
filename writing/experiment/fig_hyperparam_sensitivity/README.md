@@ -10,7 +10,7 @@ appendix.tex, line ~870. Appendix F (Additional Analyses), Figure A2.
 > 4 lines (HotpotQA, APPS Intro, FEVER, WebShop). Shaded stable zone for N>=30.
 > Panel (b): Gate threshold sensitivity. x = tau in {0.3,0.4,0.5,0.6,0.7}, y = SR(%).
 > Same 4 environments. Vertical dashed at defaults (N=50, tau=0.5).
-> Key message: EAAG robust to both N_explore (stable for >=30) and tau (stable across 0.3-0.7).
+> Key message: DIAL robust to both N_explore (stable for >=30) and tau (stable across 0.3-0.7).
 
 ## Data Status
 - Panel (a) N_explore: **PENDING** — see `pending/exp4_budget_sensitivity.md`

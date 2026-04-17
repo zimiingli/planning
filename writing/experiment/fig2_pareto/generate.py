@@ -3,8 +3,8 @@
 
 Visual spec (experiments.tex L94-124):
 - 2x3 grid: HotpotQA, APPS, WebShop, FEVER, Plancraft, APPS Intv
-- Marker shapes: circle=bounds, triangle=fixed-direction, star=EAAG
-- Colors: bounds=gray, fixed-direction=tab10, EAAG=crimson
+- Marker shapes: circle=bounds, triangle=fixed-direction, star=DIAL
+- Colors: bounds=gray, fixed-direction=tab10, DIAL=crimson
 - Pareto frontier dashed line + light shading below
 - Shared legend
 """
@@ -40,7 +40,7 @@ ENV_LABELS = {
 }
 
 # Map raw method names to display names and categories
-EAAG_METHODS = {'se_few5_filter_local', 'principled_adaptive', 'EAAG'}
+DIAL_METHODS = {'se_few5_filter_local', 'principled_adaptive', 'DIAL'}
 BOUNDS = {'base_only', 'always_trigger', 'oracle'}
 FIXED_CB = {'cats', 'seag', 'corefine', 'catts', 'auq', 's1_budget',
             'CaTS', 'SEAG', 'CoRefine', 'CATTS', 'AUQ'}
@@ -69,8 +69,8 @@ CB_LABELS = {
 
 
 def categorize(method):
-    if method in EAAG_METHODS:
-        return 'eaag'
+    if method in DIAL_METHODS:
+        return 'dial'
     if method in BOUNDS:
         return 'bounds'
     if method in FIXED_CB:
@@ -159,7 +159,7 @@ def main():
 
         # Separate bounds and methods
         paper_points = [(c, s, cat, m) for c, s, cat, m in all_points
-                        if cat in ('cb', 'eaag')]
+                        if cat in ('cb', 'dial')]
         bounds_pts = {m: (c, s) for c, s, cat, m in all_points if cat == 'bounds'}
 
         # Plot methods with jitter for overlapping points
@@ -200,11 +200,11 @@ def main():
                                linewidths=0.5, zorder=4)
                 if label not in legend_handles:
                     legend_handles[label] = h
-            elif cat == 'eaag':
+            elif cat == 'dial':
                 h = ax.scatter(cost + dc, sr + ds, c='crimson', marker='*',
                                s=marker_size * 2, edgecolors='darkred',
                                linewidths=0.5, zorder=10)
-                legend_handles['EAAG'] = h
+                legend_handles['DIAL'] = h
 
         # Set x-axis with padding
         all_costs = [c for c, s, cat, m in paper_points]
@@ -221,18 +221,18 @@ def main():
             sr_pad = max((sr_max - sr_min) * 0.15, 2.0)
             ax.set_ylim(max(0, sr_min - sr_pad), min(100, sr_max + sr_pad))
 
-        # EAAG-dominated region (use original positions, not jittered)
-        eaag_pts = [(c, s) for c, s, cat, m in paper_points if cat == 'eaag']
-        if eaag_pts:
-            eaag_cost, eaag_sr = eaag_pts[0]
-            ax.fill_between([eaag_cost, x_max + 5], ax.get_ylim()[0], eaag_sr,
+        # DIAL-dominated region (use original positions, not jittered)
+        dial_pts = [(c, s) for c, s, cat, m in paper_points if cat == 'dial']
+        if dial_pts:
+            dial_cost, dial_sr = dial_pts[0]
+            ax.fill_between([dial_cost, x_max + 5], ax.get_ylim()[0], dial_sr,
                             color='crimson', alpha=0.06, zorder=0)
-            ax.axvline(eaag_cost, color='crimson', linestyle=':', linewidth=0.5,
-                       alpha=0.3, ymax=(eaag_sr - ax.get_ylim()[0]) /
+            ax.axvline(dial_cost, color='crimson', linestyle=':', linewidth=0.5,
+                       alpha=0.3, ymax=(dial_sr - ax.get_ylim()[0]) /
                        (ax.get_ylim()[1] - ax.get_ylim()[0]) if ax.get_ylim()[1] != ax.get_ylim()[0] else 0.5,
                        zorder=0)
-            ax.axhline(eaag_sr, color='crimson', linestyle=':', linewidth=0.5,
-                       alpha=0.3, xmin=(eaag_cost - ax.get_xlim()[0]) /
+            ax.axhline(dial_sr, color='crimson', linestyle=':', linewidth=0.5,
+                       alpha=0.3, xmin=(dial_cost - ax.get_xlim()[0]) /
                        (ax.get_xlim()[1] - ax.get_xlim()[0]) if ax.get_xlim()[1] != ax.get_xlim()[0] else 0.5,
                        zorder=0)
 
@@ -244,8 +244,8 @@ def main():
         ax.spines['right'].set_visible(False)
         add_ygrid(ax)
 
-    # Shared legend — ordered: CBs, EAAG
-    desired_order = ['CaTS', 'SEAG', 'CoRefine', 'CATTS', 'AUQ', 's1_budget', 'EAAG']
+    # Shared legend — ordered: CBs, DIAL
+    desired_order = ['CaTS', 'SEAG', 'CoRefine', 'CATTS', 'AUQ', 's1_budget', 'DIAL']
     handles = []
     labels = []
     for name in desired_order:

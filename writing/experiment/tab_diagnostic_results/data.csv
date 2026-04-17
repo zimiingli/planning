@@ -3,7 +3,7 @@ base_only,TWExpress,67.5,0.0
 base_only,Plancraft,29.8,0.0
 always_trigger,TWExpress,99.3,3.45
 always_trigger,Plancraft,22.8,6.99
-EAAG,TWExpress,99.0,2.84
-EAAG,Plancraft,23.3,3.69
+DIAL,TWExpress,99.0,2.84
+DIAL,Plancraft,23.3,3.69
 SCG,TWExpress,97.0,4.83
 SCG,Plancraft,21.5,10.32

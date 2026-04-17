@@ -91,26 +91,18 @@ directions (Proposition~\ref{prop:necessity}), and once the direction is misalig
 
 % --- Module 3: Method + contributions (~25%) ---
 
-% Motivated by this analysis, we propose \textbf{EAAG}
+% Motivated by this analysis, we propose \textbf{DIAL}
 % (\textbf{E}nvironment-\textbf{A}ware \textbf{A}daptive
 % \textbf{G}ating), which discovers environment-specific gating
 % patterns through randomized \emph{exploration}, LLM-based
 % \emph{reasoning} about exploration data, and sparse
 % \emph{learning} of signal direction and importance.
 % Since direction is the primary determinant of gate quality, not
-% model capacity, EAAG pairs a rich discovery process with a
+% model capacity, DIAL pairs a rich discovery process with a
 % deliberately simple gate that adds zero per-step deployment cost.
-% EAAG outperforms all fixed-direction baselines across eight
+% DIAL outperforms all fixed-direction baselines across eight
 % environments and three LLM backbones.
-Motivated by this analysis, we propose \textbf{EAAG} (\textbf{E}nvironment-\textbf{A}ware \textbf{A}daptive \textbf{G}ating), a deliberately minimal method that learns environment-specific signal–utility relationships from interaction data. Since the primary challenge is identifying signal direction rather than modeling capacity, EAAG's contribution is not a new gate architecture but a pipeline that reduces the adaptive-gating problem to a form where a standard sparse linear classifier suffices, adding zero per-step cost at deployment. Across six environments and three LLM backbones, EAAG outperforms all fixed-direction baselines.
-%Importantly, since signal direction cannot be inferred from uncertainty alone and varies across environments, it must be discovered through interaction data, rather than assumed or calibrated from static signals.
-
-Taken together, these results point to a more fundamental
-observation: uncertainty signals like token entropy are not
-sufficient statistics for the value of computation, because their
-meaning depends on a latent state property that the signal alone
-cannot identify. Direction discovery is the minimal mechanism that
-closes this gap.
+Motivated by this analysis, we propose \textbf{DIAL} (\textbf{D}irection-\textbf{I}nformed \textbf{A}daptive \textbf{L}earning), a deliberately minimal method that learns environment-specific signal--utility relationships from interaction data. Since the primary challenge is identifying signal direction rather than modeling capacity, DIAL's contribution is not a new gate architecture but a pipeline that reduces the adaptive-gating problem to a form where a standard sparse linear classifier suffices, adding zero per-step cost at deployment. Across six environments and three LLM backbones, DIAL outperforms all fixed-direction baselines.
 
 Our main contributions are as follows:
 \begin{itemize}[leftmargin=*,nosep]
@@ -122,5 +114,5 @@ universally correct.
 
 \item \textbf{Empirical finding.} We demonstrate systematic reversal of signal--utility direction across environments and model backbones, and show that the most informative signals vary across settings.
 
-\item \textbf{Adaptive gating method.} We propose EAAG, which learns signal direction per environment instead of assuming it, outperforming all fixed-direction baselines across six environments with zero deployment overhead.
+\item \textbf{Adaptive gating method.} We propose DIAL, which learns signal direction per environment instead of assuming it, outperforming all fixed-direction baselines across six environments with zero deployment overhead.
 \end{itemize}

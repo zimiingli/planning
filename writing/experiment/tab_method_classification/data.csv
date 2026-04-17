@@ -7,4 +7,4 @@ AUQ,confidence,None,No,1 call/step,1W/6L
 s1_budget,length,None,No,0,1W/6L
 SCG,multi-signal,Learned,Yes,0,-
 BSW,multi-signal,Flipped,Yes,0,-
-EAAG,multi-signal,Auto-learned,No,0,34W/2L
+DIAL,multi-signal,Auto-learned,No,0,34W/2L

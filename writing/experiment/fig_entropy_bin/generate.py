@@ -6,7 +6,7 @@ Spec (experiments.tex L143-177):
   Note: using available data — HotpotQA, FEVER, APPS Intv
 - Grouped bar chart: methods per entropy bin
 - Annotate proportion of steps at top
-- EAAG = red/crimson, baselines = blue/green/gray
+- DIAL = red/crimson, baselines = blue/green/gray
 """
 import matplotlib
 matplotlib.use('Agg')

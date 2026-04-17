@@ -1,4 +1,4 @@
-environment,eaag_sr,v2_no_llm_sr,llm_contribution_pp
+environment,dial_sr,v2_no_llm_sr,llm_contribution_pp
 HotpotQA,95.2,93.8,1.4
 WebShop,43.8,42.7,1.1
 FEVER,49.8,40.7,9.1

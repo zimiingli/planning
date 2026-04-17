@@ -2,11 +2,11 @@
 
 ## Paper Location
 
-Section 4 Main text. EAAG Method.
+Section 4 Main text. DIAL Method.
 
 ## Description
 
-Conceptual pipeline diagram showing EAAG's 3-step workflow: Explore -> Reason (LLM) -> Learn & Deploy (LASSO + online adaptation). This is a conceptual figure, not data-driven.
+Conceptual pipeline diagram showing DIAL's 3-step workflow: Explore -> Reason (LLM) -> Learn & Deploy (LASSO + online adaptation). This is a conceptual figure, not data-driven.
 
 ## Data Status
 

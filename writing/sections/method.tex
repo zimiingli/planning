@@ -1,7 +1,7 @@
 % ============================================================
-% 4. METHOD: EAAG
+% 4. METHOD: DIAL
 % ============================================================
-\section{Method: Environment-Aware Adaptive Gating}
+\section{Method: Direction-Informed Adaptive Learning}
 \label{sec:method}
 
 Section~\ref{sec:signal-landscape} imposes three requirements on
@@ -15,7 +15,10 @@ no single signal is reliably informative across environments
 semantics are unknown would bias the collected data in a
 direction that depends on the answer.
 
-EAAG is a deliberately minimal instantiation of these
+DIAL (\emph{Direction-Informed Adaptive Learning}) \emph{dials in}
+the correct signal interpretation for each environment through a
+lightweight explore--reason--learn pipeline.
+It is a deliberately minimal instantiation of these
 requirements. Its contribution is not a new gate architecture
 but a pipeline that reduces the adaptive-gating problem to a
 form where a standard sparse linear model suffices: randomized
@@ -24,7 +27,7 @@ direction, an optional LLM feature layer (\S\ref{sec:reason})
 proposes task-specific signals when universal ones are
 inadequate, and a sparse linear gate (\S\ref{sec:learn})
 recovers per-environment direction from the resulting dataset.
-Algorithm~\ref{alg:eaag} summarizes the full pipeline
+Algorithm~\ref{alg:dial} summarizes the full pipeline
 and its connection to requirements~(i)--(iii).
 
 Since the primary bottleneck is signal direction rather than
@@ -33,15 +36,15 @@ complexity in exploration and feature selection and keep the
 deployed gate deliberately minimal.
 
 % TODO: TikZ pipeline diagram (see figure_prompts.md for detailed spec)
-% Figure~\ref{fig:eaag-pipeline}: Explore → Reason → Learn → Deploy
+% Figure~\ref{fig:dial-pipeline}: Explore → Reason → Learn → Deploy
 %\begin{figure*}[t]
 %\centering
-%\includegraphics[width=\textwidth]{figures/fig_eaag_pipeline.pdf}
-%\caption{EAAG pipeline. Explore collects unbiased $(s,U)$ pairs;
+%\includegraphics[width=\textwidth]{figures/fig_dial_pipeline.pdf}
+%\caption{DIAL pipeline. Explore collects unbiased $(s,U)$ pairs;
 %Reason (optional) proposes task-specific features via LLM;
 %Learn fits a sparse gate with signed weights $\mathbf{w}$;
 %Deploy adds zero overhead per step.}
-%\label{fig:eaag-pipeline}
+%\label{fig:dial-pipeline}
 %\end{figure*}
 
 \subsection{Explore: Signal-Agnostic Data Collection}
@@ -58,7 +61,7 @@ $\mathcal{D}$ in a direction that depends on the quantity being
 estimated. Warm-starting from prior-method data inherits the
 same circularity.
 
-EAAG therefore uses the simplest policy consistent with this
+DIAL therefore uses the simplest policy consistent with this
 constraint. At each step~$t$ in episode~$i$, a Bernoulli coin
 flip determines the gating decision:
 \begin{equation}
@@ -89,7 +92,7 @@ that the gate will be fit over. Requirement~(ii) demands that
 this pool be rich enough to include each environment's relevant
 signals, but not so environment-specific that deployment
 requires manual engineering per task.
-EAAG's default is a fixed set of universal features:
+DIAL's default is a fixed set of universal features:
 \texttt{step\_count}, \texttt{token\_entropy},
 \texttt{state\_length}, \texttt{action\_entropy}, and others. These are available in every environment without task-specific engineering.
 In the environments we study, this pool alone is sufficient to
@@ -98,7 +101,7 @@ recover a gate that outperforms all fixed-direction baselines
 
 For environments where universal features may be inadequate,
 such as WebShop, whose gating benefits from task-specific
-signals like \texttt{num\_available\_actions}, EAAG offers an
+signals like \texttt{num\_available\_actions}, DIAL offers an
 \emph{optional} automation layer: an LLM is given a summary of
 $\mathcal{D}$ and proposes task-specific feature hypotheses
 $\phi_{\text{LLM}}(s)$, which join the universal pool to form
@@ -117,7 +120,7 @@ component the method depends on.
 \subsection{Learn: Sparse Linear Gate}
 \label{sec:learn}
 
-Given $\mathcal{D}$ and $\phi_{\text{cand}}$, EAAG fits an
+Given $\mathcal{D}$ and $\phi_{\text{cand}}$, DIAL fits an
 $\ell_1$-regularized logistic regression:
 \begin{equation}
 \begin{aligned}
@@ -140,7 +143,7 @@ with threshold $\tau$ set by cross-validation on $\mathcal{D}$.
 Gate fitting completes in under a second, and deployment adds
 zero per-step overhead beyond feature computation.
 Implementation details are in
-Appendix~\ref{app:eaag-details}.
+Appendix~\ref{app:dial-details}.
 
 \paragraph{Signed weights as a diagnostic.}
 The $\ell_1$ penalty in Eq.~\ref{eq:lasso} simultaneously
@@ -156,7 +159,7 @@ novel modeling choice; any signed linear classifier would expose
 the same information.
 
 \paragraph{Online adaptation.}
-For drifting environments, EAAG can optionally refit during
+For drifting environments, DIAL can optionally refit during
 deployment using $\varepsilon$-greedy exploration
 ($\varepsilon: 0.1 \to 0$) and periodic retraining. This mode
 is \emph{not free}: $\varepsilon$-greedy overrides ignore the
@@ -167,4 +170,4 @@ we recommend skipping online adaptation and relying on the
 offline-fitted gate.
 
 The complete three-phase procedure is summarized in
-Algorithm~\ref{alg:eaag} (Appendix~\ref{app:eaag-details}).
+Algorithm~\ref{alg:dial} (Appendix~\ref{app:dial-details}).

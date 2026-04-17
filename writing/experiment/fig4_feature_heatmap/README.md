@@ -10,11 +10,11 @@ Binary heatmap showing which features LASSO selected in each environment. step_c
 
 ## Data Status
 
-Complete. 7 environments with selected features from EAAG gate_pattern.
+Complete. 7 environments with selected features from DIAL gate_pattern.
 
 ## Data Source
 
-Hardcoded from EAAG LASSO results (Section 3.1 in implementation plan).
+Hardcoded from DIAL LASSO results (Section 3.1 in implementation plan).
 
 ## Files in this folder
 

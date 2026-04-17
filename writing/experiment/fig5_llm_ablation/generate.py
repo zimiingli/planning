@@ -28,7 +28,7 @@ def main():
             rows.append(row)
 
     envs = [row['environment'] for row in rows]
-    eaag_sr = [float(row['eaag_sr']) for row in rows]
+    dial_sr = [float(row['dial_sr']) for row in rows]
     v2_sr = [float(row['v2_no_llm_sr']) for row in rows]
     contribution = [float(row['llm_contribution_pp']) for row in rows]
 
@@ -38,14 +38,14 @@ def main():
 
     fig, ax = plt.subplots(figsize=(3.5, 2.8))
 
-    bars1 = ax.bar(x - width / 2, eaag_sr, width, color='steelblue',
-                   edgecolor='white', label='EAAG (with LLM)')
+    bars1 = ax.bar(x - width / 2, dial_sr, width, color='steelblue',
+                   edgecolor='white', label='DIAL (with LLM)')
     bars2 = ax.bar(x + width / 2, v2_sr, width, color='lightcoral',
                    edgecolor='white', label='v2 (no LLM)')
 
     # Annotate contribution above each group
     for i in range(n):
-        top = max(eaag_sr[i], v2_sr[i])
+        top = max(dial_sr[i], v2_sr[i])
         sign = '+' if contribution[i] >= 0 else ''
         ax.annotate(f'{sign}{contribution[i]:.1f} pp',
                     xy=(x[i], top + 1.0),
@@ -60,7 +60,7 @@ def main():
     ax.grid(axis='y', alpha=0.3)
 
     # Set y-axis to give room for annotations
-    y_max = max(max(eaag_sr), max(v2_sr)) + 8
+    y_max = max(max(dial_sr), max(v2_sr)) + 8
     ax.set_ylim(0, y_max)
 
     add_ygrid(ax)

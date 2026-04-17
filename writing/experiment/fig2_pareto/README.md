@@ -9,13 +9,13 @@ Section 5.2 Main text, E2 Main Comparison. Figure fig:pareto.
 > Pareto frontier plot (ref: CATTS Figure 5).
 > Layout: 2x3 grid (6 representative environments: HotpotQA, APPS Intro, WebShop, FEVER, Plancraft, APPS Interview).
 > x-axis = Cost (rollouts/episode), y-axis = SR(%).
-> Marker shapes by category: circle=bounds, triangle=fixed-direction, star=EAAG.
-> Draw Pareto frontier as dashed line. EAAG in red/crimson with star marker.
-> Key message: EAAG on or near Pareto frontier in every env.
+> Marker shapes by category: circle=bounds, triangle=fixed-direction, star=DIAL.
+> Draw Pareto frontier as dashed line. DIAL in red/crimson with star marker.
+> Key message: DIAL on or near Pareto frontier in every env.
 
 ## Description
 
-SR vs Total Cost Pareto frontier for 6 main environments, showing all methods. EAAG sits on or near the Pareto frontier in most environments.
+SR vs Total Cost Pareto frontier for 6 main environments, showing all methods. DIAL sits on or near the Pareto frontier in most environments.
 
 ## Data Status
 

@@ -25,7 +25,7 @@ ENV_ORDER = ['HotpotQA', 'APPS', 'APPS Intv', 'WebShop', 'FEVER', 'TWExpress', '
 # Use display names from data
 ENV_ALIASES = {'APPS Intro': 'APPS', 'APPS': 'APPS'}
 
-EAAG = {'EAAG', 'se_few5_filter_local'}
+DIAL = {'DIAL', 'se_few5_filter_local'}
 BOUNDS = {'base_only', 'always_trigger', 'oracle'}
 FIXED_CB = {'CaTS', 'SEAG', 'CoRefine', 'CATTS', 'AUQ', 's1_budget',
             'cats', 'seag', 'corefine', 'catts', 'auq'}
@@ -33,7 +33,7 @@ CB_COLORS = {'CaTS': '#1f77b4', 'SEAG': '#ff7f0e', 'CoRefine': '#2ca02c',
              'CATTS': '#9467bd', 'AUQ': '#8c564b', 's1_budget': '#e377c2'}
 
 def categorize(m):
-    if m in EAAG: return 'eaag'
+    if m in DIAL: return 'dial'
     if m in BOUNDS: return 'bounds'
     if m in FIXED_CB: return 'cb'
     return 'other'
@@ -99,7 +99,7 @@ def main():
             elif cat == 'cb':
                 color = CB_COLORS.get(m, '#17becf')
                 ax.scatter(cost, sr, c=color, marker='^', s=45, alpha=0.85, zorder=4)
-            elif cat == 'eaag':
+            elif cat == 'dial':
                 ax.scatter(cost, sr, c='crimson', marker='*', s=220,
                            edgecolors='darkred', linewidths=0.5, zorder=10)
 
