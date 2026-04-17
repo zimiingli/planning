@@ -1,12 +1,6 @@
 #!/usr/bin/env python3
-"""Figure A5: Cross-backbone SR comparison — EAAG vs best fixed baseline.
-
-Spec (appendix.tex L474-495):
-- Grouped bar chart. x = 8 environments.
-- 2 groups of 3 bars: best-fixed (blue shades), EAAG (red shades)
-- Lighter=Qwen3, Medium=Phi-3.5, Darker=Llama
-- Annotate delta-SR per backbone
-"""
+"""Figure: Cross-backbone SR comparison — EAAG vs best fixed baseline.
+Per-environment subplots with auto y-axis range."""
 import matplotlib
 matplotlib.use('Agg')
 
@@ -19,65 +13,76 @@ import matplotlib.pyplot as plt
 import numpy as np
 import csv
 from pathlib import Path
+from matplotlib.patches import Patch
 
 HERE = Path(__file__).parent
 ENV_ORDER = ['HotpotQA', 'WebShop', 'FEVER', 'TWExpress', 'Plancraft', 'APPS']
 BACKBONES = ['Qwen3-4B', 'Phi-3.5-mini', 'Llama-3.1-8B']
-BB_FIXED_COLORS = ['#92c5de', '#4393c3', '#2166ac']  # light to dark blue
-BB_EAAG_COLORS = ['#f4a582', '#d6604d', '#b2182b']   # light to dark red
+BB_LABELS = ['Qwen3', 'Phi-3.5', 'Llama']
+BB_FIXED_COLORS = ['#92c5de', '#4393c3', '#2166ac']
+BB_EAAG_COLORS = ['#f4a582', '#d6604d', '#b2182b']
 
 def main():
     with open(HERE / 'data.csv', newline='') as f:
         rows = list(csv.DictReader(f))
 
-    # Build lookup: (backbone, env, category) -> sr
     data = {}
     for row in rows:
         key = (row['backbone'], row['environment'], row['category'])
         data[key] = float(row['sr_pct'])
 
-    x = np.arange(len(ENV_ORDER))
-    w = 0.10          # single bar width
-    gap = 0.08        # gap between blue group and red group
-    fig, ax = plt.subplots(figsize=(8, 2.8))
+    fig, axes = plt.subplots(2, 3, figsize=(7, 4))
+    axes = axes.flatten()
 
-    # 6 bar positions: [-2.5w-gap/2, -1.5w-gap/2, -0.5w-gap/2,
-    #                    +0.5w+gap/2, +1.5w+gap/2, +2.5w+gap/2]
-    for bidx, bb in enumerate(BACKBONES):
-        # Best fixed (left group: positions 0,1,2)
-        fixed_srs = [data.get((bb, env, 'best_fixed'), np.nan) for env in ENV_ORDER]
-        off_f = -(1.5 - bidx) * w - gap / 2
-        ax.bar(x + off_f, fixed_srs, w * 0.92,
-               color=BB_FIXED_COLORS[bidx], edgecolor='white', linewidth=0.3)
+    x = np.arange(len(BACKBONES))
+    w = 0.35
 
-        # EAAG (right group: positions 3,4,5)
-        eaag_srs = [data.get((bb, env, 'EAAG'), np.nan) for env in ENV_ORDER]
-        off_e = (0.5 + bidx) * w + gap / 2
-        ax.bar(x + off_e, eaag_srs, w * 0.92,
-               color=BB_EAAG_COLORS[bidx], edgecolor='white', linewidth=0.3)
+    for idx, env in enumerate(ENV_ORDER):
+        ax = axes[idx]
 
-    ax.set_xticks(x)
-    ax.set_xticklabels(ENV_ORDER, rotation=0, ha='center')
-    ax.set_ylabel('SR (%)')
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
+        fixed_srs = [data.get((bb, env, 'best_fixed'), np.nan) for bb in BACKBONES]
+        eaag_srs = [data.get((bb, env, 'EAAG'), np.nan) for bb in BACKBONES]
 
-    # Custom legend
-    from matplotlib.patches import Patch
+        ax.bar(x - w/2, fixed_srs, w, color='#4393c3', edgecolor='white',
+               linewidth=0.5, label='Best Fixed')
+        ax.bar(x + w/2, eaag_srs, w, color='#d6604d', edgecolor='white',
+               linewidth=0.5, label='EAAG')
+
+        # Auto y-axis zoom
+        all_vals = [v for v in fixed_srs + eaag_srs if not np.isnan(v)]
+        if all_vals:
+            v_min = min(all_vals)
+            v_max = max(all_vals)
+            pad = max((v_max - v_min) * 0.2, 3.0)
+            ax.set_ylim(max(0, v_min - pad), min(100, v_max + pad))
+
+        # Value labels on bars
+        for xi, (fv, ev) in enumerate(zip(fixed_srs, eaag_srs)):
+            if not np.isnan(fv):
+                ax.text(xi - w/2, fv + 0.5, f'{fv:.0f}', ha='center', va='bottom',
+                        fontsize=6, color='#333333')
+            if not np.isnan(ev):
+                ax.text(xi + w/2, ev + 0.5, f'{ev:.0f}', ha='center', va='bottom',
+                        fontsize=6, color='#333333')
+
+        ax.set_xticks(x)
+        ax.set_xticklabels(BB_LABELS, fontsize=7)
+        ax.set_title(env, fontsize=9)
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        if idx % 3 == 0:
+            ax.set_ylabel('SR (%)', fontsize=8)
+        add_ygrid(ax)
+
+    # Shared legend
     legend_elements = [
-        Patch(facecolor=BB_FIXED_COLORS[0], label='Best Fixed (Qwen3)'),
-        Patch(facecolor=BB_FIXED_COLORS[1], label='Best Fixed (Phi-3.5)'),
-        Patch(facecolor=BB_FIXED_COLORS[2], label='Best Fixed (Llama)'),
-        Patch(facecolor=BB_EAAG_COLORS[0], label='EAAG (Qwen3)'),
-        Patch(facecolor=BB_EAAG_COLORS[1], label='EAAG (Phi-3.5)'),
-        Patch(facecolor=BB_EAAG_COLORS[2], label='EAAG (Llama)'),
+        Patch(facecolor='#4393c3', label='Best Fixed'),
+        Patch(facecolor='#d6604d', label='EAAG'),
     ]
-    ax.legend(handles=legend_elements, ncol=2, loc='upper right',
-              framealpha=0.9, edgecolor='#cccccc')
+    fig.legend(handles=legend_elements, loc='upper center', ncol=2,
+               fontsize=9, bbox_to_anchor=(0.5, 1.02), frameon=False)
 
-    add_ygrid(ax)
-
-    plt.tight_layout()
+    plt.tight_layout(rect=[0, 0, 1, 0.95])
     fig.savefig(HERE / 'output.pdf', bbox_inches='tight', dpi=200)
     plt.close(fig)
     print(f'Saved {HERE / "output.pdf"}')

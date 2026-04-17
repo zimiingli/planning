@@ -37,8 +37,8 @@ warrants additional compute:
 CaTS~\cite{cats2025}, SEAG~\cite{seag2025},
 CoRefine~\cite{corefine2026}, CATTS~\cite{catts2026},
 AUQ~\cite{auq2026}, and s1\_budget~\cite{s1_2025}.
-We also evaluate BSW, which intentionally reverses the learned
-direction to quantify the cost of direction mismatch.
+%We also evaluate BSW, which intentionally reverses the learned
+%direction to quantify the cost of direction mismatch.
 Full specifications are in Appendix~\ref{app:method-comparison}.
 
 \paragraph{Metrics.} SR (success rate, $\uparrow$) and Cost
@@ -62,12 +62,9 @@ Appendix~\ref{app:cost}.
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_pareto.pdf}
-\caption{Pareto frontier: SR vs.\ Cost ($\times$base) across all 6
-environments (Qwen3-4B).
-$\triangle$\,=\,fixed-direction baselines,
-$\bigstar$\,=\,EAAG.
-Dotted lines: base\_only (lower) and always\_trigger (upper) bounds.
-EAAG sits on or near the Pareto frontier in every environment.
+\caption{SR vs.\ Cost ($\times$base) across all 6 environments
+(Qwen3-4B). Each method uses a distinct marker shape.
+Shaded region: dominated by EAAG (lower SR \emph{and} higher cost).
 Full numerical results across three backbones are in
 Table~\ref{tab:full-results}.}
 \label{fig:pareto}
@@ -81,20 +78,19 @@ Table~\ref{tab:full-results} (Appendix~\ref{app:full-results}).
 
 Three patterns emerge. First, fixed-direction baselines
 catastrophically fail when the assumed direction is wrong: on
-FEVER (Type~I), CATTS triggers almost never (SR\,=\,34.2\%,
-below the 37.0\% no-trigger baseline) yet still costs
-6.46$\times$base due to its $K{=}5$ per-step voting overhead.
-Second, EAAG achieves competitive SR at substantially lower cost
-than always-triggering. On WebShop, EAAG reaches 43.8\% SR at
-2.50$\times$base, matching always\_trigger (43.0\%) at less than
-half the cost (5.56$\times$). On APPS, EAAG outperforms the best
-baseline (s1\_budget, 69.0\%) by 4\,pp while using comparable
-cost.
+FEVER (Type~I), CATTS achieves only 32.2\% SR (below the 37.0\%
+no-trigger baseline) yet costs 16.46$\times$base due to its
+$K{=}5$ per-step voting overhead.
+Second, EAAG achieves competitive SR at substantially lower cost.
+On WebShop, EAAG reaches 43.8\% SR at 2.50$\times$base, matching
+always\_trigger (43.0\%) at less than half the cost
+(5.56$\times$). On APPS, EAAG outperforms the best baseline
+(s1\_budget, 69.0\%) by 4\,pp at comparable cost.
 Third, in the rollout-harmful environment Plancraft
 ($\Delta{=}{-}7.0$), EAAG learns to suppress triggering and
 recovers near base\_only performance (23.3\% vs.\ 29.8\%),
 while most baselines that trigger aggressively fall below
-base\_only (s1\_budget: 18.3\%).
+base\_only (s1\_budget: 16.3\%).
 
 \textbf{EAAG bridges the gap between base\_only and
 always\_trigger.}
@@ -157,33 +153,36 @@ Appendix~\ref{app:wrong-direction}.
 
 \textbf{The LLM feature layer is an automation convenience, not
 a core component.} Table~\ref{tab:llm-ablation} compares EAAG
-with and without the LLM feature layer. In 4 of 6 environments,
-removing LLM features changes SR by ${<}$1\,pp. In Plancraft,
-LLM features even hurt performance ($-$3.9\,pp). The one
-environment where the LLM contributes meaningfully is FEVER
-(+9.1\,pp), where task-specific signals extend the universal
-feature pool. The LLM layer is best viewed as an automation
+with and without LLM-generated features. FEVER is the only
+environment where LLM features contribute meaningfully
+(+9.1\,pp), where task-specific signals (\texttt{has\_claim},
+\texttt{text\_length}) extend the universal feature pool.
+In the remaining environments, removing LLM features changes SR
+by ${<}$2\,pp; in Plancraft and APPS the contribution is
+effectively zero. The LLM layer is best viewed as an automation
 convenience for zero-shot deployment rather than a component
 the method depends on.
 
 \begin{table}[t]
 \caption{LLM feature ablation. SR (\%) with and without
-LLM-generated features. The contribution is ${<}$1\,pp in
-most environments; FEVER is the exception.}
+LLM-generated features. FEVER is the only environment with
+meaningful LLM contribution.}
 \label{tab:llm-ablation}
 \centering\small
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lccc}
 \toprule
 Environment & w/ LLM & w/o LLM & $\Delta$ \\
 \midrule
-HotpotQA  & 95.2 & 95.8 & $-$0.6 \\
-WebShop   & 43.8 & 43.7 & +0.1 \\
-FEVER     & 49.8 & 40.7 & +9.1 \\
-TWExpress & 99.0 & 99.2 & $-$0.2 \\
-Plancraft & 23.3 & 27.2 & $-$3.9 \\
-APPS      & 66.0 & 65.8 & +0.2 \\
+HotpotQA  & 95.2 & 93.8 & $+$1.4 \\
+WebShop   & 43.8 & 42.7 & $+$1.1 \\
+FEVER     & 49.8 & 40.7 & $+$9.1 \\
+TWExpress & 99.0 & 97.2 & $+$1.8 \\
+Plancraft & 23.3 & 23.4 & $-$0.2 \\
+APPS      & 73.0 & 73.0 & $+$0.0 \\
 \bottomrule
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
 Beyond direction and features, EAAG's trigger rate also adapts
@@ -220,8 +219,7 @@ and verify each:
 \includegraphics[width=\columnwidth]{figures/fig_temporal_shift.pdf}
 \caption{P1 verification: $\rho$(entropy, U) shifts from early to
 late steps. Blue: early (step $\leq$ median), red: late.
-$\Delta$ annotations show consistent shift toward the dominant
-uncertainty type, confirming temporal dynamics prediction.
+Values on each bar show the Spearman $\rho$ for that phase.
 Plancraft is omitted because its entropy signal is too weak
 ($|\rho|{=}0.016$) for a meaningful early/late comparison.}
 \label{fig:temporal-shift}
