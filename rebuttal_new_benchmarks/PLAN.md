@@ -1,8 +1,8 @@
 # Rebuttal Preparation: New Benchmark Experiments
 
 > Created: 2026-04-17
-> Last updated: 2026-04-17 15:00 EDT
-> Status: **Step 0 running** (job 23948604, `general-gpu`, 12h)
+> Last updated: 2026-04-17 17:00 EDT
+> Status: **Step 1 + 2 + CB pipeline submitted** (jobs 23980874 → 23980876 + 23980877)
 > Model: openai/gpt-4o-mini (via OpenRouter)
 
 ## Goal
@@ -19,10 +19,10 @@ Deliverables per environment:
 
 ## Two New Environments
 
-| Env | Adapter | Previous GO/NO-GO (Qwen3-4B) | gpt-4o-mini preliminary | Status |
-|-----|---------|------------------------------|------------------------|--------|
-| ALFWorld | ✅ exists | NO-GO (base=28%, Δ=2%) | **base_sr=60% (5ep test)** | Step 0 running |
-| ScienceWorld | ✅ exists | NO-GO (base=0%, always=0%) | TBD | Step 0 running |
+| Env | Adapter | Qwen3-4B | gpt-4o-mini Step 0 | Decision |
+|-----|---------|----------|---------------------|----------|
+| ALFWorld | ✅ | NO-GO (base=28%, Δ=2%) | **base=42%, always=36%, Δ=-6%** | **Proceed as Type I env (rollout-harmful, like Plancraft)** |
+| ScienceWorld | ✅ | NO-GO (base=0%) | base=2% (too hard) | **Dropped** — tasks require domain knowledge + have instant-fail mechanics that break zero-shot LLM agents |
 
 ### SWE-bench Lite — Dropped
 
@@ -93,6 +93,28 @@ results/rebuttal/
 
 ### 2026-04-17
 
+**~17:00** — Full pipeline submitted for ALFWorld:
+- **Step 1** (job 23980874): 200 ep always_trigger → signal discovery (ρ values)
+- **Step 2** (job 23980876, depends on 23980874): 6 methods × 3 seeds = 18 runs
+  - Methods: base_only, always_trigger, random_50, best_sigma_wrong, scg_finetune_lr (EAAG), oracle
+- **CB** (job 23980877, depends on 23980874): 6 CBs × 3 seeds = 18 runs
+  - Methods: catts, seag, corefine, cats, auq, s1_budget
+- **Hypothesis**: ALFWorld+gpt-4o-mini is Type I (rollout-harmful, like Plancraft).
+  Fixed-direction baselines should perform ≤ base_only (SR=42%). EAAG should learn
+  to suppress triggering, matching base_only at low cost.
+
+**~16:45** — **Step 0 results received**:
+- **ALFWorld**: base=42%, always=36%, Δ=-6% → formal NO-GO but informative (rollout-harmful pattern)
+- **ScienceWorld**: base=2%, always=2%, Δ=0% → NO-GO (too hard for gpt-4o-mini zero-shot)
+
+**~16:30** — ScienceWorld adapter improvements (did not help enough):
+- Filtered out `connect`/`disconnect` low-level actions (303 → 134 actions)
+- Added ScienceWorld environment description + common-action patterns to prompt
+- Exposed `get_goal_progress()` sub-goals in prompt
+- Result: 5 ep test still got 0% SR (agent hits instant-fail mechanics like wrong `focus on`)
+- Diagnosis: ScienceWorld's instant-fail design + required domain knowledge makes it
+  fundamentally hard for zero-shot LLM agents (not a prompt-only issue)
+
 **~15:00** — Step 0 submitted: **job 23948604** (array 0-1) — `general-gpu`, 12h
 - Switched to `general-gpu` partition: `general` partition compute nodes hang during init
 - Added `module load cuda/12.3` to match working phase6 OpenRouter scripts
@@ -147,34 +169,26 @@ results/rebuttal/
 
 ## Detailed Status
 
-### 1. ALFWorld (gpt-4o-mini)
+### 1. ALFWorld (gpt-4o-mini) — ACTIVE
 
 - [x] Adapter: `frvc/envs/alfworld_env.py`
-- [x] Registry: registered as "alfworld"
 - [x] Config: `configs/rebuttal_alfworld_gpt4omini.yaml`
-- [x] Login node test: base_sr=60% (5ep), pipeline works
-- [ ] **Step 0: GO/NO-GO** — running (job 23948604_0, general-gpu)
-- [ ] Step 1: Signal discovery
-- [ ] Step 2: Core experiments (6 methods × 3 seeds × 200 ep)
-- [ ] Step 2b: Competing baselines (6 CB × 3 seeds × 200 ep)
-- [ ] Analysis: ρ table + Pareto plot
+- [x] **Step 0**: base=42%, always=36%, **Δ=-6%** (rollout-harmful / Type I)
+- [ ] **Step 1**: Signal discovery (job 23980874, running)
+- [ ] **Step 2**: Core experiments (job 23980876, 18 runs, pending Step 1)
+- [ ] **Step 2b**: Competing baselines (job 23980877, 18 runs, pending Step 1)
+- [ ] Analysis: ρ table + Pareto plot + comparison to Plancraft (same Type I pattern)
 
-Previous Qwen3-4B: base_sr=28%, always_sr=30%, Δ=2% → NO-GO
-gpt-4o-mini test: **base_sr=60%** (5 ep) → very likely GO
+**Framing for paper**: ALFWorld+gpt-4o-mini is a new Type I / rollout-harmful
+instance, analogous to Plancraft. Predicts: fixed-direction CBs fail (SR ≤ base),
+EAAG correctly suppresses triggering (SR ≈ base, low cost).
 
-### 2. ScienceWorld (gpt-4o-mini)
+### 2. ScienceWorld (gpt-4o-mini) — DROPPED
 
-- [x] Adapter: `frvc/envs/scienceworld_env.py` (updated: task cycling)
-- [x] Registry: registered as "scienceworld"
-- [x] Config: `configs/rebuttal_scienceworld_gpt4omini.yaml`
-- [ ] **Step 0: GO/NO-GO** — running (job 23948604_1, general-gpu)
-- [ ] Step 1: Signal discovery
-- [ ] Step 2: Core experiments (6 methods × 3 seeds × 200 ep)
-- [ ] Step 2b: Competing baselines (6 CB × 3 seeds × 200 ep)
-- [ ] Analysis: ρ table + Pareto plot
-
-Previous Qwen3-4B: base_sr=0%, always_sr=0% → NO-GO (model too weak)
-Config: `task_name: null` — cycles all 30 tasks across episodes
+- [x] Step 0: base=2%, always=2%, Δ=0% → NO-GO
+- **Reason**: ScienceWorld's instant-fail mechanics (wrong `focus on` → -100 done)
+  combined with required domain knowledge and 200-400 action spaces make it
+  fundamentally unsuited for zero-shot LLM agents. Adapter improvements did not help.
 
 ### 3. gpt-4o-mini Signal Discovery on Existing 6 Envs (future)
 
