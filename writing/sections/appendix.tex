@@ -967,27 +967,42 @@ WebShop ($|\rho|{=}0.444$, moderate), and Plancraft
 \begin{table}[H]
 \caption{Regularizer ablation on three environments ordered by
 signal strength. SR (\%); ``\#nz'' is the mean number of non-zero
-fitted weights across seeds. $\ell_1$ is the only variant that
-achieves competitive SR \emph{and} exact sparsity required by the
-signed-weight diagnostic.}
+fitted weights across three seeds. The candidate pool
+$\phi_{\text{cand}}$ contains 31 features ($5$~universal
+$+\,3$~derived $+\,20$~hidden-state PCA $+\,3$~auto-extracted);
+adding the LLM feature layer brings the pool to $\approx$36.
+$\ell_1$ is the only variant that achieves competitive SR
+\emph{and} exact sparsity required by the signed-weight
+diagnostic.}
 \label{tab:regularizer-ablation}
 \centering\small
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{lcccccc}
 \toprule
  & \multicolumn{2}{c}{HotpotQA} & \multicolumn{2}{c}{WebShop} & \multicolumn{2}{c}{Plancraft} \\
+ & \multicolumn{2}{c}{$|\rho|{=}0.494$} & \multicolumn{2}{c}{$|\rho|{=}0.444$} & \multicolumn{2}{c}{$|\rho|{=}0.016$} \\
 \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
 Regularizer & SR & \#nz & SR & \#nz & SR & \#nz \\
 \midrule
-$\ell_1$ (DIAL)       & 95.2 & TBD & 43.8 & TBD & 23.3 & TBD \\
-$\ell_2$              & TBD  & 9   & TBD  & 9   & TBD  & 9   \\
-No regularization     & TBD  & 9   & TBD  & 9   & TBD  & 9   \\
-Elastic Net           & TBD  & TBD & TBD  & TBD & TBD  & TBD \\
-MI top-3 + unreg.     & TBD  & 3   & TBD  & 3   & TBD  & 3   \\
+$\ell_1$ (DIAL)       & 95.2 & 7.3  & 43.8 & 8.3  & 23.3 & 1.7  \\
+$\ell_2$              & TBD  & 36   & TBD  & 36   & TBD  & 36   \\
+No regularization     & TBD  & 36   & TBD  & 36   & TBD  & 36   \\
+Elastic Net           & TBD  & TBD  & TBD  & TBD  & TBD  & TBD  \\
+MI top-3 + unreg.     & TBD  & 3    & TBD  & 3    & TBD  & 3    \\
 \bottomrule
 \end{tabular}%
 }
 \end{table}
+
+\noindent\textit{Note.} $\ell_1$ \#nz values are measured across
+three seeds of DIAL's production runs; the per-environment mean
+reveals adaptive sparsity: under strong signal
+(HotpotQA, WebShop) DIAL retains $\approx$7--8 features, whereas
+under weak signal (Plancraft) $\ell_1$ collapses the gate to
+$\approx$2 features, absorbing the remainder into the bias and
+yielding a near-constant trigger probability consistent with the
+low rollout headroom of that environment
+(Figure~\ref{fig:trigger-adapt}).
 
 The comparison isolates three hypotheses underlying DIAL's
 regularizer choice.
