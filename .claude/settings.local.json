@@ -52,7 +52,14 @@
       "Bash(npm install:*)",
       "Bash(pdftoppm:*)",
       "Bash(soffice --headless --convert-to pdf week_report_2026-03-23.pptx)",
-      "Skill(claude-scientific-writer:peer-review)"
+      "Skill(claude-scientific-writer:peer-review)",
+      "Bash(pdflatex -interaction=nonstopmode -halt-on-error main.tex)",
+      "Read(//usr/local/**)",
+      "Read(//opt/**)",
+      "Bash(compgen -c)",
+      "Bash(module avail *)",
+      "Bash(dpkg -l)",
+      "Bash(rpm -qa)"
     ]
   }
 }
