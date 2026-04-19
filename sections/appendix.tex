@@ -964,10 +964,9 @@ signal strength: HotpotQA ($|\rho|{=}0.494$, strong),
 WebShop ($|\rho|{=}0.444$, moderate), and Plancraft
 ($|\rho|{=}0.016$, weak).
 
-\begin{table}[H]
+\begin{table}[h]
 \caption{Regularizer ablation on three environments ordered by
 signal strength. SR (\%); ``\#nz'' is the mean number of non-zero
-<<<<<<< HEAD
 fitted weights across three seeds. The candidate pool
 $\phi_{\text{cand}}$ contains 31 features ($5$~universal
 $+\,3$~derived $+\,20$~hidden-state PCA $+\,3$~auto-extracted);
@@ -975,18 +974,12 @@ adding the LLM feature layer brings the pool to $\approx$36.
 $\ell_1$ is the only variant that achieves competitive SR
 \emph{and} exact sparsity required by the signed-weight
 diagnostic.}
-=======
-fitted weights across seeds. $\ell_1$ is the only variant that
-achieves competitive SR \emph{and} exact sparsity required by the
-signed-weight diagnostic.}
->>>>>>> 7c189bc9046d056683457ff854921dc8f164e3a9
 \label{tab:regularizer-ablation}
 \centering\small
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{lcccccc}
 \toprule
  & \multicolumn{2}{c}{HotpotQA} & \multicolumn{2}{c}{WebShop} & \multicolumn{2}{c}{Plancraft} \\
-<<<<<<< HEAD
  & \multicolumn{2}{c}{$|\rho|{=}0.494$} & \multicolumn{2}{c}{$|\rho|{=}0.444$} & \multicolumn{2}{c}{$|\rho|{=}0.016$} \\
 \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
 Regularizer & SR & \#nz & SR & \#nz & SR & \#nz \\
@@ -996,22 +989,11 @@ $\ell_2$              & TBD  & 36   & TBD  & 36   & TBD  & 36   \\
 No regularization     & TBD  & 36   & TBD  & 36   & TBD  & 36   \\
 Elastic Net           & TBD  & TBD  & TBD  & TBD  & TBD  & TBD  \\
 MI top-3 + unreg.     & TBD  & 3    & TBD  & 3    & TBD  & 3    \\
-=======
-\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
-Regularizer & SR & \#nz & SR & \#nz & SR & \#nz \\
-\midrule
-$\ell_1$ (DIAL)       & 95.2 & TBD & 43.8 & TBD & 23.3 & TBD \\
-$\ell_2$              & TBD  & 9   & TBD  & 9   & TBD  & 9   \\
-No regularization     & TBD  & 9   & TBD  & 9   & TBD  & 9   \\
-Elastic Net           & TBD  & TBD & TBD  & TBD & TBD  & TBD \\
-MI top-3 + unreg.     & TBD  & 3   & TBD  & 3   & TBD  & 3   \\
->>>>>>> 7c189bc9046d056683457ff854921dc8f164e3a9
 \bottomrule
 \end{tabular}%
 }
 \end{table}
 
-<<<<<<< HEAD
 \noindent\textit{Note.} $\ell_1$ \#nz values are measured across
 three seeds of DIAL's production runs; the per-environment mean
 reveals adaptive sparsity: under strong signal
@@ -1022,8 +1004,6 @@ yielding a near-constant trigger probability consistent with the
 low rollout headroom of that environment
 (Figure~\ref{fig:trigger-adapt}).
 
-=======
->>>>>>> 7c189bc9046d056683457ff854921dc8f164e3a9
 The comparison isolates three hypotheses underlying DIAL's
 regularizer choice.
 
