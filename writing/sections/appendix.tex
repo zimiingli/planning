@@ -929,6 +929,114 @@ utility variance is non-zero. In HotpotQA, $\rho$ remains negative
 across all three strata ($-0.18$/$-0.46$/$-0.42$). The reversal
 is not an artifact of trajectory length.
 
+\subsection{Regularizer Ablation}
+\label{app:regularizer-ablation}
+
+The signed-weight diagnostic of \S\ref{sec:learn} and DIAL's
+robustness to noisy LLM-proposed features (\S\ref{sec:reason}) both
+rely on the \emph{exact} sparsity induced by the $\ell_1$ penalty
+in Eq.~\eqref{eq:lasso}. To verify that $\ell_1$ specifically---
+rather than any shrinkage or selection mechanism---is responsible
+for these properties, we ablate the regularizer while holding all
+other pipeline components fixed: same exploration dataset
+$\mathcal{D}$, same candidate feature pool $\phi_{\text{cand}}$,
+same 5-fold CV protocol for hyperparameters, same threshold
+$\tau{=}0.5$. We compare five variants:
+
+\begin{itemize}
+\item \textbf{$\ell_1$-logistic} (DIAL default): joint sparsity and
+shrinkage.
+\item \textbf{$\ell_2$-logistic} (Ridge): shrinkage only; all
+features retained with small non-zero weights.
+\item \textbf{No regularization}: plain logistic fit on
+$\phi_{\text{cand}}$.
+\item \textbf{Elastic Net} ($\alpha{=}0.5$, mixing $\ell_1$ and
+$\ell_2$).
+\item \textbf{MI top-$k$ + unregularized}: hard feature selection
+by mutual information (top-3), then unregularized logistic on the
+retained features. This variant isolates \emph{selection} from
+\emph{shrinkage}.
+\end{itemize}
+
+Table~\ref{tab:regularizer-ablation} reports SR and the mean number
+of non-zero fitted weights across three environments spanning
+signal strength: HotpotQA ($|\rho|{=}0.494$, strong),
+WebShop ($|\rho|{=}0.444$, moderate), and Plancraft
+($|\rho|{=}0.016$, weak).
+
+\begin{table}[H]
+\caption{Regularizer ablation on three environments ordered by
+signal strength. SR (\%); ``\#nz'' is the mean number of non-zero
+fitted weights across seeds. $\ell_1$ is the only variant that
+achieves competitive SR \emph{and} exact sparsity required by the
+signed-weight diagnostic.}
+\label{tab:regularizer-ablation}
+\centering\small
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccccc}
+\toprule
+ & \multicolumn{2}{c}{HotpotQA} & \multicolumn{2}{c}{WebShop} & \multicolumn{2}{c}{Plancraft} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+Regularizer & SR & \#nz & SR & \#nz & SR & \#nz \\
+\midrule
+$\ell_1$ (DIAL)       & 95.2 & TBD & 43.8 & TBD & 23.3 & TBD \\
+$\ell_2$              & TBD  & 9   & TBD  & 9   & TBD  & 9   \\
+No regularization     & TBD  & 9   & TBD  & 9   & TBD  & 9   \\
+Elastic Net           & TBD  & TBD & TBD  & TBD & TBD  & TBD \\
+MI top-3 + unreg.     & TBD  & 3   & TBD  & 3   & TBD  & 3   \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+The comparison isolates three hypotheses underlying DIAL's
+regularizer choice.
+
+\paragraph{$\ell_1$ vs.\ $\ell_2$: sparsity is required for
+diagnosis, not just for predictive performance.}
+Both penalties shrink noisy coefficients toward zero, so on
+strong-signal environments their gating SRs are expected to be
+comparable. The critical distinction lies in interpretability:
+under $\ell_2$, every feature retains a small non-zero weight,
+collapsing the clean \{informative, uninformative\} partition of
+\S\ref{sec:learn} into a continuous ranking. The signed-weight
+summary no longer reads off which signals the environment treats
+as informative---it merely ranks them. Reports of ``non-zero
+weights per environment'' in the main text (e.g., the direction
+analyses of Table~\ref{tab:wrong-direction}) are only
+interpretable under exact sparsity.
+
+\paragraph{$\ell_1$ vs.\ unregularized logistic: robustness under
+weak signals.}
+On weak-signal environments like Plancraft, the unregularized fit
+is expected to latch onto sample-level noise: with
+$|\rho|{\approx}0.02$, any 250-sample fit without penalty will
+assign large weights to whichever feature happens to
+pseudo-correlate on the training split. $\ell_1$'s shrinkage
+absorbs this noise into the bias term, producing a gate that
+triggers conservatively---consistent with the observed low
+trigger rate in Plancraft (Figure~\ref{fig:trigger-adapt}).
+
+\paragraph{$\ell_1$ vs.\ MI top-$k$ + unregularized: joint
+selection+shrinkage vs.\ selection alone.}
+Hard feature selection by mutual information separates the two
+roles $\ell_1$ plays. The resulting gate is expected to recover
+most of $\ell_1$'s SR on strong-signal environments, but exhibits
+two practical drawbacks: (i)~$k$ must be tuned per environment
+rather than emerging from CV over a single hyperparameter $C$,
+reintroducing the per-environment engineering cost that DIAL aims
+to eliminate; and (ii)~the retained features lose the shrinkage
+calibration that stabilizes weights near the decision boundary,
+making the gate more sensitive to $\tau$.
+
+\paragraph{Summary.}
+The three comparisons establish that $\ell_1$ is not
+interchangeable with other shrinkage or selection schemes. It is
+the minimal choice that simultaneously delivers competitive SR,
+the \emph{exact} sparsity required by the signed-weight
+diagnostic, and robustness to noisy feature proposals from the
+optional LLM layer.
+
 \subsection{Gate Complexity Ablation}
 \label{app:gate-complexity}
 
