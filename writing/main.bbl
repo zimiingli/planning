@@ -1,4 +1,4 @@
-\begin{thebibliography}{46}
+\begin{thebibliography}{51}
 \providecommand{\natexlab}[1]{#1}
 
 \bibitem[{Abbasi~Yadkori et~al.(2024)Abbasi~Yadkori, Kuzborskij, and
@@ -11,6 +11,15 @@ Yasin Abbasi~Yadkori, Ilja Kuzborskij, and Andr{\'a}s Gy{\"o}rgy. 2024.
 Pranjal Aggarwal and Sean Welleck. 2025.
 \newblock {L1:} controlling how long {A} reasoning model thinks with
   reinforcement learning.
+\newblock \emph{CoRR}.
+
+\bibitem[{Cobbe et~al.(2021)Cobbe, Kosaraju, Bavarian, Chen, Jun, Kaiser,
+  Plappert, Tworek, Hilton, Nakano, Hesse, and
+  Schulman}]{DBLP:journals/corr/abs-2110-14168}
+Karl Cobbe, Vineet Kosaraju, Mohammad Bavarian, Mark Chen, Heewoo Jun, Lukasz
+  Kaiser, Matthias Plappert, Jerry Tworek, Jacob Hilton, Reiichiro Nakano,
+  Christopher Hesse, and John Schulman. 2021.
+\newblock Training verifiers to solve math word problems.
 \newblock \emph{CoRR}.
 
 \bibitem[{Dagan et~al.(2024)Dagan, Keller, and Lascarides}]{dagan2024plancraft}
@@ -140,6 +149,12 @@ Xiang Liu, Xuming Hu, Xiaowen Chu, and Eunsol Choi. 2025.
   inference.
 \newblock \emph{CoRR}.
 
+\bibitem[{Microsoft(2024)}]{DBLP:journals/corr/abs-2404-14219}
+Microsoft. 2024.
+\newblock Phi-3 technical report: {A} highly capable language model locally on
+  your phone.
+\newblock \emph{CoRR}.
+
 \bibitem[{Muennighoff et~al.(2025)Muennighoff, Yang, Shi, Li, Fei{-}Fei,
   Hajishirzi, Zettlemoyer, Liang, Cand{\`{e}}s, and Hashimoto}]{s1_2025}
 Niklas Muennighoff, Zitong Yang, Weijia Shi, Xiang~Lisa Li, Li~Fei{-}Fei,
@@ -170,6 +185,13 @@ David Raposo, Samuel Ritter, Blake~A. Richards, Timothy~P. Lillicrap,
   Peter~Conway Humphreys, and Adam Santoro. 2024.
 \newblock Mixture-of-depths: Dynamically allocating compute in
   transformer-based language models.
+\newblock \emph{CoRR}.
+
+\bibitem[{Rein et~al.(2023)Rein, Hou, Stickland, Petty, Pang, Dirani, Michael,
+  and Bowman}]{DBLP:journals/corr/abs-2311-12022}
+David Rein, Betty~Li Hou, Asa~Cooper Stickland, Jackson Petty, Richard~Yuanzhe
+  Pang, Julien Dirani, Julian Michael, and Samuel~R. Bowman. 2023.
+\newblock {GPQA:} {A} graduate-level google-proof q{\&}a benchmark.
 \newblock \emph{CoRR}.
 
 \bibitem[{Russell and Wefald(1991)}]{russell1991right}
@@ -227,6 +249,16 @@ Linwei Tao, Yi{-}Fan Yeh, Minjing Dong, Tao Huang, Philip Torr, and Chang Xu.
   2025.
 \newblock Revisiting uncertainty estimation and calibration of large language
   models.
+\newblock \emph{CoRR}.
+
+\bibitem[{Team(2024)}]{DBLP:journals/corr/abs-2407-21783}
+Llama Team. 2024.
+\newblock The llama 3 herd of models.
+\newblock \emph{CoRR}.
+
+\bibitem[{Team(2025)}]{DBLP:journals/corr/abs-2505-09388}
+Qwen Team. 2025.
+\newblock Qwen3 technical report.
 \newblock \emph{CoRR}.
 
 \bibitem[{Teerapittayanon et~al.(2017)Teerapittayanon, McDanel, and
