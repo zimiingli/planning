@@ -1,77 +1,41 @@
 % ============================================================
 % 4. METHOD: DIAL
 % ============================================================
-\section{Method: Direction-Informed Adaptive Learning}
+\section{Direction-Informed Adaptive Learning}
 \label{sec:method}
 
-Section~\ref{sec:signal-landscape} imposes three requirements on
-any gating method that aims for cross-environment robustness.
-(i)~Signal direction must be \emph{learned} per environment,
-since Proposition~\ref{prop:necessity} rules out any fixed
-choice. (ii)~The feature set must be \emph{multi-signal}, since
-no single signal is reliably informative across environments
-(\S\ref{sec:empirical-landscape}). (iii)~Exploration must be
-\emph{signal-agnostic}, since conditioning on a signal whose
-semantics are unknown would bias the collected data in a
-direction that depends on the answer.
+Section~\ref{sec:signal-landscape} imposes two requirements on
+any gating method that aims for cross-environment robustness:
+signal direction must be \emph{learned} per environment
+(Proposition~\ref{prop:necessity}), and the feature set must be
+\emph{multi-signal} (\S\ref{sec:empirical-landscape}). A third
+follows from the method design: exploration must be
+\emph{signal-agnostic}, to avoid biasing data collection toward
+the unknown quantity being estimated.
 
-DIAL (\emph{Direction-Informed Adaptive Learning}) \emph{dials in}
-the correct signal interpretation for each environment through a
-lightweight explore--reason--learn pipeline.
-It is a deliberately minimal instantiation of these
-requirements. Its contribution is not a new gate architecture
-but a pipeline that reduces the adaptive-gating problem to a
-form where a standard sparse linear model suffices: randomized
+DIAL (\emph{Direction-Informed Adaptive Learning}) learns the
+correct signal interpretation for each environment through a
+lightweight explore--reason--learn pipeline: randomized
 exploration (\S\ref{sec:explore}) handles the unknown prior
 direction, an optional LLM feature layer (\S\ref{sec:reason})
 proposes task-specific signals when universal ones are
 inadequate, and a sparse linear gate (\S\ref{sec:learn})
 recovers per-environment direction from the resulting dataset.
-Algorithm~\ref{alg:dial} summarizes the full pipeline
-and its connection to requirements~(i)--(iii).
-
-Since the primary bottleneck is signal direction rather than
-classification capacity (\S\ref{sec:ablation}), we invest
-complexity in exploration and feature selection and keep the
-deployed gate deliberately minimal.
-
-% TODO: TikZ pipeline diagram (see figure_prompts.md for detailed spec)
-% Figure~\ref{fig:dial-pipeline}: Explore → Reason → Learn → Deploy
-%\begin{figure*}[t]
-%\centering
-%\includegraphics[width=\textwidth]{figures/fig_dial_pipeline.pdf}
-%\caption{DIAL pipeline. Explore collects unbiased $(s,U)$ pairs;
-%Reason (optional) proposes task-specific features via LLM;
-%Learn fits a sparse gate with signed weights $\mathbf{w}$;
-%Deploy adds zero overhead per step.}
-%\label{fig:dial-pipeline}
-%\end{figure*}
 
 \subsection{Explore: Signal-Agnostic Data Collection}
 \label{sec:explore}
 
 Exploration collects the $(s, U)$ pairs that will be used to fit
-the gate. The central constraint is requirement~(iii): the
+the gate. The central constraint is signal-agnosticity: the
 collection policy must not condition on any signal whose
-semantics we are trying to learn. Any signal-dependent
-alternative, such as uncertainty sampling, would condition on a
-signal whose relationship to $U$ is exactly what
-\S\ref{sec:empirical-landscape} showed to be unknown, biasing
-$\mathcal{D}$ in a direction that depends on the quantity being
-estimated. Warm-starting from prior-method data inherits the
-same circularity.
-
+semantics we are trying to learn, as this would bias
+$\mathcal{D}$ toward the unknown quantity being estimated.
 DIAL therefore uses the simplest policy consistent with this
-constraint. At each step~$t$ in episode~$i$, a Bernoulli coin
-flip determines the gating decision:
-\begin{equation}
-  z_t^{(i)} \sim \mathrm{Bernoulli}(\varepsilon_{\text{explore}}),
-  \quad \varepsilon_{\text{explore}} = 0.5,
-  \label{eq:explore}
-\end{equation}
-where $z_t{=}1$ triggers the optimizer~$T$ and $z_t{=}0$ uses
-the base action. Over $N_{\text{explore}} = 50$ episodes, this
-yields an unbiased dataset
+constraint. At each step~$t$ in episode~$i$, a uniform random
+coin flip $z_t^{(i)} \sim \mathrm{Bernoulli}(\varepsilon_{\text{explore}})$
+determines whether to trigger the optimizer~$T$ ($z_t{=}1$) or
+use the base action ($z_t{=}0$). Aggregating across
+$N_{\text{explore}}$ episodes yields an unbiased dataset:
 \begin{equation}
   \mathcal{D} = \bigl\{
     \bigl(\phi(s_t^{(i)}),\; U_t^{(i)}\bigr)
@@ -83,21 +47,21 @@ where $U_t^{(i)} \in \{0, 1\}$ indicates whether the optimizer
 improved the outcome at step~$t$, and $\phi(s)$ is the feature
 vector described in \S\ref{sec:reason}.
 
-
 \subsection{Reason: LLM Feature Layer}
 \label{sec:reason}
 
 The next step builds the feature pool $\phi_{\text{cand}}(s)$
-that the gate will be fit over. Requirement~(ii) demands that
-this pool be rich enough to include each environment's relevant
-signals, but not so environment-specific that deployment
-requires manual engineering per task.
+that the gate will be fit over. This pool must be rich enough to
+include each environment's relevant signals, but not so
+environment-specific that deployment requires manual engineering
+per task.
 DIAL's default is a fixed set of universal features:
 \texttt{step\_count}, \texttt{token\_entropy},
-\texttt{state\_length}, \texttt{action\_entropy}, and others. These are available in every environment without task-specific engineering.
-In the environments we study, this pool alone is sufficient to
-recover a gate that outperforms all fixed-direction baselines
-(\S\ref{sec:ablation}).
+\texttt{state\_length}, \texttt{action\_entropy}, and others.
+These are available in every environment without task-specific
+engineering. In the environments we study, this pool alone is
+sufficient to recover a gate that outperforms all fixed-direction
+baselines (\S\ref{sec:ablation}).
 
 For environments where universal features may be inadequate,
 such as WebShop, whose gating benefits from task-specific
@@ -105,17 +69,14 @@ signals like \texttt{num\_available\_actions}, DIAL offers an
 \emph{optional} automation layer: an LLM is given a summary of
 $\mathcal{D}$ and proposes task-specific feature hypotheses
 $\phi_{\text{LLM}}(s)$, which join the universal pool to form
-\begin{equation}
-  \phi_{\text{cand}}(s)
-  = \phi_{\text{univ}}(s) \;\cup\; \phi_{\text{LLM}}(s).
-  \label{eq:cand}
-\end{equation}
+$\phi_{\text{cand}}(s) = \phi_{\text{univ}}(s) \cup \phi_{\text{LLM}}(s)$.
+Details of the LLM input format and prompt template are in
+Appendix~\ref{app:llm-feature-layer}.
 The ablation in \S\ref{sec:ablation} shows its gains concentrate
 in the few settings where universal features miss the relevant
 structure, so the LLM is best viewed as an automation
 convenience for zero-shot deployment rather than a core
 component the method depends on.
-
 
 \subsection{Learn: Sparse Linear Gate}
 \label{sec:learn}
@@ -154,20 +115,6 @@ $w_i > 0$ indicates the environment sits on the Type~D side of
 the reversal threshold $p_I^*$ for signal~$i$ (high signal
 $\to$ trigger), $w_i < 0$ the Type~I side (high signal $\to$
 \emph{don't} trigger), and $w_i \approx 0$ an uninformative
-signal. This is a diagnostic reading of the fitted model, not a
-novel modeling choice; any signed linear classifier would expose
-the same information.
-
-\paragraph{Online adaptation.}
-For drifting environments, DIAL can optionally refit during
-deployment using $\varepsilon$-greedy exploration
-($\varepsilon: 0.1 \to 0$) and periodic retraining. This mode
-is \emph{not free}: $\varepsilon$-greedy overrides ignore the
-current gate, so in Type~I environments a fraction of
-overridden steps will trigger harmful rollouts. For stationary
-environments, which are the setting of our main experiments,
-we recommend skipping online adaptation and relying on the
-offline-fitted gate.
-
-The complete three-phase procedure is summarized in
+signal. The complete pipeline, including online adaptation for
+drifting environments, is summarized in
 Algorithm~\ref{alg:dial} (Appendix~\ref{app:dial-details}).

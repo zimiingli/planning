@@ -17,6 +17,8 @@
 \usepackage{multirow}
 \usepackage{enumitem}
 \usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{skins}
 \usepackage{subcaption}
 \usepackage{pifont}
 \usepackage{float}
@@ -45,7 +47,12 @@
   \setlength{\belowdisplayshortskip}{2pt}%
 }
 
-\title{Same Signal, Opposite Meaning:\\Why Adaptive Compute Fails Across Environments}
+\definecolor{PTGreen}{RGB}{92,134,110}
+\definecolor{PTGreenDark}{RGB}{52,92,75}
+\definecolor{PTLightGreen}{RGB}{242,250,245}
+\definecolor{PTWhite}{RGB}{255,255,255}
+
+\title{Same Signal, Opposite Meaning: Direction-Aware Gating for LLM Agents}
 
 % Anonymous submission for review
 \author{Anonymous}

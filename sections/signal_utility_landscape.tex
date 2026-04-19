@@ -27,8 +27,9 @@ Plancraft  & $-$0.016     & $+$0.000     & $-$0.176$^*$ & --- \\
 \end{tabular}
 \end{table}
 
-We test the fixed-direction assumption by measuring signal--utility
-correlations across diverse environments. If the assumption holds,
+We first formalize the adaptive gating problem, then measure
+signal--utility correlations across diverse environments to test
+the fixed-direction assumption. If the assumption holds,
 correlations should be consistent; if it fails, the failure mode
 will guide method design.
 
@@ -55,46 +56,40 @@ $g: \mathcal{S} \to \{0, 1\}$ that triggers $T$ only when $U > 0$.
 \textbf{The signal--utility direction is not fixed.}
 Table~\ref{tab:signal-discovery} reports Spearman correlations
 between token entropy and optimizer utility across 6 environments
-and 3 model backbones. Two patterns stand out. First, even within
-a single backbone, the direction varies across environments: on
+and 3 model backbones~\cite{DBLP:journals/corr/abs-2505-09388,DBLP:journals/corr/abs-2407-21783,DBLP:journals/corr/abs-2404-14219}. Two patterns stand out. First, \emph{even within
+a single backbone, the direction varies across environments}: on
 Qwen3, entropy is negatively correlated with utility in
 information-seeking environments (FEVER, HotpotQA, TWExpress) but
 positively in code generation (APPS) and web navigation (WebShop),
-with near-zero correlation in weak-signal environments (Plancraft). Second, the same signal in the same environment
-can reverse across backbones: in 3 out of 4 environments with
-multiple significant correlations, models disagree on the sign.
-Most strikingly, FEVER flips from $\rho{=}{-}0.156$ on Phi-3.5 to
-$\rho{=}{+}0.428$ on Llama-3.1. Structural signals such as
-\texttt{step\_count} are more stable across backbones
-(Appendix~\ref{app:multi-backbone}), while entropy is unpredictable
-without per-environment, per-model measurement. Crucially, this
-direction mismatch is not benign: as
+with near-zero correlation in weak-signal environments (Plancraft).
+Second, \emph{the same signal in the same environment can reverse across
+backbones}: in 3 out of 4 environments with multiple significant
+correlations, models disagree on the sign. Most strikingly, FEVER
+flips from $\rho{=}{-}0.156$ on Phi-3.5 to $\rho{=}{+}0.428$ on
+Llama-3.1. Crucially, this direction mismatch is not benign: as
 Section~\ref{sec:main-results} will show, gates that assume the
 wrong direction systematically fall \emph{below} the no-trigger
 baseline, making them strictly worse than doing nothing in
 mismatched environments.
 
-
 \textbf{Signal identity also varies across environments.}
-Beyond direction, the most informative signal itself differs from
-environment to environment: \texttt{step\_count} dominates in most
-environments, but WebShop instead relies on
-\texttt{num\_available\_actions} and task-specific features
-(Appendix~\ref{app:feature-selection}). Moreover, even the best
-single signal is near-chance: per-environment AUC analysis shows
-single token entropy at AUC${\approx}$0.50, while multi-signal
-logistic gates reach AUC${\approx}$0.83 and hidden-state probes
-reach AUC${\approx}$0.90 (Appendix~\ref{app:auc}). Predicting
-rollout value requires multiple signals selected per environment,
-not a single universal scalar.
+Beyond direction, the most informative signal itself differs
+across environments: \texttt{step\_count} dominates in most
+settings, but WebShop relies on \texttt{num\_available\_actions}
+instead (Appendix~\ref{app:feature-selection}). No single signal
+is reliably informative: single-feature gates are near-chance
+(AUC${\approx}$0.50), while multi-signal gates reach
+AUC${\approx}$0.83 and hidden-state probes reach
+AUC${\approx}$0.90 (Appendix~\ref{app:auc}). This motivates
+the multi-signal, per-environment design of our method
+(\S\ref{sec:method}).
 
 \subsection{Why Does Direction Reverse? A Two-Source Model}
 \label{sec:toy-model}
 
-The findings above establish that fixed-direction gating
-fails; we now ask \emph{why}. We trace direction reversal to a minimal mechanism that jointly
-accounts for the observed patterns: the conflation of two distinct
-sources of uncertainty.
+The findings above establish that fixed-direction gating fails; we
+now ask \emph{why}. We trace direction reversal to two coexisting
+state types with opposite signal--utility relationships.
 
 \paragraph{Intuition.}
 Consider a web-shopping agent choosing between products. When it
@@ -111,18 +106,15 @@ carries opposite meaning because the \emph{source} of uncertainty
 differs.
 
 \paragraph{Model.}
-We model direction reversal as arising from two sources of
-uncertainty at each decision step:
+We model direction reversal as arising from two state types at each
+decision step:
 \begin{itemize}[leftmargin=*,nosep]
-\item \textbf{Type~I (information poverty):} The agent lacks
-  sufficient information. Rollouts from the same model cannot
-  compensate, so utility is \emph{negatively} related to entropy:
+\item \textbf{Type~I (information poverty):} Utility is
+  \emph{negatively} related to entropy:
   $U_I(s) \sim -\alpha H(s) + \varepsilon_I$, $\alpha > 0$.
-\item \textbf{Type~D (decision difficulty):} The agent has
-  adequate information but faces multiple viable paths. Rollouts
-  exploit this diversity, so utility is \emph{positively} related
-  to entropy: $U_D(s) \sim +\beta H(s) + \varepsilon_D$,
-  $\beta > 0$.
+\item \textbf{Type~D (decision difficulty):} Utility is
+  \emph{positively} related to entropy:
+  $U_D(s) \sim +\beta H(s) + \varepsilon_D$, $\beta > 0$.
 \end{itemize}
 Let $p_I(\mathcal{E})$ denote the fraction of Type~I states in
 environment $\mathcal{E}$. The marginal correlation becomes
@@ -138,17 +130,12 @@ with $p_I < p_I^*$ exhibit positive $\rho$ (Type~D dominated);
 near $p_I^*$, the two effects cancel and entropy carries
 negligible signal. This prediction is consistent with the observed
 Qwen3 pattern in Table~\ref{tab:signal-discovery}: search-based QA
-(FEVER, HotpotQA, TWExpress) shows negative $\rho$, code generation
-(APPS) shows positive $\rho$, and weak-signal environments
-(Plancraft) cluster near zero. Multi-backbone results
+(FEVER, HotpotQA, TWExpress) shows negative $\rho$, code
+generation (APPS) shows positive $\rho$, and weak-signal
+environments (Plancraft) cluster near zero. Multi-backbone results
 (Appendix~\ref{app:multi-backbone}) further show that the model
 backbone modulates the effective $p_I$, making direction
-unpredictable from environment structure alone. We treat this
-two-source decomposition as a \emph{minimal falsifiable} model rather than
-a post-hoc explanation: in
-Section~\ref{sec:theory-verification} we derive three predictions
-from it (temporal dynamics, cross-environment consistency, and
-signal identity alignment) and verify each on held-out data.
+unpredictable from environment structure alone.
 
 \paragraph{Theoretical grounding.}
 This direction reversal is a special case of Simpson's
@@ -158,7 +145,12 @@ reverses the aggregate correlation. Our decomposition adapts the
 epistemic/aleatoric distinction~\cite{der2009aleatory} to the
 meta-decision setting: Type~I states exhibit epistemic-like
 uncertainty (information deficit), while Type~D states exhibit
-aleatoric-like diversity (multiple viable paths).
+aleatoric-like diversity (multiple viable paths). We treat this
+two-source decomposition as a \emph{minimal falsifiable} model
+rather than a post-hoc explanation: in
+Section~\ref{sec:theory-verification} we derive three predictions
+from it (temporal dynamics, cross-environment consistency, and
+signal identity alignment) and verify each on held-out data.
 
 \subsection{Necessity of Direction Discovery}
 \label{sec:necessity}
@@ -181,6 +173,7 @@ exactly to states where rollouts harm the agent; the symmetric
 argument holds for $d = -1$ in Type~D environments. Since
 real-world deployments span both environment types, no
 fixed-direction strategy can deliver non-negative value of
-computation universally---direction discovery is a necessary
-precondition for cross-environment robustness, not a refinement
-of it. The full proof is in Appendix~\ref{app:proof-necessity}.
+computation universally. Direction discovery is therefore a
+necessary precondition for cross-environment robustness, not a
+refinement of it. The full proof is in
+Appendix~\ref{app:proof-necessity}.

@@ -116,6 +116,7 @@ through tree search, value propagation, and lookahead evaluation.
 These are orthogonal to our work: we control \emph{when} to invoke
 the optimizer, and our gate composes with any such procedure.
 
+
 % ============================================================
 % B. THEORETICAL MATERIAL
 % ============================================================
@@ -180,45 +181,24 @@ Since $d \in \{+1, -1\}$ and both cases lead to violation, no fixed
 $d$ satisfies both constraints simultaneously.
 \end{proof}
 
-\subsection{Wrong-Direction Damage Quantification}
+\subsection{Wrong-Direction Damage: Supplementary Analysis}
 \label{app:wrong-direction}
 
-The proof above bounds wrong-direction harm by $\delta(\mathcal{E})$
-but does not specify its magnitude. Table~\ref{tab:wrong-direction}
-reports the empirically observed damage from the BSW ablation,
-showing that $\delta(\mathcal{E})$ scales with signal strength
-$|\rho(\mathcal{E})|$.
+Table~\ref{tab:wrong-direction} shows that
+wrong-direction damage scales with signal strength. Here we
+discuss two environments where reversal has minimal effect.
 
-\begin{table}[H]
-\centering\small
-\caption{Wrong-direction damage scales with signal strength.}
-\label{tab:wrong-direction}
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{lcccc}
-\toprule
-Environment & Correct SR & Wrong SR & $\Delta$ SR & $|\rho|$ \\
-\midrule
-FEVER          & 49.8\% & 13.0\% & $-$36.8 & 0.619 \\
-HotpotQA       & 95.2\% & 58.2\% & $-$37.0 & 0.494 \\
-WebShop        & 43.8\% & 20.6\% & $-$23.2 & 0.444 \\
-\midrule
-TWExpress      & 99.0\% & 99.0\% &    0.0  & 0.290 \\
-Plancraft      & 23.3\% & 25.5\% &  $+$2.2 & 0.016 \\
-APPS           & 73.0\% & 79.5\% &  $+$6.5 & 0.339 \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
+TWExpress is rollout-safe ($\Delta{=}{+}31.8$): the optimizer
+rarely harms performance regardless of when it is triggered,
+so both directions achieve near-perfect SR (99.0\%).
 
-Among environments with strong signal--utility coupling
-($|\rho| > 0.15$), wrong direction causes substantial SR
-degradation (FEVER $-$36.8\,pp, HotpotQA $-$37.0\,pp,
-WebShop $-$23.2\,pp). In weak-signal environments (Plancraft
-$|\rho|{=}0.016$), direction has negligible effect. Two
-exceptions---TWExpress (rollout-safe, $\Delta{=}0$) and APPS
-($+$6.5\,pp)---reflect ceiling effects and near-oracle baselines
-respectively; their gate decisions differ minimally regardless of
-direction.
+APPS shows a small negative $\Delta$SR ($-$2.5\,pp), consistent
+with its unstable signal direction across backbones
+(Table~\ref{tab:signal-discovery}): Qwen3 shows positive $\rho$,
+Llama-3.1 shows negative $\rho$, and Phi-3.5 is
+non-significant. When the signal is this unstable, direction
+reversal has minimal impact and small fluctuations can favor
+either direction.
 
 \subsection{VOC Non-Negativity Scope}
 \label{app:voc}
@@ -245,85 +225,13 @@ wrong-direction gating is not merely wasteful
 
 
 % ============================================================
-% C. EXPERIMENTAL SETUP
+% C. DIAL IMPLEMENTATION DETAILS
 % ============================================================
-\section{Experimental Setup}
-\label{app:experiments}
-
-\subsection{Environment Specifications}
-\label{app:environment}
-
-Table~\ref{tab:env-setup} summarizes the 6 environments with their
-base performance, optimizer headroom, and optimizer type.
-Per-action evaluation generates $K{=}5$ candidate actions and
-selects the best; $K$-variant sampling generates $K{=}3$ code
-solutions and selects a passing one; LLM-Propose-$K$ has the LLM
-propose $K{=}3$ action sequences, simulates each, and selects the
-highest-reward trajectory.
-
-\begin{table}[h!]
-\caption{Environment setup. Base/Always: SR without/with optimizer.
-$\Delta$: rollout headroom.}
-\label{tab:env-setup}
-\centering\small
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{lcccl}
-\toprule
-Environment & Base SR & Always SR & $\Delta$ & Optimizer $T$ \\
-\midrule
-HotpotQA       & 49.0\% & 97.0\% & +48.0   & Per-action eval \\
-WebShop        &  7.2\% & 43.0\% & +35.8   & LLM-Propose-$K$ \\
-FEVER          & 37.0\% & 99.8\% & +62.8   & Per-action eval \\
-TWExpress      & 67.5\% & 99.3\% & +31.8   & Per-action eval \\
-Plancraft      & 29.8\% & 22.8\% & $-$7.0  & Per-action eval \\
-APPS           & 60.5\% & 79.5\% & +19.0   & $K$-variant sampling \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
-
-\subsection{Detailed Baseline Comparison}
-\label{app:method-comparison}
-
-Table~\ref{tab:baseline-detail} provides a detailed comparison of all
-baselines evaluated in this paper. All six methods share a common
-assumption: a fixed mapping from signal value to compute need.
-
-\begin{table*}[h!]
-\caption{Detailed comparison of baselines. All methods assume a
-fixed signal--utility direction. $^\dagger$Requires a separate labeled dataset for calibration.}
-\label{tab:baseline-detail}
-\centering\small
-\renewcommand{\arraystretch}{1.15}
-\begin{tabularx}{\textwidth}{l W W N W}
-\toprule
-Method & Signal & Direction & Granularity & Mechanism \\
-\midrule
-CATTS~\cite{catts2026} & Vote entropy + margin & High disagreement $\to$ trigger
-  & Per-step & $K{=}5$ forward passes, arbiter on disagreement \\
-SEAG$^\dagger$~\cite{seag2025} & Mean token confidence & Low conf.\ $\to$ search
-  & Per-problem & Platt scaling, search depth allocation \\
-CaTS$^\dagger$~\cite{cats2025} & Calibrated confidence & Low conf.\ $\to$ generate
-  & Per-attempt & Self-calibration, Best-of-N early stopping \\
-CoRefine$^\dagger$~\cite{corefine2026} & Conv1D confidence & Low conf.\ $\to$ refine
-  & Per-problem & Halt / re-examine / redirect controller \\
-s1\_budget~\cite{s1_2025} & Token budget & Fixed budget $\to$ stop
-  & Per-problem & Budget-constrained generation \\
-AUQ~\cite{auq2026} & Verbalized uncertainty & High uncert.\ $\to$ reflect
-  & Per-step & Uncertainty-aware memory + reflection \\
-\midrule
-\textbf{DIAL} & \textbf{Multi (auto)} & \textbf{Learned}
-  & \textbf{Per-step} & Explore + reason + LASSO direction learning \\
-\bottomrule
-\end{tabularx}
-\end{table*}
-
-\subsection{DIAL Implementation Details}
+\section{DIAL Implementation Details}
 \label{app:dial-details}
 
-This subsection expands on the implementation details deferred from
-Section~\ref{sec:learn}. Algorithm~\ref{alg:dial} gives the full
-pipeline; the paragraphs that follow describe each component.
+This appendix expands on the implementation details deferred from
+Section~\ref{sec:method}.
 
 \begin{algorithm}[H]
 	\caption{DIAL: Direction-Informed Adaptive Learning}
@@ -370,56 +278,280 @@ pipeline; the paragraphs that follow describe each component.
 	\end{algorithmic}
 \end{algorithm}
 
+\subsection{Hyperparameters and Training Details}
+\label{app:hyperparams-details}
 
-
-\paragraph{Exploration budget.}
-Phase 1 runs for $N_{\text{explore}} = 50$ episodes with
-$\varepsilon_{\text{explore}} = 0.5$. Sensitivity to
-$N_{\text{explore}}$ is reported in \S\ref{app:hyperparam};
-SR is stable for $N_{\text{explore}} \geq 30$.
-
-\paragraph{Feature standardization.}
-Before fitting in Phase 3, all features in $\phi_{\text{cand}}$
-are standardized to zero mean and unit variance on $\mathcal{D}$.
-This ensures that the interpretable weight signs discussed in
-Section~\ref{sec:learn} are not confounded by scale differences
-across heterogeneous features (e.g., \texttt{step\_count} and
-\texttt{token\_entropy} live on very different scales).
-
-\paragraph{Sparse solver.}
-We induce sparsity using $\ell_1$-regularized logistic regression. The regularization strength $C$ is
-selected by 5-fold cross-validation over the grid
+Phase~1 runs for $N_{\text{explore}} = 50$ episodes with
+$\varepsilon_{\text{explore}} = 0.5$. Before fitting in Phase~3,
+all features in $\phi_{\text{cand}}$ are standardized to zero mean
+and unit variance on $\mathcal{D}$, ensuring that the interpretable
+weight signs discussed in Section~\ref{sec:learn} are not
+confounded by scale differences across heterogeneous features.
+We induce sparsity using $\ell_1$-regularized logistic regression
+with regularization strength $C$ selected by 5-fold
+cross-validation over
 $C \in \{0.01, 0.03, 0.1, 0.3, 1.0, 3.0, 10.0\}$, optimizing
-held-out log-loss on $\mathcal{D}$. Features with zero coefficient
-after fitting are dropped from the deployed gate.
+held-out log-loss. Features with zero coefficient after fitting are
+dropped from the deployed gate. The decision threshold $\tau$ in
+Eq.~\eqref{eq:gate} is fixed to $0.5$ for all environments.
 
-\paragraph{Gate threshold.}
-The decision threshold $\tau$ in Eq.~\eqref{eq:gate} is fixed to
-$0.5$ for all environments. Sensitivity across
-$\tau \in [0.3, 0.7]$ is reported in \S\ref{app:hyperparam}.
+\subsection{Universal Feature Definitions}
+\label{app:universal-features}
 
-\paragraph{Online adaptation.}
-During deployment, $\varepsilon_{\text{deploy}}$ decays from $0.1$
+Table~\ref{tab:universal-features} defines the universal features
+available in every environment.
+
+\begin{table}[H]
+\centering\small
+\caption{Universal feature definitions.}
+\label{tab:universal-features}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{ll}
+\toprule
+Feature & Definition \\
+\midrule
+\texttt{step\_count}     & Current step index $t$ in the episode \\
+\texttt{token\_entropy}  & Entropy of the next-token distribution \\
+\texttt{action\_entropy} & Entropy over candidate actions \\
+\texttt{state\_length}   & Token count of the current state text \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\subsection{LLM Feature Layer}
+\label{app:llm-feature-layer}
+
+For environments where universal features may be inadequate,
+DIAL's optional LLM feature layer automates the proposal of
+task-specific signals. The LLM receives a structured summary of
+the exploration dataset $\mathcal{D}$, including: (1)~aggregate
+statistics (total episodes, steps, optimizer trigger rate, overall
+positive-utility fraction), (2)~per-step breakdowns of trigger
+rate and utility by step index, and (3)~representative examples
+of states where the optimizer was triggered, paired with their
+utility labels (positive vs.\ negative).
+
+Given this summary, the LLM is prompted to analyze patterns that
+distinguish positive-utility from negative-utility states and to
+produce a Python function that extracts exactly 5 task-specific
+features from the raw state text. Each feature must return a
+float value using only the Python standard library. The full
+prompt template is provided in \S\ref{app:llm-prompts}.
+
+The LLM-proposed features $\phi_{\text{LLM}}(s)$ are combined
+with the universal features to form the candidate pool
+$\phi_{\text{cand}}(s) = \phi_{\text{univ}}(s) \cup
+\phi_{\text{LLM}}(s)$. The $\ell_1$-regularized gate
+(\S\ref{sec:learn}) then selects or discards each feature based
+on its predictive value for rollout utility. This two-stage
+design (LLM proposes, LASSO disposes) ensures that uninformative
+LLM features are automatically filtered out. As shown in
+Table~\ref{tab:llm-features}, environments with richer
+task-specific structure (WebShop, TWExpress) retain more LLM
+features, while Plancraft retains none.
+
+\subsection{Online Adaptation}
+\label{app:online-adaptation}
+
+For drifting environments, DIAL can optionally refit during
+deployment using $\varepsilon$-greedy exploration
+($\varepsilon: 0.1 \to 0$) and periodic retraining. During
+deployment, $\varepsilon_{\text{deploy}}$ decays from $0.1$
 to $0$ over the first 100 episodes, and the gate is refit every
 $k = 30$ episodes using the accumulated $\varepsilon$-greedy
 samples. Refitting reuses the same solver configuration as the
 initial training, so no additional hyperparameter tuning is
 required at deployment time.
 
+This mode is \emph{not free}: $\varepsilon$-greedy overrides
+ignore the current gate, so in Type~I environments a fraction of
+overridden steps will trigger harmful rollouts. For stationary
+environments, which are the setting of our main experiments,
+we recommend skipping online adaptation and relying on the
+offline-fitted gate.
+
 \subsection{LLM Reasoning Prompts}
 \label{app:llm-prompts}
 
-The full LLM prompt template is provided below. We use WebShop as the example, where LLM features contribute most meaningfully.
+The full LLM prompt template is provided below. We use WebShop
+as the example, where LLM features contribute most meaningfully.
 
-\begin{quote}\small\ttfamily
-You are an AI agent that has been exploring an interactive environment. During exploration, you sometimes performed ``rollouts'' (additional computation) to improve your decisions. Sometimes the rollout was useful (positive utility), sometimes it was not.
+% \begin{quote}\small\ttfamily
+% You are an AI agent that has been exploring an interactive
+% environment. During exploration, you sometimes performed
+% ``rollouts'' (additional computation) to improve your decisions.
+% Sometimes the rollout was useful (positive utility), sometimes
+% it was not.
 
-Your task: Analyze the patterns in your experience and write a Python function that extracts features from the state text that could predict whether a rollout would be useful.
+% Your task: Analyze the patterns in your experience and write a
+% Python function that extracts features from the state text that
+% could predict whether a rollout would be useful.
 
-[Exploration statistics and representative examples provided]
+% [Exploration statistics and representative examples provided]
 
-Requirements: Return a dict with string keys and float values. Use only Python standard library. Extract exactly 5 features based on the patterns you observe. Focus on features that DIFFER between useful and not-useful rollout cases.
-\end{quote}
+% Requirements: Return a dict with string keys and float values.
+% Use only Python standard library. Extract exactly 5 features
+% based on the patterns you observe. Focus on features that DIFFER
+% between useful and not-useful rollout cases.
+% \end{quote}
+\begin{figure}[h]
+  \centering
+  \begin{tcolorbox}[
+      title=\textbf{LLM Feature Layer Prompt Template},
+      colframe=PTGreenDark,
+      colback=PTLightGreen,
+      colbacktitle=PTGreenDark,
+      coltitle=white,
+      fonttitle=\bfseries,
+      boxrule=0.9pt,
+      arc=0pt,
+      left=7pt,right=7pt,top=7pt,bottom=7pt,
+      width=\columnwidth,
+      enhanced
+    ]
+    \ttfamily\footnotesize
+    You are an AI agent that has been exploring an interactive environment. During exploration, you sometimes performed ``rollouts'' (additional computation) to improve your decisions. Sometimes the rollout was useful (positive utility), sometimes it was not.\\[0.6ex]
+    Your task: Analyze the patterns in your experience and write a Python function that extracts features from the state text that could predict whether a rollout would be useful.\\[0.6ex]
+    \textnormal{\textit{[Exploration statistics and representative examples provided]}}\\[0.6ex]
+    Requirements:\\
+    - Return a dict with string keys and float values.\\
+    - Use only Python standard library.\\
+    - Extract exactly 5 features based on the patterns you observe.\\
+    - Focus on features that DIFFER between useful and not-useful rollout cases.
+  \end{tcolorbox}
+  \caption{Prompt template used in the LLM feature layer (Phase~2) to propose task-specific features from exploration data.}
+  \label{fig:llm-prompt-template}
+\end{figure}
+
+% ============================================================
+% D. EXPERIMENTAL SETUP
+% ============================================================
+\section{Experimental Setup}
+\label{app:experiments}
+
+\subsection{Environment Specifications}
+\label{app:environment}
+
+We evaluate on 6 environments spanning diverse agent tasks.
+Table~\ref{tab:env-setup} summarizes their base performance,
+optimizer headroom, and optimizer type.
+
+\textbf{HotpotQA~\cite{yang2018hotpotqa}.}
+A multi-hop question answering task where the agent must retrieve
+and reason over multiple Wikipedia paragraphs to answer complex
+questions. The agent iteratively issues search queries and reads
+returned passages before producing a final answer.
+
+\textbf{WebShop~\cite{yao2022webshop}.}
+A web navigation task where the agent shops for a product matching
+a natural language instruction. The agent navigates a simulated
+e-commerce website by searching, clicking product links, and
+selecting attributes (size, color) before purchasing.
+
+\textbf{FEVER~\cite{thorne2018fever}.}
+A fact verification task where the agent must classify a claim as
+\emph{Supported}, \emph{Refuted}, or \emph{Not Enough Info} based
+on evidence retrieved from Wikipedia. The agent searches for
+relevant passages and reasons over retrieved evidence to produce
+a verdict.
+
+\textbf{APPS~\cite{hendrycks2021apps}.}
+A code generation task where the agent solves competitive
+programming problems. Given a problem description with input/output
+examples, the agent generates a Python solution and can iteratively
+debug based on test case feedback.
+
+\textbf{TWExpress~\cite{jansen2023twexpress}.}
+A text-based game where the agent navigates a simulated environment
+to complete household tasks (e.g., finding and heating objects).
+The agent issues natural language commands (go, open, take, use)
+and observes textual descriptions of the resulting state.
+
+\textbf{Plancraft~\cite{dagan2024plancraft}.}
+A crafting planning task where the agent must produce a target item
+by executing a sequence of crafting recipes in a Minecraft-inspired
+environment. The agent selects recipes and manages inventory to
+reach the goal item.
+
+These environments cover the full range of the Two-Source Model:
+FEVER and HotpotQA are dominated by Type~I states (information
+poverty), WebShop and APPS are dominated by Type~D states
+(decision difficulty), TWExpress is rollout-safe
+($\Delta{=}{+}31.8$), and Plancraft is rollout-harmful
+($\Delta{=}{-}7.0$).
+
+Per-action evaluation generates $K{=}5$ candidate actions and
+selects the best; $K$-variant sampling generates $K{=}3$ code
+solutions and selects a passing one; LLM-Propose-$K$ has the LLM
+propose $K{=}3$ action sequences, simulates each, and selects the
+highest-reward trajectory.
+
+\begin{table}[h!]
+\caption{Environment setup. Base/Always: SR without/with optimizer.
+$\Delta$: rollout headroom.}
+\label{tab:env-setup}
+\centering\small
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccl}
+\toprule
+Environment & Base SR & Always SR & $\Delta$ & Optimizer $T$ \\
+\midrule
+HotpotQA       & 49.0\% & 97.0\% & +48.0   & Per-action eval \\
+WebShop        &  7.2\% & 43.0\% & +35.8   & LLM-Propose-$K$ \\
+FEVER          & 37.0\% & 99.8\% & +62.8   & Per-action eval \\
+TWExpress      & 67.5\% & 99.3\% & +31.8   & Per-action eval \\
+Plancraft      & 29.8\% & 22.8\% & $-$7.0  & Per-action eval \\
+APPS           & 60.5\% & 79.5\% & +19.0   & $K$-variant sampling \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\subsection{Detailed Baseline Comparison}
+\label{app:method-comparison}
+
+Table~\ref{tab:baseline-detail} provides a detailed comparison of
+all baselines evaluated in this paper. All six methods share a
+common assumption: a fixed mapping from signal value to compute
+need.
+
+\begin{table*}[h!]
+\caption{Detailed comparison of baselines. All methods assume a
+fixed signal--utility direction.
+$^\dagger$Requires a separate labeled dataset for calibration.}
+\label{tab:baseline-detail}
+\centering\small
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{l W W N W}
+\toprule
+Method & Signal & Direction & Granularity & Mechanism \\
+\midrule
+CATTS~\cite{catts2026} & Vote entropy + margin
+  & High disagreement $\to$ trigger
+  & Per-step & $K{=}5$ forward passes, arbiter on disagreement \\
+SEAG$^\dagger$~\cite{seag2025} & Mean token confidence
+  & Low conf.\ $\to$ search
+  & Per-problem & Platt scaling, search depth allocation \\
+CaTS$^\dagger$~\cite{cats2025} & Calibrated confidence
+  & Low conf.\ $\to$ generate
+  & Per-attempt & Self-calibration, Best-of-N early stopping \\
+CoRefine$^\dagger$~\cite{corefine2026} & Conv1D confidence
+  & Low conf.\ $\to$ refine
+  & Per-problem & Halt / re-examine / redirect controller \\
+s1\_budget~\cite{s1_2025} & Token budget
+  & Fixed budget $\to$ stop
+  & Per-problem & Budget-constrained generation \\
+AUQ~\cite{auq2026} & Verbalized uncertainty
+  & High uncert.\ $\to$ reflect
+  & Per-step & Uncertainty-aware memory + reflection \\
+\midrule
+\textbf{DIAL} & \textbf{Multi (auto)} & \textbf{Learned}
+  & \textbf{Per-step}
+  & Explore + reason + direction learning \\
+\bottomrule
+\end{tabularx}
+\end{table*}
 
 \subsection{Computational Cost Breakdown}
 \label{app:cost}
@@ -439,7 +571,7 @@ adds zero per-step gate overhead at deployment.
 
 
 % ============================================================
-% D. FULL RESULTS
+% E. FULL RESULTS
 % ============================================================
 \section{Full Results}
 \label{app:full-results}
@@ -480,7 +612,7 @@ gating actively harms performance on this backbone.
 
 
 % ============================================================
-% E. SIGNAL AND FEATURE ANALYSES
+% F. SIGNAL AND FEATURE ANALYSES
 % ============================================================
 \section{Signal and Feature Analyses}
 \label{app:signal-analyses}
@@ -521,12 +653,19 @@ coefficients. Environments with richer task-specific structure
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{lcl}
 \toprule
-\textbf{Environment} & \textbf{Sel./Gen.} & \textbf{LASSO-Selected LLM Features} \\
+\textbf{Environment} & \textbf{Sel./Gen.}
+  & \textbf{LASSO-Selected LLM Features} \\
 \midrule
-WebShop    & 4/5 & \texttt{price\_mentioned}, \texttt{action\_is\_click}, \texttt{step\_early}, \texttt{instruction\_keyword\_count} \\
-TWExpress  & 4/5 & \texttt{text\_length}, \texttt{closed\_ratio}, \texttt{action\_look\_around}, \texttt{already\_open} \\
-HotpotQA   & 3/5 & \texttt{has\_question}, \texttt{entity\_count}, \texttt{fact\_keyword\_count} \\
-FEVER      & 2/5 & \texttt{text\_length\_normalized}, \texttt{has\_claim} \\
+WebShop    & 4/5 & \texttt{price\_mentioned},
+  \texttt{action\_is\_click}, \texttt{step\_early},
+  \texttt{instruction\_keyword\_count} \\
+TWExpress  & 4/5 & \texttt{text\_length},
+  \texttt{closed\_ratio}, \texttt{action\_look\_around},
+  \texttt{already\_open} \\
+HotpotQA   & 3/5 & \texttt{has\_question},
+  \texttt{entity\_count}, \texttt{fact\_keyword\_count} \\
+FEVER      & 2/5 & \texttt{text\_length\_normalized},
+  \texttt{has\_claim} \\
 APPS       & 1/5 & \texttt{action\_type} \\
 Plancraft  & 0/5 & (none selected) \\
 \bottomrule
@@ -547,42 +686,59 @@ contribute most to SR (FEVER, $+$9.1\,pp) is precisely where the
 LLM discovers unique signals (\texttt{has\_claim}) that the
 universal feature pool lacks.
 
-The following listing shows the complete LLM output for WebShop
-(seed~42), the environment with the most LLM features retained.
+Figure~\ref{fig:llm-output-webshop} shows the complete LLM-generated feature extraction function for WebShop (seed~42), the environment with the most LLM features retained.
 
-\begin{figure}[H]
-\begin{quote}\small\ttfamily
-def extract\_features(state\_text, step\_count, action\_text):\\
-\null\quad import re\\
-\null\quad features = \{\}\\
-\null\quad \# Instruction keyword density\\
-\null\quad keywords = ["gluten free", "protein",\\
-\null\quad\quad "price lower than", "size", "color"]\\
-\null\quad matches = sum(1 for kw in keywords\\
-\null\quad\quad if kw in state\_text.lower())\\
-\null\quad features['instruction\_keyword\_count'] = (\\
-\null\quad\quad float(matches) / len(keywords))\\
-\null\quad \# Early-step indicator\\
-\null\quad features['step\_early'] = (\\
-\null\quad\quad 1.0 if step\_count <= 2 else 0.0)\\
-\null\quad \# Click vs.\ search action\\
-\null\quad features['action\_is\_click'] = (\\
-\null\quad\quad 1.0 if action\_text.startswith("click[")\\
-\null\quad\quad else 0.0)\\
-\null\quad \# Price constraint presence\\
-\null\quad price\_matches = len(re.findall(\\
-\null\quad\quad r"price lower than|price:|\textbackslash\$",\\
-\null\quad\quad state\_text, re.IGNORECASE))\\
-\null\quad features['price\_mentioned'] = (\\
-\null\quad\quad float(price\_matches) / 5.0)\\
-\null\quad \# Filter complexity\\
-\null\quad filter\_kws = ["size","color","flavor",\\
-\null\quad\quad "price","rating"]\\
-\null\quad features['filter\_count'] = sum(\\
-\null\quad\quad 1 for kw in filter\_kws\\
-\null\quad\quad if kw in state\_text.lower()) / 5.0\\
-\null\quad return features
-\end{quote}
+\begin{figure}[h]
+\begin{tcolorbox}[
+    title=\textbf{LLM Output for WebShop},
+    colframe=PTGreenDark,
+    colback=PTLightGreen,
+    colbacktitle=PTGreenDark,
+    coltitle=white,
+    fonttitle=\bfseries,
+    boxrule=0.9pt,
+    arc=0pt,
+    left=7pt,right=7pt,top=4pt,bottom=4pt,
+    width=\columnwidth
+  ]
+\begin{lstlisting}[language=Python,basicstyle=\ttfamily\scriptsize,
+  breaklines=true,columns=fullflexible,
+  keywordstyle=\color{blue},commentstyle=\color{gray},
+  showstringspaces=false]
+def extract_features(state_text, step_count, action_text):
+    import re
+    features = {}
+    # Instruction keyword density
+    keywords = ["gluten free", "protein",
+        "price lower than", "size", "color"]
+    matches = sum(1 for kw in keywords
+        if kw in state_text.lower())
+    features['instruction_keyword_count'] = (
+        float(matches) / len(keywords))
+    # Early-step indicator
+    features['step_early'] = (
+        1.0 if step_count <= 2 else 0.0)
+    # Click vs. search action
+    features['action_is_click'] = (
+        1.0 if action_text.startswith("click[")
+        else 0.0)
+    # Price constraint presence
+    price_matches = len(re.findall(
+        r"price lower than|price:|\$",
+        state_text, re.IGNORECASE))
+    features['price_mentioned'] = (
+        float(price_matches) / 5.0)
+    # Filter complexity
+    filter_kws = ["size","color","flavor",
+        "price","rating"]
+    features['filter_count'] = sum(
+        1 for kw in filter_kws
+        if kw in state_text.lower()) / 5.0
+    return features
+\end{lstlisting}
+\end{tcolorbox}
+\caption{Complete LLM-generated feature extraction function for WebShop (seed 42), the environment with the most LLM features retained by LASSO.}
+\label{fig:llm-output-webshop}
 \end{figure}
 
 \subsection{AUC Hierarchy: Single vs.\ Multi-Signal Gates}
@@ -615,8 +771,9 @@ Hidden-state probe  & 0.87 & 0.79 & 0.99 & 0.95 \\
 }
 \end{table}
 
+
 % ============================================================
-% F. ROBUSTNESS AND ADDITIONAL EXPERIMENTS
+% G. ROBUSTNESS AND ADDITIONAL EXPERIMENTS
 % ============================================================
 \section{Robustness and Additional Experiments}
 \label{app:robustness}
@@ -625,7 +782,6 @@ This appendix collects Two-Source Model verification data,
 robustness checks for direction reversal, and additional
 experimental analyses.
 
-% --- F.1: referenced by P1 in main text ---
 \subsection{Temporal Dynamics (P1)}
 \label{app:temporal}
 
@@ -646,22 +802,33 @@ for meaningful comparison).}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{llccccl}
 \toprule
-\textbf{Env} & \textbf{Phase} & $\rho$ & \textbf{95\% CI} & $n$ & $p$ & \textbf{Shift} \\
+\textbf{Env} & \textbf{Phase} & $\rho$ & \textbf{95\% CI}
+  & $n$ & $p$ & \textbf{Shift} \\
 \midrule
-HotpotQA & early & $-$0.176 & [$-$0.260, $-$0.091] & 509 & $<$0.001 & \multirow{2}{*}{$\Delta{=}{-}0.261$} \\
-         & late  & $-$0.437 & [$-$0.500, $-$0.370] & 699 & $<$0.001 & \\
+HotpotQA & early & $-$0.176 & [$-$0.260, $-$0.091] & 509
+  & $<$0.001
+  & \multirow{2}{*}{$\Delta{=}{-}0.261$} \\
+  & late  & $-$0.437 & [$-$0.500, $-$0.370] & 699
+  & $<$0.001 & \\
 \midrule
-APPS     & early & $+$0.102 & [$-$0.013, $+$0.209] & 290 & 0.084   & \multirow{2}{*}{$\Delta{=}{-}0.246$} \\
-         & late  & $-$0.144 & [$-$0.281, $+$0.001] & 199 & 0.043   & \\
+APPS & early & $+$0.102 & [$-$0.013, $+$0.209] & 290
+  & 0.084
+  & \multirow{2}{*}{$\Delta{=}{-}0.246$} \\
+  & late  & $-$0.144 & [$-$0.281, $+$0.001] & 199
+  & 0.043 & \\
 \midrule
-WebShop  & early & $+$0.285 & [$+$0.222, $+$0.346] & 600 & $<$0.001 & \multirow{2}{*}{$\Delta{=}{-}0.291$} \\
-         & late  & $-$0.006 & n.s.                  & 473 & 0.895   & \\
+WebShop & early & $+$0.285 & [$+$0.222, $+$0.346] & 600
+  & $<$0.001
+  & \multirow{2}{*}{$\Delta{=}{-}0.291$} \\
+  & late  & $-$0.006 & n.s. & 473 & 0.895 & \\
 \midrule
-FEVER    & early & $+$0.054 & n.s.                  & 200 & 0.446   & \multirow{2}{*}{$\Delta{=}{+}0.024$} \\
-         & late  & $+$0.078 & n.s.                  & 82  & 0.486   & \\
+FEVER & early & $+$0.054 & n.s. & 200 & 0.446
+  & \multirow{2}{*}{$\Delta{=}{+}0.024$} \\
+  & late  & $+$0.078 & n.s. & 82 & 0.486 & \\
 \midrule
-TWExpress& early & $+$0.161 & ---                   & 422 & $<$0.001 & \multirow{2}{*}{$\Delta{=}{-}0.153$} \\
-         & late  & $+$0.008 & n.s.                  & 376 & 0.877   & \\
+TWExpress & early & $+$0.161 & --- & 422 & $<$0.001
+  & \multirow{2}{*}{$\Delta{=}{-}0.153$} \\
+  & late  & $+$0.008 & n.s. & 376 & 0.877 & \\
 \bottomrule
 \end{tabular}%
 }
@@ -682,50 +849,40 @@ positive $\rho$, consistent with FEVER's short episodes
 (median 8 steps) concentrating most rollout value at step~0--1,
 leaving insufficient late-step variation for a meaningful shift.
 
-% --- F.2: referenced by P3 in main text ---
 \subsection{Signal Identity Alignment (P3)}
 \label{app:signal-alignment}
 
+Table~\ref{tab:signal-identity} reports the strongest signal per
+environment and its interpretation under the Two-Source Model.
+In Type~I environments, information-sufficiency proxies
+(\texttt{step\_count}) dominate; in mixed/Type~D environments,
+decision-complexity proxies (\texttt{num\_available\_actions})
+dominate.
+
 \input{experiment/tab_signal_identity/tab_signal_identity.tex}
 
-% --- F.3: referenced by P3 in main text ---
-\subsection{Controlled Information Manipulation}
-\label{app:controlled}
+% \begin{table}[H]
+% \caption{Controlled information manipulation on HotpotQA.
+% Manipulating information availability shifts which signal
+% dominates, confirming the Two-Source Model's prediction.}
+% \label{tab:controlled}
+% \centering\small
+% \resizebox{\columnwidth}{!}{%
+% \begin{tabular}{lccccc}
+% \toprule
+% Condition & Base SR & $\rho$(entropy) & $\rho$(step\_count)
+%   & DIAL SR & $n$ \\
+% \midrule
+% Original  & 49.0\% & $-$0.041 & $-$0.494 & 95.2\% & 1117 \\
+% InfoPoor  & 44.0\% & $+$0.119 & $\mathbf{-0.608}$
+%   & 94.0\% & 317 \\
+% InfoRich  & 82.0\% & $\mathbf{+0.311}$ & $-$0.147
+%   & 88.3\% & 221 \\
+% \bottomrule
+% \end{tabular}%
+% }
+% \end{table}
 
-To provide stronger evidence that information structure drives
-signal semantics, we manipulate information availability within
-HotpotQA itself. \emph{InfoPoor} restricts search to the first
-sentence; \emph{InfoRich} injects gold evidence at the start.
-Table~\ref{tab:controlled} shows the results. In InfoPoor,
-\texttt{step\_count} dominates ($\rho{=}{-}0.608$) while entropy
-is weak ($\rho{=}{+}0.119$); in InfoRich, entropy becomes the
-dominant signal ($\rho{=}{+}0.311$) while \texttt{step\_count}
-weakens ($\rho{=}{-}0.147$). This demonstrates that the
-\emph{identity} of the most informative signal, not just its
-direction, is a function of the environment's information
-structure. DIAL adapts to both conditions without manual
-reconfiguration.
-
-\begin{table}[H]
-\caption{Controlled information manipulation on HotpotQA.
-Manipulating information availability shifts which signal
-dominates, confirming the Two-Source Model's prediction.}
-\label{tab:controlled}
-\centering\small
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{lccccc}
-\toprule
-Condition & Base SR & $\rho$(entropy) & $\rho$(step\_count) & DIAL SR & $n$ \\
-\midrule
-Original  & 49.0\% & $-$0.041 & $-$0.494 & 95.2\% & 1117 \\
-InfoPoor  & 44.0\% & $+$0.119 & $\mathbf{-0.608}$ & 94.0\% & 317 \\
-InfoRich  & 82.0\% & $\mathbf{+0.311}$ & $-$0.147 & 88.3\% & 221 \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
-
-% --- F.4: referenced by robustness in main text ---
 \subsection{Multi-Backbone Verification}
 \label{app:multi-backbone}
 
@@ -737,7 +894,10 @@ environments. Table~\ref{tab:full-results} reports full results.
 \begin{figure*}[h!]
 	\centering
 	\includegraphics[width=\textwidth]{figures/fig_multi_backbone_heatmap.pdf}
-	\caption{Multi-backbone signal direction heatmap. Gold borders mark cells where the sign of $\rho$ flips across backbones with significant correlations. Entropy direction is model-dependent; structural signals (step\_count) are more stable.}
+	\caption{Multi-backbone signal direction heatmap. Gold borders
+	mark cells where the sign of $\rho$ flips across backbones with
+	significant correlations. Entropy direction is model-dependent;
+	structural signals (step\_count) are more stable.}
 	\label{fig:multi-backbone-heatmap}
 \end{figure*}
 
@@ -751,11 +911,12 @@ the fixed-direction assumption is brittle when the model changes
 \begin{figure*}[h!]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_multi_backbone_sr.pdf}
-\caption{Cross-backbone comparison: DIAL (red) vs.\ best fixed-direction baseline (blue) across 3 backbones. Fixed baselines show large SR variance across backbones; DIAL adapts robustly.}
+\caption{Cross-backbone comparison: DIAL (red) vs.\ best
+fixed-direction baseline (blue) across 3 backbones. Fixed baselines
+show large SR variance across backbones; DIAL adapts robustly.}
 \label{fig:multi-backbone-sr}
 \end{figure*}
 
-% --- F.5: referenced by robustness in main text ---
 \subsection{Stratified Analysis: Controlling for Trajectory Length}
 \label{app:stratified}
 
@@ -768,7 +929,6 @@ utility variance is non-zero. In HotpotQA, $\rho$ remains negative
 across all three strata ($-0.18$/$-0.46$/$-0.42$). The reversal
 is not an artifact of trajectory length.
 
-% --- F.6: referenced by robustness in main text ---
 \subsection{Gate Complexity Ablation}
 \label{app:gate-complexity}
 
@@ -806,7 +966,6 @@ more precisely targets harmful states. This confirms that signal
 direction consistently outweighs gate complexity, and explains why
 DIAL's minimal gate design suffices.
 
-% --- F.7: referenced by ablation in main text ---
 \subsection{Environment-Adaptive Trigger Behavior}
 \label{app:trigger-rate}
 
@@ -831,34 +990,22 @@ additional computation.
 \includegraphics[width=\textwidth]{figures/fig_trigger_adapt.pdf}
 \caption{Environment-adaptive trigger behavior. Panels ordered by
 rollout headroom $\Delta$. Solid line: per-step trigger rate with
-95\% CI band. Dashed gray: 50\% reference. RR: overall trigger rate.
-DIAL's trigger rate ranges from 73\% (TWExpress) to $<$20\%
+95\% CI band. Dashed gray: 50\% reference. RR: overall trigger
+rate. DIAL's trigger rate ranges from 73\% (TWExpress) to $<$20\%
 (late-step Plancraft), emerging from direction learning alone.}
 \label{fig:trigger-adapt}
 \end{figure*}
 
-% --- F.8: referenced by DIAL details ---
-\subsection{Hyperparameter Sensitivity}
-\label{app:hyperparam}
+% \subsection{Hyperparameter Sensitivity}
+% \label{app:hyperparam}
 
-DIAL is robust to $N_{\text{explore}} \in [30, 100]$ (stable SR for
-$N_{\text{explore}} \geq 30$; marginal gains above 50) and gate
-threshold $\tau \in [0.3, 0.7]$.
-
-%\subsection{Statistical Significance}
-%\label{app:significance}
-%
-%All head-to-head comparisons use 3-seed evaluation
-%(200 episodes/seed). Bootstrap confidence intervals (5000 resamples)
-%are reported for all comparisons. 14 of 24 wins are statistically
-%significant (95\% CI excludes zero). Pareto-dominance claims use a
-%conservative criterion that does not rely on p-values.
-%
-%\input{experiment/tab_significance/tab_significance.tex}
+% DIAL is robust to $N_{\text{explore}} \in [30, 100]$ (stable SR for
+% $N_{\text{explore}} \geq 30$; marginal gains above 50) and gate
+% threshold $\tau \in [0.3, 0.7]$.
 
 
 % ============================================================
-% G. BROADER IMPACT
+% H. BROADER IMPACT
 % ============================================================
 \section{Broader Impact}
 \label{app:impact}
