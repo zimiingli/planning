@@ -199,6 +199,21 @@ APPS      & 73.0 & 73.0 & $+$0.0 \\
 }
 \end{table}
 
+\textbf{$\ell_1$ is not interchangeable with other shrinkage or
+selection schemes.}
+The signed-weight diagnostic of \S\ref{sec:learn} and DIAL's
+tolerance of noisy LLM-proposed features both rely on the
+\emph{exact} sparsity induced by $\ell_1$. Replacing it with
+$\ell_2$ yields comparable SR on strong-signal environments but
+eliminates the clean \{informative, uninformative\} partition,
+because every feature retains a small non-zero weight; unregularized
+logistic overfits on weak-signal environments like Plancraft; hard
+mutual-information feature selection recovers SR on strong-signal
+tasks but requires per-environment tuning of $k$, reintroducing the
+engineering cost DIAL aims to eliminate. The full comparison across
+regularizers, holding $\mathcal{D}$ and $\phi_{\text{cand}}$ fixed,
+is reported in \S\ref{app:regularizer-ablation}.
+
 
 \subsection{Two-Source Model Verification}
 \label{sec:theory-verification}
