@@ -14,6 +14,8 @@
 \gdef\HyperFirstAtBeginDocument#1{#1}
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{seag2025,cats2025,corefine2026}
+\citation{seag2025,cats2025,corefine2026}
 \citation{yao2023react,shinn2023reflexion,zhou2024lats}
 \citation{yao2023tree,hao2023reasoning,snell2024scaling}
 \citation{snell2024scaling,wang2026flare}
@@ -24,9 +26,9 @@
 \citation{diffadapt2025,zhu2025llmalreadyknows,adaptthink2025,thinkless2025}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
 \newlabel{sec:intro}{{1}{1}{Introduction}{section.1}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces \textbf  {Same signal, opposite meaning.} Spearman $\rho $(token entropy, optimizer utility) across six environments on Qwen3-4B. Triggering on high entropy \emph  {helps} on APPS and WebShop ($\rho {>}0$) but \emph  {harms} on HotpotQA, TWExpress, and FEVER ($\rho {<}0$).\relax }}{1}{figure.caption.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces \textbf  {The fixed-direction assumption fails on half of the environments.} Prior entropy gating\nobreakspace  {}\citep  {seag2025,cats2025,corefine2026} assumes $\rho (\text  {entropy}, U){>}0$ (shaded). On Qwen3-4B, 3 of 6 envs violate this (HotpotQA, TWExpress, FEVER), so high-entropy triggering fires on the wrong states.\relax }}{1}{figure.caption.1}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{fig:intro_reversal}{{1}{1}{\textbf {Same signal, opposite meaning.} Spearman $\rho $(token entropy, optimizer utility) across six environments on Qwen3-4B. Triggering on high entropy \emph {helps} on APPS and WebShop ($\rho {>}0$) but \emph {harms} on HotpotQA, TWExpress, and FEVER ($\rho {<}0$).\relax }{figure.caption.1}{}}
+\newlabel{fig:intro_reversal}{{1}{1}{\textbf {The fixed-direction assumption fails on half of the environments.} Prior entropy gating~\cite {seag2025,cats2025,corefine2026} assumes $\rho (\text {entropy}, U){>}0$ (shaded). On Qwen3-4B, 3 of 6 envs violate this (HotpotQA, TWExpress, FEVER), so high-entropy triggering fires on the wrong states.\relax }{figure.caption.1}{}}
 \citation{yang2018hotpotqa}
 \citation{hendrycks2021apps}
 \citation{yao2022webshop}
@@ -41,18 +43,18 @@
 \citation{adaptthink2025,thinkless2025,aggarwal2025l1,paglieri2025learning}
 \citation{DBLP:journals/corr/abs-2110-14168}
 \citation{DBLP:journals/corr/abs-2311-12022}
-\citation{russell1991right,desabbata2024metareasoning}
-\citation{tao2025revisiting}
-\citation{heo2025llmuncertainty}
-\citation{yadkori2024believe}
 \@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{section.2}\protected@file@percent }
 \newlabel{sec:related}{{2}{2}{Related Work}{section.2}{}}
 \@writefile{toc}{\contentsline {paragraph}{Gating on uncertainty signals.}{2}{section*.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Gating on learned difficulty.}{2}{section*.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Metareasoning and uncertainty semantics.}{2}{section*.4}\protected@file@percent }
+\citation{russell1991right,desabbata2024metareasoning}
+\citation{tao2025revisiting}
+\citation{heo2025llmuncertainty}
+\citation{yadkori2024believe}
 \citation{DBLP:journals/corr/abs-2505-09388,DBLP:journals/corr/abs-2407-21783,DBLP:journals/corr/abs-2404-14219}
 \@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Signal--utility correlations across 6 environments and 3 backbones. $\rho $: Spearman correlation of token entropy with optimizer utility $U$. $^*$: significant at $p{<}0.05$. Direction varies across \emph  {both} environments and model backbones.\relax }}{3}{table.caption.5}\protected@file@percent }
 \newlabel{tab:signal-discovery}{{1}{3}{Signal--utility correlations across 6 environments and 3 backbones. $\rho $: Spearman correlation of token entropy with optimizer utility $U$. $^*$: significant at $p{<}0.05$. Direction varies across \emph {both} environments and model backbones.\relax }{table.caption.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{Metareasoning and uncertainty semantics.}{3}{section*.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {3}Why Fixed-Direction Gating Fails}{3}{section.3}\protected@file@percent }
 \newlabel{sec:signal-landscape}{{3}{3}{Why Fixed-Direction Gating Fails}{section.3}{}}
 \newlabel{eq:utility}{{1}{3}{Why Fixed-Direction Gating Fails}{equation.3.1}{}}
@@ -243,26 +245,24 @@
 \citation{hendrycks2021apps}
 \citation{jansen2023twexpress}
 \citation{dagan2024plancraft}
-\citation{catts2026}
-\citation{seag2025}
-\citation{cats2025}
-\citation{corefine2026}
-\citation{s1_2025}
-\citation{auq2026}
 \@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Prompt template used in the LLM feature layer (Phase\nobreakspace  {}2) to propose task-specific features from exploration data.\relax }}{15}{figure.caption.25}\protected@file@percent }
 \newlabel{fig:llm-prompt-template}{{5}{15}{Prompt template used in the LLM feature layer (Phase~2) to propose task-specific features from exploration data.\relax }{figure.caption.25}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {D}Experimental Setup}{15}{appendix.D}\protected@file@percent }
 \newlabel{app:experiments}{{D}{15}{Experimental Setup}{appendix.D}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {D.1}Environment Specifications}{15}{subsection.D.1}\protected@file@percent }
 \newlabel{app:environment}{{D.1}{15}{Environment Specifications}{subsection.D.1}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Environment setup. Base/Always: SR without/with optimizer. $\Delta $: rollout headroom.\relax }}{15}{table.caption.26}\protected@file@percent }
-\newlabel{tab:env-setup}{{7}{15}{Environment setup. Base/Always: SR without/with optimizer. $\Delta $: rollout headroom.\relax }{table.caption.26}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.2}Detailed Baseline Comparison}{15}{subsection.D.2}\protected@file@percent }
-\newlabel{app:method-comparison}{{D.2}{15}{Detailed Baseline Comparison}{subsection.D.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.3}Computational Cost Breakdown}{15}{subsection.D.3}\protected@file@percent }
-\newlabel{app:cost}{{D.3}{15}{Computational Cost Breakdown}{subsection.D.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Detailed comparison of baselines. All methods assume a fixed signal--utility direction. $^\dagger $Requires a separate labeled dataset for calibration.\relax }}{16}{table.caption.27}\protected@file@percent }
-\newlabel{tab:baseline-detail}{{8}{16}{Detailed comparison of baselines. All methods assume a fixed signal--utility direction. $^\dagger $Requires a separate labeled dataset for calibration.\relax }{table.caption.27}{}}
+\citation{catts2026}
+\citation{seag2025}
+\citation{cats2025}
+\citation{corefine2026}
+\citation{s1_2025}
+\citation{auq2026}
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Environment setup. Base/Always: SR without/with optimizer. $\Delta $: rollout headroom.\relax }}{16}{table.caption.26}\protected@file@percent }
+\newlabel{tab:env-setup}{{7}{16}{Environment setup. Base/Always: SR without/with optimizer. $\Delta $: rollout headroom.\relax }{table.caption.26}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.2}Detailed Baseline Comparison}{16}{subsection.D.2}\protected@file@percent }
+\newlabel{app:method-comparison}{{D.2}{16}{Detailed Baseline Comparison}{subsection.D.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.3}Computational Cost Breakdown}{16}{subsection.D.3}\protected@file@percent }
+\newlabel{app:cost}{{D.3}{16}{Computational Cost Breakdown}{subsection.D.3}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Computational cost breakdown per method. Gate OH = additional LLM calls per step beyond the base proposer. Cost ($\times $base) = total \emph  {deployment} tokens normalized by base\_only tokens per episode, averaged across 6 environments. Calibration/exploration overhead is excluded for all methods. $^\dagger $Requires separate calibration data.\relax }}{16}{table.caption.28}\protected@file@percent }
 \newlabel{tab:cost-components}{{9}{16}{Computational cost breakdown per method. Gate OH = additional LLM calls per step beyond the base proposer. Cost ($\times $base) = total \emph {deployment} tokens normalized by base\_only tokens per episode, averaged across 6 environments. Calibration/exploration overhead is excluded for all methods. $^\dagger $Requires separate calibration data.\relax }{table.caption.28}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {E}Full Results}{16}{appendix.E}\protected@file@percent }
@@ -272,26 +272,28 @@
 \@writefile{toc}{\contentsline {paragraph}{Llama-3.1-8B.}{16}{section*.32}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {F}Signal and Feature Analyses}{16}{appendix.F}\protected@file@percent }
 \newlabel{app:signal-analyses}{{F}{16}{Signal and Feature Analyses}{appendix.F}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {F.1}Per-Environment Feature Selection}{16}{subsection.F.1}\protected@file@percent }
+\newlabel{app:feature-selection}{{F.1}{16}{Per-Environment Feature Selection}{subsection.F.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Detailed comparison of baselines. All methods assume a fixed signal--utility direction. $^\dagger $Requires a separate labeled dataset for calibration.\relax }}{17}{table.caption.27}\protected@file@percent }
+\newlabel{tab:baseline-detail}{{8}{17}{Detailed comparison of baselines. All methods assume a fixed signal--utility direction. $^\dagger $Requires a separate labeled dataset for calibration.\relax }{table.caption.27}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Full results across 6 environments and 3 backbones. SR (\%) and Cost ($\times $base, total deployment tokens normalized by base\_only). \colorbox {red!15}{\strut  Best} and \colorbox {blue!10}{\strut  second-best} SR per environment. $\dagger $: methods requiring calibration data. Cost includes all LLM calls: base proposer, gate overhead (CATTS $K{=}5$ voting, AUQ confidence query), and rollout calls.\relax }}{17}{table.caption.29}\protected@file@percent }
 \newlabel{tab:full-results}{{10}{17}{Full results across 6 environments and 3 backbones. SR (\%) and Cost ($\times $base, total deployment tokens normalized by base\_only). \colorbox {red!15}{\strut Best} and \colorbox {blue!10}{\strut second-best} SR per environment. $\dagger $: methods requiring calibration data. Cost includes all LLM calls: base proposer, gate overhead (CATTS $K{=}5$ voting, AUQ confidence query), and rollout calls.\relax }{table.caption.29}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {F.1}Per-Environment Feature Selection}{17}{subsection.F.1}\protected@file@percent }
-\newlabel{app:feature-selection}{{F.1}{17}{Per-Environment Feature Selection}{subsection.F.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {F.2}LLM-Generated Features}{17}{subsection.F.2}\protected@file@percent }
-\newlabel{app:llm-features}{{F.2}{17}{LLM-Generated Features}{subsection.F.2}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces LLM-generated features per environment. Each environment receives 5 LLM-proposed features; LASSO selects those with non-zero coefficients. Environments with richer task-specific structure (WebShop, TWExpress) retain more LLM features.\relax }}{18}{table.caption.33}\protected@file@percent }
-\newlabel{tab:llm-features}{{11}{18}{LLM-generated features per environment. Each environment receives 5 LLM-proposed features; LASSO selects those with non-zero coefficients. Environments with richer task-specific structure (WebShop, TWExpress) retain more LLM features.\relax }{table.caption.33}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Complete LLM-generated feature extraction function for WebShop (seed 42), the environment with the most LLM features retained by LASSO.\relax }}{18}{figure.caption.34}\protected@file@percent }
-\newlabel{fig:llm-output-webshop}{{6}{18}{Complete LLM-generated feature extraction function for WebShop (seed 42), the environment with the most LLM features retained by LASSO.\relax }{figure.caption.34}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {F.2}LLM-Generated Features}{18}{subsection.F.2}\protected@file@percent }
+\newlabel{app:llm-features}{{F.2}{18}{LLM-Generated Features}{subsection.F.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {F.3}AUC Hierarchy: Single vs.\ Multi-Signal Gates}{18}{subsection.F.3}\protected@file@percent }
 \newlabel{app:auc}{{F.3}{18}{AUC Hierarchy: Single vs.\ Multi-Signal Gates}{subsection.F.3}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces AUC by gate family. Single entropy is near chance; multi-signal gates close most of the gap to hidden-state probes. FEVER and TWExpress are omitted because their short episodes yield insufficient held-out data for reliable AUC estimation.\relax }}{18}{table.caption.35}\protected@file@percent }
 \newlabel{tab:auc-hierarchy}{{12}{18}{AUC by gate family. Single entropy is near chance; multi-signal gates close most of the gap to hidden-state probes. FEVER and TWExpress are omitted because their short episodes yield insufficient held-out data for reliable AUC estimation.\relax }{table.caption.35}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Complete LLM-generated feature extraction function for WebShop (seed 42), the environment with the most LLM features retained by LASSO.\relax }}{18}{figure.caption.34}\protected@file@percent }
+\newlabel{fig:llm-output-webshop}{{6}{18}{Complete LLM-generated feature extraction function for WebShop (seed 42), the environment with the most LLM features retained by LASSO.\relax }{figure.caption.34}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {G}Robustness and Additional Experiments}{18}{appendix.G}\protected@file@percent }
 \newlabel{app:robustness}{{G}{18}{Robustness and Additional Experiments}{appendix.G}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {G.1}Temporal Dynamics (P1)}{18}{subsection.G.1}\protected@file@percent }
 \newlabel{app:temporal}{{G.1}{18}{Temporal Dynamics (P1)}{subsection.G.1}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces Temporal shift in $\rho $(entropy, $U$). All environments show $\rho $ shifting more negative from early to late steps, consistent with P1. Plancraft omitted ($|\rho |{=}0.016$, too weak for meaningful comparison).\relax }}{18}{table.caption.36}\protected@file@percent }
-\newlabel{tab:temporal}{{13}{18}{Temporal shift in $\rho $(entropy, $U$). All environments show $\rho $ shifting more negative from early to late steps, consistent with P1. Plancraft omitted ($|\rho |{=}0.016$, too weak for meaningful comparison).\relax }{table.caption.36}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces LLM-generated features per environment. Each environment receives 5 LLM-proposed features; LASSO selects those with non-zero coefficients. Environments with richer task-specific structure (WebShop, TWExpress) retain more LLM features.\relax }}{19}{table.caption.33}\protected@file@percent }
+\newlabel{tab:llm-features}{{11}{19}{LLM-generated features per environment. Each environment receives 5 LLM-proposed features; LASSO selects those with non-zero coefficients. Environments with richer task-specific structure (WebShop, TWExpress) retain more LLM features.\relax }{table.caption.33}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces Temporal shift in $\rho $(entropy, $U$). All environments show $\rho $ shifting more negative from early to late steps, consistent with P1. Plancraft omitted ($|\rho |{=}0.016$, too weak for meaningful comparison).\relax }}{19}{table.caption.36}\protected@file@percent }
+\newlabel{tab:temporal}{{13}{19}{Temporal shift in $\rho $(entropy, $U$). All environments show $\rho $ shifting more negative from early to late steps, consistent with P1. Plancraft omitted ($|\rho |{=}0.016$, too weak for meaningful comparison).\relax }{table.caption.36}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {G.2}Signal Identity Alignment (P3)}{19}{subsection.G.2}\protected@file@percent }
 \newlabel{app:signal-alignment}{{G.2}{19}{Signal Identity Alignment (P3)}{subsection.G.2}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {14}{\ignorespaces P3 Signal identity alignment. The strongest signal in each environment matches the Two-Source Model prediction: information-sufficiency proxies dominate in Type\nobreakspace  {}I environments; decision-complexity proxies dominate in mixed/Type\nobreakspace  {}D.\relax }}{19}{table.caption.37}\protected@file@percent }
@@ -306,20 +308,20 @@
 \newlabel{fig:multi-backbone-heatmap}{{7}{20}{Multi-backbone signal direction heatmap. Gold borders mark cells where the sign of $\rho $ flips across backbones with significant correlations. Entropy direction is model-dependent; structural signals (step\_count) are more stable.\relax }{figure.caption.38}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Cross-backbone comparison: DIAL (red) vs.\ best fixed-direction baseline (blue) across 3 backbones. Fixed baselines show large SR variance across backbones; DIAL adapts robustly.\relax }}{20}{figure.caption.39}\protected@file@percent }
 \newlabel{fig:multi-backbone-sr}{{8}{20}{Cross-backbone comparison: DIAL (red) vs.\ best fixed-direction baseline (blue) across 3 backbones. Fixed baselines show large SR variance across backbones; DIAL adapts robustly.\relax }{figure.caption.39}{}}
-\@writefile{toc}{\contentsline {paragraph}{$\ell _1$ vs.\ $\ell _2$: sparsity is required for diagnosis, not just for predictive performance.}{20}{section*.41}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{$\ell _1$ vs.\ unregularized logistic: robustness under weak signals.}{20}{section*.42}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {15}{\ignorespaces Regularizer ablation on three environments ordered by signal strength. SR (\%); ``\#nz'' is the mean number of non-zero fitted weights across three seeds. The candidate pool $\phi _{\text  {cand}}$ contains 31 features ($5$\nobreakspace  {}universal $+\,3$\nobreakspace  {}derived $+\,20$\nobreakspace  {}hidden-state PCA $+\,3$\nobreakspace  {}auto-extracted); adding the LLM feature layer brings the pool to $\approx $36. $\ell _1$ is the only variant that achieves competitive SR \emph  {and} exact sparsity required by the signed-weight diagnostic.\relax }}{21}{table.caption.40}\protected@file@percent }
 \newlabel{tab:regularizer-ablation}{{15}{21}{Regularizer ablation on three environments ordered by signal strength. SR (\%); ``\#nz'' is the mean number of non-zero fitted weights across three seeds. The candidate pool $\phi _{\text {cand}}$ contains 31 features ($5$~universal $+\,3$~derived $+\,20$~hidden-state PCA $+\,3$~auto-extracted); adding the LLM feature layer brings the pool to $\approx $36. $\ell _1$ is the only variant that achieves competitive SR \emph {and} exact sparsity required by the signed-weight diagnostic.\relax }{table.caption.40}{}}
+\@writefile{toc}{\contentsline {paragraph}{$\ell _1$ vs.\ $\ell _2$: sparsity is required for diagnosis, not just for predictive performance.}{21}{section*.41}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{$\ell _1$ vs.\ unregularized logistic: robustness under weak signals.}{21}{section*.42}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{$\ell _1$ vs.\ MI top-$k$ + unregularized: joint selection+shrinkage vs.\ selection alone.}{21}{section*.43}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Summary.}{21}{section*.44}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {G.6}Gate Complexity Ablation}{21}{subsection.G.6}\protected@file@percent }
 \newlabel{app:gate-complexity}{{G.6}{21}{Gate Complexity Ablation}{subsection.G.6}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {16}{\ignorespaces Gate complexity ablation on HotpotQA. Direction matters more than model capacity: a logistic gate with correct direction outperforms an MLP with wrong direction by 49.9\,pp.\relax }}{21}{table.caption.45}\protected@file@percent }
 \newlabel{tab:capacity}{{16}{21}{Gate complexity ablation on HotpotQA. Direction matters more than model capacity: a logistic gate with correct direction outperforms an MLP with wrong direction by 49.9\,pp.\relax }{table.caption.45}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {G.7}Environment-Adaptive Trigger Behavior}{21}{subsection.G.7}\protected@file@percent }
-\newlabel{app:trigger-rate}{{G.7}{21}{Environment-Adaptive Trigger Behavior}{subsection.G.7}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {H}Broader Impact}{21}{appendix.H}\protected@file@percent }
-\newlabel{app:impact}{{H}{21}{Broader Impact}{appendix.H}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Environment-adaptive trigger behavior. Panels ordered by rollout headroom $\Delta $. Solid line: per-step trigger rate with 95\% CI band. Dashed gray: 50\% reference. RR: overall trigger rate. DIAL's trigger rate ranges from 73\% (TWExpress) to $<$20\% (late-step Plancraft), emerging from direction learning alone.\relax }}{22}{figure.caption.46}\protected@file@percent }
-\newlabel{fig:trigger-adapt}{{9}{22}{Environment-adaptive trigger behavior. Panels ordered by rollout headroom $\Delta $. Solid line: per-step trigger rate with 95\% CI band. Dashed gray: 50\% reference. RR: overall trigger rate. DIAL's trigger rate ranges from 73\% (TWExpress) to $<$20\% (late-step Plancraft), emerging from direction learning alone.\relax }{figure.caption.46}{}}
-\gdef \@abspage@last{22}
+\@writefile{toc}{\contentsline {subsection}{\numberline {G.7}Environment-Adaptive Trigger Behavior}{22}{subsection.G.7}\protected@file@percent }
+\newlabel{app:trigger-rate}{{G.7}{22}{Environment-Adaptive Trigger Behavior}{subsection.G.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {H}Broader Impact}{22}{appendix.H}\protected@file@percent }
+\newlabel{app:impact}{{H}{22}{Broader Impact}{appendix.H}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Environment-adaptive trigger behavior. Panels ordered by rollout headroom $\Delta $. Solid line: per-step trigger rate with 95\% CI band. Dashed gray: 50\% reference. RR: overall trigger rate. DIAL's trigger rate ranges from 73\% (TWExpress) to $<$20\% (late-step Plancraft), emerging from direction learning alone.\relax }}{23}{figure.caption.46}\protected@file@percent }
+\newlabel{fig:trigger-adapt}{{9}{23}{Environment-adaptive trigger behavior. Panels ordered by rollout headroom $\Delta $. Solid line: per-step trigger rate with 95\% CI band. Dashed gray: 50\% reference. RR: overall trigger rate. DIAL's trigger rate ranges from 73\% (TWExpress) to $<$20\% (late-step Plancraft), emerging from direction learning alone.\relax }{figure.caption.46}{}}
+\gdef \@abspage@last{23}
