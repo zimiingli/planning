@@ -27,14 +27,13 @@ def main():
     with open(HERE / 'data.csv', newline='') as f:
         rows = list(csv.DictReader(f))
 
-    envs = []
-    for r in rows:
-        if r['environment'] not in envs:
-            envs.append(r['environment'])
+    env_order = ['HotpotQA', 'FEVER', 'APPS']
+    envs_in_data = set(r['environment'] for r in rows)
+    envs = [e for e in env_order if e in envs_in_data]
+    envs += [e for e in envs_in_data if e not in envs]
 
-    type_labels = {'HotpotQA': '(a) Type I: HotpotQA',
-                   'FEVER': '(a) Type I: FEVER',
-                   'APPS': '(c) Type D: APPS'}
+    env_type = {'HotpotQA': 'Type I', 'FEVER': 'Type I', 'APPS': 'Type D'}
+    panel_letters = ['(a)', '(b)', '(c)', '(d)', '(e)', '(f)']
     # Use whatever envs are in data
     n_envs = len(envs)
     fig, axes = plt.subplots(1, n_envs, figsize=(7, 3), sharey=True)
@@ -73,7 +72,8 @@ def main():
         ax.set_xticks(x)
         ax.set_xticklabels(bins)
         ax.set_xlabel('Entropy Bin')
-        title = type_labels.get(env, env)
+        t = env_type.get(env, '')
+        title = f'{panel_letters[idx]} {t}: {env}' if t else f'{panel_letters[idx]} {env}'
         ax.set_title(title, fontweight='bold')
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)

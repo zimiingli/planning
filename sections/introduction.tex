@@ -5,6 +5,16 @@
 \label{sec:intro}
 
 % --- Module 1: Why this problem matters (~45%) ---
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=\columnwidth]{figures/fig_intro_teaser.pdf}
+	\caption{\textbf{Same signal, opposite meaning.} Spearman
+		$\rho$(token entropy, optimizer utility) across six
+		environments on Qwen3-4B. Triggering on high entropy
+		\emph{helps} on APPS and WebShop ($\rho{>}0$) but \emph{harms}
+		on HotpotQA, TWExpress, and FEVER ($\rho{<}0$).}
+	\label{fig:intro_reversal}
+\end{figure}
 
 Large language models (LLMs) have rapidly advanced across a wide
 range of tasks, from question answering and code generation to web
@@ -37,7 +47,9 @@ Prior work explores diverse mechanisms, including entropy thresholding~\cite{sea
 % raises a central question: \emph{do uncertainty signals have a
 % universal relationship with compute value, or does this relationship
 % depend on the environment?}
-However, this assumption has not been directly tested in heterogeneous agent environments. We show it does not hold: the relationship between uncertainty and compute value can \emph{reverse direction} across environments, and once this happens, adaptive gating actively underperforms never invoking the optimizer. This raises a central question: \emph{what determines the relationship between uncertainty signals and the value of computation, and can this relationship be learned in a way that generalizes across environments?}
+
+
+However, this assumption has not been directly tested in heterogeneous agent environments. We show it does not hold: the relationship between uncertainty and compute value can \emph{reverse direction} across environments (Fig.~\ref{fig:intro_reversal}), and once this happens, adaptive gating actively underperforms never invoking the optimizer. This raises a central question: \emph{what determines the relationship between uncertainty signals and the value of computation, and can this relationship be learned in a way that generalizes across environments?}
 
 % --- Module 2: Our finding + diagnosis (~30%) ---
 
@@ -88,16 +100,16 @@ We trace this reversal to two coexisting state types with opposite signal--utili
 
 Motivated by this analysis, we propose \textbf{DIAL} (\textbf{D}irection-\textbf{I}nformed \textbf{A}daptive \textbf{L}earning), which learns environment-specific signal--utility relationships from interaction data. Since the primary challenge is identifying signal direction rather than modeling capacity, DIAL reduces the adaptive-gating problem to a form where a standard sparse linear classifier suffices, adding zero per-step cost at deployment. Across six environments and three LLM backbones, DIAL outperforms all fixed-direction baselines, and its full range of gating behavior, from aggressive triggering to near-total suppression, emerges from direction learning alone.
 
-Our main contributions are as follows:
-\begin{itemize}[leftmargin=*,nosep]
-\item \textbf{Empirical finding.} We demonstrate that signal--utility 
-direction reverses across environments and model backbones, and 
-that the most informative signal itself varies across settings.
-\item \textbf{Theoretical result.} We trace this reversal to two 
-coexisting state types with opposite signal--utility relationships, 
-and prove that no fixed-direction gate can be universally correct.
-\item \textbf{Adaptive gating method.} We propose DIAL, which 
-learns signal direction per environment instead of assuming it, 
-outperforming all fixed-direction baselines across six environments 
-with zero deployment overhead.
-\end{itemize}
+%Our main contributions are as follows:
+%\begin{itemize}[leftmargin=*,nosep]
+%\item \textbf{Empirical finding.} We demonstrate that signal--utility 
+%direction reverses across environments and model backbones, and 
+%that the most informative signal itself varies across settings.
+%\item \textbf{Theoretical result.} We trace this reversal to two 
+%coexisting state types with opposite signal--utility relationships, 
+%and prove that no fixed-direction gate can be universally correct.
+%\item \textbf{Adaptive gating method.} We propose DIAL, which 
+%learns signal direction per environment instead of assuming it, 
+%outperforming all fixed-direction baselines across six environments 
+%with zero deployment overhead.
+%\end{itemize}

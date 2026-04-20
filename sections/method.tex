@@ -1,6 +1,16 @@
 % ============================================================
 % 4. METHOD: DIAL
 % ============================================================
+\begin{figure*}[t]
+	\centering
+	% 请将最终导出的图片命名为 dial_pipeline.pdf 或 .png 放在项目根目录
+	\includegraphics[width=\textwidth]{figures/dial_pipeline.pdf} 
+	\caption{\textbf{The DIAL pipeline.}
+		\textbf{(a) Explore}: collect signal-agnostic $(s, U)$ pairs via Bernoulli-$\varepsilon$ rollouts.
+		\textbf{(b) Reason}: build a candidate feature pool $\phi(s)$ from universal metrics plus optional LLM-proposed task-specific features.
+		\textbf{(c) Learn}: fit an $\ell_1$-regularized logistic gate, whose signed weights jointly perform feature selection and recover per-environment direction (Type~D: $w_i{>}0$; Type~I: $w_i{<}0$).}
+	\label{fig:method_overview}
+\end{figure*}
 \section{Direction-Informed Adaptive Learning}
 \label{sec:method}
 
@@ -15,7 +25,8 @@ the unknown quantity being estimated.
 
 DIAL (\emph{Direction-Informed Adaptive Learning}) learns the
 correct signal interpretation for each environment through a
-lightweight explore--reason--learn pipeline: randomized
+lightweight explore--reason--learn pipeline
+(Fig.~\ref{fig:method_overview}): randomized
 exploration (\S\ref{sec:explore}) handles the unknown prior
 direction, an optional LLM feature layer (\S\ref{sec:reason})
 proposes task-specific signals when universal ones are
