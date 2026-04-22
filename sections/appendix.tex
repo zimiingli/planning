@@ -481,11 +481,34 @@ poverty), WebShop and APPS are dominated by Type~D states
 ($\Delta{=}{+}31.8$), and Plancraft is rollout-harmful
 ($\Delta{=}{-}7.0$).
 
-Per-action evaluation generates $K{=}5$ candidate actions and
-selects the best; $K$-variant sampling generates $K{=}3$ code
-solutions and selects a passing one; LLM-Propose-$K$ has the LLM
-propose $K{=}3$ action sequences, simulates each, and selects the
-highest-reward trajectory.
+All three optimizer types rank candidates by environment-provided
+reward; they differ along two axes: what is varied (single action /
+full program / full action sequence) and how the rollout is
+aggregated (mean return of truncated rollouts / test-case pass /
+full-episode reward).
+\begin{itemize}[leftmargin=*,nosep]
+\item \textbf{Per-action evaluation} (HotpotQA, FEVER, TWExpress,
+  Plancraft). At the gated step, take the top-$K{=}5$ candidate
+  actions proposed by the base policy. For each candidate $a$, fork
+  the environment snapshot, execute $a$, and continue for $H{-}1{=}2$
+  further steps with the same LLM proposer ($\tau{=}0.7$), giving a
+  truncated rollout of length $H{=}3$. Repeat $N{=}5$ independent
+  rollouts per candidate and set
+  $V(a) = \tfrac{1}{N}\sum_{n=1}^{N} R_n(a)$, where $R_n(a)$ is the
+  env-provided score for the $n$-th truncated trajectory (task-specific:
+  e.g., F1 for QA, episode return for games). Execute
+  $a^{*} = \arg\max_{a} V(a)$.
+\item \textbf{$K$-variant sampling} (APPS). Sample $K{=}3$ complete
+  code solutions and execute the first one that passes the provided
+  test cases (objective check via the interpreter).
+\item \textbf{LLM-Propose-$K$} (WebShop). The LLM proposes $K{=}3$
+  full action sequences; each is simulated end-to-end in the
+  environment, and the trajectory with the highest observed
+  episodic reward is executed.
+\end{itemize}
+In all three cases, the optimizer itself has access to the env's
+scoring function; our method is about learning \emph{when} this
+optimizer is worth invoking, not how it scores internally.
 
 \begin{table}[h!]
 \caption{Environment setup. Base/Always: SR without/with optimizer.

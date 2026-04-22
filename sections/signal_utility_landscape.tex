@@ -99,7 +99,11 @@ has adequate information but faces a genuine choice. Now consider
 a fact-verification agent that hesitates because the retrieved
 evidence is ambiguous. Here, high entropy reflects \emph{missing
 information}, not optionality: rollouts from the same model with
-the same evidence will not resolve the ambiguity. In the first
+the same evidence will not resolve the ambiguity. Critically, even when rollouts simulate further env steps, those
+steps draw observations from the \emph{same} information-bounded
+environment; in Type~I settings, the evidence required is simply
+not within that distribution (e.g., the relevant passage is not in
+the retrievable corpus). In the first
 case, entropy positively predicts rollout utility; in the second,
 it predicts rollout \emph{futility}. The same numerical signal
 carries opposite meaning because the \emph{source} of uncertainty

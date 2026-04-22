@@ -8,11 +8,13 @@
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=\columnwidth]{figures/fig_intro_teaser.pdf}
-	\caption{\textbf{Same signal, opposite meaning.} Spearman
-		$\rho$(token entropy, optimizer utility) across six
-		environments on Qwen3-4B. Triggering on high entropy
-		\emph{helps} on APPS and WebShop ($\rho{>}0$) but \emph{harms}
-		on HotpotQA, TWExpress, and FEVER ($\rho{<}0$).}
+	\vspace{-0.4in}
+	\caption{\textbf{The fixed-direction assumption fails on half of
+		the environments.} Prior entropy
+		gating~\cite{seag2025,cats2025,corefine2026}
+		assumes $\rho(\text{entropy}, U){>}0$ (shaded). On Qwen3-4B,
+		3 of 6 envs violate this (HotpotQA, TWExpress, FEVER),
+		so high-entropy triggering fires on the wrong states.}
 	\label{fig:intro_reversal}
 \end{figure}
 
@@ -20,10 +22,11 @@ Large language models (LLMs) have rapidly advanced across a wide
 range of tasks, from question answering and code generation to web
 navigation and embodied decision making~\cite{yao2023react,
 shinn2023reflexion, zhou2024lats}. Yet, many tasks remain beyond the reach of a single forward pass, requiring the model to evaluate alternatives, verify intermediate results, or search over candidate actions~\cite{yao2023tree, hao2023reasoning, snell2024scaling}. This has motivated \emph{test-time compute}, where additional
-computation at inference time improves decision quality. Across
-multiple benchmarks, test-time optimization allows smaller models to
-match or exceed the performance of larger ones at lower total
-cost~\cite{snell2024scaling, wang2026flare}.
+computation at inference time improves decision quality~\cite{snell2024scaling, wang2026flare}.
+%. Across
+%multiple benchmarks, test-time optimization allows smaller models to
+%match or exceed the performance of larger ones at lower total
+%cost
 
 % While effective, test-time compute is expensive, incurring substantial per-step overhead (e.g., requiring multiple rollouts or candidate evaluations at each decision point)~\cite{yao2023tree, zhou2024lats}. As
 % agents are deployed across diverse settings, applying this overhead
@@ -49,12 +52,12 @@ Prior work explores diverse mechanisms, including entropy thresholding~\cite{sea
 % depend on the environment?}
 
 
-However, this assumption has not been directly tested in heterogeneous agent environments. We show it does not hold: the relationship between uncertainty and compute value can \emph{reverse direction} across environments (Fig.~\ref{fig:intro_reversal}), and once this happens, adaptive gating actively underperforms never invoking the optimizer. This raises a central question: \emph{what determines the relationship between uncertainty signals and the value of computation, and can this relationship be learned in a way that generalizes across environments?}
+However, whether this assumption holds uniformly across heterogeneous agent environments has not been directly tested. Taking token entropy as the canonical signal adopted by most prior work, Figure~\ref{fig:intro_reversal} measures its correlation with optimizer utility across six agent environments: the common assumption is clearly violated on half of them, where high entropy instead indicates states on which extra compute is wasted. The signal--utility relationship therefore \emph{reverses direction} across environments, and once this happens, adaptive gating actively underperforms never invoking the optimizer. This raises a central question: \emph{what determines the relationship between uncertainty signals and the value of computation, and can this relationship be learned in a way that generalizes across environments?}
 
 % --- Module 2: Our finding + diagnosis (~30%) ---
 
 % We conduct systematic measurement across eight agent environments spanning QA~\cite{yang2018hotpotqa}, code generation~\cite{hendrycks2021apps}, web navigation~\cite{yao2022webshop}, fact verification~\cite{thorne2018fever}, and text games~\cite{jansen2023twexpress}, using three model backbones. The signal–utility direction \emph{reverses} across environments: the same signal that predicts rollout benefit in code generation predicts rollout harm in fact verification, and can further reverse across model backbones within the same environment. Beyond direction, the most informative signal itself varies across environments, with structural features dominating in some while entropy carries no information.
-We answer this through systematic measurement across six agent environments spanning QA~\cite{yang2018hotpotqa}, code generation~\cite{hendrycks2021apps}, web navigation~\cite{yao2022webshop}, fact verification~\cite{thorne2018fever}, text games~\cite{jansen2023twexpress}, and crafting planning~\cite{dagan2024plancraft}, using three model backbones. The same signal that predicts rollout benefit in code generation predicts rollout harm in fact verification, and can further reverse across model backbones within the same environment. Moreover, the most informative signal itself varies across environments, with structural features dominating in some settings while entropy carries little or no information in others.
+Extending the entropy view of Figure~\ref{fig:intro_reversal}, we systematically measure the signal--utility relationship across six agent environments spanning QA~\cite{yang2018hotpotqa}, code generation~\cite{hendrycks2021apps}, web navigation~\cite{yao2022webshop}, fact verification~\cite{thorne2018fever}, text games~\cite{jansen2023twexpress}, and crafting planning~\cite{dagan2024plancraft}, using three model backbones. Two further patterns compound the Figure~\ref{fig:intro_reversal} finding. First, the reversal extends along the backbone dimension: in the same environment, the sign of the entropy--utility correlation can flip across LLMs. Second, the most informative signal itself differs across environments, with structural features dominating in some settings while entropy carries little or no information in others.
 % We answer this through systematic measurement across six agent environments spanning QA~\cite{yang2018hotpotqa}, code
 % generation~\cite{hendrycks2021apps}, web navigation~\cite{yao2022webshop}, fact verification~\cite{thorne2018fever}, text games~\cite{jansen2023twexpress}, and crafting planning, using three model backbones. The signal--utility relationship reverses direction across environments:
 % the same signal that predicts rollout benefit in code generation predicts rollout harm in fact verification, and can further reverse
@@ -75,13 +78,13 @@ We answer this through systematic measurement across six agent environments span
 % opposing directions (Proposition~\ref{prop:necessity}). Once the
 % direction is wrong, more precise calibration makes performance
 % \emph{worse}, because the gate more precisely targets harmful states.
-% We trace this reversal to two coexisting state types with opposite signal--utility relationships. \emph{Information-poor} states (Type~I) arise when the agent lacks sufficient information; rollouts from the same model cannot compensate, and high uncertainty predicts \emph{negative} value of computation. In contrast, \emph{decision-difficult} states (Type~D) arise when multiple viable options exist; additional computation helps explore alternatives, and high uncertainty predicts \emph{positive} value. Code generation often involves
+% We trace this reversal to two coexisting state types with opposite signal--utility relationships. \emph{Information-poor} states (Type~I) arise when the agent lacks sufficient information; rollouts cannot synthesize information the environment itself does not provide, and high uncertainty predicts \emph{negative} value of computation. In contrast, \emph{decision-difficult} states (Type~D) arise when multiple viable options exist; additional computation helps explore alternatives, and high uncertainty predicts \emph{positive} value. Code generation often involves
 % multiple valid implementations (Type~D), while fact verification may lack sufficient evidence altogether (Type~I). Because
 % environments differ in their mixture of these two state types, the same uncertainty signal carries opposite meanings depending on
 % which source dominates, an instance of Simpson's paradox~\cite{simpson1951interpretation,kdd2023simpson}. The
 % consequence is sharp: no fixed-direction gating strategy can avoid net-harmful gating across environments with opposing signal
 % directions (Proposition~\ref{prop:necessity}), and once the direction is misaligned, improved calibration can \emph{worsen} performance by more precisely selecting harmful states.
-We trace this reversal to two coexisting state types with opposite signal--utility relationships. \emph{Information-poor} states (Type~I) arise when the agent lacks sufficient information; rollouts from the same model cannot compensate, and high uncertainty predicts \emph{negative} value of computation. In contrast, \emph{decision-difficult} states (Type~D) arise when multiple viable options exist; additional computation helps explore alternatives, and high uncertainty predicts \emph{positive} value. For example, code generation is dominated by Type~D states (multiple valid implementations exist), while fact verification is dominated by Type~I states (evidence is often insufficient). Because environments differ in their mixture of these two types, the same uncertainty signal carries opposite meanings depending on which type dominates, an instance of Simpson's paradox~\cite{simpson1951interpretation,kdd2023simpson}. The consequence is that no fixed-direction gating strategy can avoid net-harmful gating across environments with opposing signal directions (Proposition~\ref{prop:necessity}).
+We trace this reversal to two coexisting state types with opposite signal--utility relationships. \emph{Information-poor} states (Type~I) arise when the agent lacks sufficient information; rollouts cannot synthesize information the environment itself does not provide, and high uncertainty predicts \emph{negative} value of computation. In contrast, \emph{decision-difficult} states (Type~D) arise when multiple viable options exist; additional computation helps explore alternatives, and high uncertainty predicts \emph{positive} value. For example, code generation is dominated by Type~D states (multiple valid implementations exist), while fact verification is dominated by Type~I states (evidence is often insufficient). Because environments differ in their mixture of these two types, the same uncertainty signal carries opposite meanings depending on which type dominates, an instance of Simpson's paradox~\cite{simpson1951interpretation,kdd2023simpson}. The consequence is that no fixed-direction gating strategy can avoid net-harmful gating across environments with opposing signal directions (Proposition~\ref{prop:necessity}).
 
 % --- Module 3: Method + contributions (~25%) ---
 

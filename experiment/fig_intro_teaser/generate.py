@@ -52,8 +52,11 @@ def main():
 
     colors = [bar_color(r) for r in rhos]
 
-    fig, ax = plt.subplots(figsize=(3.3, 2.1))
+    fig, ax = plt.subplots(figsize=(3.3, 2.3))
     y = list(range(len(envs)))
+
+    # Shaded band: prior-work assumption (rho > 0)
+    ax.axvspan(0, 0.48, facecolor=TYPE_D_COLOR, alpha=0.08, zorder=0)
 
     ax.barh(y, rhos, color=colors, edgecolor='white', height=0.68, zorder=3)
 
@@ -66,20 +69,18 @@ def main():
 
     ax.axvline(0, color='#555555', linewidth=0.8, zorder=2)
 
-    # In-plot half-labels in axis-fraction coordinates to avoid overlap
-    ax.text(0.25, 1.02, 'harms',
-            transform=ax.transAxes,
-            color=TYPE_I_COLOR, fontsize=FONT_LABEL, fontweight='bold',
-            ha='center', va='bottom')
-    ax.text(0.75, 1.02, 'helps',
+    # Single top annotation over the shaded assumption region (right-aligned)
+    ax.text(0.98, 1.03,
+            r'prior-work assumption: $\rho > 0$',
             transform=ax.transAxes,
             color=TYPE_D_COLOR, fontsize=FONT_LABEL, fontweight='bold',
-            ha='center', va='bottom')
+            ha='right', va='bottom')
 
     ax.set_yticks(y)
     ax.set_yticklabels(envs)
     ax.set_xlabel(r'Spearman $\rho$ (token entropy, utility)')
     ax.set_xlim(-0.48, 0.48)
+    ax.set_ylim(-0.7, len(envs) - 0.2)
 
     ax.spines['left'].set_visible(False)
     ax.tick_params(axis='y', length=0)
