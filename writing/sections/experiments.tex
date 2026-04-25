@@ -144,7 +144,13 @@ causes SR drops exceeding 23\,pp. In weak-signal environments
 like Plancraft ($|\rho|{=}0.016$), reversal has negligible
 effect. The degradation scales with signal strength: wrong
 direction is not a minor calibration error but a structural
-failure, as Proposition~\ref{prop:necessity} predicts.
+failure, consistent with the wrong-direction harm result of
+Appendix~\ref{app:proof-necessity}. \emph{This table is the
+direct empirical statement of the headline claim}: the gate
+whose weights are reversed is, by construction, a more precisely
+calibrated harm-targeting mechanism, and its 23--37\,pp SR
+collapse on strong-signal environments is the price of that
+precision when the direction is wrong.
 
 \begin{table}[t]
 \centering\small
@@ -249,15 +255,17 @@ $\rho$ reverses from positive ($+$0.102) to negative
 ($-$0.144). Full numerical results are in
 Appendix~\ref{app:temporal}.
 
-\paragraph{P2: Cross-environment consistency.}
-The Two-Source Model predicts that environments with similar
-task structure should exhibit similar $\rho$. On Qwen3
-(Table~\ref{tab:signal-discovery}), this holds: FEVER and
-HotpotQA (both search-based QA) share negative $\rho$;
+\paragraph{P2: Cross-setting consistency.}
+The Two-Source Model predicts that settings with similar
+$p_I$ should exhibit similar $\rho$. With the backbone held
+fixed at Qwen3 (Table~\ref{tab:signal-discovery}), this holds:
+FEVER and HotpotQA (both search-based QA) share negative $\rho$;
 WebShop and APPS (both involving choice among alternatives)
-share positive $\rho$. This consistency does not hold across
-all backbones, as the model backbone modulates the effective
-Type~I fraction and can override task-structure similarity
+share positive $\rho$. As predicted by the (environment,
+backbone)-indexed mixture of \S\ref{sec:toy-model}, however,
+task-structure similarity alone does not pin down $\rho$ when
+the backbone changes: the same environment can sit on opposite
+sides of $p_I^*$ under different LLMs
 (Appendix~\ref{app:multi-backbone}).
 
 \paragraph{P3: Signal identity alignment.}

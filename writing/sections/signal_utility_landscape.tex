@@ -56,21 +56,61 @@ $g: \mathcal{S} \to \{0, 1\}$ that triggers $T$ only when $U > 0$.
 \textbf{The signal--utility direction is not fixed.}
 Table~\ref{tab:signal-discovery} reports Spearman correlations
 between token entropy and optimizer utility across 6 environments
-and 3 model backbones~\cite{DBLP:journals/corr/abs-2505-09388,DBLP:journals/corr/abs-2407-21783,DBLP:journals/corr/abs-2404-14219}. Two patterns stand out. First, \emph{even within
-a single backbone, the direction varies across environments}: on
-Qwen3, entropy is negatively correlated with utility in
-information-seeking environments (FEVER, HotpotQA, TWExpress) but
-positively in code generation (APPS) and web navigation (WebShop),
-with near-zero correlation in weak-signal environments (Plancraft).
-Second, \emph{the same signal in the same environment can reverse across
+and 3 model backbones~\cite{DBLP:journals/corr/abs-2505-09388,DBLP:journals/corr/abs-2407-21783,DBLP:journals/corr/abs-2404-14219}. Two patterns stand out, and the more striking one is the harder to explain. First, \emph{the same signal in the same environment can reverse across
 backbones}: in 3 out of 4 environments with multiple significant
-correlations, models disagree on the sign. Most strikingly, FEVER
-flips from $\rho{=}{-}0.156$ on Phi-3.5 to $\rho{=}{+}0.428$ on
-Llama-3.1. Crucially, this direction mismatch is not benign: as
+correlations, the backbones disagree on the sign of $\rho$. The
+most extreme case is FEVER, which flips from $\rho{=}{-}0.156$ on
+Phi-3.5 to $\rho{=}{+}0.428$ on Llama-3.1---a sign change driven
+entirely by the choice of LLM, with the task held fixed. The
+signal's semantics are therefore not a property of the
+environment alone, but of how the agent's prior knowledge
+interacts with it. Second, \emph{even within a single backbone,
+the direction also varies across environments}: on Qwen3, entropy
+is negatively correlated with utility in information-seeking
+environments (FEVER, HotpotQA, TWExpress) but positively in code
+generation (APPS) and web navigation (WebShop), with near-zero
+correlation in weak-signal environments (Plancraft). Crucially,
+this direction mismatch is not benign: as
 Section~\ref{sec:main-results} will show, gates that assume the
 wrong direction systematically fall \emph{below} the no-trigger
 baseline, making them strictly worse than doing nothing in
-mismatched environments.
+mismatched (environment, backbone) pairs.
+
+\paragraph{Implication: $\sigma$ is not a sufficient statistic
+for VOC.}
+The reversal in Table~\ref{tab:signal-discovery} is not just
+``fixed-direction gating fails''---it is the empirical signature
+of a stronger structural fact. Across (environment, backbone)
+settings, two states with identical $\sigma$ values can have
+opposite-sign value of computation, depending on whether the
+agent is in an information-poor or decision-difficult state
+(\S\ref{sec:toy-model}). Hence $\sigma$ is not a sufficient
+statistic for $\mathrm{VOC}$, and \emph{no} policy of the form
+$g(\sigma(s))$---monotone or otherwise, calibrated or
+not---can deliver non-negative value of computation across
+heterogeneous settings (Proposition~\ref{prop:necessity}, proof
+in Appendix~\ref{app:proof-necessity}). Fixed-direction gating
+is the strict-monotone special case; the underlying obstruction
+is a property of the signal itself, not of how the gate
+post-processes it. Recovering sufficiency therefore requires
+augmenting $\sigma$ with auxiliary features that distinguish
+the two state types---a requirement that directly motivates
+the multi-feature design of \S\ref{sec:method}.
+
+\paragraph{A diagnostic for practitioners.}
+The reversal test of Table~\ref{tab:signal-discovery} is itself
+the leave-behind tool of this paper: collecting a few hundred
+signal-agnostic $(s, U)$ pairs and reporting the Spearman
+correlation $\rho(\sigma, U)$ together with its bootstrap
+confidence interval is sufficient to decide whether a fixed
+direction is safe for a given (environment, backbone) deployment.
+A confidence interval that crosses zero, or two settings that
+disagree on sign, indicates that any uncertainty-thresholding
+gate will eventually fall below never-gating; a stable
+single-sign correlation indicates that fixed-direction gating is
+safe and direction learning is unnecessary. We apply this
+diagnostic throughout, and recommend it as a standalone check
+independent of the specific learning procedure adopted.
 
 \textbf{Signal identity also varies across environments.}
 Beyond direction, the most informative signal itself differs
@@ -92,21 +132,17 @@ now ask \emph{why}. We trace direction reversal to two coexisting
 state types with opposite signal--utility relationships.
 
 \paragraph{Intuition.}
-Consider a web-shopping agent choosing between products. When it
-hesitates (high entropy) because multiple items match the query,
-exploring alternatives via rollouts is valuable, since the agent
-has adequate information but faces a genuine choice. Now consider
-a fact-verification agent that hesitates because the retrieved
-evidence is ambiguous. Here, high entropy reflects \emph{missing
-information}, not optionality: rollouts from the same model with
-the same evidence will not resolve the ambiguity. Critically, even when rollouts simulate further env steps, those
-steps draw observations from the \emph{same} information-bounded
-environment; in Type~I settings, the evidence required is simply
-not within that distribution (e.g., the relevant passage is not in
-the retrievable corpus). In the first
-case, entropy positively predicts rollout utility; in the second,
-it predicts rollout \emph{futility}. The same numerical signal
-carries opposite meaning because the \emph{source} of uncertainty
+Consider two agents that both hesitate (high entropy) at a
+decision point. A coding agent hesitates because multiple valid
+implementations exist; rollouts explore these alternatives
+productively, so high entropy positively predicts rollout utility
+(Type~D). A fact-verification agent hesitates because the
+retrieved evidence is ambiguous; rollouts from the same model
+draw observations from the \emph{same} information-bounded
+environment, so they cannot synthesize evidence the environment
+did not provide, and high entropy instead predicts rollout
+\emph{futility} (Type~I). The same numerical signal carries
+opposite meaning because the \emph{source} of uncertainty
 differs.
 
 \paragraph{Model.}
@@ -136,10 +172,22 @@ negligible signal. This prediction is consistent with the observed
 Qwen3 pattern in Table~\ref{tab:signal-discovery}: search-based QA
 (FEVER, HotpotQA, TWExpress) shows negative $\rho$, code
 generation (APPS) shows positive $\rho$, and weak-signal
-environments (Plancraft) cluster near zero. Multi-backbone results
-(Appendix~\ref{app:multi-backbone}) further show that the model
-backbone modulates the effective $p_I$, making direction
-unpredictable from environment structure alone.
+environments (Plancraft) cluster near zero.
+
+\paragraph{Backbone-level reversal is a prediction, not an
+anomaly.} A subtlety is essential here: $p_I$ is not a property
+of the environment alone. A state is information-poor only
+relative to what the agent already encodes; the same observation
+can be Type~I for one model and Type~D for another. The model
+backbone therefore enters the mixture directly, and the effective
+$p_I$ is indexed by the (environment, backbone) pair. Read this
+way, the backbone-level sign flips of
+Table~\ref{tab:signal-discovery}---most extreme on FEVER between
+Phi-3.5 and Llama-3.1---are exactly what the model predicts:
+backbone changes shift $p_I$, and when they cross $p_I^*$, $\rho$
+flips. Far from contradicting the two-source view, backbone
+reversal becomes one of its predictions
+(Appendix~\ref{app:multi-backbone}).
 
 \paragraph{Theoretical grounding.}
 This direction reversal is a special case of Simpson's
@@ -156,28 +204,15 @@ Section~\ref{sec:theory-verification} we derive three predictions
 from it (temporal dynamics, cross-environment consistency, and
 signal identity alignment) and verify each on held-out data.
 
-\subsection{Necessity of Direction Discovery}
-\label{sec:necessity}
+The decomposition also makes the insufficiency claim of
+\S\ref{sec:empirical-landscape} precise. Since the latent type
+$\tau(s) \in \{I, D\}$ governs the sign of $\mathrm{VOC}(s)$
+but is not measurable from $\sigma(s)$ alone, no function of
+$\sigma$ can recover $\tau$, and therefore no function of
+$\sigma$ can recover the sign of $\mathrm{VOC}$. The
+information-theoretic content of the reversal is exactly this
+non-identifiability of $\tau$ from $\sigma$.
 
-\begin{proposition}[Necessity of Direction Discovery]
-\label{prop:necessity}
-Suppose there exist two environments $\mathcal{E}_1, \mathcal{E}_2$
-with opposite true directions: $d^*(\mathcal{E}_1) = +1$ and
-$d^*(\mathcal{E}_2) = -1$. Then no fixed-direction gate $g_d$ can
-simultaneously satisfy
-$\mathrm{SR}(g_d, \mathcal{E}_1) \geq
- \mathrm{SR}(\mathrm{base}, \mathcal{E}_1)$ and
-$\mathrm{SR}(g_d, \mathcal{E}_2) \geq
- \mathrm{SR}(\mathrm{base}, \mathcal{E}_2)$.
-\end{proposition}
-
-The intuition is direct: a gate with $d = +1$ triggers on
-high-signal states, which in a Type~I environment correspond
-exactly to states where rollouts harm the agent; the symmetric
-argument holds for $d = -1$ in Type~D environments. Since
-real-world deployments span both environment types, no
-fixed-direction strategy can deliver non-negative value of
-computation universally. Direction discovery is therefore a
-necessary precondition for cross-environment robustness, not a
-refinement of it. The full proof is in
-Appendix~\ref{app:proof-necessity}.
+% §3.3 (Necessity of Direction Discovery) folded into §3.1
+% "Implication." paragraph above; full proposition and proof are
+% deferred to Appendix~\ref{app:proof-necessity}.

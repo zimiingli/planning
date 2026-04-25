@@ -14,24 +14,32 @@
 \section{Direction-Informed Adaptive Learning}
 \label{sec:method}
 
-Section~\ref{sec:signal-landscape} imposes two requirements on
-any gating method that aims for cross-environment robustness:
-signal direction must be \emph{learned} per environment
-(Proposition~\ref{prop:necessity}), and the feature set must be
-\emph{multi-signal} (\S\ref{sec:empirical-landscape}). A third
-follows from the method design: exploration must be
-\emph{signal-agnostic}, to avoid biasing data collection toward
-the unknown quantity being estimated.
+Section~\ref{sec:signal-landscape} establishes that the
+uncertainty signal $\sigma$ alone is not a sufficient statistic
+for the value of computation, so any cross-setting adaptive
+gate must condition on auxiliary features
+$\phi(s)$ that carry information about the latent
+state type $\tau(s)$. Concretely, this implies three method
+constraints: per-(environment, backbone) direction discovery
+(\S\ref{sec:empirical-landscape}), a multi-signal feature pool
+that approximates $\tau$ (\S\ref{sec:empirical-landscape}), and
+\emph{signal-agnostic} exploration---developed below---since
+conditioning data collection on the very signal whose direction
+is unknown introduces a self-confirming bias.
 
-DIAL (\emph{Direction-Informed Adaptive Learning}) learns the
-correct signal interpretation for each environment through a
-lightweight explore--reason--learn pipeline
-(Fig.~\ref{fig:method_overview}): randomized
-exploration (\S\ref{sec:explore}) handles the unknown prior
-direction, an optional LLM feature layer (\S\ref{sec:reason})
-proposes task-specific signals when universal ones are
-inadequate, and a sparse linear gate (\S\ref{sec:learn})
-recovers per-environment direction from the resulting dataset.
+DIAL is the minimal procedure that lifts $\sigma$ toward
+sufficiency for $\mathrm{VOC}$ under these constraints
+(Fig.~\ref{fig:method_overview}): randomized exploration
+(\S\ref{sec:explore}) collects an unbiased $(s, U)$ dataset, an
+optional LLM feature layer (\S\ref{sec:reason}) extends the
+universal feature pool when needed, and a sparse linear gate
+(\S\ref{sec:learn}) selects which features carry information
+about $\tau$ in each (environment, backbone) setting. The
+sophistication of the classifier is not the contribution; the
+contribution is the demonstration that once $\sigma$ is
+augmented with the right auxiliary features, the simplest
+possible classifier already outperforms every fixed-direction
+baseline (\S\ref{sec:experiments}).
 
 \subsection{Explore: Signal-Agnostic Data Collection}
 \label{sec:explore}
@@ -39,11 +47,16 @@ recovers per-environment direction from the resulting dataset.
 Exploration collects the $(s, U)$ pairs that will be used to fit
 the gate. The central constraint is signal-agnosticity: the
 collection policy must not condition on any signal whose
-semantics we are trying to learn, as this would bias
-$\mathcal{D}$ toward the unknown quantity being estimated.
-DIAL therefore uses the simplest policy consistent with this
-constraint. At each step~$t$ in episode~$i$, a uniform random
-coin flip $z_t^{(i)} \sim \mathrm{Bernoulli}(\varepsilon_{\text{explore}})$
+semantics we are trying to learn. Although uncertainty-conditioned
+data collection is the default in prior adaptive-gating work, it
+is incompatible with the goal of \emph{learning} direction: a
+gate trained on uncertainty-triggered states systematically
+under-samples exactly the states that determine $\rho$'s sign,
+biasing the fitted direction toward the prior assumption rather
+than testing it. DIAL therefore uses the simplest policy
+consistent with signal-agnosticity. At each step~$t$ in
+episode~$i$, a uniform random coin flip
+$z_t^{(i)} \sim \mathrm{Bernoulli}(\varepsilon_{\text{explore}})$
 determines whether to trigger the optimizer~$T$ ($z_t{=}1$) or
 use the base action ($z_t{=}0$). Aggregating across
 $N_{\text{explore}}$ episodes yields an unbiased dataset:
@@ -83,11 +96,13 @@ $\phi_{\text{LLM}}(s)$, which join the universal pool to form
 $\phi_{\text{cand}}(s) = \phi_{\text{univ}}(s) \cup \phi_{\text{LLM}}(s)$.
 Details of the LLM input format and prompt template are in
 Appendix~\ref{app:llm-feature-layer}.
-The ablation in \S\ref{sec:ablation} shows its gains concentrate
-in the few settings where universal features miss the relevant
-structure, so the LLM is best viewed as an automation
-convenience for zero-shot deployment rather than a core
-component the method depends on.
+The ablation in \S\ref{sec:ablation} shows that this layer is
+load-bearing only on FEVER ($+9.1$\,pp); on every other
+environment its contribution is ${\leq}1.8$\,pp, and on APPS and
+Plancraft it is effectively zero. We therefore present the LLM
+layer as an honest extensibility mechanism rather than a core
+component, and report all main-result numbers without claiming
+its contribution is general.
 
 \subsection{Learn: Sparse Linear Gate}
 \label{sec:learn}
@@ -112,9 +127,17 @@ uninformative features drop out. The deployed gate is
   \label{eq:gate}
 \end{equation}
 with threshold $\tau$ set by cross-validation on $\mathcal{D}$.
-Gate fitting completes in under a second, and deployment adds
-zero per-step overhead beyond feature computation.
-Implementation details are in
+
+\paragraph{Cost accounting.}
+DIAL incurs three costs: (i)~a one-time exploration cost of
+$N_{\text{explore}}{=}50$ episodes per (environment, backbone)
+pair, amortized over all subsequent deployment;
+(ii)~sub-second offline gate-fitting time, dominated by feature
+extraction; and (iii)~per-step inference cost equal to evaluating
+$\phi(s)$ and a single sigmoid. Only (iii) is incurred at
+deployment, and it is zero relative to a non-gated agent: there
+is no extra LLM call, no $K$-way voting, and no calibration
+query. Implementation details are in
 Appendix~\ref{app:dial-details}.
 
 \paragraph{Signed weights as a diagnostic.}

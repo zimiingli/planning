@@ -1,13 +1,18 @@
 \section{Related Work}
 \label{sec:related}
-% Prior work on adaptive test-time compute spans diverse mechanisms
-% but rests on a shared assumption: that uncertainty signals have a
-% fixed, environment-independent relationship with compute value.
-We organize prior work by how each method decides when to allocate extra computation.
+Prior work on adaptive test-time compute spans diverse
+mechanisms but rests on a shared, almost always implicit,
+assumption: that uncertainty signals have a fixed,
+setting-independent relationship with compute value. We organize
+the literature around how each line of work commits to this
+\emph{fixed-direction} assumption, since it is precisely what
+this paper tests.
 
 \paragraph{Gating on uncertainty signals.}
 Signal-based methods allocate extra computation when token
-confidence, entropy, or disagreement exceeds a threshold.
+confidence, entropy, or disagreement exceeds a threshold,
+encoding the fixed-direction assumption directly in their
+trigger rule.
 In reasoning settings, this takes the form of extended
 chain-of-thought generation~\cite{seag2025, cats2025,
 corefine2026, thinkjustenough2025, s1_2025, han2025tokenbudget}.
@@ -31,7 +36,7 @@ policies end-to-end.
 % direction is consistent by construction. Whether it transfers to
 % heterogeneous agent environments has not been directly tested; we
 % show it does not (Proposition~\ref{prop:necessity}).
-Though these methods do not commit to a specific signal, their gating policies effectively assume that higher difficulty warrants more compute, sharing the same fixed direction as signal-based approaches. All have been evaluated on homogeneous reasoning benchmarks (GSM8K~\cite{DBLP:journals/corr/abs-2110-14168}, GPQA~\cite{DBLP:journals/corr/abs-2311-12022}); we extend evaluation to heterogeneous agent environments where this assumption breaks down.
+Although these methods commit to neither a specific signal nor an explicit threshold, their gating policies share the assumption that higher difficulty warrants more compute---identical in \emph{direction} to signal-based approaches. The combined body of work therefore rests on the same implicit fixed-direction assumption, and is evaluated almost exclusively on homogeneous reasoning benchmarks (GSM8K~\cite{DBLP:journals/corr/abs-2110-14168}, GPQA~\cite{DBLP:journals/corr/abs-2311-12022}) where the assumption holds by construction. We construct this assumption explicitly and test it in the heterogeneous agent setting, where it fails.
 
 % \paragraph{Metareasoning and uncertainty semantics.}
 % Rational metareasoning~\cite{russell1991right,

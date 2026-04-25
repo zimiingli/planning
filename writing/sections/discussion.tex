@@ -10,14 +10,18 @@ cost due to the environment's extreme Type~I structure: DIAL costs
 like SEAG (47.3\% at 17.19$\times$) are only marginally lower in both
 SR and cost. Rollout value in FEVER concentrates in the first one
 or two steps, and random exploration misses these critical steps with
-50\% probability. This failure mode is predicted by the Two-Source
-Model: FEVER is the most extreme Type~I environment, where undirected
-exploration is least efficient. Addressing this through
-curriculum-based exploration is an important direction for future work. We verify our findings on three backbones (4B--8B)
-across all six environments
-(Appendix~\ref{app:multi-backbone}); testing on larger models (70B+)
-remains future work. The Two-Source Model assumes linear conditional
-relationships and serves as an explanatory framework rather than a
-precise predictor of $\rho$ values. DIAL requires 50 exploration
-episodes per new environment, a modest but non-zero cost amortized
-over subsequent deployment.
+50\% probability. This failure mode is predicted by the two-source
+model: FEVER is the most extreme Type~I environment, where undirected
+exploration is least efficient, and exposes the cost of insisting on
+signal-agnostic exploration in high-$p_I$ regimes. Addressing this
+through curriculum-based exploration is an important direction for
+future work. We verify our findings on three backbones (4B--8B) across
+all six environments (Appendix~\ref{app:multi-backbone}); testing on
+larger models (70B+) remains future work. The two-source model assumes
+linear conditional relationships and serves as an explanatory
+framework rather than a precise predictor of $\rho$ values. Finally,
+DIAL requires $N_{\text{explore}}{=}50$ exploration episodes per new
+(environment, backbone) deployment---a modest but non-zero one-time
+cost amortized over subsequent inference, and the only cost incurred
+beyond the per-step inference budget reported in
+\S\ref{sec:method}.
