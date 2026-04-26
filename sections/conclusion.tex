@@ -3,6 +3,36 @@
 % ============================================================
 \section{Conclusion}
 
+<<<<<<< HEAD
+The central claim of this paper is that \emph{uncertainty signals
+are not sufficient statistics for the value of computation}.
+Existing adaptive gating methods for LLM agents share an implicit
+fixed-direction assumption---higher uncertainty indicates when
+extra computation helps---which is the strict-monotone special
+case of a structurally insufficient family: any policy depending
+on the uncertainty signal alone, no matter how it is calibrated
+or post-processed, must underperform never-gating on at least one
+(environment, backbone) setting. The reason is that the value of
+computation depends on a latent state property---information
+poverty versus decision difficulty---that the signal alone cannot
+identify and whose mixture is determined jointly by the environment
+and the backbone. Across six environments and three model backbones,
+signal--utility direction reverses along both axes, and once
+misaligned, better calibration \emph{worsens} performance by more
+precisely selecting harmful states. A two-source model grounded in
+Simpson's paradox explains when and why reversal occurs, makes a
+falsifiable prediction we verify on held-out data, and identifies
+what an adaptive-compute method must condition on to recover
+sufficiency: features that distinguish the two state types.
+As an existence proof that this auxiliary conditioning---not gate
+sophistication---is the bottleneck, DIAL augments the uncertainty
+signal with a small pool of universal state features and fits a
+sparse linear gate on signal-agnostic exploration data, adding
+zero per-step inference overhead. Across every setting evaluated,
+this minimal procedure already dominates fixed-direction
+baselines, and its full range of gating behavior emerges from
+direction learning alone.
+=======
 Existing adaptive gating methods for LLM agents assume that higher
 uncertainty consistently indicates when extra computation helps.
 We show this fixed-direction assumption fails: the signal--utility
@@ -16,3 +46,4 @@ heterogeneous settings. DIAL learns the correct direction per setting by fitting
 a sparse linear gate over a small set of state features, and
 outperforms every fixed-direction baseline across six environments
 and three backbones.
+>>>>>>> 1bf5b0e2c05afb339eb3e76f610bbf4ff034c5a3
