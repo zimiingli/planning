@@ -25,7 +25,7 @@ Hidden-state probing methods train lightweight classifiers on
 internal representations to estimate task
 difficulty~\cite{diffadapt2025, zhu2025llmalreadyknows},
 sometimes assuming a universal U-shaped entropy pattern
-that our cross-environment evidence disproves.
+that our cross-(environment, backbone) evidence disproves.
 Because reasoning benchmarks share similar task semantics, signal
 direction happens to be consistent across tasks, and the
 fixed-direction assumption is never tested.
@@ -42,7 +42,8 @@ entropy-based adaptive rollout at tool-call steps. All agent-setting
 methods inherit the fixed-direction assumption from the reasoning
 literature without verifying it. Our work is the first to
 systematically study signal semantics across heterogeneous agent
-environments, where we find that the direction reverses.
+environments \emph{and backbones}, where we find that the
+direction reverses along both axes.
 
 \subsection{Adaptive Computation in Neural Networks}
 
@@ -99,13 +100,18 @@ Simpson's paradox~\cite{simpson1951interpretation,
 DBLP:books/acm/22/Pearl22n} occurs when a trend present in subgroups
 reverses upon aggregation. In machine learning, this phenomenon has
 been documented in fairness~\cite{kdd2023simpson}, causal
-inference, and treatment effect estimation. Our Two-Source Model
+inference, and treatment effect estimation. Our two-source model
 identifies a new instance: within Type~I states, entropy negatively
 predicts utility; within Type~D states, entropy positively predicts
 utility; but the marginal correlation depends on the mixture
-proportion $p_I(\mathcal{E})$, which varies across environments.
-This makes direction reversal a structural consequence of
-aggregating heterogeneous uncertainty sources.
+proportion $p_I$, which is itself an (environment, backbone)-indexed
+quantity---a state's status as Type~I or Type~D depends on what the
+agent already encodes, so the same environment can sit on opposite
+sides of the reversal threshold $p_I^*$ under different LLMs. This
+makes direction reversal a structural consequence of aggregating
+heterogeneous uncertainty sources, and predicts both the
+across-environment and across-backbone reversals reported in
+Table~\ref{tab:signal-discovery}.
 
 \subsection{Search-Based Optimizers}
 
@@ -124,69 +130,154 @@ the optimizer, and our gate composes with any such procedure.
 \label{app:theory}
 
 This appendix collects the theoretical material referenced in
-Section~\ref{sec:signal-landscape}: the proof of
-Proposition~\ref{prop:necessity}, the wrong-direction damage
-quantification, and the VOC negativity analysis.
+Section~\ref{sec:signal-landscape}: the formal statement and
+proof of the necessity-of-direction-discovery result, the
+wrong-direction damage quantification, and the VOC negativity
+analysis.
 
-\subsection{Proof of Proposition~\ref{prop:necessity}
-  (Necessity of Direction Discovery)}
+\subsection{Insufficiency of Uncertainty Signals: Statement and Proof}
 \label{app:proof-necessity}
 
-\begin{proposition*}[Restated]
-Suppose there exist two environments $\mathcal{E}_1, \mathcal{E}_2$
-with opposite true directions: $d^*(\mathcal{E}_1) = +1$ and
-$d^*(\mathcal{E}_2) = -1$. Then no fixed-direction gate $g_d$ can
-simultaneously satisfy
-$\mathrm{SR}(g_d, \mathcal{E}_1) \geq \mathrm{SR}(\mathrm{base},
-\mathcal{E}_1)$ and
-$\mathrm{SR}(g_d, \mathcal{E}_2) \geq \mathrm{SR}(\mathrm{base},
-\mathcal{E}_2)$.
-\end{proposition*}
+We formalize the central theoretical claim of the paper: any
+adaptive-compute policy that depends on an uncertainty signal
+$\sigma$ alone cannot deliver non-negative value of computation
+across heterogeneous (environment, backbone) settings.
+
+\begin{proposition}[Insufficiency of Uncertainty Signals]
+\label{prop:necessity}
+Let $\sigma : \mathcal{S} \to \mathbb{R}$ be any uncertainty
+signal (e.g., token entropy, calibrated confidence, vote
+disagreement, verbalized uncertainty). Let
+$\mathrm{VOC}(s) =
+ \mathbb{E}[R(\tau)\mid a{=}T(s)] -
+ \mathbb{E}[R(\tau)\mid a{=}\pi(s)]$
+denote the value of computation at state $s$.
+Then $\sigma$ is \emph{not a sufficient statistic} for
+$\mathrm{VOC}$ in the following sense: there exist (environment,
+backbone) settings $\mathcal{E}_1, \mathcal{E}_2$ and states
+$s_1 \in \mathcal{E}_1$, $s_2 \in \mathcal{E}_2$ with
+$\sigma(s_1) = \sigma(s_2)$ such that
+$\mathrm{VOC}(s_1) > 0$ and $\mathrm{VOC}(s_2) < 0$.
+Consequently, no policy of the form
+$\pi_\sigma(s) = g(\sigma(s))$ for any measurable
+$g : \mathbb{R} \to \{0, 1\}$ can simultaneously satisfy
+$\mathrm{SR}(\pi_\sigma, \mathcal{E}_1) \geq
+ \mathrm{SR}(\mathrm{base}, \mathcal{E}_1)$ and
+$\mathrm{SR}(\pi_\sigma, \mathcal{E}_2) \geq
+ \mathrm{SR}(\mathrm{base}, \mathcal{E}_2)$.
+\end{proposition}
+
+The proposition strengthens the earlier ``no fixed-direction
+gate works'' formulation in two ways. First, it rules out
+\emph{any} measurable $g(\sigma)$, not just monotone or
+threshold-based policies, so non-monotone or U-shaped
+calibrators are also covered. Second, it identifies the
+underlying obstruction as an information-theoretic property of
+$\sigma$ itself---one that survives any post-processing of the
+signal.
 
 \begin{proof}
-Define a fixed-direction gate as
-$g_d(s) = \mathbf{1}[d \cdot \sigma(s) > \theta]$
-for $d \in \{+1, -1\}$ and threshold $\theta$.
+By the two-source decomposition of \S\ref{sec:toy-model},
+$\mathrm{VOC}(s)$ depends on a latent type
+$\tau(s) \in \{I, D\}$ that is not measurable from $\sigma(s)$
+alone:
+\[
+  \mathrm{VOC}(s) \;=\;
+  \begin{cases}
+    -\alpha\,\sigma(s) + \varepsilon_I & \text{if } \tau(s) = I,\\
+    +\beta\,\sigma(s) + \varepsilon_D & \text{if } \tau(s) = D,
+  \end{cases}
+\]
+with $\alpha, \beta > 0$. Choose any signal value
+$\sigma_0$ in the support of both Type~I and Type~D states
+within their respective settings. Then there exist
+$s_1 \in \mathcal{E}_1$ with $\tau(s_1) = D$ and
+$\sigma(s_1) = \sigma_0$, giving
+$\mathbb{E}[\mathrm{VOC}(s_1)\mid \sigma_0] = \beta \sigma_0 > 0$
+for sufficiently large $\sigma_0$, and
+$s_2 \in \mathcal{E}_2$ with $\tau(s_2) = I$ and
+$\sigma(s_2) = \sigma_0$, giving
+$\mathbb{E}[\mathrm{VOC}(s_2)\mid \sigma_0] =
+-\alpha \sigma_0 < 0$. Hence the conditional VOC is not a
+function of $\sigma$ alone, establishing insufficiency.
 
-Define $d^*(\mathcal{E}) = +1$ if
-$\mathrm{Corr}(\sigma(s), U(T,s)) > 0$ in $\mathcal{E}$ (Type~D),
-and $d^*(\mathcal{E}) = -1$ if
-$\mathrm{Corr}(\sigma(s), U(T,s)) < 0$ (Type~I).
-
-\textbf{Lemma (Wrong-direction harm).} If $d \neq d^*(\mathcal{E})$,
-then
-$\mathrm{SR}(g_d, \mathcal{E}) \leq
- \mathrm{SR}(\mathrm{base}, \mathcal{E}) - \delta(\mathcal{E})$
-where $\delta(\mathcal{E}) > 0$ depends on signal strength
-$|\rho(\mathcal{E})|$.
-
-\emph{Proof of Lemma}: By definition of $d^*$, states with high
-$d \cdot \sigma(s)$ are states where $U < 0$. The gate triggers $T$
-at these states, causing the agent to adopt worse actions. The base
-policy, which never triggers $T$, avoids this systematic harm.
-
-\textbf{Main argument:}
-
-\emph{Case 1}: $d = +1$. In $\mathcal{E}_2$ where $d^* = -1$,
-$d \neq d^*(\mathcal{E}_2)$. By Lemma:
-$\mathrm{SR}(g_{+1}, \mathcal{E}_2) \leq
- \mathrm{SR}(\mathrm{base}, \mathcal{E}_2) - \delta(\mathcal{E}_2)
- < \mathrm{SR}(\mathrm{base}, \mathcal{E}_2)$.
-Constraint violated.
-
-\emph{Case 2}: $d = -1$. In $\mathcal{E}_1$ where $d^* = +1$,
-by symmetric argument, constraint violated.
-
-Since $d \in \{+1, -1\}$ and both cases lead to violation, no fixed
-$d$ satisfies both constraints simultaneously.
+For the policy claim, fix any $g : \mathbb{R} \to \{0, 1\}$.
+The expected one-step reward gain over base from playing
+$\pi_\sigma$ is
+$\mathbb{E}_{s \sim \mathcal{E}}[g(\sigma(s)) \cdot \mathrm{VOC}(s)]$.
+Decomposing by latent type and writing $p_I(\mathcal{E})$ for
+the Type~I fraction,
+\begin{align*}
+&\mathbb{E}_{\mathcal{E}}[g(\sigma) \cdot \mathrm{VOC}]
+= -\alpha\, p_I(\mathcal{E})\, \mathbb{E}_I[g(\sigma)\sigma] \\
+&\qquad + \beta\,(1 - p_I(\mathcal{E}))\, \mathbb{E}_D[g(\sigma)\sigma] + \mathrm{const}.
+\end{align*}
+Whenever $g$ is non-trivially correlated with $\sigma$ (which
+any informative gate must be), the two terms have opposite
+signs as $p_I$ varies. In particular, for any fixed $g$ there
+exist $\mathcal{E}_1, \mathcal{E}_2$ with $p_I(\mathcal{E}_1)$
+and $p_I(\mathcal{E}_2)$ on opposite sides of the reversal
+threshold $p_I^* = \beta/(\alpha+\beta)$ of \S\ref{sec:toy-model}
+such that the expected gain has opposite signs. The setting
+where it is negative violates the SR constraint relative to
+$\mathrm{base}$, completing the argument.
 \end{proof}
 
-\subsection{Wrong-Direction Damage: Supplementary Analysis}
+\paragraph{Corollary (necessity of direction discovery).}
+The original ``no fixed-direction gate works'' result is the
+restriction of Proposition~\ref{prop:necessity} to threshold
+policies $g(\sigma) = \mathbf{1}[d \cdot \sigma > \theta]$,
+$d \in \{+1, -1\}$. In that case both cases of the proof above
+collapse to: $g$'s sign of correlation with $\sigma$ is fixed at
+$d$, but $\mathrm{VOC}$'s sign of correlation with $\sigma$
+flips with $p_I$, so on the wrong side of $p_I^*$ the gate
+triggers exactly when $\mathrm{VOC} < 0$ and incurs systematic
+harm.
+
+\paragraph{What recovers sufficiency.}
+The proposition pinpoints what an adaptive-compute method must
+condition on: any feature $\phi(s)$ that is informative about
+the latent type $\tau(s)$ recovers a sufficient statistic for
+$\mathrm{VOC}$, since
+$\mathrm{VOC}(s) = f(\sigma(s), \tau(s))$ is by construction a
+function of $(\sigma, \phi)$. DIAL's multi-feature gate
+(\S\ref{sec:method}) is the minimal procedure that operationalizes
+this recovery: it augments $\sigma$ with auxiliary universal
+features that empirically correlate with $\tau$ (e.g.,
+\texttt{step\_count} as a proxy for information accumulation,
+\texttt{num\_available\_actions} as a proxy for decision
+optionality) and lets the data identify which of them carry
+information about $\tau$ in each (environment, backbone) setting.
+
+\subsection{Wrong-Direction Damage: The Calibration-Worsens
+  Mechanism}
 \label{app:wrong-direction}
 
-Table~\ref{tab:wrong-direction} shows that
-wrong-direction damage scales with signal strength. Here we
-discuss two environments where reversal has minimal effect.
+Table~\ref{tab:wrong-direction} is the empirical statement of
+the headline claim: a gate with reversed weights is, by
+construction, a more precisely calibrated \emph{harm-targeting}
+mechanism, and the resulting SR collapse scales with signal
+strength $|\rho|$. The decomposition predicts the relationship
+quantitatively. By the wrong-direction lemma in
+App~\ref{app:proof-necessity},
+\[
+  \mathrm{SR}(g_{-d^*}, \mathcal{E}) -
+  \mathrm{SR}(\mathrm{base}, \mathcal{E})
+  \;\approx\; -\,c \cdot |\rho(\mathcal{E})|,
+\]
+where $c$ is a constant that depends on the optimizer's harm
+magnitude. Empirically this scaling is clean: HotpotQA
+($|\rho|{=}0.494$) loses 37.0\,pp, FEVER ($|\rho|{=}0.619$)
+loses 36.8\,pp, WebShop ($|\rho|{=}0.444$) loses 23.2\,pp,
+while Plancraft ($|\rho|{=}0.016$) loses only 2.8\,pp---the
+slope of damage in $|\rho|$ is the slope of calibration
+quality, since better-calibrated gates concentrate their firing
+on higher-$|\sigma|$ states which, when the direction is wrong,
+are exactly the harmful ones.
+
+Below we discuss two environments where reversal has minimal
+effect, both consistent with the same prediction (small
+$|\rho|$ or rollout-safe optimizer).
 
 TWExpress is rollout-safe ($\Delta{=}{+}31.8$): the optimizer
 rarely harms performance regardless of when it is triggered,
@@ -221,7 +312,16 @@ If $T$ systematically selects worse actions in Type~I states,
 $\mathrm{VOC} < 0$ for those states. This explains why
 wrong-direction gating is not merely wasteful
 ($\mathrm{VOC} = 0$) but actively harmful
-($\mathrm{VOC} < 0$).
+($\mathrm{VOC} < 0$)---and why \emph{better-calibrated} gates
+fire more precisely on these $\mathrm{VOC} < 0$ states, so
+calibration improvements amplify rather than mitigate the harm
+(Table~\ref{tab:wrong-direction} and
+App~\ref{app:wrong-direction}). The classical VOC framework's
+$\mathrm{VOC} \geq 0$ guarantee fails for adaptive compute in
+agent settings precisely because the agent cannot ``disregard''
+the optimizer's output, and any policy that depends only on
+$\sigma$ (which cannot identify Type~I states) will trigger
+$T$ on a non-trivial fraction of $\mathrm{VOC} < 0$ states.
 
 
 % ============================================================
@@ -230,10 +330,16 @@ wrong-direction gating is not merely wasteful
 \section{DIAL Implementation Details}
 \label{app:dial-details}
 
-This appendix expands on the implementation details deferred from
-Section~\ref{sec:method}.
+This appendix expands on the implementation of the
+$\sigma$-augmentation procedure introduced in
+Section~\ref{sec:method}: how the $(s, U)$ data is collected
+under the signal-agnosticity constraint (Phase~1, \S\ref{app:hyperparams-details}),
+how the candidate feature pool $\phi_{\text{cand}}$ that approximates
+the latent type $\tau$ is constructed (Phase~2, \S\ref{app:llm-feature-layer}),
+and how the sparse linear gate that lifts $\sigma$ toward sufficiency
+for VOC is fit (Phase~3, \S\ref{app:hyperparams-details}).
 
-\begin{algorithm}[H]
+\begin{algorithm}[h]
 	\caption{DIAL: Direction-Informed Adaptive Learning}
 	\label{alg:dial}
 	\small
@@ -506,6 +612,25 @@ full-episode reward).
   environment, and the trajectory with the highest observed
   episodic reward is executed.
 \end{itemize}
+\paragraph{Utility estimation.}
+In all environments, the utility label $U_t$ used for gate
+training (\S\ref{sec:explore}) is computed by paired
+counterfactual evaluation from the same state snapshot.
+For per-action evaluation environments, the base policy's
+proposed action $a_B$ is included in the top-$K$ candidate set
+and evaluated with the same $N{\times}H$ rollout protocol as all
+other candidates; utility is
+$U_t = \mathbf{1}[V(a^*) > V(a_B)]$, where
+$V(a) = \tfrac{1}{N}\sum_{n=1}^{N} R_n(a)$.
+For $K$-variant sampling (APPS), the base solution is evaluated
+on the same test suite as the $K$ variants, and
+$U_t = \mathbf{1}[\max_k \text{pass\_rate}_k > \text{pass\_rate}_{\text{base}}]$.
+Because all candidates are evaluated from identical initial
+conditions, this is a counterfactual estimate rather than an
+on-policy observation. The truncation horizon $H$ introduces
+approximation bias relative to full-episode returns; we find
+results stable for $H \in [3, 10]$.
+
 In all three cases, the optimizer itself has access to the env's
 scoring function; our method is about learning \emph{when} this
 optimizer is worth invoking, not how it scores internally.
@@ -587,8 +712,13 @@ methods, ensuring a fair comparison of runtime efficiency. This
 metric captures hidden per-step overhead that raw rollout counts
 miss: CATTS incurs $K{=}5$ forward passes every step regardless
 of the gating decision, and AUQ issues a confidence query every
-step. DIAL requires 50 exploration episodes for calibration but
-adds zero per-step gate overhead at deployment.
+step. Consistent with the cost accounting of \S\ref{sec:method},
+DIAL incurs a one-time exploration cost of
+$N_{\text{explore}}{=}50$ episodes per (environment, backbone)
+deployment and sub-second offline gate fitting; at deployment the
+gate adds zero per-step inference cost beyond the feature
+evaluation and a single sigmoid---no extra LLM call, no $K$-way
+voting, and no calibration query.
 
 \input{experiment/tab_cost_components/tab_cost_components.tex}
 
@@ -647,13 +777,22 @@ Section~\ref{sec:empirical-landscape}.
 \subsection{Per-Environment Feature Selection}
 \label{app:feature-selection}
 
-The LASSO coefficient matrix shows that
-\texttt{step\_count} is informative in
-4 of 5 environments with significant signal. WebShop is the
-exception, relying on \texttt{num\_available\_actions} and
-task-specific features (\texttt{price\_mentioned},
-\texttt{action\_is\_click}) reflecting its choice-dominated
-structure.
+The LASSO coefficient matrix identifies, per environment, which
+auxiliary features carry information about the latent state
+type $\tau$---the components of $\phi(s)$ that lift $\sigma$
+toward sufficiency for VOC, as predicted by
+App~\ref{app:proof-necessity}. \texttt{step\_count} is
+informative in 4 of 5 environments with significant signal: it
+proxies \emph{information accumulation}, distinguishing late-step
+Type~I states (where information has accumulated to a known
+shortage) from early-step Type~D states (where multiple options
+are still viable). WebShop is the exception, relying on
+\texttt{num\_available\_actions} and task-specific features
+(\texttt{price\_mentioned}, \texttt{action\_is\_click}); these
+proxy \emph{decision optionality} directly, as expected for a
+choice-dominated (Type~D) environment. In every case, the
+features LASSO retains are interpretable as proxies for the
+two-source decomposition rather than ad-hoc engineering choices.
 
 \subsection{LLM-Generated Features}
 \label{app:llm-features}
@@ -764,14 +903,28 @@ def extract_features(state_text, step_count, action_text):
 \label{fig:llm-output-webshop}
 \end{figure}
 
-\subsection{AUC Hierarchy: Single vs.\ Multi-Signal Gates}
+\subsection{AUC Hierarchy: Empirical Signature of $\sigma$-Insufficiency}
 \label{app:auc}
 
-Table~\ref{tab:auc-hierarchy} compares gate families on held-out
-data. Single entropy is near chance (AUC${\approx}$0.50) in every
-environment; multi-signal logistic gates reach 0.74--0.92; and
-hidden-state probes reach 0.79--0.99. The bottleneck is signal
-\emph{combination}, not gate \emph{capacity}.
+Table~\ref{tab:auc-hierarchy} is the empirical instantiation of
+the sufficient-statistic claim of
+\S\ref{sec:empirical-landscape}: it measures, on held-out data,
+how much of $\mathrm{VOC}$ each gate family can recover. Single
+entropy is near chance (AUC${\approx}$0.50) in every
+environment---the operational signature of $\sigma$'s
+insufficiency for VOC. Multi-signal logistic gates that augment
+$\sigma$ with universal auxiliary features reach 0.74--0.92,
+recovering most of the available signal; hidden-state probes
+(which have access to the model's full internal representation,
+an upper bound on what any feature map $\phi(s)$ can extract)
+reach 0.79--0.99. The gap between the single-entropy row and
+the multi-signal row is therefore a quantitative measure of how
+much auxiliary conditioning is required to lift $\sigma$ toward
+sufficiency for VOC; the residual gap between multi-signal and
+hidden-state probe is the sufficiency that universal features
+fail to capture (small in most environments). The bottleneck is
+signal \emph{combination}, not gate \emph{capacity}---and the
+multi-signal LR row is the empirical case for DIAL's design.
 
 \begin{table}[H]
 \caption{AUC by gate family. Single entropy is near chance;
@@ -815,7 +968,7 @@ to late steps within each episode, as late-step uncertainty
 increasingly reflects the residual Type~I component after
 information-gathering attempts.
 
-\begin{table}[H]
+\begin{table}[h]
 \centering
 \caption{Temporal shift in $\rho$(entropy, $U$). All environments
 show $\rho$ shifting more negative from early to late steps,
@@ -913,6 +1066,12 @@ We validate our core findings on three backbones from three vendors:
 Qwen3-4B-Instruct (Alibaba, 4B), Phi-3.5-mini-instruct (Microsoft,
 3.8B), and Llama-3.1-8B-Instruct (Meta, 8B) across all 6
 environments. Table~\ref{tab:full-results} reports full results.
+This appendix supports the (environment, backbone)-indexed
+formulation of \S\ref{sec:toy-model}: the same task changes
+$p_I$---and, when it crosses $p_I^*$, the sign of $\rho$---when
+the backbone changes, so backbone-level reversal is a prediction
+of the two-source model rather than a confound to be controlled
+for.
 
 \begin{figure*}[h!]
 	\centering

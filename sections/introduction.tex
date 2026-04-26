@@ -9,12 +9,13 @@
 	\centering
 	\includegraphics[width=\columnwidth]{figures/fig_intro_teaser.pdf}
 	\vspace{-0.4in}
-	\caption{\textbf{The fixed-direction assumption fails on half of
-		the environments.} Prior entropy
-		gating~\cite{seag2025,cats2025,corefine2026}
-		assumes $\rho(\text{entropy}, U){>}0$ (shaded). On Qwen3-4B,
-		3 of 6 envs violate this (HotpotQA, TWExpress, FEVER),
-		so high-entropy triggering fires on the wrong states.}
+\caption{\textbf{The fixed-direction assumption fails on half 
+of the environments.} Spearman correlation 
+$\rho(\text{entropy}, U)$ across six environments on 
+Qwen3-4B. Prior entropy 
+gating~\cite{seag2025,cats2025,corefine2026} assumes 
+$\rho > 0$ (shaded region), but 3 of 6 environments 
+violate this assumption.}
 	\label{fig:intro_reversal}
 \end{figure}
 
@@ -22,7 +23,7 @@ Large language models (LLMs) have rapidly advanced across a wide
 range of tasks, from question answering and code generation to web
 navigation and embodied decision making~\cite{yao2023react,
 shinn2023reflexion, zhou2024lats}. Yet, many tasks remain beyond the reach of a single forward pass, requiring the model to evaluate alternatives, verify intermediate results, or search over candidate actions~\cite{yao2023tree, hao2023reasoning, snell2024scaling}. This has motivated \emph{test-time compute}, where additional
-computation at inference time improves decision quality~\cite{snell2024scaling, wang2026flare}.
+computation at inference time improves decision quality~\cite{snell2024scaling, wang2026flare,DBLP:journals/corr/abs-2506-12928}.
 %. Across
 %multiple benchmarks, test-time optimization allows smaller models to
 %match or exceed the performance of larger ones at lower total
@@ -34,13 +35,11 @@ computation at inference time improves decision quality~\cite{snell2024scaling, 
 % This has motivated \emph{adaptive gating}: using uncertainty
 % signals to decide \emph{when} extra compute is worthwhile.
 % Prior work explores diverse mechanisms, including entropy thresholding~\cite{seag2025, cats2025, corefine2026}, calibrated confidence~\cite{s1_2025, han2025tokenbudget}, vote disagreement~\cite{catts2026}, and reinforcement learning~\cite{adaptthink2025, thinkless2025}. Across these mechanisms, adaptive gating consistently reduces cost while preserving or improving task performance within each method's evaluation setting.
-While effective, test-time compute is expensive, incurring substantial per-step overhead (e.g., requiring multiple rollouts or candidate evaluations at each decision point)~\cite{yao2023tree, zhou2024lats}. As
-agents are deployed across diverse settings, applying this overhead
-uniformly becomes wasteful when only a fraction of steps benefit.
-This has motivated \emph{adaptive gating}: using uncertainty
-signals to decide \emph{when} extra compute is worthwhile.
-Prior work explores diverse mechanisms, including entropy thresholding~\cite{seag2025, cats2025, corefine2026}, calibrated confidence~\cite{s1_2025, han2025tokenbudget}, vote disagreement~\cite{catts2026}, and learned difficulty estimators based on hidden states or reinforcement learning~\cite{diffadapt2025, zhu2025llmalreadyknows, adaptthink2025, thinkless2025}. Implicit in this consensus is a shared assumption, which we call a \emph{fixed-direction} relationship: that higher uncertainty (or lower confidence, higher disagreement) consistently indicates when extra computation helps.
-
+While effective, test-time compute is expensive, incurring substantial per-step overhead (e.g., requiring multiple rollouts or candidate evaluations at each decision 
+point)~\cite{yao2023tree, zhou2024lats}. As agents are deployed across diverse settings, applying this overhead uniformly becomes wasteful when only a fraction of steps benefit. This has motivated \emph{adaptive gating}: using uncertainty signals to decide 
+\emph{when} extra compute is worthwhile. Prior work explores diverse mechanisms, including entropy thresholding~\cite{seag2025, cats2025, corefine2026}, calibrated 
+confidence~\cite{s1_2025, han2025tokenbudget}, vote disagreement~\cite{catts2026}, and learned difficulty estimators based on hidden states or reinforcement learning~\cite{diffadapt2025, zhu2025llmalreadyknows, 
+adaptthink2025, thinkless2025}.
 % Yet these gains often fail to transfer: methods calibrated for one task type frequently fail when applied to others~\cite{tao2025revisiting,
 % heo2025llmuncertainty}. Vote-based
 % gating designed for web agents degrades on fact-verification tasks;
@@ -50,14 +49,20 @@ Prior work explores diverse mechanisms, including entropy thresholding~\cite{sea
 % raises a central question: \emph{do uncertainty signals have a
 % universal relationship with compute value, or does this relationship
 % depend on the environment?}
-
-
-However, whether this assumption holds uniformly across heterogeneous agent environments has not been directly tested. Taking token entropy as the canonical signal adopted by most prior work, Figure~\ref{fig:intro_reversal} measures its correlation with optimizer utility across six agent environments: the common assumption is clearly violated on half of them, where high entropy instead indicates states on which extra compute is wasted. The signal--utility relationship therefore \emph{reverses direction} across environments, and once this happens, adaptive gating actively underperforms never invoking the optimizer. This raises a central question: \emph{what determines the relationship between uncertainty signals and the value of computation, and can this relationship be learned in a way that generalizes across environments?}
+These methods differ in mechanism but share a common assumption: 
+higher uncertainty consistently indicates when extra computation 
+helps. We call this the \emph{fixed-direction} assumption. Taking 
+token entropy as the canonical signal, Figure~\ref{fig:intro_reversal} tests this assumption across six agent environments and finds it violated on half of them, where 
+high entropy instead indicates states on which extra compute is 
+wasted. The signal--utility relationship reverses direction across environments, with a sharp consequence: when the assumed direction is wrong, better calibration worsens performance by more precisely selecting harmful states. This raises a central question: \emph{if the signal--utility direction is not fixed, can adaptive compute 
+still be principled?}
 
 % --- Module 2: Our finding + diagnosis (~30%) ---
 
 % We conduct systematic measurement across eight agent environments spanning QA~\cite{yang2018hotpotqa}, code generation~\cite{hendrycks2021apps}, web navigation~\cite{yao2022webshop}, fact verification~\cite{thorne2018fever}, and text games~\cite{jansen2023twexpress}, using three model backbones. The signal–utility direction \emph{reverses} across environments: the same signal that predicts rollout benefit in code generation predicts rollout harm in fact verification, and can further reverse across model backbones within the same environment. Beyond direction, the most informative signal itself varies across environments, with structural features dominating in some while entropy carries no information.
-Extending the entropy view of Figure~\ref{fig:intro_reversal}, we systematically measure the signal--utility relationship across six agent environments spanning QA~\cite{yang2018hotpotqa}, code generation~\cite{hendrycks2021apps}, web navigation~\cite{yao2022webshop}, fact verification~\cite{thorne2018fever}, text games~\cite{jansen2023twexpress}, and crafting planning~\cite{dagan2024plancraft}, using three model backbones. Two further patterns compound the Figure~\ref{fig:intro_reversal} finding. First, the reversal extends along the backbone dimension: in the same environment, the sign of the entropy--utility correlation can flip across LLMs. Second, the most informative signal itself differs across environments, with structural features dominating in some settings while entropy carries little or no information in others.
+% Extending the entropy view of Figure~\ref{fig:intro_reversal}, we systematically measure the signal--utility relationship across six agent environments spanning QA~\cite{yang2018hotpotqa}, code generation~\cite{hendrycks2021apps}, web navigation~\cite{yao2022webshop}, fact verification~\cite{thorne2018fever}, text games~\cite{jansen2023twexpress}, and crafting planning~\cite{dagan2024plancraft}, using three model backbones. The most striking finding is that \emph{the reversal extends along the backbone dimension}: with the task held fixed, the sign of the entropy--utility correlation can flip across LLMs---FEVER, for instance, shifts from $\rho{=}{-}0.156$ on Phi-3.5 to $\rho{=}{+}0.428$ on Llama-3.1. The signal's semantics are therefore not a property of the environment alone but of the (environment, backbone) pair, ruling out any per-task tuning of direction. Compounding this, the most informative signal itself also differs across settings, with structural features dominating in some environments while entropy carries little or no information in others.
+Extending the entropy view of Figure~\ref{fig:intro_reversal}, we systematically measure the signal--utility relationship across all six environments using three model backbones (Table~\ref{tab:signal-discovery}). The most striking finding is that the reversal extends along the backbone dimension: with the task held fixed, the sign of the 
+entropy--utility correlation can flip across LLMs. The signal's semantics are therefore not a property of the environment alone but of the (environment, backbone) pair, ruling out any per-task tuning of direction. Compounding this, the most informative signal itself also differs across settings, with structural features dominating in some environments while entropy carries little or no information in others.
 % We answer this through systematic measurement across six agent environments spanning QA~\cite{yang2018hotpotqa}, code
 % generation~\cite{hendrycks2021apps}, web navigation~\cite{yao2022webshop}, fact verification~\cite{thorne2018fever}, text games~\cite{jansen2023twexpress}, and crafting planning, using three model backbones. The signal--utility relationship reverses direction across environments:
 % the same signal that predicts rollout benefit in code generation predicts rollout harm in fact verification, and can further reverse
@@ -84,7 +89,15 @@ Extending the entropy view of Figure~\ref{fig:intro_reversal}, we systematically
 % which source dominates, an instance of Simpson's paradox~\cite{simpson1951interpretation,kdd2023simpson}. The
 % consequence is sharp: no fixed-direction gating strategy can avoid net-harmful gating across environments with opposing signal
 % directions (Proposition~\ref{prop:necessity}), and once the direction is misaligned, improved calibration can \emph{worsen} performance by more precisely selecting harmful states.
-We trace this reversal to two coexisting state types with opposite signal--utility relationships. \emph{Information-poor} states (Type~I) arise when the agent lacks sufficient information; rollouts cannot synthesize information the environment itself does not provide, and high uncertainty predicts \emph{negative} value of computation. In contrast, \emph{decision-difficult} states (Type~D) arise when multiple viable options exist; additional computation helps explore alternatives, and high uncertainty predicts \emph{positive} value. For example, code generation is dominated by Type~D states (multiple valid implementations exist), while fact verification is dominated by Type~I states (evidence is often insufficient). Because environments differ in their mixture of these two types, the same uncertainty signal carries opposite meanings depending on which type dominates, an instance of Simpson's paradox~\cite{simpson1951interpretation,kdd2023simpson}. The consequence is that no fixed-direction gating strategy can avoid net-harmful gating across environments with opposing signal directions (Proposition~\ref{prop:necessity}).
+We trace this reversal to two coexisting state types with opposite signal--utility relationships. \emph{Information-poor} states (Type~I) arise when the agent lacks sufficient information; rollouts cannot synthesize what the environment does not provide, so high uncertainty predicts negative value of computation. For example, a fact-verification agent that hesitates because retrieved evidence is ambiguous gains nothing from additional rollouts. \emph{Decision-difficult} states (Type~D) arise when multiple viable options exist; rollouts help explore alternatives, so high uncertainty predicts 
+positive value. For example, a coding agent that hesitates because several valid implementations exist benefits from exploring them. 
+
+Whether a given state is Type~I or Type~D depends on what the agent already encodes, so the mixture is determined jointly by the environment and the backbone. The same uncertainty signal carries opposite meanings depending on which type dominates, an instance of Simpson's paradox~\cite{simpson1951interpretation, kdd2023simpson}. This decomposition yields a formal implication: the uncertainty signal is not a sufficient statistic for the value of computation, so under the two-source model, no policy depending on uncertainty 
+alone can deliver non-negative value across heterogeneous 
+settings (Proposition~\ref{prop:necessity}). It also makes a falsifiable prediction, that reversal is determined by the mixture of Type~I 
+and Type~D states, which we verify on held-out data 
+(\S\ref{sec:theory-verification}). Recovering sufficiency requires augmenting the uncertainty signal with features that correlate with the latent state type, such as 
+step count as a proxy for information accumulation.
 
 % --- Module 3: Method + contributions (~25%) ---
 
@@ -101,7 +114,12 @@ We trace this reversal to two coexisting state types with opposite signal--utili
 % environments and three LLM backbones.
 % Motivated by this analysis, we propose \textbf{DIAL} (\textbf{D}irection-\textbf{I}nformed \textbf{A}daptive \textbf{L}earning), a deliberately minimal method that learns environment-specific signal--utility relationships from interaction data. Since the primary challenge is identifying signal direction rather than modeling capacity, DIAL's contribution is not a new gate architecture but a pipeline that reduces the adaptive-gating problem to a form where a standard sparse linear classifier suffices, adding zero per-step cost at deployment. Across six environments and three LLM backbones, DIAL outperforms all fixed-direction baselines.
 
-Motivated by this analysis, we propose \textbf{DIAL} (\textbf{D}irection-\textbf{I}nformed \textbf{A}daptive \textbf{L}earning), which learns environment-specific signal--utility relationships from interaction data. Since the primary challenge is identifying signal direction rather than modeling capacity, DIAL reduces the adaptive-gating problem to a form where a standard sparse linear classifier suffices, adding zero per-step cost at deployment. Across six environments and three LLM backbones, DIAL outperforms all fixed-direction baselines, and its full range of gating behavior, from aggressive triggering to near-total suppression, emerges from direction learning alone.
+As an existence proof that direction is a first-order bottleneck 
+that simple gates can address once utility feedback is collected, we propose DIAL (\textbf{D}irection-\textbf{I}nformed \textbf{A}daptive 
+\textbf{L}earning). DIAL collects unbiased state--utility pairs via randomized exploration, then fits a sparse linear gate over a small set of state features, optionally augmented by LLM-proposed task-specific signals, to learn the signal--utility 
+direction for each (environment, backbone) setting. Across six environments and three LLM backbones, DIAL outperforms every fixed-direction baseline, with its gating behavior ranging from aggressive triggering to near-total suppression depending on the 
+learned direction. Once the direction is correctly identified, 
+even the simplest classifier suffices.
 
 %Our main contributions are as follows:
 %\begin{itemize}[leftmargin=*,nosep]

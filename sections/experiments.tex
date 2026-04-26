@@ -135,7 +135,7 @@ The main results show \emph{that} DIAL works; we now ask
 \emph{why}. We ablate the two key components: direction learning
 and the LLM feature layer.
 
-\textbf{Direction is the primary determinant of gate quality.}
+\textbf{Direction is a first-order determinant of gate quality.}
 To isolate the effect of direction, we reverse the sign of all
 learned weights in DIAL's fitted gate, keeping everything else
 unchanged. Table~\ref{tab:wrong-direction} shows the result.
@@ -144,7 +144,13 @@ causes SR drops exceeding 23\,pp. In weak-signal environments
 like Plancraft ($|\rho|{=}0.016$), reversal has negligible
 effect. The degradation scales with signal strength: wrong
 direction is not a minor calibration error but a structural
-failure, as Proposition~\ref{prop:necessity} predicts.
+failure, consistent with the wrong-direction harm result of
+Appendix~\ref{app:proof-necessity}. Reversing the learned weights constructs an adversarially wrong-direction gate: it preserves the learned ranking structure 
+while inverting the trigger semantics. The resulting 
+23--37\% SR collapse on strong-signal environments confirms 
+that ranking states well is harmful when the direction is 
+inverted, as the gate fires precisely on states where 
+computation has negative value.
 
 \begin{table}[t]
 \centering\small
@@ -161,7 +167,7 @@ FEVER          & 49.8\% & 13.0\% & $-$36.8 & 0.619 \\
 HotpotQA       & 95.2\% & 58.2\% & $-$37.0 & 0.494 \\
 WebShop        & 43.8\% & 20.6\% & $-$23.2 & 0.444 \\
 APPS           & 73.0\% & 70.5\% & $-$2.5  & 0.339 \\
-TWExpress      & 99.0\% & 99.0\% &    0.0  & 0.290 \\
+TWExpress      & 99.0\% & 96.2\% & $-$2.8  & 0.290 \\
 Plancraft      & 23.3\% & 20.5\% & $-$2.8  & 0.016 \\
 \bottomrule
 \end{tabular}%
@@ -249,15 +255,17 @@ $\rho$ reverses from positive ($+$0.102) to negative
 ($-$0.144). Full numerical results are in
 Appendix~\ref{app:temporal}.
 
-\paragraph{P2: Cross-environment consistency.}
-The Two-Source Model predicts that environments with similar
-task structure should exhibit similar $\rho$. On Qwen3
-(Table~\ref{tab:signal-discovery}), this holds: FEVER and
-HotpotQA (both search-based QA) share negative $\rho$;
+\paragraph{P2: Cross-setting consistency.}
+The Two-Source Model predicts that settings with similar
+$p_I$ should exhibit similar $\rho$. With the backbone held
+fixed at Qwen3 (Table~\ref{tab:signal-discovery}), this holds:
+FEVER and HotpotQA (both search-based QA) share negative $\rho$;
 WebShop and APPS (both involving choice among alternatives)
-share positive $\rho$. This consistency does not hold across
-all backbones, as the model backbone modulates the effective
-Type~I fraction and can override task-structure similarity
+share positive $\rho$. As predicted by the (environment,
+backbone)-indexed mixture of \S\ref{sec:toy-model}, however,
+task-structure similarity alone does not pin down $\rho$ when
+the backbone changes: the same environment can sit on opposite
+sides of $p_I^*$ under different LLMs
 (Appendix~\ref{app:multi-backbone}).
 
 \paragraph{P3: Signal identity alignment.}
