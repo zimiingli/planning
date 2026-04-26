@@ -14,6 +14,34 @@
 \section{Direction-Informed Adaptive Learning}
 \label{sec:method}
 
+<<<<<<< HEAD
+Section~\ref{sec:signal-landscape} establishes that the
+uncertainty signal $\sigma$ alone is not a sufficient statistic
+for the value of computation, so any cross-setting adaptive
+gate must condition on auxiliary features
+$\phi(s)$ that carry information about the latent
+state type $\tau(s)$. Concretely, this implies three method
+constraints: per-(environment, backbone) direction discovery
+(\S\ref{sec:empirical-landscape}), a multi-signal feature pool
+that approximates $\tau$ (\S\ref{sec:empirical-landscape}), and
+\emph{signal-agnostic} exploration---developed below---since
+conditioning data collection on the very signal whose direction
+is unknown introduces a self-confirming bias.
+
+DIAL is the minimal procedure that lifts $\sigma$ toward
+sufficiency for $\mathrm{VOC}$ under these constraints
+(Fig.~\ref{fig:method_overview}): randomized exploration
+(\S\ref{sec:explore}) collects an unbiased $(s, U)$ dataset, an
+optional LLM feature layer (\S\ref{sec:reason}) extends the
+universal feature pool when needed, and a sparse linear gate
+(\S\ref{sec:learn}) selects which features carry information
+about $\tau$ in each (environment, backbone) setting. The
+sophistication of the classifier is not the contribution; the
+contribution is the demonstration that once $\sigma$ is
+augmented with the right auxiliary features, the simplest
+possible classifier already outperforms every fixed-direction
+baseline (\S\ref{sec:experiments}).
+=======
 The analysis in Section~\ref{sec:signal-landscape} implies three
 constraints for any cross-setting adaptive gate: it must discover
 the signal--utility direction per (environment, backbone) pair, it
@@ -25,10 +53,25 @@ unknown. DIAL satisfies these constraints through three stages
 (\S\ref{sec:explore}), feature construction
 (\S\ref{sec:reason}), and sparse gate fitting
 (\S\ref{sec:learn}).
+>>>>>>> 1bf5b0e2c05afb339eb3e76f610bbf4ff034c5a3
 
 \subsection{Explore: Signal-Agnostic Data Collection}
 \label{sec:explore}
 
+<<<<<<< HEAD
+Exploration collects the $(s, U)$ pairs that will be used to fit
+the gate. The central constraint is signal-agnosticity: the
+collection policy must not condition on any signal whose
+semantics we are trying to learn. Although uncertainty-conditioned
+data collection is the default in prior adaptive-gating work, it
+is incompatible with the goal of \emph{learning} direction: a
+gate trained on uncertainty-triggered states systematically
+under-samples exactly the states that determine $\rho$'s sign,
+biasing the fitted direction toward the prior assumption rather
+than testing it. DIAL therefore uses the simplest policy
+consistent with signal-agnosticity. At each step~$t$ in
+episode~$i$, a uniform random coin flip
+=======
 Exploration collects the $(s, U)$ pairs used to fit the gate.
 The central constraint is signal-agnosticity: the collection
 policy must not condition on any signal whose semantics we are
@@ -38,6 +81,7 @@ $\rho$'s sign, biasing the fitted direction toward the prior
 assumption rather than testing it. DIAL therefore uses the
 simplest policy consistent with signal-agnosticity. At each
 step~$t$ in episode~$i$, a uniform random coin flip
+>>>>>>> 1bf5b0e2c05afb339eb3e76f610bbf4ff034c5a3
 $z_t^{(i)} \sim \mathrm{Bernoulli}(\varepsilon_{\text{explore}})$
 determines whether to trigger the optimizer~$T$ ($z_t{=}1$) or
 use the base action ($z_t{=}0$). Aggregating across
@@ -86,6 +130,23 @@ sufficient to recover a gate that outperforms all fixed-direction
 baselines (\S\ref{sec:ablation}).
 
 For environments where universal features may be inadequate,
+<<<<<<< HEAD
+such as WebShop, whose gating benefits from task-specific
+signals like \texttt{num\_available\_actions}, DIAL offers an
+\emph{optional} automation layer: an LLM is given a summary of
+$\mathcal{D}$ and proposes task-specific feature hypotheses
+$\phi_{\text{LLM}}(s)$, which join the universal pool to form
+$\phi_{\text{cand}}(s) = \phi_{\text{univ}}(s) \cup \phi_{\text{LLM}}(s)$.
+Details of the LLM input format and prompt template are in
+Appendix~\ref{app:llm-feature-layer}.
+The ablation in \S\ref{sec:ablation} shows that this layer is
+load-bearing only on FEVER ($+9.1$\,pp); on every other
+environment its contribution is ${\leq}1.8$\,pp, and on APPS and
+Plancraft it is effectively zero. We therefore present the LLM
+layer as an honest extensibility mechanism rather than a core
+component, and report all main-result numbers without claiming
+its contribution is general.
+=======
 DIAL offers an optional automation layer: an LLM is given a
 summary of $\mathcal{D}$ and proposes task-specific feature
 hypotheses $\phi_{\text{LLM}}(s)$, which join the universal pool
@@ -97,6 +158,7 @@ proposals. Details of the LLM input format and prompt template
 are in Appendix~\ref{app:llm-feature-layer}; the ablation in
 \S\ref{sec:ablation} quantifies the contribution of this layer
 per environment.
+>>>>>>> 1bf5b0e2c05afb339eb3e76f610bbf4ff034c5a3
 
 \subsection{Learn: Sparse Linear Gate}
 \label{sec:learn}
@@ -121,8 +183,23 @@ uninformative features drop out. The deployed gate is
   \label{eq:gate}
 \end{equation}
 with threshold $\tau$ set by cross-validation on $\mathcal{D}$.
+<<<<<<< HEAD
+
+\paragraph{Cost accounting.}
+DIAL incurs three costs: (i)~a one-time exploration cost of
+$N_{\text{explore}}{=}50$ episodes per (environment, backbone)
+pair, amortized over all subsequent deployment;
+(ii)~sub-second offline gate-fitting time, dominated by feature
+extraction; and (iii)~per-step inference cost equal to evaluating
+$\phi(s)$ and a single sigmoid. Only (iii) is incurred at
+deployment, and it is zero relative to a non-gated agent: there
+is no extra LLM call, no $K$-way voting, and no calibration
+query. Implementation details are in
+Appendix~\ref{app:dial-details}.
+=======
 At deployment, the gate requires only a feature evaluation and a
 single sigmoid, adding no extra LLM calls.
+>>>>>>> 1bf5b0e2c05afb339eb3e76f610bbf4ff034c5a3
 
 \paragraph{Signed weights as a diagnostic.}
 The $\ell_1$ penalty in Eq.~\ref{eq:lasso} simultaneously

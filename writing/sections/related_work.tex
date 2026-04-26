@@ -1,10 +1,20 @@
 \section{Related Work}
 \label{sec:related}
+<<<<<<< HEAD
+Prior work on adaptive test-time compute spans diverse
+mechanisms but rests on a shared, almost always implicit,
+assumption: that uncertainty signals have a fixed,
+setting-independent relationship with compute value. We organize
+the literature around how each line of work commits to this
+\emph{fixed-direction} assumption, since it is precisely what
+this paper tests.
+=======
 Prior work on adaptive test-time compute spans diverse mechanisms 
 but shares a common assumption: that uncertainty signals have a 
 fixed, setting-independent relationship with compute value. We 
 organize the literature around how each line of work commits to 
 this assumption.
+>>>>>>> 1bf5b0e2c05afb339eb3e76f610bbf4ff034c5a3
 
 \paragraph{Gating on uncertainty signals.}
 Signal-based methods allocate extra computation when token
@@ -25,6 +35,18 @@ estimate task difficulty from internal representations, and
 RL-based methods~\cite{adaptthink2025, thinkless2025,
 aggarwal2025l1, paglieri2025learning} learn think/no-think
 policies end-to-end. 
+<<<<<<< HEAD
+% Though these methods do not commit to a
+% specific signal, their gating policies effectively assume that
+% higher difficulty warrants more compute, sharing the same fixed
+% direction as signal-based approaches. 
+% This assumption holds on
+% homogeneous reasoning benchmarks (MATH, GSM8K, GPQA) where signal
+% direction is consistent by construction. Whether it transfers to
+% heterogeneous agent environments has not been directly tested; we
+% show it does not (Proposition~\ref{prop:necessity}).
+Although these methods commit to neither a specific signal nor an explicit threshold, their gating policies share the assumption that higher difficulty warrants more compute---identical in \emph{direction} to signal-based approaches. The combined body of work therefore rests on the same implicit fixed-direction assumption, and is evaluated almost exclusively on homogeneous reasoning benchmarks (GSM8K~\cite{DBLP:journals/corr/abs-2110-14168}, GPQA~\cite{DBLP:journals/corr/abs-2311-12022}) where the assumption holds by construction. We construct this assumption explicitly and test it in the heterogeneous agent setting, where it fails.
+=======
 Although these methods commit to neither a specific signal nor 
 an explicit threshold, their evaluations primarily focus on 
 homogeneous reasoning benchmarks such as GSM8K~\cite{DBLP:journals/corr/abs-2110-14168} 
@@ -33,6 +55,7 @@ aligned with greater benefit from additional reasoning.
 As a result, they leave untested whether the difficulty--compute relationship itself can reverse. 
 In contrast, we make this fixed-direction assumption explicit and test it in heterogeneous agent environments, where it fails.
 
+>>>>>>> 1bf5b0e2c05afb339eb3e76f610bbf4ff034c5a3
 
 \paragraph{Metareasoning and uncertainty semantics.}
 Rational metareasoning~\cite{russell1991right, desabbata2024metareasoning} formalizes the value of computation (VOC), classically assuming $\text{VOC} \geq 0$ since an agent can disregard unfavorable results. We show this assumption fails when the same model both proposes and evaluates actions (\S\ref{sec:toy-model}). \citet{tao2025revisiting} and \citet{heo2025llmuncertainty} find that calibration quality varies across task types, and \citet{yadkori2024believe} decouple epistemic and aleatoric uncertainty, providing converging evidence that uncertainty semantics are domain-dependent. 
