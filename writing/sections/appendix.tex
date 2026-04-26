@@ -339,7 +339,7 @@ the latent type $\tau$ is constructed (Phase~2, \S\ref{app:llm-feature-layer}),
 and how the sparse linear gate that lifts $\sigma$ toward sufficiency
 for VOC is fit (Phase~3, \S\ref{app:hyperparams-details}).
 
-\begin{algorithm}[H]
+\begin{algorithm}[h]
 	\caption{DIAL: Direction-Informed Adaptive Learning}
 	\label{alg:dial}
 	\small
@@ -612,6 +612,25 @@ full-episode reward).
   environment, and the trajectory with the highest observed
   episodic reward is executed.
 \end{itemize}
+\paragraph{Utility estimation.}
+In all environments, the utility label $U_t$ used for gate
+training (\S\ref{sec:explore}) is computed by paired
+counterfactual evaluation from the same state snapshot.
+For per-action evaluation environments, the base policy's
+proposed action $a_B$ is included in the top-$K$ candidate set
+and evaluated with the same $N{\times}H$ rollout protocol as all
+other candidates; utility is
+$U_t = \mathbf{1}[V(a^*) > V(a_B)]$, where
+$V(a) = \tfrac{1}{N}\sum_{n=1}^{N} R_n(a)$.
+For $K$-variant sampling (APPS), the base solution is evaluated
+on the same test suite as the $K$ variants, and
+$U_t = \mathbf{1}[\max_k \text{pass\_rate}_k > \text{pass\_rate}_{\text{base}}]$.
+Because all candidates are evaluated from identical initial
+conditions, this is a counterfactual estimate rather than an
+on-policy observation. The truncation horizon $H$ introduces
+approximation bias relative to full-episode returns; we find
+results stable for $H \in [3, 10]$.
+
 In all three cases, the optimizer itself has access to the env's
 scoring function; our method is about learning \emph{when} this
 optimizer is worth invoking, not how it scores internally.
@@ -949,7 +968,7 @@ to late steps within each episode, as late-step uncertainty
 increasingly reflects the residual Type~I component after
 information-gathering attempts.
 
-\begin{table}[H]
+\begin{table}[h]
 \centering
 \caption{Temporal shift in $\rho$(entropy, $U$). All environments
 show $\rho$ shifting more negative from early to late steps,

@@ -3,6 +3,7 @@
 % ============================================================
 \section{Conclusion}
 
+<<<<<<< HEAD
 The central claim of this paper is that \emph{uncertainty signals
 are not sufficient statistics for the value of computation}.
 Existing adaptive gating methods for LLM agents share an implicit
@@ -31,3 +32,18 @@ zero per-step inference overhead. Across every setting evaluated,
 this minimal procedure already dominates fixed-direction
 baselines, and its full range of gating behavior emerges from
 direction learning alone.
+=======
+Existing adaptive gating methods for LLM agents assume that higher
+uncertainty consistently indicates when extra computation helps.
+We show this fixed-direction assumption fails: the signal--utility
+relationship reverses across both environments and model backbones,
+and when the assumed direction is wrong, better calibration worsens
+performance by more precisely selecting harmful states. We trace
+this reversal to a mixture of information-poor and
+decision-difficult states whose composition varies across
+(environment, backbone) pairs, and show that, under the two-source model, no policy depending on uncertainty alone can guarantee non-negative value across 
+heterogeneous settings. DIAL learns the correct direction per setting by fitting
+a sparse linear gate over a small set of state features, and
+outperforms every fixed-direction baseline across six environments
+and three backbones.
+>>>>>>> 1bf5b0e2c05afb339eb3e76f610bbf4ff034c5a3

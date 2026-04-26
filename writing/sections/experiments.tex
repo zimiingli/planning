@@ -135,7 +135,7 @@ The main results show \emph{that} DIAL works; we now ask
 \emph{why}. We ablate the two key components: direction learning
 and the LLM feature layer.
 
-\textbf{Direction is the primary determinant of gate quality.}
+\textbf{Direction is a first-order determinant of gate quality.}
 To isolate the effect of direction, we reverse the sign of all
 learned weights in DIAL's fitted gate, keeping everything else
 unchanged. Table~\ref{tab:wrong-direction} shows the result.
@@ -145,12 +145,21 @@ like Plancraft ($|\rho|{=}0.016$), reversal has negligible
 effect. The degradation scales with signal strength: wrong
 direction is not a minor calibration error but a structural
 failure, consistent with the wrong-direction harm result of
+<<<<<<< HEAD
 Appendix~\ref{app:proof-necessity}. \emph{This table is the
 direct empirical statement of the headline claim}: the gate
 whose weights are reversed is, by construction, a more precisely
 calibrated harm-targeting mechanism, and its 23--37\,pp SR
 collapse on strong-signal environments is the price of that
 precision when the direction is wrong.
+=======
+Appendix~\ref{app:proof-necessity}. Reversing the learned weights constructs an adversarially wrong-direction gate: it preserves the learned ranking structure 
+while inverting the trigger semantics. The resulting 
+23--37\% SR collapse on strong-signal environments confirms 
+that ranking states well is harmful when the direction is 
+inverted, as the gate fires precisely on states where 
+computation has negative value.
+>>>>>>> 1bf5b0e2c05afb339eb3e76f610bbf4ff034c5a3
 
 \begin{table}[t]
 \centering\small
@@ -167,7 +176,7 @@ FEVER          & 49.8\% & 13.0\% & $-$36.8 & 0.619 \\
 HotpotQA       & 95.2\% & 58.2\% & $-$37.0 & 0.494 \\
 WebShop        & 43.8\% & 20.6\% & $-$23.2 & 0.444 \\
 APPS           & 73.0\% & 70.5\% & $-$2.5  & 0.339 \\
-TWExpress      & 99.0\% & 99.0\% &    0.0  & 0.290 \\
+TWExpress      & 99.0\% & 96.2\% & $-$2.8  & 0.290 \\
 Plancraft      & 23.3\% & 20.5\% & $-$2.8  & 0.016 \\
 \bottomrule
 \end{tabular}%

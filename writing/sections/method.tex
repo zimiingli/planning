@@ -3,8 +3,8 @@
 % ============================================================
 \begin{figure*}[t]
 	\centering
-	% 请将最终导出的图片命名为 dial_pipeline.pdf 或 .png 放在项目根目录
 	\includegraphics[width=\textwidth]{figures/dial_pipeline.pdf} 
+    \vspace{-0.3in}
 	\caption{\textbf{The DIAL pipeline.}
 		\textbf{(a) Explore}: collect signal-agnostic $(s, U)$ pairs via Bernoulli-$\varepsilon$ rollouts.
 		\textbf{(b) Reason}: build a candidate feature pool $\phi(s)$ from universal metrics plus optional LLM-proposed task-specific features.
@@ -14,6 +14,7 @@
 \section{Direction-Informed Adaptive Learning}
 \label{sec:method}
 
+<<<<<<< HEAD
 Section~\ref{sec:signal-landscape} establishes that the
 uncertainty signal $\sigma$ alone is not a sufficient statistic
 for the value of computation, so any cross-setting adaptive
@@ -40,10 +41,24 @@ contribution is the demonstration that once $\sigma$ is
 augmented with the right auxiliary features, the simplest
 possible classifier already outperforms every fixed-direction
 baseline (\S\ref{sec:experiments}).
+=======
+The analysis in Section~\ref{sec:signal-landscape} implies three
+constraints for any cross-setting adaptive gate: it must discover
+the signal--utility direction per (environment, backbone) pair, it
+must draw from a multi-signal feature pool that approximates the
+latent state type $\tau(s)$, and it must collect training data
+without conditioning on the very signal whose direction is
+unknown. DIAL satisfies these constraints through three stages
+(Fig.~\ref{fig:method_overview}): randomized exploration
+(\S\ref{sec:explore}), feature construction
+(\S\ref{sec:reason}), and sparse gate fitting
+(\S\ref{sec:learn}).
+>>>>>>> 1bf5b0e2c05afb339eb3e76f610bbf4ff034c5a3
 
 \subsection{Explore: Signal-Agnostic Data Collection}
 \label{sec:explore}
 
+<<<<<<< HEAD
 Exploration collects the $(s, U)$ pairs that will be used to fit
 the gate. The central constraint is signal-agnosticity: the
 collection policy must not condition on any signal whose
@@ -56,10 +71,24 @@ biasing the fitted direction toward the prior assumption rather
 than testing it. DIAL therefore uses the simplest policy
 consistent with signal-agnosticity. At each step~$t$ in
 episode~$i$, a uniform random coin flip
+=======
+Exploration collects the $(s, U)$ pairs used to fit the gate.
+The central constraint is signal-agnosticity: the collection
+policy must not condition on any signal whose semantics we are
+trying to learn. A gate trained on uncertainty-triggered states
+systematically under-samples exactly the states that determine
+$\rho$'s sign, biasing the fitted direction toward the prior
+assumption rather than testing it. DIAL therefore uses the
+simplest policy consistent with signal-agnosticity. At each
+step~$t$ in episode~$i$, a uniform random coin flip
+>>>>>>> 1bf5b0e2c05afb339eb3e76f610bbf4ff034c5a3
 $z_t^{(i)} \sim \mathrm{Bernoulli}(\varepsilon_{\text{explore}})$
 determines whether to trigger the optimizer~$T$ ($z_t{=}1$) or
 use the base action ($z_t{=}0$). Aggregating across
-$N_{\text{explore}}$ episodes yields an unbiased dataset:
+$N_{\text{explore}}$ episodes yields an approximately unbiased
+dataset (the Bernoulli trigger eliminates selection bias; the
+remaining approximation is the truncated-rollout estimator
+of~$U$):
 \begin{equation}
   \mathcal{D} = \bigl\{
     \bigl(\phi(s_t^{(i)}),\; U_t^{(i)}\bigr)
@@ -67,9 +96,21 @@ $N_{\text{explore}}$ episodes yields an unbiased dataset:
   \bigr\}_{t, i},
   \label{eq:dataset}
 \end{equation}
-where $U_t^{(i)} \in \{0, 1\}$ indicates whether the optimizer
-improved the outcome at step~$t$, and $\phi(s)$ is the feature
-vector described in \S\ref{sec:reason}.
+where $U_t^{(i)} = \mathbf{1}[V(a_T) > V(a_B)]$ indicates
+whether the optimizer's selected action outperformed the base
+action, as estimated by paired counterfactual rollouts from the
+same state snapshot, and $\phi(s)$ is the feature vector described
+in \S\ref{sec:reason}.
+
+\paragraph{Estimating $U$.}
+For each explored state with $z_t{=}1$, we estimate utility by
+counterfactual evaluation from the same state snapshot: we fork
+the environment, execute both the optimizer-selected action $a_T$
+and the base action $a_B$ via truncated rollouts of horizon $H$,
+and set $U_t = \mathbf{1}[V(a_T) > V(a_B)]$. This paired design
+eliminates selection bias; the remaining approximation is the
+truncation horizon. Per-environment estimation
+details are in Appendix~\ref{app:environment}.
 
 \subsection{Reason: LLM Feature Layer}
 \label{sec:reason}
@@ -79,6 +120,7 @@ that the gate will be fit over. This pool must be rich enough to
 include each environment's relevant signals, but not so
 environment-specific that deployment requires manual engineering
 per task.
+
 DIAL's default is a fixed set of universal features:
 \texttt{step\_count}, \texttt{token\_entropy},
 \texttt{state\_length}, \texttt{action\_entropy}, and others.
@@ -88,6 +130,7 @@ sufficient to recover a gate that outperforms all fixed-direction
 baselines (\S\ref{sec:ablation}).
 
 For environments where universal features may be inadequate,
+<<<<<<< HEAD
 such as WebShop, whose gating benefits from task-specific
 signals like \texttt{num\_available\_actions}, DIAL offers an
 \emph{optional} automation layer: an LLM is given a summary of
@@ -103,6 +146,19 @@ Plancraft it is effectively zero. We therefore present the LLM
 layer as an honest extensibility mechanism rather than a core
 component, and report all main-result numbers without claiming
 its contribution is general.
+=======
+DIAL offers an optional automation layer: an LLM is given a
+summary of $\mathcal{D}$ and proposes task-specific feature
+hypotheses $\phi_{\text{LLM}}(s)$, which join the universal pool
+to form
+$\phi_{\text{cand}}(s) = \phi_{\text{univ}}(s) \cup
+\phi_{\text{LLM}}(s)$. The $\ell_1$ penalty in the gate fitting
+stage (\S\ref{sec:learn}) automatically discards uninformative
+proposals. Details of the LLM input format and prompt template
+are in Appendix~\ref{app:llm-feature-layer}; the ablation in
+\S\ref{sec:ablation} quantifies the contribution of this layer
+per environment.
+>>>>>>> 1bf5b0e2c05afb339eb3e76f610bbf4ff034c5a3
 
 \subsection{Learn: Sparse Linear Gate}
 \label{sec:learn}
@@ -127,6 +183,7 @@ uninformative features drop out. The deployed gate is
   \label{eq:gate}
 \end{equation}
 with threshold $\tau$ set by cross-validation on $\mathcal{D}$.
+<<<<<<< HEAD
 
 \paragraph{Cost accounting.}
 DIAL incurs three costs: (i)~a one-time exploration cost of
@@ -139,6 +196,10 @@ deployment, and it is zero relative to a non-gated agent: there
 is no extra LLM call, no $K$-way voting, and no calibration
 query. Implementation details are in
 Appendix~\ref{app:dial-details}.
+=======
+At deployment, the gate requires only a feature evaluation and a
+single sigmoid, adding no extra LLM calls.
+>>>>>>> 1bf5b0e2c05afb339eb3e76f610bbf4ff034c5a3
 
 \paragraph{Signed weights as a diagnostic.}
 The $\ell_1$ penalty in Eq.~\ref{eq:lasso} simultaneously
@@ -150,5 +211,5 @@ the reversal threshold $p_I^*$ for signal~$i$ (high signal
 $\to$ trigger), $w_i < 0$ the Type~I side (high signal $\to$
 \emph{don't} trigger), and $w_i \approx 0$ an uninformative
 signal. The complete pipeline, including online adaptation for
-drifting environments, is summarized in
-Algorithm~\ref{alg:dial} (Appendix~\ref{app:dial-details}).
+drifting environments and detailed cost accounting, is provided
+in Appendix~\ref{app:dial-details}.
