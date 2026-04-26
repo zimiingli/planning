@@ -1,4 +1,4 @@
-\begin{thebibliography}{51}
+\begin{thebibliography}{62}
 \providecommand{\natexlab}[1]{#1}
 
 \bibitem[{Abbasi~Yadkori et~al.(2024)Abbasi~Yadkori, Kuzborskij, and
@@ -13,6 +13,14 @@ Pranjal Aggarwal and Sean Welleck. 2025.
   reinforcement learning.
 \newblock \emph{CoRR}.
 
+\bibitem[{Brown et~al.(2024)Brown, Juravsky, Ehrlich, Clark, Le, R{\'{e}}, and
+  Mirhoseini}]{brown2024monkeys}
+Bradley C.~A. Brown, Jordan Juravsky, Ryan Ehrlich, Ronald Clark, Quoc~V. Le,
+  Christopher R{\'{e}}, and Azalia Mirhoseini. 2024.
+\newblock Large language monkeys: Scaling inference compute with repeated
+  sampling.
+\newblock \emph{CoRR}.
+
 \bibitem[{Cobbe et~al.(2021)Cobbe, Kosaraju, Bavarian, Chen, Jun, Kaiser,
   Plappert, Tworek, Hilton, Nakano, Hesse, and
   Schulman}]{DBLP:journals/corr/abs-2110-14168}
@@ -25,6 +33,12 @@ Karl Cobbe, Vineet Kosaraju, Mohammad Bavarian, Mark Chen, Heewoo Jun, Lukasz
 \bibitem[{Dagan et~al.(2024)Dagan, Keller, and Lascarides}]{dagan2024plancraft}
 Gautier Dagan, Frank Keller, and Alex Lascarides. 2024.
 \newblock Plancraft: an evaluation dataset for planning with {LLM} agents.
+\newblock \emph{CoRR}.
+
+\bibitem[{DeepSeek{-}AI(2025)}]{deepseek2025r1}
+DeepSeek{-}AI. 2025.
+\newblock Deepseek-r1: Incentivizing reasoning capability in llms via
+  reinforcement learning.
 \newblock \emph{CoRR}.
 
 \bibitem[{Der~Kiureghian and Ditlevsen(2009)}]{der2009aleatory}
@@ -93,11 +107,20 @@ Eric Horvitz. 1987.
   constraints.
 \newblock In \emph{UAI}.
 
-\bibitem[{Huang et~al.(2026)Huang, Huang, Leng, Liu, and Huang}]{cats2025}
+\bibitem[{Huang et~al.(2026{\natexlab{a}})Huang, Huang, Leng, Liu, and
+  Huang}]{cats2025}
 Chengsong Huang, Langlin Huang, Jixuan Leng, Jiacheng Liu, and Jiaxin Huang.
-  2026.
+  2026{\natexlab{a}}.
 \newblock Cats: Calibrated test-time scaling for efficient llm reasoning.
 \newblock In \emph{ICLR}.
+
+\bibitem[{Huang et~al.(2026{\natexlab{b}})Huang, Zhang, Shi, Ye, and
+  Zhang}]{huang2026evolverouter}
+Jiatan Huang, Zheyuan Zhang, Kaiwen Shi, Yanfang Ye, and Chuxu Zhang.
+  2026{\natexlab{b}}.
+\newblock Evolverouter: Co-evolving routing and prompt for multi-agent question
+  answering.
+\newblock \emph{CoRR}.
 
 \bibitem[{Jansen and C{\^o}t{\'e}(2023)}]{jansen2023twexpress}
 Peter Jansen and Marc-Alexandre C{\^o}t{\'e}. 2023.
@@ -124,6 +147,11 @@ Saurav Kadavath, Tom Conerly, Amanda Askell, Tom Henighan, Dawn Drain, Ethan
 \newblock Language models (mostly) know what they know.
 \newblock \emph{CoRR}.
 
+\bibitem[{Koh et~al.(2024)Koh, McAleer, Fried, and Salakhutdinov}]{koh2024tree}
+Jing~Yu Koh, Stephen McAleer, Daniel Fried, and Ruslan Salakhutdinov. 2024.
+\newblock Tree search for language model agents.
+\newblock \emph{CoRR}.
+
 \bibitem[{Lee et~al.(2026)Lee, Erdogan, John, Krishnapillai, Mahoney, Keutzer,
   and Gholami}]{catts2026}
 Nicholas Lee, Lutfi~Eren Erdogan, Chris~Joseph John, Surya Krishnapillai,
@@ -143,6 +171,13 @@ Falk Lieder and Thomas~L Griffiths. 2020.
   optimal use of limited computational resources.
 \newblock \emph{Behavioral and brain sciences}.
 
+\bibitem[{Lightman et~al.(2024)Lightman, Kosaraju, Burda, Edwards, Baker, Lee,
+  Leike, Schulman, Sutskever, and Cobbe}]{lightman2024lets}
+Hunter Lightman, Vineet Kosaraju, Yuri Burda, Harrison Edwards, Bowen Baker,
+  Teddy Lee, Jan Leike, John Schulman, Ilya Sutskever, and Karl Cobbe. 2024.
+\newblock Let's verify step by step.
+\newblock In \emph{ICLR}.
+
 \bibitem[{Liu et~al.(2025)Liu, Hu, Chu, and Choi}]{diffadapt2025}
 Xiang Liu, Xuming Hu, Xiaowen Chu, and Eunsol Choi. 2025.
 \newblock Diffadapt: Difficulty-adaptive reasoning for token-efficient {LLM}
@@ -153,6 +188,14 @@ Xiang Liu, Xuming Hu, Xiaowen Chu, and Eunsol Choi. 2025.
 Microsoft. 2024.
 \newblock Phi-3 technical report: {A} highly capable language model locally on
   your phone.
+\newblock \emph{CoRR}.
+
+\bibitem[{Misaki et~al.(2025)Misaki, Inoue, Imajuku, Kuroki, Nakamura, and
+  Akiba}]{inoue2025abmcts}
+Kou Misaki, Yuichi Inoue, Yuki Imajuku, So~Kuroki, Taishi Nakamura, and Takuya
+  Akiba. 2025.
+\newblock Wider or deeper? scaling {LLM} inference-time compute with adaptive
+  branching tree search.
 \newblock \emph{CoRR}.
 
 \bibitem[{Muennighoff et~al.(2025)Muennighoff, Yang, Shi, Li, Fei{-}Fei,
@@ -178,6 +221,14 @@ Judea Pearl. 2022.
 \newblock Comment: Understanding simpson's paradox.
 \newblock In \emph{Probabilistic and Causal Inference: The Works of Judea
   Pearl}.
+
+\bibitem[{Putta et~al.(2024)Putta, Mills, Garg, Motwani, Finn, Garg, and
+  Rafailov}]{putta2024agentq}
+Pranav Putta, Edmund Mills, Naman Garg, Sumeet Motwani, Chelsea Finn, Divyansh
+  Garg, and Rafael Rafailov. 2024.
+\newblock Agent {Q:} advanced reasoning and learning for autonomous {AI}
+  agents.
+\newblock \emph{CoRR}.
 
 \bibitem[{Raposo et~al.(2024)Raposo, Ritter, Richards, Lillicrap, Humphreys,
   and Santoro}]{raposo2024mixtureofdepths}
@@ -275,10 +326,36 @@ James Thorne, Andreas Vlachos, Christos Christodoulopoulos, and Arpit Mittal.
 \newblock Fever: a large-scale dataset for fact extraction and verification.
 \newblock In \emph{NAACL}.
 
-\bibitem[{Wang et~al.(2023)Wang, He, Xu, Li, and Chu}]{kdd2023simpson}
-Jingwei Wang, Jianshan He, Weidi Xu, Ruopeng Li, and Wei Chu. 2023.
+\bibitem[{Wan et~al.(2024)Wan, Feng, Wen, McAleer, Wen, Zhang, and
+  Wang}]{feng2024alphazero}
+Ziyu Wan, Xidong Feng, Muning Wen, Stephen~Marcus McAleer, Ying Wen, Weinan
+  Zhang, and Jun Wang. 2024.
+\newblock Alphazero-like tree-search can guide large language model decoding
+  and training.
+\newblock In \emph{ICML}.
+
+\bibitem[{Wang et~al.(2023{\natexlab{a}})Wang, He, Xu, Li, and
+  Chu}]{kdd2023simpson}
+Jingwei Wang, Jianshan He, Weidi Xu, Ruopeng Li, and Wei Chu.
+  2023{\natexlab{a}}.
 \newblock Learning to discover various simpson's paradoxes.
 \newblock In \emph{KDD}.
+
+\bibitem[{Wang et~al.(2024)Wang, Li, Shao, Xu, Dai, Li, Chen, Wu, and
+  Sui}]{wang2024mathshepherd}
+Peiyi Wang, Lei Li, Zhihong Shao, Runxin Xu, Damai Dai, Yifei Li, Deli Chen,
+  Yu~Wu, and Zhifang Sui. 2024.
+\newblock Math-shepherd: Verify and reinforce llms step-by-step without human
+  annotations.
+\newblock In \emph{ACL}.
+
+\bibitem[{Wang et~al.(2023{\natexlab{b}})Wang, Wei, Schuurmans, Le, Chi,
+  Narang, Chowdhery, and Zhou}]{wang2023selfconsistency}
+Xuezhi Wang, Jason Wei, Dale Schuurmans, Quoc~V. Le, Ed~H. Chi, Sharan Narang,
+  Aakanksha Chowdhery, and Denny Zhou. 2023{\natexlab{b}}.
+\newblock Self-consistency improves chain of thought reasoning in language
+  models.
+\newblock In \emph{ICLR}.
 
 \bibitem[{Wang et~al.(2026)Wang, Wu, Wang, Tang, Li, Yin, Ma, Li, Sun, Chen,
   and Ye}]{wang2026flare}
@@ -336,9 +413,19 @@ Andy Zhou, Kai Yan, Michal Shlapentokh{-}Rothman, Haohan Wang, and Yu{-}Xiong
   language models.
 \newblock In \emph{ICML}.
 
-\bibitem[{Zhu et~al.(2025)Zhu, Liu, Lin, Tong, Zhong, and
+\bibitem[{Zhu et~al.(2025{\natexlab{a}})Zhu, Li, Wu, Xing, Ma, Tang, Liu, Yang,
+  Liu, Jiang, Zhang, Lin, Wang, Zhang, and
+  Zhou}]{DBLP:journals/corr/abs-2506-12928}
+King Zhu, Hanhao Li, Siwei Wu, Tianshun Xing, Dehua Ma, Xiangru Tang, Minghao
+  Liu, Jian Yang, Jiaheng Liu, Yuchen~Eleanor Jiang, Changwang Zhang, Chenghua
+  Lin, Jun Wang, Ge~Zhang, and Wangchunshu Zhou. 2025{\natexlab{a}}.
+\newblock Scaling test-time compute for {LLM} agents.
+\newblock \emph{CoRR}.
+
+\bibitem[{Zhu et~al.(2025{\natexlab{b}})Zhu, Liu, Lin, Tong, Zhong, and
   Shao}]{zhu2025llmalreadyknows}
-Yubo Zhu, Dongrui Liu, Zecheng Lin, Wei Tong, Sheng Zhong, and Jing Shao. 2025.
+Yubo Zhu, Dongrui Liu, Zecheng Lin, Wei Tong, Sheng Zhong, and Jing Shao.
+  2025{\natexlab{b}}.
 \newblock The {LLM} already knows: Estimating llm-perceived question difficulty
   via hidden representations.
 \newblock In \emph{EMNLP}.

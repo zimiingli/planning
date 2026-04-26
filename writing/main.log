@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.1.24)  25 APR 2026 15:25
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.1.24)  25 APR 2026 23:04
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1020,115 +1020,132 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 61.
 (/usr/local/texlive/2023/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-(./sections/abstract.tex) (./sections/introduction.tex
+(./sections/abstract.tex
+Underfull \hbox (badness 2635) in paragraph at lines 19--20
+\OT1/ptm/m/n/10 Across six en-vi-ron-ments and three back-
+ []
+
+) (./sections/introduction.tex
 <figures/fig_intro_teaser.pdf, id=248, 237.65977pt x 163.43208pt>
 File: figures/fig_intro_teaser.pdf Graphic file (type pdf)
 <use figures/fig_intro_teaser.pdf>
 Package pdftex.def Info: figures/fig_intro_teaser.pdf  used on input line 10.
 (pdftex.def)             Requested size: 219.08614pt x 150.66107pt.
+
+Underfull \hbox (badness 1205) in paragraph at lines 18--18
+\OT1/ptm/b/n/10 half of the en-vi-ron-ments. \OT1/ptm/m/n/10 Spear-man cor-re-l
+a-tion
+ []
+
+
+Underfull \vbox (badness 5147) has occurred while \output is active []
+
  [1{/usr/local/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/
 local/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc}
 
 
 
  <./figures/fig_intro_teaser.pdf>]
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 6
-1.
-
-(/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ts1ptm.fd
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 9
+9.
+ (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
-)
-Underfull \hbox (badness 1389) in paragraph at lines 61--62
-\OT1/ptm/m/n/10.95 utility re-la-tion-ship there-fore \OT1/ptm/m/it/10.95 re-ve
-rses di-rec-tion
- []
-
-[2]) (./sections/related_work.tex
-Underfull \hbox (badness 1117) in paragraph at lines 12--23
+))
+(./sections/related_work.tex
+Underfull \hbox (badness 1117) in paragraph at lines 10--21
  []\OT1/ptm/b/n/10.95 Gating on un-cer-tainty sig-nals.[] \OT1/ptm/m/n/10.95 Si
 gnal-based
  []
 
 
-Underfull \hbox (badness 2096) in paragraph at lines 12--23
+Underfull \hbox (badness 2096) in paragraph at lines 10--21
 [][]\OT1/ptm/m/n/10.95 2025[][]; [][]Muen-nighoff et al.[][], [][]2025[][]; [][
 ]Han et al.[][],
  []
 
 
-Underfull \hbox (badness 7832) in paragraph at lines 25--40
+Underfull \hbox (badness 7832) in paragraph at lines 23--35
  []\OT1/ptm/b/n/10.95 Gating on learned dif-fi-culty.[] \OT1/ptm/m/n/10.95 Hidd
 en-state
  []
 
-)
-Underfull \hbox (badness 7704) in paragraph at lines 58--68
+[2])
+Underfull \hbox (badness 7704) in paragraph at lines 38--68
  []\OT1/ptm/b/n/10.95 Metareasoning and un-cer-tainty se-man-tics.[]
  []
 
 
-Underfull \hbox (badness 3492) in paragraph at lines 58--68
+Underfull \hbox (badness 3492) in paragraph at lines 38--68
 \OT1/ptm/m/n/10.95 Ra-tio-nal metar-ea-son-ing ([][]Rus-sell and We-fald[][],
  []
 
 (./sections/signal_utility_landscape.tex
-Underfull \vbox (badness 4156) has occurred while \output is active []
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 7
+8.
 
- [3]
-Underfull \hbox (badness 1365) in paragraph at lines 81--99
-\OT1/ptm/m/n/10.95 (\TS1/ptm/m/n/10.95 §[][]\OT1/ptm/m/n/10.95 3.2[][]). Hence 
-$\OML/cmm/m/it/10.95 ^^[$ \OT1/ptm/m/n/10.95 is not a suf-fi-cient statis-tic
- []
-
-LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 1
-17.
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
-Underfull \hbox (badness 2326) in paragraph at lines 115--126
+Underfull \hbox (badness 2326) in paragraph at lines 76--87
 \OT1/ptm/m/n/10.95 tive sig-nal it-self dif-fers across en-vi-ron-ments:
  []
 
-
-Underfull \hbox (badness 1655) in paragraph at lines 115--126
-\OT1/ptm/m/n/10.95 chance (AUC$[]$0.50), while multi-signal gates
- []
-
-
-Underfull \hbox (badness 2582) in paragraph at lines 115--126
-\OT1/ptm/m/n/10.95 AUC$[]$0.90 (Ap-pendix [][]F.3[][]). This mo-ti-vates
- []
-
-[4]
-Underfull \hbox (badness 1735) in paragraph at lines 193--206
+[3]
+Underfull \hbox (badness 1735) in paragraph at lines 143--156
 \OT1/ptm/m/n/10.95 epis-temic/aleatoric dis-tinc-tion ([][]Der Ki-ureghian
  []
 
+
+Underfull \hbox (badness 1655) in paragraph at lines 158--169
+\OT1/ptm/m/n/10.95 Re-cov-er-ing suf-fi-ciency re-quires aug-ment-ing $\OML/cmm
+/m/it/10.95 ^^[$
+ []
+
 ) (./sections/method.tex
-<figures/dial_pipeline.pdf, id=562, 629.35126pt x 487.8225pt>
+<figures/dial_pipeline.pdf, id=530, 629.35126pt x 487.8225pt>
 File: figures/dial_pipeline.pdf Graphic file (type pdf)
 <use figures/dial_pipeline.pdf>
-Package pdftex.def Info: figures/dial_pipeline.pdf  used on input line 7.
+Package pdftex.def Info: figures/dial_pipeline.pdf  used on input line 6.
 (pdftex.def)             Requested size: 455.24411pt x 352.8695pt.
- [5]
-Underfull \hbox (badness 3679) in paragraph at lines 90--106
-[]\OT1/ptm/m/n/10.95 For en-vi-ron-ments where uni-ver-sal fea-tures
+
+Underfull \hbox (badness 1092) in paragraph at lines 17--28
+\OT1/ptm/m/n/10.95 ex-plo-ration (\TS1/ptm/m/n/10.95 §[][]\OT1/ptm/m/n/10.95 4.
+1[][]), fea-ture con-struc-tion (\TS1/ptm/m/n/10.95 §[][]\OT1/ptm/m/n/10.95 4.2
+[][]),
  []
 
 
-Underfull \hbox (badness 1728) in paragraph at lines 90--106
-\OT1/ptm/m/n/10.95 gat-ing ben-e-fits from task-specific sig-nals like
+Underfull \hbox (badness 1112) in paragraph at lines 32--48
+\OT1/ptm/m/n/10.95 ($\OML/cmm/m/it/10.95 z[][]\OT1/cmr/m/n/10.95 0$\OT1/ptm/m/n
+/10.95 ). Ag-gre-gat-ing across $\OML/cmm/m/it/10.95 N[]$ \OT1/ptm/m/n/10.95 ep
+isodes
  []
 
 
-Underfull \hbox (badness 1681) in paragraph at lines 90--106
-\OT1/pcr/m/n/10.95 num[]available[]actions\OT1/ptm/m/n/10.95 , DIAL of-fers an
+Underfull \hbox (badness 1292) in paragraph at lines 32--48
+\OT1/ptm/m/n/10.95 yields an ap-prox-i-mately un-bi-ased dataset (the
+ []
+
+[4]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \hbox (badness 1264) in paragraph at lines 62--70
+ []\OT1/ptm/b/n/10.95 Estimating $\OML/cmm/m/it/10.95 U$\OT1/ptm/b/n/10.95 .[] 
+\OT1/ptm/m/n/10.95 For each ex-plored state with
+ []
+
+[5 <./figures/dial_pipeline.pdf>]
+Underfull \hbox (badness 4229) in paragraph at lines 80--87
+[]\OT1/ptm/m/n/10.95 DIAL's de-fault is a fixed set of uni-ver-
  []
 
 
-Underfull \vbox (badness 8113) has occurred while \output is active []
+Underfull \hbox (badness 1342) in paragraph at lines 88--100
+\OT1/ptm/m/n/10.95 tion layer: an LLM is given a sum-mary of
+ []
 
- [6 <./figures/dial_pipeline.pdf>]) (./sections/experiments.tex
+) (./sections/experiments.tex
 Underfull \hbox (badness 3323) in paragraph at lines 10--15
 \OT1/ptm/m/n/10.95 We eval-u-ate DIAL along three axes: does
  []
@@ -1140,12 +1157,15 @@ Underfull \hbox (badness 1946) in paragraph at lines 10--15
  []
 
 
+Underfull \vbox (badness 1675) has occurred while \output is active []
+
+
 Underfull \hbox (badness 3158) in paragraph at lines 16--31
 \OT1/ptm/m/n/10.95 et al.[][], [][]2021[][]), Web-Shop ([][]Yao et al.[][], [][
 ]2022[][]),
  []
 
-<figures/fig_pareto.pdf, id=714, 511.144pt x 329.92259pt>
+<figures/fig_pareto.pdf, id=682, 511.144pt x 329.92259pt>
 File: figures/fig_pareto.pdf Graphic file (type pdf)
 <use figures/fig_pareto.pdf>
 Package pdftex.def Info: figures/fig_pareto.pdf  used on input line 56.
@@ -1162,13 +1182,16 @@ Underfull \hbox (badness 1365) in paragraph at lines 43--63
 r, gate
  []
 
-[7]
+[6]
 Underfull \hbox (badness 1661) in paragraph at lines 94--104
 \OT1/ptm/b/n/10.95 ment. \OT1/ptm/m/n/10.95 Ta-ble [][]2[][] com-pares DIAL aga
 inst the
  []
 
-[8 <./figures/fig_pareto.pdf>]
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [7 <./figures/fig_pareto.pdf>]
 LaTeX Font Info:    Trying to load font information for OMS+ptm on input line 2
 14.
 
@@ -1177,7 +1200,7 @@ File: omsptm.fd
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10.95> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 214.
-<figures/fig_temporal_shift.pdf, id=814, 287.24753pt x 178.99762pt>
+<figures/fig_temporal_shift.pdf, id=786, 287.24753pt x 178.99762pt>
 File: figures/fig_temporal_shift.pdf Graphic file (type pdf)
 <use figures/fig_temporal_shift.pdf>
 Package pdftex.def Info: figures/fig_temporal_shift.pdf  used on input line 236
@@ -1195,7 +1218,7 @@ Underfull \hbox (badness 7379) in paragraph at lines 259--270
  Two-
  []
 
-
+[8 <./figures/fig_temporal_shift.pdf>]
 Underfull \hbox (badness 3271) in paragraph at lines 272--278
  []\OT1/ptm/b/n/10.95 P3: Sig-nal iden-tity align-ment.[] \OT1/ptm/m/n/10.95 Th
 e Two-
@@ -1216,86 +1239,81 @@ Underfull \hbox (badness 2564) in paragraph at lines 272--278
 \OT1/ptm/m/n/10.95 en-vi-ron-ments. Ap-pendix [][]G.2[][] con-firms this:
  []
 
-[9 <./figures/fig_temporal_shift.pdf>]) (./sections/discussion.tex)
+) (./sections/discussion.tex)
 Underfull \hbox (badness 1117) in paragraph at lines 7--76
 \OT1/ptm/m/n/10.95 tives like SEAG (47.3% at 17.19$\OMS/cmsy/m/n/10.95 ^^B$\OT1
 /ptm/m/n/10.95 ) are only
  []
 
 (./sections/conclusion.tex)
-Underfull \hbox (badness 1910) in paragraph at lines 6--78
-\OT1/ptm/m/n/10.95 direction assumption---higher un-cer-tainty in-di-
- []
-
-
 Underfull \hbox (badness 1184) in paragraph at lines 6--78
-\OT1/ptm/m/n/10.95 un-cer-tainty sig-nal alone, no mat-ter how it is
+\OT1/ptm/m/n/10.95 re-la-tion-ship re-verses across both en-vi-ron-ments
  []
 
-[10] (./main.bbl
-Underfull \hbox (badness 1077) in paragraph at lines 19--24
+[9] (./main.bbl
+Underfull \hbox (badness 1077) in paragraph at lines 27--32
 \OT1/ptm/m/n/10 Plap-pert, Jerry Tworek, Ja-cob Hilton, Rei-ichiro
  []
 
 
-Underfull \hbox (badness 1552) in paragraph at lines 31--34
+Underfull \hbox (badness 1552) in paragraph at lines 45--48
 []\OT1/ptm/m/n/10 Armen Der Ki-ureghian and Ove Ditlevsen. 2009.
  []
 
 
-Underfull \hbox (badness 1189) in paragraph at lines 37--42
+Underfull \hbox (badness 1189) in paragraph at lines 51--56
 \OT1/ptm/m/n/10 Zhou, Yu-tao Zhu, Ji-Rong Wen, and Zhicheng
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 46--52
+Underfull \hbox (badness 10000) in paragraph at lines 60--66
 []\OT1/ptm/m/n/10 Mostafa El-houshi, Ak-shat Shri-vas-tava, Di-ana
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 103--107
+Underfull \hbox (badness 10000) in paragraph at lines 126--130
 []\OT1/ptm/m/n/10 Peter Jansen and Marc-Alexandre C[]ot[]e. 2023.
  []
 
 
-Underfull \hbox (badness 1584) in paragraph at lines 119--126
+Underfull \hbox (badness 1584) in paragraph at lines 142--149
 \OT1/ptm/m/n/10 Henighan, Dawn Drain, Ethan Perez, Nicholas
  []
 
 
-Underfull \hbox (badness 1067) in paragraph at lines 119--126
+Underfull \hbox (badness 1067) in paragraph at lines 142--149
 \OT1/ptm/m/n/10 Tran-Johnson, Scott John-ston, Sheer El Showk,
  []
 
-[11]
-Underfull \hbox (badness 5288) in paragraph at lines 204--207
+[10]
+Underfull \hbox (badness 5288) in paragraph at lines 255--258
 []\OT1/ptm/m/n/10 Nicol[]o De Sab-bata, Theodore R. Sumers, and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 273--277
+Underfull \hbox (badness 10000) in paragraph at lines 324--328
 []\OT1/ptm/m/n/10 James Thorne, An-dreas Vla-chos, Chris-tos
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 273--277
+Underfull \hbox (badness 10000) in paragraph at lines 324--328
 \OT1/ptm/m/n/10 Christodoulopou-los, and Arpit Mit-tal. 2018.
  []
 
-
-Underfull \hbox (badness 1748) in paragraph at lines 326--330
+[11]
+Underfull \hbox (badness 1748) in paragraph at lines 403--407
 \OT1/ptm/m/n/10 Huang, Caim-ing Xiong, and Chien-Sheng Wu.
  []
 
-) [12] (./sections/appendix.tex
+) (./sections/appendix.tex
 Underfull \hbox (badness 2486) in paragraph at lines 14--32
 \OT1/ptm/m/n/10.95 meth-ods op-ti-mize single-turn chain-of-thought
  []
 
 
-Underfull \hbox (badness 1838) in paragraph at lines 14--32
-\OT1/ptm/m/n/10.95 to ex-tend think-ing ([][]Lee et al.[][], [][]2025[][]; [][]
-Huang
+Underfull \hbox (badness 1275) in paragraph at lines 14--32
+[][]\OT1/ptm/m/n/10.95 2026a[][]; [][]Jin et al.[][], [][]2026[][]; [][]Sharma 
+and Chopra[][],
  []
 
 
@@ -1310,65 +1328,67 @@ Underfull \hbox (badness 1895) in paragraph at lines 33--47
 arn
  []
 
-
+[12]
 Underfull \hbox (badness 3492) in paragraph at lines 83--95
 \OT1/ptm/m/n/10.95 Rational metar-ea-son-ing ([][]Rus-sell and We-fald[][],
  []
 
-[13]
-Underfull \hbox (badness 4699) in paragraph at lines 118--124
-\OT1/ptm/m/n/10.95 et al.[][], [][]2023a[][]), LATS ([][]Zhou et al.[][], [][]2
-024[][]),
+
+Underfull \hbox (badness 2326) in paragraph at lines 118--145
+\OT1/ptm/m/n/10.95 head meth-ods or-ga-nize multi-step ex-plo-ration
  []
 
 
-Underfull \hbox (badness 1552) in paragraph at lines 170--178
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [13]
+Underfull \hbox (badness 1552) in paragraph at lines 191--199
 []\OT1/ptm/m/n/10.95 The propo-si-tion strength-ens the ear-lier ``no
  []
 
 
-Underfull \hbox (badness 1509) in paragraph at lines 227--236
+Underfull \hbox (badness 1509) in paragraph at lines 248--257
  []\OT1/ptm/b/n/10.95 Corollary (ne-ces-sity of di-rec-tion dis-cov-ery).[]
  []
 
-[14]
-Underfull \hbox (badness 3746) in paragraph at lines 238--251
+
+Underfull \hbox (badness 3746) in paragraph at lines 259--272
  []\OT1/ptm/b/n/10.95 What re-cov-ers suf-fi-ciency.[] \OT1/ptm/m/n/10.95 The p
 ropo-si-tion
  []
 
 
-Underfull \hbox (badness 1097) in paragraph at lines 238--251
+Underfull \hbox (badness 1097) in paragraph at lines 259--272
 \OT1/ptm/m/n/10.95 con-di-tion on: any fea-ture $\OML/cmm/m/it/10.95 ^^^\OT1/cm
 r/m/n/10.95 (\OML/cmm/m/it/10.95 s\OT1/cmr/m/n/10.95 )$ \OT1/ptm/m/n/10.95 that
  is in-for-
  []
 
 
-Underfull \hbox (badness 1496) in paragraph at lines 238--251
+Underfull \hbox (badness 1496) in paragraph at lines 259--272
 \OT1/ptm/m/n/10.95 ma-tive about the la-tent type $\OML/cmm/m/it/10.95 ^^\\OT1/
 cmr/m/n/10.95 (\OML/cmm/m/it/10.95 s\OT1/cmr/m/n/10.95 )$ \OT1/ptm/m/n/10.95 re
 -cov-ers a
  []
 
-
-Underfull \hbox (badness 2856) in paragraph at lines 267--277
+[14]
+Underfull \hbox (badness 2856) in paragraph at lines 288--298
 \OT1/ptm/m/n/10.95 ti-mizer's harm mag-ni-tude. Em-pir-i-cally this
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 297--307
+Underfull \hbox (badness 10000) in paragraph at lines 318--328
 \OT1/ptm/m/n/10.95 In the clas-si-cal VOC frame-work ([][]Rus-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 297--307
+Underfull \hbox (badness 10000) in paragraph at lines 318--328
 \OT1/ptm/m/n/10.95 sell and We-fald[][], [][]1991[][]), $[]\OT1/cmr/m/n/10.95 (
 \OML/cmm/m/it/10.95 T; s\OT1/cmr/m/n/10.95 ) =
  []
 
 
-Underfull \hbox (badness 4048) in paragraph at lines 297--307
+Underfull \hbox (badness 4048) in paragraph at lines 318--328
 \U/msb/m/n/10.95 E\OT1/cmr/m/n/10.95 [[](\OML/cmm/m/it/10.95 V\OT1/cmr/m/n/10.9
 5 (\OML/cmm/m/it/10.95 a[]\OT1/cmr/m/n/10.95 )\OML/cmm/m/it/10.95 ; V\OT1/cmr/m
 /n/10.95 (\OML/cmm/m/it/10.95 a[]\OT1/cmr/m/n/10.95 ))] \OMS/cmsy/m/n/10.95 ^^@
@@ -1377,12 +1397,12 @@ Underfull \hbox (badness 4048) in paragraph at lines 297--307
  []
 
 
-Underfull \hbox (badness 1082) in paragraph at lines 308--325
+Underfull \hbox (badness 1082) in paragraph at lines 329--346
 []\OT1/ptm/m/n/10.95 Under evaluator-executor iden-tity, VOC can
  []
 
 
-Underfull \hbox (badness 1571) in paragraph at lines 308--325
+Underfull \hbox (badness 1571) in paragraph at lines 329--346
 \OT1/ptm/m/n/10.95 be neg-a-tive: $[]\OT1/cmr/m/n/10.95 (\OML/cmm/m/it/10.95 T;
  s\OT1/cmr/m/n/10.95 ) = \U/msb/m/n/10.95 E\OT1/cmr/m/n/10.95 [\OML/cmm/m/it/10
 .95 V\OT1/cmr/m/n/10.95 (\OML/cmm/m/it/10.95 a[]\OT1/cmr/m/n/10.95 (\OML/cmm/m/
@@ -1390,120 +1410,117 @@ it/10.95 s\OT1/cmr/m/n/10.95 ))] \OMS/cmsy/m/n/10.95 ^^@
  []
 
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 343.
+put line 364.
 
-Underfull \hbox (badness 7099) in paragraph at lines 375--379
+Underfull \hbox (badness 7099) in paragraph at lines 396--400
 []\OT1/ptm/m/n/9 Fit $\OML/cmm/m/it/9 `[]$\OT1/ptm/m/n/9 -regularized lo-gis-ti
 c re-gres-sion: $\OT1/cmr/bx/n/9 w\OML/cmm/m/it/9 ; b \OMS/cmsy/m/n/9  
  []
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [15]
-Underfull \hbox (badness 1902) in paragraph at lines 441--447
+[15]
+Underfull \hbox (badness 1902) in paragraph at lines 462--468
 \OT1/ptm/m/n/10.95 from negative-utility states and to pro-duce a
  []
 
 
-Underfull \hbox (badness 1960) in paragraph at lines 441--447
+Underfull \hbox (badness 1960) in paragraph at lines 462--468
 \OT1/ptm/m/n/10.95 Python func-tion that ex-tracts ex-actly 5 task-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 520--528
+Underfull \hbox (badness 10000) in paragraph at lines 541--549
 []\OT1/pcr/m/n/9 You are an AI agent that has
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 520--528
+Underfull \hbox (badness 10000) in paragraph at lines 541--549
 \OT1/pcr/m/n/9 been exploring an interactive
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 520--528
+Underfull \hbox (badness 10000) in paragraph at lines 541--549
 \OT1/pcr/m/n/9 environment. During exploration,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 520--528
+Underfull \hbox (badness 10000) in paragraph at lines 541--549
 \OT1/pcr/m/n/9 you sometimes performed ``rollouts''
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 520--528
+Underfull \hbox (badness 10000) in paragraph at lines 541--549
 \OT1/pcr/m/n/9 (additional computation) to improve
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 520--528
+Underfull \hbox (badness 10000) in paragraph at lines 541--549
 \OT1/pcr/m/n/9 your decisions. Sometimes the
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 520--528
+Underfull \hbox (badness 10000) in paragraph at lines 541--549
 \OT1/pcr/m/n/9 rollout was useful (positive
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 520--528
+Underfull \hbox (badness 10000) in paragraph at lines 541--549
 \OT1/pcr/m/n/9 Your task: Analyze the patterns in
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 520--528
+Underfull \hbox (badness 10000) in paragraph at lines 541--549
 \OT1/pcr/m/n/9 your experience and write a Python
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 520--528
+Underfull \hbox (badness 10000) in paragraph at lines 541--549
 \OT1/pcr/m/n/9 function that extracts features from
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 520--528
+Underfull \hbox (badness 10000) in paragraph at lines 541--549
 \OT1/pcr/m/n/9 the state text that could predict
  []
 
 
-Underfull \hbox (badness 1418) in paragraph at lines 520--528
+Underfull \hbox (badness 1418) in paragraph at lines 541--549
 \OT1/ptm/m/it/9 [Ex-plo-ration statis-tics and rep-re-sen-ta-tive ex-am-ples
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 520--528
+Underfull \hbox (badness 10000) in paragraph at lines 541--549
 \OT1/pcr/m/n/9 - Return a dict with string keys and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 520--528
+Underfull \hbox (badness 10000) in paragraph at lines 541--549
 \OT1/pcr/m/n/9 - Extract exactly 5 features based
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 520--528
+Underfull \hbox (badness 10000) in paragraph at lines 541--549
 \OT1/pcr/m/n/9 - Focus on features that DIFFER
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 520--528
+Underfull \hbox (badness 10000) in paragraph at lines 541--549
 \OT1/pcr/m/n/9 between useful and not-useful
  []
 
 [16]
-Underfull \hbox (badness 3158) in paragraph at lines 596--607
+Underfull \hbox (badness 3158) in paragraph at lines 617--628
 []\OT1/ptm/b/n/10.95 Per-action eval-u-a-tion \OT1/ptm/m/n/10.95 (Hot-potQA, FE
 VER,
  []
 
 
-Underfull \hbox (badness 1412) in paragraph at lines 607--610
+Underfull \hbox (badness 1412) in paragraph at lines 628--631
 []$\OML/cmm/m/it/10.95 K$\OT1/ptm/b/n/10.95 -variant sam-pling \OT1/ptm/m/n/10.
 95 (APPS). Sam-ple $\OML/cmm/m/it/10.95 K[]\OT1/cmr/m/n/10.95 3$
  []
 
 [17]
-Overfull \hbox (2.19365pt too wide) in paragraph at lines 682--682
+Overfull \hbox (2.19365pt too wide) in paragraph at lines 722--722
 []|\OT1/ptm/m/n/9 Granularity|  
  []
 
@@ -1511,22 +1528,25 @@ Overfull \hbox (2.19365pt too wide) in paragraph at lines 682--682
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 (./experiment/tab_cost_components/tab_cost_components.tex)
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
 (./experiment/tab_full_results/tab_full_results.tex
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 )
-Underfull \hbox (badness 1194) in paragraph at lines 732--737
+Underfull \hbox (badness 1194) in paragraph at lines 772--777
 \OT1/ptm/m/n/10.95 (57.3%) ex-ceeds the best base-line (s1[]budget,
  []
 
 
-Underfull \hbox (badness 1975) in paragraph at lines 732--737
+Underfull \hbox (badness 1975) in paragraph at lines 772--777
 \OT1/ptm/m/n/10.95 43.0%) by 14.3pp at lower cost (2.56$\OMS/cmsy/m/n/10.95 ^^B
 $ \OT1/ptm/m/n/10.95 vs.
+ []
+
+
+Underfull \hbox (badness 3302) in paragraph at lines 801--817
+\OT1/ptm/m/it/10.95 tion-al-ity \OT1/ptm/m/n/10.95 di-rectly, as ex-pected for 
+a choice-
  []
 
 [18]
@@ -1548,94 +1568,84 @@ Overfull \vbox (4.36574pt too high) has occurred while \output is active []
 
 
 [19]
-Underfull \hbox (badness 3302) in paragraph at lines 761--777
-\OT1/ptm/m/it/10.95 tion-al-ity \OT1/ptm/m/n/10.95 di-rectly, as ex-pected for 
-a choice-
- []
-
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-Underfull \hbox (badness 1097) in paragraph at lines 819--831
+Underfull \hbox (badness 1097) in paragraph at lines 859--871
 \OT1/ptm/m/n/10.95 ben-e-fit most from LLM fea-tures: Web-Shop's
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 819--831
+Underfull \hbox (badness 10000) in paragraph at lines 859--871
 \OT1/ptm/m/n/10.95 while TWEx-press's ex-plo-ration me-chan-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 819--831
+Underfull \hbox (badness 10000) in paragraph at lines 859--871
 \OT1/ptm/m/n/10.95 ics are re-flected in \OT1/pcr/m/n/10.95 closed[]ratio \OT1/
 ptm/m/n/10.95 and
  []
 
 
-Underfull \hbox (badness 2384) in paragraph at lines 819--831
+Underfull \hbox (badness 2384) in paragraph at lines 859--871
 \OT1/pcr/m/n/10.95 action[]look[]around\OT1/ptm/m/n/10.95 . In con-trast, Plan-
 
  []
 
 
-Underfull \hbox (badness 1694) in paragraph at lines 819--831
+Underfull \hbox (badness 1694) in paragraph at lines 859--871
 \OT1/ptm/m/n/10.95 craft's rollout-harmful na-ture means no LLM
  []
 
 
-Underfull \hbox (badness 1142) in paragraph at lines 819--831
-\OT1/ptm/m/n/10.95 fea-ture im-proves prediction---LASSO cor-rectly
- []
-
-
-Underfull \hbox (badness 1117) in paragraph at lines 819--831
-\OT1/ptm/m/n/10.95 fil-ters all five pro-pos-als. This pat-tern aligns
+Underfull \hbox (badness 1158) in paragraph at lines 859--871
+\OT1/ptm/m/n/10.95 fea-ture im-proves pre-dic-tion, and LASSO cor-
  []
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2023/02/27 1.9 listings language file
 )
-LaTeX Font Info:    Trying to load font information for TS1+pcr on input line 8
-70.
+LaTeX Font Info:    Trying to load font information for TS1+pcr on input line 9
+10.
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ts1pcr.fd
 File: ts1pcr.fd 2001/06/04 font definitions for TS1/pcr.
 )
 
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 887.
+LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\sigma' on input line 887.
+(hyperref)                removing `math shift' on input line 927.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 887.
+(hyperref)                removing `\sigma' on input line 927.
 
 
-Underfull \hbox (badness 1184) in paragraph at lines 890--909
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 927.
+
+
+Underfull \hbox (badness 1184) in paragraph at lines 930--949
 \OT1/ptm/m/n/10.95 Table [][]12[][] is the em-pir-i-cal in-stan-ti-a-tion of th
 e
  []
 
 [20]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Underfull \hbox (badness 1237) in paragraph at lines 994--1003
+Underfull \hbox (badness 1237) in paragraph at lines 1034--1043
 \OT1/ptm/m/n/10.95 en-vi-ron-ments: Hot-potQA shows the strongest
  []
 
 
-Underfull \hbox (badness 1831) in paragraph at lines 994--1003
+Underfull \hbox (badness 1831) in paragraph at lines 1034--1043
 \OT1/ptm/m/n/10.95 shift ($\OT1/cmr/m/n/10.95 ^^A[][]0\OML/cmm/m/it/10.95 :\OT1
 /cmr/m/n/10.95 261$\OT1/ptm/m/n/10.95 ), with late-step en-tropy re-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1012--1018
+Underfull \hbox (badness 10000) in paragraph at lines 1052--1058
 \OT1/ptm/m/n/10.95 prox-ies (\OT1/pcr/m/n/10.95 num[]available[]actions\OT1/ptm
 /m/n/10.95 ) dom-i-
  []
@@ -1646,80 +1656,68 @@ Underfull \hbox (badness 2726) in paragraph at lines 5--5
  []
 
 )
-Underfull \vbox (badness 1342) has occurred while \output is active []
-
- [21]
-Underfull \hbox (badness 1975) in paragraph at lines 1046--1056
+Underfull \hbox (badness 1975) in paragraph at lines 1086--1096
 \OT1/ptm/m/n/10.95 indexed for-mu-la-tion of \TS1/ptm/m/n/10.95 §[][]\OT1/ptm/m
 /n/10.95 3.2[][]: the same task
  []
 
-<figures/fig_multi_backbone_heatmap.pdf, id=1181, 495.94409pt x 219.44032pt>
+<figures/fig_multi_backbone_heatmap.pdf, id=1190, 495.94409pt x 219.44032pt>
 File: figures/fig_multi_backbone_heatmap.pdf Graphic file (type pdf)
 <use figures/fig_multi_backbone_heatmap.pdf>
 Package pdftex.def Info: figures/fig_multi_backbone_heatmap.pdf  used on input 
-line 1059.
+line 1099.
 (pdftex.def)             Requested size: 455.24411pt x 201.43216pt.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-Underfull \hbox (badness 1067) in paragraph at lines 1067--1073
+Underfull \hbox (badness 1067) in paragraph at lines 1107--1113
 \OT1/ptm/m/n/10.95 or be-low base[]only (7.2% base $\OMS/cmsy/m/n/10.95 !$ \OT1
 /ptm/m/n/10.95 8.5--23%),
  []
 
-<figures/fig_multi_backbone_sr.pdf, id=1184, 504.62967pt x 297.13573pt>
+<figures/fig_multi_backbone_sr.pdf, id=1193, 504.62967pt x 297.13573pt>
 File: figures/fig_multi_backbone_sr.pdf Graphic file (type pdf)
 <use figures/fig_multi_backbone_sr.pdf>
 Package pdftex.def Info: figures/fig_multi_backbone_sr.pdf  used on input line 
-1076.
+1116.
 (pdftex.def)             Requested size: 455.24411pt x 268.05443pt.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
+[21]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-Underfull \hbox (badness 3148) in paragraph at lines 1098--1108
-\OT1/ptm/m/n/10.95 both rely on the \OT1/ptm/m/it/10.95 ex-act \OT1/ptm/m/n/10.
-95 spar-sity in-duced by
- []
-
-
-Underfull \hbox (badness 1132) in paragraph at lines 1124--1129
+ [22 <./figures/fig_multi_backbone_heatmap.pdf> <./figures/fig_multi_backbone_s
+r.pdf>]
+Underfull \hbox (badness 1132) in paragraph at lines 1164--1169
 \OT1/ptm/m/n/10.95 strong), Web-Shop ($\OMS/cmsy/m/n/10.95 j\OML/cmm/m/it/10.95
  ^^Z\OMS/cmsy/m/n/10.95 j[]\OT1/cmr/m/n/10.95 0\OML/cmm/m/it/10.95 :\OT1/cmr/m/
 n/10.95 444$\OT1/ptm/m/n/10.95 , mod-er-ate), and
  []
 
 
-Underfull \hbox (badness 3557) in paragraph at lines 1160--1169
+Underfull \hbox (badness 3557) in paragraph at lines 1200--1209
 \OT1/ptm/m/it/10.95 Note. $\OML/cmm/m/it/10.95 `[]$ \OT1/ptm/m/n/10.95 #nz val-
 ues are mea-sured across
  []
 
-[22]
-Underfull \vbox (badness 10000) has occurred while \output is active []
 
-
-Underfull \hbox (badness 2698) in paragraph at lines 1189--1197
+Underfull \hbox (badness 2698) in paragraph at lines 1229--1237
 \OT1/ptm/b/n/10.95 der weak sig-nals.[] \OT1/ptm/m/n/10.95 On weak-signal en-vi
 -ron-
  []
 
-
-Underfull \vbox (badness 2073) has occurred while \output is active []
-
- [23 <./figures/fig_multi_backbone_heatmap.pdf> <./figures/fig_multi_backbone_s
-r.pdf>]
-Underfull \hbox (badness 1400) in paragraph at lines 1247--1254
+[23]
+Underfull \hbox (badness 1400) in paragraph at lines 1287--1294
 \OT1/ptm/m/n/10.95 (MLP 45.3% $\OML/cmm/m/it/10.95 <$ \OT1/ptm/m/n/10.95 lo-gis
 -tic 62.0%), be-cause the
  []
 
-<figures/fig_trigger_adapt.pdf, id=1351, 504.85918pt x 274.38448pt>
+<figures/fig_trigger_adapt.pdf, id=1368, 504.85918pt x 274.38448pt>
 File: figures/fig_trigger_adapt.pdf Graphic file (type pdf)
 <use figures/fig_trigger_adapt.pdf>
-Package pdftex.def Info: figures/fig_trigger_adapt.pdf  used on input line 1276
+Package pdftex.def Info: figures/fig_trigger_adapt.pdf  used on input line 1316
 .
 (pdftex.def)             Requested size: 455.24411pt x 247.4252pt.
 
@@ -1730,13 +1728,13 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: B3C351A8D41A55A9446D6E8F6C25F45D;10461.
  ) 
 Here is how much of TeX's memory you used:
- 31946 strings out of 476025
- 632682 string characters out of 5790017
- 2010388 words of memory out of 5000000
- 51561 multiletter control sequences out of 15000+600000
+ 31989 strings out of 476025
+ 633794 string characters out of 5790017
+ 2013388 words of memory out of 5000000
+ 51594 multiletter control sequences out of 15000+600000
  552151 words of font info for 127 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 93i,14n,99p,1691b,1883s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 93i,14n,99p,1347b,1883s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb><
 /usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></u
@@ -1762,10 +1760,10 @@ s/type1/urw/times/utmb8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/ur
 w/times/utmr8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/times/ut
 mri8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/zapfding/uzdr.pfb
 >
-Output written on main.pdf (25 pages, 844365 bytes).
+Output written on main.pdf (25 pages, 844485 bytes).
 PDF statistics:
- 1590 PDF objects out of 1728 (max. 8388607)
- 1050 compressed objects within 11 object streams
- 218 named destinations out of 1000 (max. 500000)
+ 1605 PDF objects out of 1728 (max. 8388607)
+ 1066 compressed objects within 11 object streams
+ 228 named destinations out of 1000 (max. 500000)
  600 words of extra memory for PDF output out of 10000 (max. 10000000)
 

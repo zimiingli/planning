@@ -105,7 +105,7 @@ identifies a new instance: within Type~I states, entropy negatively
 predicts utility; within Type~D states, entropy positively predicts
 utility; but the marginal correlation depends on the mixture
 proportion $p_I$, which is itself an (environment, backbone)-indexed
-quantity---a state's status as Type~I or Type~D depends on what the
+quantity, since a state's status as Type~I or Type~D depends on what the
 agent already encodes, so the same environment can sit on opposite
 sides of the reversal threshold $p_I^*$ under different LLMs. This
 makes direction reversal a structural consequence of aggregating
@@ -115,12 +115,33 @@ Table~\ref{tab:signal-discovery}.
 
 \subsection{Search-Based Optimizers}
 
-Search methods such as Tree of Thoughts~\cite{yao2023tree},
-LATS~\cite{zhou2024lats}, RAP~\cite{hao2023reasoning}, and
-FLARE~\cite{wang2026flare} improve \emph{what} the optimizer does
-through tree search, value propagation, and lookahead evaluation.
-These are orthogonal to our work: we control \emph{when} to invoke
-the optimizer, and our gate composes with any such procedure.
+A growing body of work targets \emph{what} the test-time compute
+procedure does, rather than \emph{when} it should be invoked.
+Tree-search and lookahead methods organize multi-step
+exploration through value propagation and AlphaZero-style
+rollouts~\cite{yao2023tree,zhou2024lats,hao2023reasoning,wang2026flare,feng2024alphazero,inoue2025abmcts}.
+Repeated independent sampling with majority aggregation
+exploits smooth coverage gains as the sample budget
+grows~\cite{wang2023selfconsistency,brown2024monkeys}, while
+verifiers trained over intermediate reasoning steps rerank
+candidates or steer
+search~\cite{lightman2024lets,wang2024mathshepherd}. At a
+higher level, compute-allocation analyses and reasoning models
+study how a fixed budget should be distributed across these
+mechanisms or absorbed into long latent
+traces~\cite{snell2024scaling,deepseek2025r1}.
+Closer to our setting, agent-specific work adapts these
+mechanisms to interactive, multi-step
+environments by applying tree search to web
+tasks~\cite{koh2024tree}, coupling MCTS with preference
+learning over agent
+trajectories~\cite{putta2024agentq}, and characterizing scaling
+behavior for agent
+rollouts~\cite{DBLP:journals/corr/abs-2506-12928,huang2026evolverouter}.
+All of this work specifies the rollout procedure that runs at a
+triggered step. Our contribution is orthogonal: a per-step gate
+decides \emph{whether} such a procedure should run, and the gate
+composes with any of the above as a drop-in test-time optimizer.
 
 
 % ============================================================
@@ -173,7 +194,7 @@ gate works'' formulation in two ways. First, it rules out
 threshold-based policies, so non-monotone or U-shaped
 calibrators are also covered. Second, it identifies the
 underlying obstruction as an information-theoretic property of
-$\sigma$ itself---one that survives any post-processing of the
+$\sigma$ itself, one that survives any post-processing of the
 signal.
 
 \begin{proof}
@@ -269,7 +290,7 @@ where $c$ is a constant that depends on the optimizer's harm
 magnitude. Empirically this scaling is clean: HotpotQA
 ($|\rho|{=}0.494$) loses 37.0\,pp, FEVER ($|\rho|{=}0.619$)
 loses 36.8\,pp, WebShop ($|\rho|{=}0.444$) loses 23.2\,pp,
-while Plancraft ($|\rho|{=}0.016$) loses only 2.8\,pp---the
+while Plancraft ($|\rho|{=}0.016$) loses only 2.8\,pp; the
 slope of damage in $|\rho|$ is the slope of calibration
 quality, since better-calibrated gates concentrate their firing
 on higher-$|\sigma|$ states which, when the direction is wrong,
@@ -312,7 +333,7 @@ If $T$ systematically selects worse actions in Type~I states,
 $\mathrm{VOC} < 0$ for those states. This explains why
 wrong-direction gating is not merely wasteful
 ($\mathrm{VOC} = 0$) but actively harmful
-($\mathrm{VOC} < 0$)---and why \emph{better-calibrated} gates
+($\mathrm{VOC} < 0$), and why \emph{better-calibrated} gates
 fire more precisely on these $\mathrm{VOC} < 0$ states, so
 calibration improvements amplify rather than mitigate the harm
 (Table~\ref{tab:wrong-direction} and
@@ -717,7 +738,7 @@ DIAL incurs a one-time exploration cost of
 $N_{\text{explore}}{=}50$ episodes per (environment, backbone)
 deployment and sub-second offline gate fitting; at deployment the
 gate adds zero per-step inference cost beyond the feature
-evaluation and a single sigmoid---no extra LLM call, no $K$-way
+evaluation and a single sigmoid: no extra LLM call, no $K$-way
 voting, and no calibration query.
 
 \input{experiment/tab_cost_components/tab_cost_components.tex}
@@ -779,7 +800,7 @@ Section~\ref{sec:empirical-landscape}.
 
 The LASSO coefficient matrix identifies, per environment, which
 auxiliary features carry information about the latent state
-type $\tau$---the components of $\phi(s)$ that lift $\sigma$
+type $\tau$, the components of $\phi(s)$ that lift $\sigma$
 toward sufficiency for VOC, as predicted by
 App~\ref{app:proof-necessity}. \texttt{step\_count} is
 informative in 4 of 5 environments with significant signal: it
@@ -841,7 +862,7 @@ features: WebShop's choice-dominated interface is well captured by
 TWExpress's exploration mechanics are reflected in
 \texttt{closed\_ratio} and \texttt{action\_look\_around}. In
 contrast, Plancraft's rollout-harmful nature means no LLM feature
-improves prediction---LASSO correctly filters all five proposals.
+improves prediction, and LASSO correctly filters all five proposals.
 This pattern aligns with the LLM ablation results
 (Table~\ref{tab:llm-ablation}): the environment where LLM features
 contribute most to SR (FEVER, $+$9.1\,pp) is precisely where the
@@ -911,7 +932,7 @@ the sufficient-statistic claim of
 \S\ref{sec:empirical-landscape}: it measures, on held-out data,
 how much of $\mathrm{VOC}$ each gate family can recover. Single
 entropy is near chance (AUC${\approx}$0.50) in every
-environment---the operational signature of $\sigma$'s
+environment, the operational signature of $\sigma$'s
 insufficiency for VOC. Multi-signal logistic gates that augment
 $\sigma$ with universal auxiliary features reach 0.74--0.92,
 recovering most of the available signal; hidden-state probes
@@ -923,7 +944,7 @@ much auxiliary conditioning is required to lift $\sigma$ toward
 sufficiency for VOC; the residual gap between multi-signal and
 hidden-state probe is the sufficiency that universal features
 fail to capture (small in most environments). The bottleneck is
-signal \emph{combination}, not gate \emph{capacity}---and the
+signal \emph{combination}, not gate \emph{capacity}, and the
 multi-signal LR row is the empirical case for DIAL's design.
 
 \begin{table}[H]
@@ -1068,7 +1089,7 @@ Qwen3-4B-Instruct (Alibaba, 4B), Phi-3.5-mini-instruct (Microsoft,
 environments. Table~\ref{tab:full-results} reports full results.
 This appendix supports the (environment, backbone)-indexed
 formulation of \S\ref{sec:toy-model}: the same task changes
-$p_I$---and, when it crosses $p_I^*$, the sign of $\rho$---when
+$p_I$ (and, when it crosses $p_I^*$, the sign of $\rho$) when
 the backbone changes, so backbone-level reversal is a prediction
 of the two-source model rather than a confound to be controlled
 for.
@@ -1117,8 +1138,8 @@ is not an artifact of trajectory length.
 The signed-weight diagnostic of \S\ref{sec:learn} and DIAL's
 robustness to noisy LLM-proposed features (\S\ref{sec:reason}) both
 rely on the \emph{exact} sparsity induced by the $\ell_1$ penalty
-in Eq.~\eqref{eq:lasso}. To verify that $\ell_1$ specifically---
-rather than any shrinkage or selection mechanism---is responsible
+in Eq.~\eqref{eq:lasso}. To verify that $\ell_1$ specifically,
+rather than any shrinkage or selection mechanism, is responsible
 for these properties, we ablate the regularizer while holding all
 other pipeline components fixed: same exploration dataset
 $\mathcal{D}$, same candidate feature pool $\phi_{\text{cand}}$,
@@ -1198,7 +1219,7 @@ under $\ell_2$, every feature retains a small non-zero weight,
 collapsing the clean \{informative, uninformative\} partition of
 \S\ref{sec:learn} into a continuous ranking. The signed-weight
 summary no longer reads off which signals the environment treats
-as informative---it merely ranks them. Reports of ``non-zero
+as informative; it merely ranks them. Reports of ``non-zero
 weights per environment'' in the main text (e.g., the direction
 analyses of Table~\ref{tab:wrong-direction}) are only
 interpretable under exact sparsity.
@@ -1211,7 +1232,7 @@ $|\rho|{\approx}0.02$, any 250-sample fit without penalty will
 assign large weights to whichever feature happens to
 pseudo-correlate on the training split. $\ell_1$'s shrinkage
 absorbs this noise into the bias term, producing a gate that
-triggers conservatively---consistent with the observed low
+triggers conservatively, consistent with the observed low
 trigger rate in Plancraft (Figure~\ref{fig:trigger-adapt}).
 
 \paragraph{$\ell_1$ vs.\ MI top-$k$ + unregularized: joint
