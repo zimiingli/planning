@@ -43,8 +43,7 @@ Full specifications are in Appendix~\ref{app:method-comparison}.
 \paragraph{Metrics.} SR (success rate, $\uparrow$) and Cost
 ($\times$base, $\downarrow$): total deployment tokens normalized by
 base\_only tokens per episode. This metric counts \emph{all} LLM
-calls, including base proposer, gate overhead (CATTS $K{=}5$ voting,
-AUQ confidence queries), and rollout calls, ensuring that per-step
+calls, including base proposer, gate overhead, and rollout calls, ensuring that per-step
 overhead is not hidden. Calibration or exploration overhead is
 excluded for all methods.
 A method Pareto-dominates another if $\text{SR} \geq$ and
