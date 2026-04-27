@@ -1,8 +1,8 @@
 # Rebuttal Preparation: New Benchmark Experiments
 
 > Created: 2026-04-17
-> Last updated: 2026-04-17 17:00 EDT
-> Status: **Step 1 + 2 + CB pipeline submitted** (jobs 23980874 → 23980876 + 23980877)
+> Last updated: 2026-04-21
+> Status: **Step 1 done** (signal discovery), **Step 2 + CB FAILED** (OpenRouter credits exhausted). Waiting for top-up to run slim 7-method version.
 > Model: openai/gpt-4o-mini (via OpenRouter)
 
 ## Goal
@@ -41,18 +41,50 @@ Step 0: GO/NO-GO precheck
   └─ 50 ep base_only + 50 ep always_trigger
   └─ GO if: base_sr ∈ [10%, 85%] AND Δ > 3pp
 
-Step 1: Signal discovery (only if GO)
+Step 1: Signal discovery
   └─ 200 ep always_trigger
   └─ Compute Spearman ρ for each signal × utility
   └─ Output: signal direction table (like Table 1 in paper)
 
-Step 2: Core experiments (only if GO)
-  └─ Methods: base_only, always_trigger, random_50, best_sigma_wrong,
-              scg_finetune_lr, oracle, + competing baselines (CaTS, SEAG,
-              CoRefine, CATTS, AUQ, s1_budget)
-  └─ 3 seeds × 200 ep per method
+Step 2: Core experiments (SLIM 7-METHOD VERSION)
+  └─ 3 seeds × 200 ep per method = 21 total runs
   └─ Output: SR, Cost, Pareto comparison
 ```
+
+### Slim 7-Method Plan (updated 2026-04-21)
+
+Reduced from 12 methods to **7** after OpenRouter credits exhausted on 18-method run.
+
+| # | Method | Category | Purpose |
+|---|--------|----------|---------|
+| 1 | `base_only` | bound | Lower bound (no rollout) |
+| 2 | `always_trigger` | bound | Upper bound / Δ evidence |
+| 3 | `scg_finetune_lr` (EAAG) | ours | Our method (L1 sparse logistic gate) |
+| 4 | `cats` | CB | Platt-scaled confidence |
+| 5 | `seag` | CB | Mean logprob confidence |
+| 6 | `catts` | CB | K=5 vote-entropy + margin |
+| 7 | `corefine` | CB | Entropy-triggered |
+
+**Dropped** (already covered in paper or redundant):
+
+| Method | Why dropped |
+|--------|-------------|
+| `oracle` | Cheap to add but not critical for rebuttal |
+| `random_50` | Random baseline, no info beyond base/always |
+| `best_sigma_wrong` | BSW ablation already done on Qwen3 |
+| `auq` | Per-step extra LLM call, expensive + redundant |
+| `s1_budget` | Weak baseline, paper has full results |
+
+**Predictions (Type I / rollout-harmful env):**
+- All 4 CBs should perform ≤ base_only (SR ≤ 42%) — fixed-direction failure
+- EAAG should learn to suppress triggering, SR ≈ 42% at low cost
+- always_trigger confirms rollout harms (SR = 36%)
+
+**Estimated cost & time:**
+- 7 methods × 3 seeds = 21 runs
+- Per run: 200 ep × ~15-30s/ep = 1-2 hours
+- **Total wall time**: 5-7h with concurrent 6 jobs
+- **API cost**: $40-80
 
 ## Infrastructure
 
@@ -90,6 +122,31 @@ results/rebuttal/
 ---
 
 ## Experiment Log
+
+### 2026-04-21
+
+**Status review after 4-day run:**
+
+- **Step 1 (signal discovery): SUCCESS** — 200 ep, 7498 steps, all signals computed
+  - `token_entropy`: ρ=**0.000**, p=1.0 (zero signal!)
+  - `step_count`: ρ=+0.105, p<1e-19 (weak positive, significant)
+  - `evidence_count`: ρ=+0.105 (duplicate of step_count)
+  - `num_admissible`: ρ=-0.044, p=0.0001 (weak negative)
+  - `action_type` (categorical): η²=0.111 (strongest signal)
+  - `state_category` / `is_finish_proposed`: no signal
+  - **Key finding**: token_entropy completely uninformative on ALFWorld+gpt-4o-mini,
+    confirming Type I / weak-signal regime (analogous to Plancraft ρ=-0.016 on Qwen3)
+
+- **Step 2 (core experiments): FAILED** — all 18 runs (6 methods × 3 seeds) produced
+  empty directories. Root cause: **OpenRouter credits exhausted** during Step 1,
+  all Step 2 API calls returned HTTP 402 Payment Required. Jobs ran to SLURM
+  timeout without producing summary files.
+
+- **CB (competing baselines): FAILED** — same cause as Step 2. No results.
+
+**Decision**: Drop to **slim 7-method plan** (see top of this doc) to reduce API
+cost by ~40%. Wait for OpenRouter top-up, then resubmit with consolidated sbatch
+(7 methods × 3 seeds = 21 runs in a single array).
 
 ### 2026-04-17
 
@@ -174,14 +231,14 @@ results/rebuttal/
 - [x] Adapter: `frvc/envs/alfworld_env.py`
 - [x] Config: `configs/rebuttal_alfworld_gpt4omini.yaml`
 - [x] **Step 0**: base=42%, always=36%, **Δ=-6%** (rollout-harmful / Type I)
-- [ ] **Step 1**: Signal discovery (job 23980874, running)
-- [ ] **Step 2**: Core experiments (job 23980876, 18 runs, pending Step 1)
-- [ ] **Step 2b**: Competing baselines (job 23980877, 18 runs, pending Step 1)
+- [x] **Step 1**: Signal discovery complete (200 ep, token_entropy ρ=0.000)
+- [ ] **Step 2 (SLIM)**: 7 methods × 3 seeds = 21 runs — **pending OpenRouter top-up**
 - [ ] Analysis: ρ table + Pareto plot + comparison to Plancraft (same Type I pattern)
 
 **Framing for paper**: ALFWorld+gpt-4o-mini is a new Type I / rollout-harmful
-instance, analogous to Plancraft. Predicts: fixed-direction CBs fail (SR ≤ base),
-EAAG correctly suppresses triggering (SR ≈ base, low cost).
+instance, analogous to Plancraft. Step 1 confirms weak/zero entropy signal.
+Predicts: fixed-direction CBs fail (SR ≤ base), EAAG correctly suppresses
+triggering (SR ≈ base, low cost).
 
 ### 2. ScienceWorld (gpt-4o-mini) — DROPPED
 
@@ -200,21 +257,29 @@ Will produce a row in Table 1 (signal-discovery table) for the 4th backbone.
 
 ## Next Steps
 
-1. **Wait for Step 0 results** (job 23948604, est. 1-3 hours)
+1. **Top up OpenRouter credits** (~$80 should cover slim plan + headroom)
+
+2. **Create slim sbatch** (`scripts/rebuttal/run_rebuttal_slim.sbatch`)
+   - 7 methods × 3 seeds = 21-task array (`--array=0-20%6`)
+   - Methods: `base_only always_trigger scg_finetune_lr cats seag catts corefine`
+   - Array mapping: `method_idx = IDX / 3`, `seed_idx = IDX % 3`
+   - Route 4 CB methods through `p5_competing_baselines.py`,
+     3 core methods through `p5_new_env_experiments.py`
+
+3. **Submit and monitor**
    ```bash
+   sbatch scripts/rebuttal/run_rebuttal_slim.sbatch
+   # Monitor
    squeue -u $USER
-   cat results/rebuttal/alfworld/alfworld/step0_go_nogo.json
-   cat results/rebuttal/scienceworld/scienceworld/step0_go_nogo.json
+   ls results/rebuttal/alfworld/alfworld/*/seed_*/summary.json
    ```
 
-2. **If GO**: update Step 1/2/CB scripts to `general-gpu` partition, then submit
+4. **Aggregate results** when all 21 runs done
    ```bash
-   JOB1=$(sbatch --parsable scripts/rebuttal/run_rebuttal_step1.sbatch)
-   sbatch --dependency=afterok:${JOB1} scripts/rebuttal/run_rebuttal_step2.sbatch
-   sbatch --dependency=afterok:${JOB1} scripts/rebuttal/run_rebuttal_cb.sbatch
+   python -c "... aggregate SR + cost per method ..."
    ```
 
-3. **If NO-GO for ScienceWorld**: investigate task selection, try easier subset
+5. **gpt-4o-mini signal discovery on existing 6 envs** (future, independent)
 
 ## Lessons Learned
 
