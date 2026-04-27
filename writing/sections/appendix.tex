@@ -1254,7 +1254,16 @@ the minimal choice that simultaneously delivers competitive SR,
 the \emph{exact} sparsity required by the signed-weight
 diagnostic, and robustness to noisy feature proposals from the
 optional LLM layer.
-
+\begin{figure*}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_trigger_adapt.pdf}
+\caption{Environment-adaptive trigger behavior. Panels ordered by
+rollout headroom $\Delta$. Solid line: per-step trigger rate with
+95\% CI band. Dashed gray: 50\% reference. RR: overall trigger
+rate. DIAL's trigger rate ranges from 73\% (TWExpress) to $<$20\%
+(late-step Plancraft), emerging from direction learning alone.}
+\label{fig:trigger-adapt}
+\end{figure*}
 \subsection{Gate Complexity Ablation}
 \label{app:gate-complexity}
 
@@ -1311,16 +1320,7 @@ need an explicit headroom estimate, because signal direction
 already encodes whether the environment rewards or penalizes
 additional computation.
 
-\begin{figure*}[h!]
-\centering
-\includegraphics[width=\textwidth]{figures/fig_trigger_adapt.pdf}
-\caption{Environment-adaptive trigger behavior. Panels ordered by
-rollout headroom $\Delta$. Solid line: per-step trigger rate with
-95\% CI band. Dashed gray: 50\% reference. RR: overall trigger
-rate. DIAL's trigger rate ranges from 73\% (TWExpress) to $<$20\%
-(late-step Plancraft), emerging from direction learning alone.}
-\label{fig:trigger-adapt}
-\end{figure*}
+
 
 % \subsection{Hyperparameter Sensitivity}
 % \label{app:hyperparam}
