@@ -288,9 +288,9 @@ App~\ref{app:proof-necessity},
 \]
 where $c$ is a constant that depends on the optimizer's harm
 magnitude. Empirically this scaling is clean: HotpotQA
-($|\rho|{=}0.494$) loses 37.0\,pp, FEVER ($|\rho|{=}0.619$)
-loses 36.8\,pp, WebShop ($|\rho|{=}0.444$) loses 23.2\,pp,
-while Plancraft ($|\rho|{=}0.016$) loses only 2.8\,pp; the
+($|\rho|{=}0.494$) loses 37.0\%, FEVER ($|\rho|{=}0.619$)
+loses 36.8\%, WebShop ($|\rho|{=}0.444$) loses 23.2\%,
+while Plancraft ($|\rho|{=}0.016$) loses only 2.8\%; the
 slope of damage in $|\rho|$ is the slope of calibration
 quality, since better-calibrated gates concentrate their firing
 on higher-$|\sigma|$ states which, when the direction is wrong,
@@ -304,7 +304,7 @@ TWExpress is rollout-safe ($\Delta{=}{+}31.8$): the optimizer
 rarely harms performance regardless of when it is triggered,
 so both directions achieve near-perfect SR (99.0\%).
 
-APPS shows a small negative $\Delta$SR ($-$2.5\,pp), consistent
+APPS shows a small negative $\Delta$SR ($-$2.5\%), consistent
 with its unstable signal direction across backbones
 (Table~\ref{tab:signal-discovery}): Qwen3 shows positive $\rho$,
 Llama-3.1 shows negative $\rho$, and Phi-3.5 is
@@ -743,6 +743,47 @@ voting, and no calibration query.
 
 \input{experiment/tab_cost_components/tab_cost_components.tex}
 
+\subsection{DIAL vs.\ Bounds: Full Numbers}
+\label{app:bounds-comparison}
+
+Table~\ref{tab:bounds-comparison} reports DIAL's SR and Cost
+against the two bounds (\emph{base\_only}, \emph{always\_trigger})
+across all 6 environments on Qwen3-4B. In environments with
+positive rollout headroom (HotpotQA, WebShop, TWExpress, APPS),
+DIAL achieves SR close to always\_trigger at substantially lower
+cost. In the rollout-harmful environment Plancraft
+($\Delta{=}{-}7.0$), DIAL learns to suppress triggering, losing
+only 6.5\% relative to base\_only while always\_trigger loses
+7.0\%. FEVER remains the weakest case: DIAL improves over
+base\_only (49.8\% vs.\ 37.0\%) but falls far short of
+always\_trigger (59.8\%), a limitation analyzed in
+\S\ref{sec:discussion}.
+
+\begin{table}[h!]
+\caption{DIAL vs.\ bounds on Qwen3-4B. $\Delta$: rollout headroom
+(always$-$base).}
+\label{tab:bounds-comparison}
+\centering\small
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{2}{c}{\textbf{base\_only}}
+& \multicolumn{2}{c}{\textbf{always\_trigger}}
+& \multicolumn{2}{c}{\textbf{DIAL}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+\textbf{Env} & SR$\uparrow$ & Cost$\downarrow$ & SR$\uparrow$ & Cost$\downarrow$ & SR$\uparrow$ & Cost$\downarrow$ \\
+\midrule
+HotpotQA  & 49.0 & 1.00 & 97.0 & 10.63 & 95.2 & 8.02 \\
+WebShop   &  7.2 & 1.00 & 43.0 &  5.56 & 43.8 & 2.50 \\
+FEVER     & 37.0 & 1.00 & 59.8 &  17.87 & 49.8 & 16.51 \\
+TWExpress & 67.5 & 1.00 & 99.3 &  2.15 & 99.0 & 1.81 \\
+Plancraft & 29.8 & 1.00 & 22.8 &  6.13 & 23.3 & 3.63 \\
+APPS      & 60.5 & 1.00 & 79.5 &  3.65 & 73.0 & 2.61 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
 
 % ============================================================
 % E. FULL RESULTS
@@ -754,7 +795,7 @@ Table~\ref{tab:full-results} reports SR and Cost ($\times$base)
 for all methods across 6 environments and 3 backbones. Cost
 includes all deployment LLM calls (base proposer, gate overhead,
 rollouts) normalized by base\_only cost. Bounds comparison is in
-Table~\ref{tab:bounds-comparison} (\S\ref{sec:main-results}).
+Table~\ref{tab:bounds-comparison} (\S\ref{app:bounds-comparison}).
 Several patterns are consistent across backbones.
 
 \input{experiment/tab_full_results/tab_full_results.tex}
@@ -764,7 +805,7 @@ environments (HotpotQA, WebShop, TWExpress, APPS). The
 $\times$base metric reveals hidden costs: CATTS on APPS costs
 6.00$\times$base (due to $K{=}5$ per-step voting) despite
 barely triggering rollouts, while DIAL costs only
-2.61$\times$ at 12.2\,pp higher SR. FEVER is the main
+2.61$\times$ at 12.2\% higher SR. FEVER is the main
 exception: DIAL achieves the highest SR (49.8\%) but at
 16.51$\times$base, the highest cost among all environments.
 This failure mode is analyzed in \S\ref{sec:discussion}.
@@ -773,7 +814,7 @@ This failure mode is analyzed in \S\ref{sec:discussion}.
 sharply on this backbone. On FEVER, all six baselines score at or
 below 20\% (base: 7.2\%), while DIAL reaches 20.5\%. On WebShop,
 DIAL (57.3\%) exceeds the best baseline (s1\_budget, 43.0\%) by
-14.3\,pp at lower cost (2.56$\times$ vs.\ 3.89$\times$).
+14.3\% at lower cost (2.56$\times$ vs.\ 3.89$\times$).
 
 \paragraph{Llama-3.1-8B.} Direction reversal interacts with model
 capacity. On TWExpress, CaTS collapses to near-base performance
@@ -865,7 +906,7 @@ contrast, Plancraft's rollout-harmful nature means no LLM feature
 improves prediction, and LASSO correctly filters all five proposals.
 This pattern aligns with the LLM ablation results
 (Table~\ref{tab:llm-ablation}): the environment where LLM features
-contribute most to SR (FEVER, $+$9.1\,pp) is precisely where the
+contribute most to SR (FEVER, $+$9.1\%) is precisely where the
 LLM discovers unique signals (\texttt{has\_claim}) that the
 universal feature pool lacks.
 
@@ -1046,39 +1087,26 @@ positive $\rho$, consistent with FEVER's short episodes
 (median 8 steps) concentrating most rollout value at step~0--1,
 leaving insufficient late-step variation for a meaningful shift.
 
-\subsection{Signal Identity Alignment (P3)}
-\label{app:signal-alignment}
+\subsection{Cross-setting Consistency at Fixed Backbone}
+\label{app:cross-setting}
 
-Table~\ref{tab:signal-identity} reports the strongest signal per
-environment and its interpretation under the Two-Source Model.
-In Type~I environments, information-sufficiency proxies
-(\texttt{step\_count}) dominate; in mixed/Type~D environments,
-decision-complexity proxies (\texttt{num\_available\_actions})
-dominate.
-
-\input{experiment/tab_signal_identity/tab_signal_identity.tex}
-
-% \begin{table}[H]
-% \caption{Controlled information manipulation on HotpotQA.
-% Manipulating information availability shifts which signal
-% dominates, confirming the Two-Source Model's prediction.}
-% \label{tab:controlled}
-% \centering\small
-% \resizebox{\columnwidth}{!}{%
-% \begin{tabular}{lccccc}
-% \toprule
-% Condition & Base SR & $\rho$(entropy) & $\rho$(step\_count)
-%   & DIAL SR & $n$ \\
-% \midrule
-% Original  & 49.0\% & $-$0.041 & $-$0.494 & 95.2\% & 1117 \\
-% InfoPoor  & 44.0\% & $+$0.119 & $\mathbf{-0.608}$
-%   & 94.0\% & 317 \\
-% InfoRich  & 82.0\% & $\mathbf{+0.311}$ & $-$0.147
-%   & 88.3\% & 221 \\
-% \bottomrule
-% \end{tabular}%
-% }
-% \end{table}
+Beyond the within-episode (P1) and within-task interventional
+(P2) tests in the main text, the Two-Source Model implies that
+settings with similar $p_I$ should exhibit similar $\rho$. With
+the backbone held fixed at Qwen3
+(Table~\ref{tab:signal-discovery}), this consistency holds:
+FEVER and HotpotQA (both search-based QA) share negative $\rho$,
+and WebShop and APPS (both involving choice among alternatives)
+share positive $\rho$. As predicted by the (environment,
+backbone)-indexed mixture of \S\ref{sec:toy-model}, however,
+task-structure similarity alone does not pin down $\rho$ when
+the backbone changes: the same environment can sit on opposite
+sides of $p_I^*$ under different LLMs
+(Appendix~\ref{app:multi-backbone}). We therefore treat this
+cross-setting consistency as a complementary observational
+check rather than a standalone falsifiable prediction; the
+causal evidence in P2 is the more decisive test of the
+mixture-driven account.
 
 \subsection{Multi-Backbone Verification}
 \label{app:multi-backbone}
@@ -1264,43 +1292,6 @@ rate. DIAL's trigger rate ranges from 73\% (TWExpress) to $<$20\%
 (late-step Plancraft), emerging from direction learning alone.}
 \label{fig:trigger-adapt}
 \end{figure*}
-\subsection{Gate Complexity Ablation}
-\label{app:gate-complexity}
-
-To verify that the bottleneck is direction rather than gate
-complexity, we compare gate architectures with correct vs.\ wrong
-direction (Table~\ref{tab:capacity}).
-
-\begin{table}[H]
-\caption{Gate complexity ablation on HotpotQA. Direction matters
-more than model capacity: a logistic gate with correct direction
-outperforms an MLP with wrong direction by 49.9\,pp.}
-\label{tab:capacity}
-\centering\small
-\begin{tabular}{lccc}
-\toprule
-Gate & Direction & SR (\%) & $\Delta$ \\
-\midrule
-Logistic (5 feat) & Correct & 95.2 & +46.2 \\
-MLP (5 feat)      & Correct & $\sim$95 & $\sim$+46 \\
-Hidden state (2560-d) & Correct & $\sim$95 & $\sim$+46 \\
-\midrule
-Logistic (5 feat) & Wrong & 62.0 & +13.0 \\
-MLP (5 feat)      & Wrong & 45.3 & $-$3.7 \\
-\midrule
-No gate (base)    & n/a & 49.0 & 0 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-With correct direction, all architectures achieve $\sim$95\% SR;
-the jump from logistic to MLP to hidden-state probe adds $<$1\,pp.
-With wrong direction, higher capacity makes performance \emph{worse}
-(MLP 45.3\% $<$ logistic 62.0\%), because the more powerful gate
-more precisely targets harmful states. This confirms that signal
-direction consistently outweighs gate complexity, and explains why
-DIAL's minimal gate design suffices.
-
 \subsection{Environment-Adaptive Trigger Behavior}
 \label{app:trigger-rate}
 
