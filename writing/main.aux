@@ -65,14 +65,12 @@
 \@writefile{toc}{\contentsline {paragraph}{Implication.}{4}{section*.9}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {4}Direction-Informed Adaptive Learning}{4}{section.4}\protected@file@percent }
 \newlabel{sec:method}{{4}{4}{Direction-Informed Adaptive Learning}{section.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Explore: Signal-Agnostic Data Collection}{4}{subsection.4.1}\protected@file@percent }
-\newlabel{sec:explore}{{4.1}{4}{Explore: Signal-Agnostic Data Collection}{subsection.4.1}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces \textbf  {The DIAL pipeline.} \textbf  {(a) Explore}: collect signal-agnostic $(s, U)$ pairs via Bernoulli-$\varepsilon $ rollouts. \textbf  {(b) Reason}: build a candidate feature pool $\phi (s)$ from universal metrics plus optional LLM-proposed task-specific features. \textbf  {(c) Learn}: fit an $\ell _1$-regularized logistic gate, whose signed weights jointly perform feature selection and recover per-environment direction (Type\nobreakspace  {}D: $w_i{>}0$; Type\nobreakspace  {}I: $w_i{<}0$).\relax }}{5}{figure.caption.10}\protected@file@percent }
 \newlabel{fig:method_overview}{{2}{5}{\textbf {The DIAL pipeline.} \textbf {(a) Explore}: collect signal-agnostic $(s, U)$ pairs via Bernoulli-$\varepsilon $ rollouts. \textbf {(b) Reason}: build a candidate feature pool $\phi (s)$ from universal metrics plus optional LLM-proposed task-specific features. \textbf {(c) Learn}: fit an $\ell _1$-regularized logistic gate, whose signed weights jointly perform feature selection and recover per-environment direction (Type~D: $w_i{>}0$; Type~I: $w_i{<}0$).\relax }{figure.caption.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Explore: Signal-Agnostic Data Collection}{5}{subsection.4.1}\protected@file@percent }
+\newlabel{sec:explore}{{4.1}{5}{Explore: Signal-Agnostic Data Collection}{subsection.4.1}{}}
 \newlabel{eq:dataset}{{3}{5}{Explore: Signal-Agnostic Data Collection}{equation.4.3}{}}
 \@writefile{toc}{\contentsline {paragraph}{Estimating $U$.}{5}{section*.11}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Reason: LLM Feature Layer}{5}{subsection.4.2}\protected@file@percent }
-\newlabel{sec:reason}{{4.2}{5}{Reason: LLM Feature Layer}{subsection.4.2}{}}
 \citation{yang2018hotpotqa}
 \citation{hendrycks2021apps}
 \citation{yao2022webshop}
@@ -85,6 +83,8 @@
 \citation{catts2026}
 \citation{auq2026}
 \citation{s1_2025}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Reason: LLM Feature Layer}{6}{subsection.4.2}\protected@file@percent }
+\newlabel{sec:reason}{{4.2}{6}{Reason: LLM Feature Layer}{subsection.4.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Learn: Sparse Linear Gate}{6}{subsection.4.3}\protected@file@percent }
 \newlabel{sec:learn}{{4.3}{6}{Learn: Sparse Linear Gate}{subsection.4.3}{}}
 \newlabel{eq:lasso}{{4}{6}{Learn: Sparse Linear Gate}{equation.4.4}{}}
@@ -97,10 +97,10 @@
 \@writefile{toc}{\contentsline {paragraph}{Environments.}{6}{section*.13}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Baselines.}{6}{section*.14}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Metrics.}{6}{section*.15}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Main Results}{6}{subsection.5.2}\protected@file@percent }
-\newlabel{sec:main-results}{{5.2}{6}{Main Results}{subsection.5.2}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces SR vs.\ Cost ($\times $base) across all 6 environments (Qwen3-4B). Shaded region: dominated by DIAL (lower SR \emph  {and} higher cost). Full numerical results across three backbones are in Table\nobreakspace  {}\ref {tab:full-results}.\relax }}{7}{figure.caption.16}\protected@file@percent }
 \newlabel{fig:pareto}{{3}{7}{SR vs.\ Cost ($\times $base) across all 6 environments (Qwen3-4B). Shaded region: dominated by DIAL (lower SR \emph {and} higher cost). Full numerical results across three backbones are in Table~\ref {tab:full-results}.\relax }{figure.caption.16}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Main Results}{7}{subsection.5.2}\protected@file@percent }
+\newlabel{sec:main-results}{{5.2}{7}{Main Results}{subsection.5.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Ablation Studies}{7}{subsection.5.3}\protected@file@percent }
 \newlabel{sec:ablation}{{5.3}{7}{Ablation Studies}{subsection.5.3}{}}
 \citation{schaeffer2023emergent}
@@ -115,9 +115,9 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Two-Source Model Verification}{8}{subsection.5.4}\protected@file@percent }
 \newlabel{sec:theory-verification}{{5.4}{8}{Two-Source Model Verification}{subsection.5.4}{}}
 \@writefile{toc}{\contentsline {paragraph}{P1: Temporal dynamics.}{8}{section*.21}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{P2: Controlled information manipulation.}{8}{section*.22}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Controlled information manipulation on HotpotQA (Qwen3-4B). Within a single task, manipulating information availability shifts which signal dominates, providing causal evidence for the Two-Source Model.\relax }}{9}{table.caption.23}\protected@file@percent }
 \newlabel{tab:controlled}{{5}{9}{Controlled information manipulation on HotpotQA (Qwen3-4B). Within a single task, manipulating information availability shifts which signal dominates, providing causal evidence for the Two-Source Model.\relax }{table.caption.23}{}}
+\@writefile{toc}{\contentsline {paragraph}{P2: Controlled information manipulation.}{9}{section*.22}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{P3: Signal identity alignment.}{9}{section*.24}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Strongest signal per environment aligns with the dominant state type: information-sufficiency proxies in Type\nobreakspace  {}I, decision-complexity in Type\nobreakspace  {}D.\relax }}{9}{table.caption.25}\protected@file@percent }
 \newlabel{tab:signal-identity}{{6}{9}{Strongest signal per environment aligns with the dominant state type: information-sufficiency proxies in Type~I, decision-complexity in Type~D.\relax }{table.caption.25}{}}
@@ -197,10 +197,6 @@
 \citation{graves2016act}
 \citation{teerapittayanon2016branchynet,elhoushi2024layerskip}
 \citation{shazeer2017moe,raposo2024mixtureofdepths}
-\@writefile{toc}{\contentsline {section}{\numberline {A}Extended Related Work}{12}{appendix.A}\protected@file@percent }
-\newlabel{app:related}{{A}{12}{Extended Related Work}{appendix.A}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Adaptive Compute: Reasoning vs.\ Agent Settings}{12}{subsection.A.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Adaptive Computation in Neural Networks}{12}{subsection.A.2}\protected@file@percent }
 \citation{kadavath2022knowwhat}
 \citation{tao2025revisiting}
 \citation{heo2025llmuncertainty}
@@ -210,6 +206,15 @@
 \citation{desabbata2024metareasoning}
 \citation{simpson1951interpretation,DBLP:books/acm/22/Pearl22n}
 \citation{kdd2023simpson}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Extended Related Work}{13}{appendix.A}\protected@file@percent }
+\newlabel{app:related}{{A}{13}{Extended Related Work}{appendix.A}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Adaptive Compute: Reasoning vs.\ Agent Settings}{13}{subsection.A.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Adaptive Computation in Neural Networks}{13}{subsection.A.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}LLM Confidence Estimation and Calibration}{13}{subsection.A.3}\protected@file@percent }
+\newlabel{app:calibration}{{A.3}{13}{LLM Confidence Estimation and Calibration}{subsection.A.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Metareasoning and Value of Computation}{13}{subsection.A.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.5}Simpson's Paradox in Machine Learning}{13}{subsection.A.5}\protected@file@percent }
+\newlabel{app:simpson}{{A.5}{13}{Simpson's Paradox in Machine Learning}{subsection.A.5}{}}
 \citation{yao2023tree,zhou2024lats,hao2023reasoning,wang2026flare,feng2024alphazero,inoue2025abmcts}
 \citation{wang2023selfconsistency,brown2024monkeys}
 \citation{lightman2024lets,wang2024mathshepherd}
@@ -217,31 +222,25 @@
 \citation{koh2024tree}
 \citation{putta2024agentq}
 \citation{DBLP:journals/corr/abs-2506-12928,huang2026evolverouter}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}LLM Confidence Estimation and Calibration}{13}{subsection.A.3}\protected@file@percent }
-\newlabel{app:calibration}{{A.3}{13}{LLM Confidence Estimation and Calibration}{subsection.A.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Metareasoning and Value of Computation}{13}{subsection.A.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.5}Simpson's Paradox in Machine Learning}{13}{subsection.A.5}\protected@file@percent }
-\newlabel{app:simpson}{{A.5}{13}{Simpson's Paradox in Machine Learning}{subsection.A.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.6}Search-Based Optimizers}{13}{subsection.A.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.6}Search-Based Optimizers}{14}{subsection.A.6}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {B}Theoretical Material}{14}{appendix.B}\protected@file@percent }
 \newlabel{app:theory}{{B}{14}{Theoretical Material}{appendix.B}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {B.1}Insufficiency of Uncertainty Signals: Statement and Proof}{14}{subsection.B.1}\protected@file@percent }
 \newlabel{app:proof-necessity}{{B.1}{14}{Insufficiency of Uncertainty Signals: Statement and Proof}{subsection.B.1}{}}
 \newlabel{prop:necessity}{{1}{14}{Insufficiency of Uncertainty Signals}{proposition.1}{}}
-\@writefile{toc}{\contentsline {paragraph}{Corollary (necessity of direction discovery).}{14}{section*.27}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{What recovers sufficiency.}{14}{section*.28}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {B.2}Wrong-Direction Damage: The Calibration-Worsens Mechanism}{14}{subsection.B.2}\protected@file@percent }
-\newlabel{app:wrong-direction}{{B.2}{14}{Wrong-Direction Damage: The Calibration-Worsens Mechanism}{subsection.B.2}{}}
 \citation{russell1991right}
+\@writefile{toc}{\contentsline {paragraph}{Corollary (necessity of direction discovery).}{15}{section*.27}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{What recovers sufficiency.}{15}{section*.28}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.2}Wrong-Direction Damage: The Calibration-Worsens Mechanism}{15}{subsection.B.2}\protected@file@percent }
+\newlabel{app:wrong-direction}{{B.2}{15}{Wrong-Direction Damage: The Calibration-Worsens Mechanism}{subsection.B.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {B.3}VOC Non-Negativity Scope}{15}{subsection.B.3}\protected@file@percent }
 \newlabel{app:voc}{{B.3}{15}{VOC Non-Negativity Scope}{subsection.B.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {C}DIAL Implementation Details}{15}{appendix.C}\protected@file@percent }
-\newlabel{app:dial-details}{{C}{15}{DIAL Implementation Details}{appendix.C}{}}
-\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces DIAL: Direction-Informed Adaptive Learning\relax }}{15}{algorithm.1}\protected@file@percent }
-\newlabel{alg:dial}{{1}{15}{DIAL: Direction-Informed Adaptive Learning\relax }{algorithm.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {C.1}Hyperparameters and Training Details}{15}{subsection.C.1}\protected@file@percent }
-\newlabel{app:hyperparams-details}{{C.1}{15}{Hyperparameters and Training Details}{subsection.C.1}{}}
-\citation{yang2018hotpotqa}
+\@writefile{toc}{\contentsline {section}{\numberline {C}DIAL Implementation Details}{16}{appendix.C}\protected@file@percent }
+\newlabel{app:dial-details}{{C}{16}{DIAL Implementation Details}{appendix.C}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces DIAL: Direction-Informed Adaptive Learning\relax }}{16}{algorithm.1}\protected@file@percent }
+\newlabel{alg:dial}{{1}{16}{DIAL: Direction-Informed Adaptive Learning\relax }{algorithm.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C.1}Hyperparameters and Training Details}{16}{subsection.C.1}\protected@file@percent }
+\newlabel{app:hyperparams-details}{{C.1}{16}{Hyperparameters and Training Details}{subsection.C.1}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {C.2}Universal Feature Definitions}{16}{subsection.C.2}\protected@file@percent }
 \newlabel{app:universal-features}{{C.2}{16}{Universal Feature Definitions}{subsection.C.2}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Universal feature definitions.\relax }}{16}{table.caption.29}\protected@file@percent }
@@ -250,28 +249,29 @@
 \newlabel{app:llm-feature-layer}{{C.3}{16}{LLM Feature Layer}{subsection.C.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {C.4}Online Adaptation}{16}{subsection.C.4}\protected@file@percent }
 \newlabel{app:online-adaptation}{{C.4}{16}{Online Adaptation}{subsection.C.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {C.5}LLM Reasoning Prompts}{16}{subsection.C.5}\protected@file@percent }
-\newlabel{app:llm-prompts}{{C.5}{16}{LLM Reasoning Prompts}{subsection.C.5}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Prompt template used in the LLM feature layer (Phase\nobreakspace  {}2) to propose task-specific features from exploration data.\relax }}{16}{figure.caption.30}\protected@file@percent }
-\newlabel{fig:llm-prompt-template}{{5}{16}{Prompt template used in the LLM feature layer (Phase~2) to propose task-specific features from exploration data.\relax }{figure.caption.30}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {D}Experimental Setup}{16}{appendix.D}\protected@file@percent }
-\newlabel{app:experiments}{{D}{16}{Experimental Setup}{appendix.D}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.1}Environment Specifications}{16}{subsection.D.1}\protected@file@percent }
-\newlabel{app:environment}{{D.1}{16}{Environment Specifications}{subsection.D.1}{}}
+\citation{yang2018hotpotqa}
 \citation{yao2022webshop}
 \citation{thorne2018fever}
 \citation{hendrycks2021apps}
 \citation{jansen2023twexpress}
 \citation{dagan2024plancraft}
-\@writefile{toc}{\contentsline {paragraph}{Utility estimation.}{17}{section*.31}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Environment setup. Base/Always: SR without/with optimizer. $\Delta $: rollout headroom.\relax }}{17}{table.caption.32}\protected@file@percent }
-\newlabel{tab:env-setup}{{8}{17}{Environment setup. Base/Always: SR without/with optimizer. $\Delta $: rollout headroom.\relax }{table.caption.32}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C.5}LLM Reasoning Prompts}{17}{subsection.C.5}\protected@file@percent }
+\newlabel{app:llm-prompts}{{C.5}{17}{LLM Reasoning Prompts}{subsection.C.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Prompt template used in the LLM feature layer (Phase\nobreakspace  {}2) to propose task-specific features from exploration data.\relax }}{17}{figure.caption.30}\protected@file@percent }
+\newlabel{fig:llm-prompt-template}{{5}{17}{Prompt template used in the LLM feature layer (Phase~2) to propose task-specific features from exploration data.\relax }{figure.caption.30}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {D}Experimental Setup}{17}{appendix.D}\protected@file@percent }
+\newlabel{app:experiments}{{D}{17}{Experimental Setup}{appendix.D}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.1}Environment Specifications}{17}{subsection.D.1}\protected@file@percent }
+\newlabel{app:environment}{{D.1}{17}{Environment Specifications}{subsection.D.1}{}}
 \citation{catts2026}
 \citation{seag2025}
 \citation{cats2025}
 \citation{corefine2026}
 \citation{s1_2025}
 \citation{auq2026}
+\@writefile{toc}{\contentsline {paragraph}{Utility estimation.}{18}{section*.31}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Environment setup. Base/Always: SR without/with optimizer. $\Delta $: rollout headroom.\relax }}{18}{table.caption.32}\protected@file@percent }
+\newlabel{tab:env-setup}{{8}{18}{Environment setup. Base/Always: SR without/with optimizer. $\Delta $: rollout headroom.\relax }{table.caption.32}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {D.2}Detailed Baseline Comparison}{18}{subsection.D.2}\protected@file@percent }
 \newlabel{app:method-comparison}{{D.2}{18}{Detailed Baseline Comparison}{subsection.D.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {D.3}Computational Cost Breakdown}{18}{subsection.D.3}\protected@file@percent }
@@ -280,59 +280,71 @@
 \newlabel{tab:cost-components}{{10}{18}{Computational cost breakdown per method. Gate OH = additional LLM calls per step beyond the base proposer. Cost ($\times $base) = total \emph {deployment} tokens normalized by base\_only tokens per episode, averaged across 6 environments. Calibration/exploration overhead is excluded for all methods. $^\dagger $Requires separate calibration data.\relax }{table.caption.34}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {D.4}DIAL vs.\ Bounds: Full Numbers}{18}{subsection.D.4}\protected@file@percent }
 \newlabel{app:bounds-comparison}{{D.4}{18}{DIAL vs.\ Bounds: Full Numbers}{subsection.D.4}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {E}Full Results}{18}{appendix.E}\protected@file@percent }
-\newlabel{app:full-results}{{E}{18}{Full Results}{appendix.E}{}}
-\@writefile{toc}{\contentsline {paragraph}{Qwen3-4B.}{18}{section*.37}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Phi-3.5-mini.}{18}{section*.38}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Llama-3.1-8B.}{18}{section*.39}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {F}Signal and Feature Analyses}{18}{appendix.F}\protected@file@percent }
-\newlabel{app:signal-analyses}{{F}{18}{Signal and Feature Analyses}{appendix.F}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {F.1}Per-Environment Feature Selection}{18}{subsection.F.1}\protected@file@percent }
-\newlabel{app:feature-selection}{{F.1}{18}{Per-Environment Feature Selection}{subsection.F.1}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Detailed comparison of baselines. All methods assume a fixed signal--utility direction. $^\dagger $Requires a separate labeled dataset for calibration.\relax }}{19}{table.caption.33}\protected@file@percent }
 \newlabel{tab:baseline-detail}{{9}{19}{Detailed comparison of baselines. All methods assume a fixed signal--utility direction. $^\dagger $Requires a separate labeled dataset for calibration.\relax }{table.caption.33}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces DIAL vs.\ bounds on Qwen3-4B. $\Delta $: rollout headroom (always$-$base).\relax }}{19}{table.caption.35}\protected@file@percent }
 \newlabel{tab:bounds-comparison}{{11}{19}{DIAL vs.\ bounds on Qwen3-4B. $\Delta $: rollout headroom (always$-$base).\relax }{table.caption.35}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {F.2}LLM-Generated Features}{19}{subsection.F.2}\protected@file@percent }
-\newlabel{app:llm-features}{{F.2}{19}{LLM-Generated Features}{subsection.F.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {F.3}AUC Hierarchy: Empirical Signature of $\sigma $-Insufficiency}{19}{subsection.F.3}\protected@file@percent }
-\newlabel{app:auc}{{F.3}{19}{AUC Hierarchy: Empirical Signature of $\sigma $-Insufficiency}{subsection.F.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {E}Full Results}{19}{appendix.E}\protected@file@percent }
+\newlabel{app:full-results}{{E}{19}{Full Results}{appendix.E}{}}
+\@writefile{toc}{\contentsline {paragraph}{Qwen3-4B.}{19}{section*.37}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Phi-3.5-mini.}{19}{section*.38}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Llama-3.1-8B.}{19}{section*.39}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {F}Signal and Feature Analyses}{19}{appendix.F}\protected@file@percent }
+\newlabel{app:signal-analyses}{{F}{19}{Signal and Feature Analyses}{appendix.F}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {F.1}Per-Environment Feature Selection}{19}{subsection.F.1}\protected@file@percent }
+\newlabel{app:feature-selection}{{F.1}{19}{Per-Environment Feature Selection}{subsection.F.1}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces Full results across 6 environments and 3 backbones. SR (\%) and Cost ($\times $base, total deployment tokens normalized by base\_only). \colorbox {red!15}{\strut  Best} and \colorbox {blue!10}{\strut  second-best} SR per environment. $\dagger $: methods requiring calibration data. Cost includes all LLM calls: base proposer, gate overhead (CATTS $K{=}5$ voting, AUQ confidence query), and rollout calls.\relax }}{20}{table.caption.36}\protected@file@percent }
 \newlabel{tab:full-results}{{12}{20}{Full results across 6 environments and 3 backbones. SR (\%) and Cost ($\times $base, total deployment tokens normalized by base\_only). \colorbox {red!15}{\strut Best} and \colorbox {blue!10}{\strut second-best} SR per environment. $\dagger $: methods requiring calibration data. Cost includes all LLM calls: base proposer, gate overhead (CATTS $K{=}5$ voting, AUQ confidence query), and rollout calls.\relax }{table.caption.36}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces LLM-generated features per environment. Each environment receives 5 LLM-proposed features; LASSO selects those with non-zero coefficients. Environments with richer task-specific structure (WebShop, TWExpress) retain more LLM features.\relax }}{20}{table.caption.40}\protected@file@percent }
-\newlabel{tab:llm-features}{{13}{20}{LLM-generated features per environment. Each environment receives 5 LLM-proposed features; LASSO selects those with non-zero coefficients. Environments with richer task-specific structure (WebShop, TWExpress) retain more LLM features.\relax }{table.caption.40}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {F.2}LLM-Generated Features}{20}{subsection.F.2}\protected@file@percent }
+\newlabel{app:llm-features}{{F.2}{20}{LLM-Generated Features}{subsection.F.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces LLM-generated features per environment. Each environment receives 5 LLM-proposed features; LASSO selects those with non-zero coefficients. Environments with richer task-specific structure (WebShop, TWExpress) retain more LLM features.\relax }}{21}{table.caption.40}\protected@file@percent }
+\newlabel{tab:llm-features}{{13}{21}{LLM-generated features per environment. Each environment receives 5 LLM-proposed features; LASSO selects those with non-zero coefficients. Environments with richer task-specific structure (WebShop, TWExpress) retain more LLM features.\relax }{table.caption.40}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Complete LLM-generated feature extraction function for WebShop (seed 42), the environment with the most LLM features retained by LASSO.\relax }}{21}{figure.caption.41}\protected@file@percent }
 \newlabel{fig:llm-output-webshop}{{6}{21}{Complete LLM-generated feature extraction function for WebShop (seed 42), the environment with the most LLM features retained by LASSO.\relax }{figure.caption.41}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {F.3}AUC Hierarchy: Empirical Signature of $\sigma $-Insufficiency}{21}{subsection.F.3}\protected@file@percent }
+\newlabel{app:auc}{{F.3}{21}{AUC Hierarchy: Empirical Signature of $\sigma $-Insufficiency}{subsection.F.3}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {14}{\ignorespaces AUC by gate family. Single entropy is near chance; multi-signal gates close most of the gap to hidden-state probes. FEVER and TWExpress are omitted because their short episodes yield insufficient held-out data for reliable AUC estimation.\relax }}{21}{table.caption.42}\protected@file@percent }
 \newlabel{tab:auc-hierarchy}{{14}{21}{AUC by gate family. Single entropy is near chance; multi-signal gates close most of the gap to hidden-state probes. FEVER and TWExpress are omitted because their short episodes yield insufficient held-out data for reliable AUC estimation.\relax }{table.caption.42}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {G}Robustness and Additional Experiments}{21}{appendix.G}\protected@file@percent }
 \newlabel{app:robustness}{{G}{21}{Robustness and Additional Experiments}{appendix.G}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {G.1}Temporal Dynamics (P1)}{21}{subsection.G.1}\protected@file@percent }
 \newlabel{app:temporal}{{G.1}{21}{Temporal Dynamics (P1)}{subsection.G.1}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {15}{\ignorespaces Temporal shift in $\rho $(entropy, $U$). All environments show $\rho $ shifting more negative from early to late steps, consistent with P1. Plancraft omitted ($|\rho |{=}0.016$, too weak for meaningful comparison).\relax }}{21}{table.caption.43}\protected@file@percent }
-\newlabel{tab:temporal}{{15}{21}{Temporal shift in $\rho $(entropy, $U$). All environments show $\rho $ shifting more negative from early to late steps, consistent with P1. Plancraft omitted ($|\rho |{=}0.016$, too weak for meaningful comparison).\relax }{table.caption.43}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {G.2}Cross-setting Consistency at Fixed Backbone}{21}{subsection.G.2}\protected@file@percent }
-\newlabel{app:cross-setting}{{G.2}{21}{Cross-setting Consistency at Fixed Backbone}{subsection.G.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {15}{\ignorespaces Temporal shift in $\rho $(entropy, $U$). All environments show $\rho $ shifting more negative from early to late steps, consistent with P1. Plancraft omitted ($|\rho |{=}0.016$, too weak for meaningful comparison).\relax }}{22}{table.caption.43}\protected@file@percent }
+\newlabel{tab:temporal}{{15}{22}{Temporal shift in $\rho $(entropy, $U$). All environments show $\rho $ shifting more negative from early to late steps, consistent with P1. Plancraft omitted ($|\rho |{=}0.016$, too weak for meaningful comparison).\relax }{table.caption.43}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {G.2}Cross-setting Consistency at Fixed Backbone}{22}{subsection.G.2}\protected@file@percent }
+\newlabel{app:cross-setting}{{G.2}{22}{Cross-setting Consistency at Fixed Backbone}{subsection.G.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {G.3}Multi-Backbone Verification}{22}{subsection.G.3}\protected@file@percent }
 \newlabel{app:multi-backbone}{{G.3}{22}{Multi-Backbone Verification}{subsection.G.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {G.4}Stratified Analysis: Controlling for Trajectory Length}{22}{subsection.G.4}\protected@file@percent }
-\newlabel{app:stratified}{{G.4}{22}{Stratified Analysis: Controlling for Trajectory Length}{subsection.G.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {G.5}Regularizer Ablation}{22}{subsection.G.5}\protected@file@percent }
-\newlabel{app:regularizer-ablation}{{G.5}{22}{Regularizer Ablation}{subsection.G.5}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {16}{\ignorespaces Regularizer ablation on three environments ordered by signal strength. SR (\%); ``\#nz'' is the mean number of non-zero fitted weights across three seeds. The candidate pool $\phi _{\text  {cand}}$ contains 31 features ($5$\nobreakspace  {}universal $+\,3$\nobreakspace  {}derived $+\,20$\nobreakspace  {}hidden-state PCA $+\,3$\nobreakspace  {}auto-extracted); adding the LLM feature layer brings the pool to $\approx $36. $\ell _1$ is the only variant that achieves competitive SR \emph  {and} exact sparsity required by the signed-weight diagnostic.\relax }}{22}{table.caption.46}\protected@file@percent }
-\newlabel{tab:regularizer-ablation}{{16}{22}{Regularizer ablation on three environments ordered by signal strength. SR (\%); ``\#nz'' is the mean number of non-zero fitted weights across three seeds. The candidate pool $\phi _{\text {cand}}$ contains 31 features ($5$~universal $+\,3$~derived $+\,20$~hidden-state PCA $+\,3$~auto-extracted); adding the LLM feature layer brings the pool to $\approx $36. $\ell _1$ is the only variant that achieves competitive SR \emph {and} exact sparsity required by the signed-weight diagnostic.\relax }{table.caption.46}{}}
-\@writefile{toc}{\contentsline {paragraph}{$\ell _1$ vs.\ $\ell _2$: sparsity is required for diagnosis, not just for predictive performance.}{22}{section*.47}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {G.4}Robustness of Reversal to Entropy Quantile-Normalization}{22}{subsection.G.4}\protected@file@percent }
+\newlabel{app:reversal-norm}{{G.4}{22}{Robustness of Reversal to Entropy Quantile-Normalization}{subsection.G.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Spearman: invariant by construction.}{22}{section*.46}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Pearson: scale-sensitive, the substantive test.}{22}{section*.47}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Multi-backbone signal direction heatmap. Gold borders mark cells where the sign of $\rho $ flips across backbones with significant correlations. Entropy direction is model-dependent; structural signals (step\_count) are more stable.\relax }}{23}{figure.caption.44}\protected@file@percent }
 \newlabel{fig:multi-backbone-heatmap}{{7}{23}{Multi-backbone signal direction heatmap. Gold borders mark cells where the sign of $\rho $ flips across backbones with significant correlations. Entropy direction is model-dependent; structural signals (step\_count) are more stable.\relax }{figure.caption.44}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Cross-backbone comparison: DIAL (red) vs.\ best fixed-direction baseline (blue) across 3 backbones. Fixed baselines show large SR variance across backbones; DIAL adapts robustly.\relax }}{23}{figure.caption.45}\protected@file@percent }
 \newlabel{fig:multi-backbone-sr}{{8}{23}{Cross-backbone comparison: DIAL (red) vs.\ best fixed-direction baseline (blue) across 3 backbones. Fixed baselines show large SR variance across backbones; DIAL adapts robustly.\relax }{figure.caption.45}{}}
-\@writefile{toc}{\contentsline {paragraph}{$\ell _1$ vs.\ unregularized logistic: robustness under weak signals.}{23}{section*.48}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{$\ell _1$ vs.\ MI top-$k$ + unregularized: joint selection+shrinkage vs.\ selection alone.}{24}{section*.49}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Summary.}{24}{section*.50}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {G.6}Environment-Adaptive Trigger Behavior}{24}{subsection.G.6}\protected@file@percent }
-\newlabel{app:trigger-rate}{{G.6}{24}{Environment-Adaptive Trigger Behavior}{subsection.G.6}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {H}Broader Impact}{24}{appendix.H}\protected@file@percent }
-\newlabel{app:impact}{{H}{24}{Broader Impact}{appendix.H}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Environment-adaptive trigger behavior. Panels ordered by rollout headroom $\Delta $. Solid line: per-step trigger rate with 95\% CI band. Dashed gray: 50\% reference. RR: overall trigger rate. DIAL's trigger rate ranges from 73\% (TWExpress) to $<$20\% (late-step Plancraft), emerging from direction learning alone.\relax }}{25}{figure.caption.51}\protected@file@percent }
-\newlabel{fig:trigger-adapt}{{9}{25}{Environment-adaptive trigger behavior. Panels ordered by rollout headroom $\Delta $. Solid line: per-step trigger rate with 95\% CI band. Dashed gray: 50\% reference. RR: overall trigger rate. DIAL's trigger rate ranges from 73\% (TWExpress) to $<$20\% (late-step Plancraft), emerging from direction learning alone.\relax }{figure.caption.51}{}}
-\gdef \@abspage@last{25}
+\@writefile{lot}{\contentsline {table}{\numberline {16}{\ignorespaces Robustness of cross-backbone reversal to entropy quantile-normalization. For each (env, backbone) cell, we report Spearman $\rho (\sigma , U)$ (which is mathematically invariant under within-cell monotone transforms of $\sigma $, so the value is shared across raw/S1/S2/S3) and Pearson $\rho $ under raw vs.\ three quantile-normalization schemes: \textbf  {S1} (per-(env, backbone)) ranks within each cell; \textbf  {S2} (per-backbone) ranks within each backbone's pool; \textbf  {S3} (per-environment) ranks within each environment's pool. {\fontfamily  {pzd}\fontencoding  {U}\fontseries  {m}\fontshape  {n}\selectfont  \char 51}/{\fontfamily  {pzd}\fontencoding  {U}\fontseries  {m}\fontshape  {n}\selectfont  \char 55}{} mark whether the Pearson sign is stable vs.\ raw under each scheme (CI excludes 0 on the same side). The cross-backbone reversal cells (HotpotQA, APPS, FEVER) preserve sign across all three schemes on both metrics; the cells where Pearson sign flips are uniformly weak-signal cells with raw $|\rho |<0.13$. DEAD: signal variance $\approx 0$ or no positive utility labels. $^*$: $p<0.05$. 1000-resample bootstrap.\relax }}{24}{table.caption.48}\protected@file@percent }
+\newlabel{tab:phase-a-norm}{{16}{24}{Robustness of cross-backbone reversal to entropy quantile-normalization. For each (env, backbone) cell, we report Spearman $\rho (\sigma , U)$ (which is mathematically invariant under within-cell monotone transforms of $\sigma $, so the value is shared across raw/S1/S2/S3) and Pearson $\rho $ under raw vs.\ three quantile-normalization schemes: \textbf {S1} (per-(env, backbone)) ranks within each cell; \textbf {S2} (per-backbone) ranks within each backbone's pool; \textbf {S3} (per-environment) ranks within each environment's pool. \cmark /\xmark {} mark whether the Pearson sign is stable vs.\ raw under each scheme (CI excludes 0 on the same side). The cross-backbone reversal cells (HotpotQA, APPS, FEVER) preserve sign across all three schemes on both metrics; the cells where Pearson sign flips are uniformly weak-signal cells with raw $|\rho |<0.13$. DEAD: signal variance $\approx 0$ or no positive utility labels. $^*$: $p<0.05$. 1000-resample bootstrap.\relax }{table.caption.48}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {G.5}Ruling Out Alternative Explanations: Reward and Entropy Calibration}{24}{subsection.G.5}\protected@file@percent }
+\newlabel{app:reversal-alternatives}{{G.5}{24}{Ruling Out Alternative Explanations: Reward and Entropy Calibration}{subsection.G.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{Reward transformations.}{24}{section*.49}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Entropy transformations.}{24}{section*.50}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {G.6}Stratified Analysis: Controlling for Trajectory Length}{24}{subsection.G.6}\protected@file@percent }
+\newlabel{app:stratified}{{G.6}{24}{Stratified Analysis: Controlling for Trajectory Length}{subsection.G.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {17}{\ignorespaces Robustness of $\rho (\sigma , U)$ to monotone reward and entropy transforms. Spearman $\rho $ is rank-invariant under positive monotone transforms of either variable, so the $\sigma \!\to \!\sigma ^{0.5}$, $\sigma ^{2}$, and $\log \sigma $ columns must agree with the raw column up to numerical noise -- this is reported transparently as a sanity check ruling out upstream entropy-pipeline bugs. For $U\!\to \!\alpha U$ with $\alpha < 0$, Spearman flips sign as expected (rank order reversed). Pearson $\rho $ varies under non-linear $\sigma $ transforms (informative); the only cell where Pearson sign flips is Phi-3.5 / APPS under $\log \sigma $, where Spearman remains stable at $-0.129$. DEAD: signal variance $\approx 0$ or no positive utility labels.\relax }}{25}{table.caption.51}\protected@file@percent }
+\newlabel{tab:phase-a-alternatives}{{17}{25}{Robustness of $\rho (\sigma , U)$ to monotone reward and entropy transforms. Spearman $\rho $ is rank-invariant under positive monotone transforms of either variable, so the $\sigma \!\to \!\sigma ^{0.5}$, $\sigma ^{2}$, and $\log \sigma $ columns must agree with the raw column up to numerical noise -- this is reported transparently as a sanity check ruling out upstream entropy-pipeline bugs. For $U\!\to \!\alpha U$ with $\alpha < 0$, Spearman flips sign as expected (rank order reversed). Pearson $\rho $ varies under non-linear $\sigma $ transforms (informative); the only cell where Pearson sign flips is Phi-3.5 / APPS under $\log \sigma $, where Spearman remains stable at $-0.129$. DEAD: signal variance $\approx 0$ or no positive utility labels.\relax }{table.caption.51}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {G.7}Regularizer Ablation}{25}{subsection.G.7}\protected@file@percent }
+\newlabel{app:regularizer-ablation}{{G.7}{25}{Regularizer Ablation}{subsection.G.7}{}}
+\@writefile{toc}{\contentsline {paragraph}{$\ell _1$ vs.\ $\ell _2$: sparsity is required for diagnosis, not just for predictive performance.}{25}{section*.53}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {18}{\ignorespaces Regularizer ablation on three environments ordered by signal strength. SR (\%); ``\#nz'' is the mean number of non-zero fitted weights across three seeds. The candidate pool $\phi _{\text  {cand}}$ contains 31 features ($5$\nobreakspace  {}universal $+\,3$\nobreakspace  {}derived $+\,20$\nobreakspace  {}hidden-state PCA $+\,3$\nobreakspace  {}auto-extracted); adding the LLM feature layer brings the pool to $\approx $36. $\ell _1$ is the only variant that achieves competitive SR \emph  {and} exact sparsity required by the signed-weight diagnostic.\relax }}{26}{table.caption.52}\protected@file@percent }
+\newlabel{tab:regularizer-ablation}{{18}{26}{Regularizer ablation on three environments ordered by signal strength. SR (\%); ``\#nz'' is the mean number of non-zero fitted weights across three seeds. The candidate pool $\phi _{\text {cand}}$ contains 31 features ($5$~universal $+\,3$~derived $+\,20$~hidden-state PCA $+\,3$~auto-extracted); adding the LLM feature layer brings the pool to $\approx $36. $\ell _1$ is the only variant that achieves competitive SR \emph {and} exact sparsity required by the signed-weight diagnostic.\relax }{table.caption.52}{}}
+\@writefile{toc}{\contentsline {paragraph}{$\ell _1$ vs.\ unregularized logistic: robustness under weak signals.}{26}{section*.54}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{$\ell _1$ vs.\ MI top-$k$ + unregularized: joint selection+shrinkage vs.\ selection alone.}{26}{section*.55}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Summary.}{26}{section*.56}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {G.8}Environment-Adaptive Trigger Behavior}{26}{subsection.G.8}\protected@file@percent }
+\newlabel{app:trigger-rate}{{G.8}{26}{Environment-Adaptive Trigger Behavior}{subsection.G.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {H}Broader Impact}{26}{appendix.H}\protected@file@percent }
+\newlabel{app:impact}{{H}{26}{Broader Impact}{appendix.H}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Environment-adaptive trigger behavior. Panels ordered by rollout headroom $\Delta $. Solid line: per-step trigger rate with 95\% CI band. Dashed gray: 50\% reference. RR: overall trigger rate. DIAL's trigger rate ranges from 73\% (TWExpress) to $<$20\% (late-step Plancraft), emerging from direction learning alone.\relax }}{27}{figure.caption.57}\protected@file@percent }
+\newlabel{fig:trigger-adapt}{{9}{27}{Environment-adaptive trigger behavior. Panels ordered by rollout headroom $\Delta $. Solid line: per-step trigger rate with 95\% CI band. Dashed gray: 50\% reference. RR: overall trigger rate. DIAL's trigger rate ranges from 73\% (TWExpress) to $<$20\% (late-step Plancraft), emerging from direction learning alone.\relax }{figure.caption.57}{}}
+\gdef \@abspage@last{27}
