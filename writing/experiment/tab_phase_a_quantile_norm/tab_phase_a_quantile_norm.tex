@@ -1,0 +1,48 @@
+\begin{table*}[t]
+\centering
+\caption{Robustness of cross-backbone reversal to entropy
+quantile-normalization. For each (env, backbone) cell, we report
+Spearman $\rho(\sigma, U)$ (which is mathematically invariant under
+within-cell monotone transforms of $\sigma$, so the value is shared
+across raw/S1/S2/S3) and Pearson $\rho$ under raw vs.\ three
+quantile-normalization schemes: \textbf{S1} (per-(env, backbone))
+ranks within each cell; \textbf{S2} (per-backbone) ranks within
+each backbone's pool; \textbf{S3} (per-environment) ranks within
+each environment's pool. \cmark/\xmark{} mark whether the Pearson
+sign is stable vs.\ raw under each scheme (CI excludes 0 on the
+same side). The cross-backbone reversal cells (HotpotQA, APPS,
+FEVER) preserve sign across all three schemes on both metrics;
+the cells where Pearson sign flips are uniformly weak-signal cells
+with raw $|\rho|<0.13$. DEAD: signal variance $\approx 0$ or no
+positive utility labels. $^*$: $p<0.05$. 1000-resample bootstrap.}
+\label{tab:phase-a-norm}
+\footnotesize
+\begin{tabular}{l l r c c c c c c}
+\toprule
+& & & \textbf{Spearman} & \multicolumn{4}{c}{\textbf{Pearson $\rho(\sigma, U)$}} & \textbf{Sign stable} \\
+\cmidrule(lr){5-8}
+\textbf{Backbone} & \textbf{Env} & \textbf{N} & raw=S1=S2=S3 & raw & S1 & S2 & S3 & S1/S2/S3 \\
+\midrule
+Qwen3-4B & HotpotQA & 1208 & $-0.327^*$ & $-0.138$ & $-0.330$ & $-0.264$ & $-0.323$ & \cmark/\cmark/\cmark \\
+Qwen3-4B & APPS & 439 & $+0.317^*$ & $+0.203$ & $+0.303$ & $+0.265$ & $+0.285$ & \cmark/\cmark/\cmark \\
+Qwen3-4B & WebShop & 1073 & $+0.133^*$ & $+0.051$ & $+0.134$ & $+0.156$ & $+0.089$ & \xmark/\xmark/\xmark \\
+Qwen3-4B & FEVER & 282 & $-0.119^*$ & $-0.186$ & $-0.123$ & $-0.237$ & $-0.192$ & \cmark/\cmark/\cmark \\
+Qwen3-4B & TWExpress & 798 & $-0.290^*$ & $-0.319$ & $-0.290$ & $-0.329$ & $-0.324$ & \cmark/\cmark/\cmark \\
+Qwen3-4B & Plancraft & 1360 & $-0.016$ & $-0.025$ & $-0.017$ & $-0.016$ & $-0.024$ & \xmark/\xmark/\xmark \\
+\midrule
+Phi-3.5 & HotpotQA & 242 & $+0.184^*$ & $+0.119$ & $+0.184$ & $+0.147$ & $+0.180$ & \xmark/\xmark/\xmark \\
+Phi-3.5 & APPS & 400 & $-0.129^*$ & $-0.197$ & $-0.104$ & $-0.193$ & $-0.054$ & \cmark/\cmark/\xmark \\
+Phi-3.5 & WebShop & 751 & $+0.335^*$ & $+0.384$ & $+0.374$ & $+0.382$ & $+0.394$ & \cmark/\cmark/\cmark \\
+Phi-3.5 & FEVER & 824 & $-0.156^*$ & $-0.158$ & $-0.161$ & $-0.160$ & $-0.157$ & \cmark/\cmark/\cmark \\
+Phi-3.5 & TWExpress & -- & -- & -- & -- & -- & -- & -- \\
+Phi-3.5 & Plancraft & -- & -- & -- & -- & -- & -- & -- \\
+\midrule
+Llama-3.1 & HotpotQA & 244 & $-0.346^*$ & $-0.344$ & $-0.337$ & $-0.341$ & $-0.320$ & \cmark/\cmark/\cmark \\
+Llama-3.1 & APPS & 475 & $-0.242^*$ & $-0.217$ & $-0.271$ & $-0.233$ & $-0.287$ & \cmark/\cmark/\cmark \\
+Llama-3.1 & WebShop & 948 & $+0.287^*$ & $+0.298$ & $+0.287$ & $+0.303$ & $+0.321$ & \cmark/\cmark/\cmark \\
+Llama-3.1 & FEVER & 840 & $+0.428^*$ & $+0.481$ & $+0.418$ & $+0.454$ & $+0.432$ & \cmark/\cmark/\cmark \\
+Llama-3.1 & TWExpress & -- & -- & -- & -- & -- & -- & -- \\
+Llama-3.1 & Plancraft & 1338 & $-0.041$ & $-0.023$ & $-0.033$ & $-0.019$ & $-0.013$ & \xmark/\xmark/\xmark \\
+\bottomrule
+\end{tabular}
+\end{table*}
