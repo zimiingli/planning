@@ -48,14 +48,15 @@ for i, phase in enumerate(phases):
             y_pos = v - 0.01
             va = "top"
         ax.text(bar.get_x() + bar.get_width() / 2, y_pos,
-                f"{v:+.2f}", ha="center", va=va, fontsize=5.5,
+                f"{v:+.2f}", ha="center", va=va, fontsize=6,
                 color="#444444")
 
 ax.axhline(y=0, color="black", linewidth=0.7)
 ax.set_xticks(x)
-ax.set_xticklabels(env_order, fontsize=8)
-ax.set_ylabel(r"$\rho$(entropy, U)", fontsize=9)
-ax.legend(fontsize=8, frameon=False)
+ax.set_xticklabels(env_order, fontsize=9)
+ax.tick_params(axis="y", labelsize=8)
+ax.set_ylabel(r"$\rho$(entropy, U)", fontsize=10)
+ax.legend(fontsize=9, frameon=False)
 ax.spines["top"].set_visible(False)
 ax.spines["right"].set_visible(False)
 
