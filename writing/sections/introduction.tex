@@ -54,7 +54,7 @@ higher uncertainty consistently indicates when extra computation
 helps. We call this the \emph{fixed-direction} assumption. Taking 
 token entropy as the canonical signal, Figure~\ref{fig:intro_reversal} tests this assumption across six agent environments and finds it violated on half of them, where 
 high entropy instead indicates states on which extra compute is 
-wasted. The signal--utility relationship reverses direction across environments, with a sharp consequence: when the assumed direction is wrong, better calibration worsens performance by more precisely selecting harmful states. This raises a central question: \emph{if the signal--utility direction is not fixed, can adaptive compute 
+wasted. The signal--utility relationship reverses direction across environments, with a sharp consequence: when the assumed direction is wrong, sharper-ranking gates worsen performance by more precisely selecting harmful states. This raises a central question: \emph{if the signal--utility direction is not fixed, can adaptive compute 
 still be principled?}
 
 % --- Module 2: Our finding + diagnosis (~30%) ---
@@ -92,9 +92,7 @@ entropy--utility correlation can flip across LLMs. The signal's semantics are th
 We trace this reversal to two coexisting state types with opposite signal--utility relationships. \emph{Information-poor} states (Type~I) arise when the agent lacks sufficient information; rollouts cannot synthesize what the environment does not provide, so high uncertainty predicts negative value of computation. For example, a fact-verification agent that hesitates because retrieved evidence is ambiguous gains nothing from additional rollouts. \emph{Decision-difficult} states (Type~D) arise when multiple viable options exist; rollouts help explore alternatives, so high uncertainty predicts 
 positive value. For example, a coding agent that hesitates because several valid implementations exist benefits from exploring them. 
 
-Whether a given state is Type~I or Type~D depends on what the agent already encodes, so the mixture is determined jointly by the environment and the backbone. The same uncertainty signal carries opposite meanings depending on which type dominates, an instance of Simpson's paradox~\cite{simpson1951interpretation, kdd2023simpson}. This decomposition yields a formal implication: the uncertainty signal is not a sufficient statistic for the value of computation, so under the two-source model, no policy depending on uncertainty 
-alone can deliver non-negative value across heterogeneous 
-settings (Proposition~\ref{prop:necessity}). It also makes a falsifiable prediction, that reversal is determined by the mixture of Type~I 
+Whether a given state is Type~I or Type~D depends on what the agent already encodes, so the mixture is determined jointly by the environment and the backbone. The same uncertainty signal carries opposite meanings depending on which type dominates, an instance of Simpson's paradox~\cite{simpson1951interpretation, kdd2023simpson}. This decomposition yields a formal implication: the uncertainty signal is not a sufficient statistic for the value of computation, so under the two-source model, an uncertainty-only gate that lacks features distinguishing latent state types cannot guarantee non-negative value across heterogeneous settings (Proposition~\ref{prop:necessity}). It also makes a falsifiable prediction, that reversal is determined by the mixture of Type~I 
 and Type~D states, which we verify on held-out data 
 (\S\ref{sec:theory-verification}). Recovering sufficiency requires augmenting the uncertainty signal with features that correlate with the latent state type, such as 
 step count as a proxy for information accumulation.

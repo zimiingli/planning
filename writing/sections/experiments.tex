@@ -150,7 +150,7 @@ Plancraft      & 23.3\% & 20.5\% & $-$2.8  & 0.016 \\
 	\caption{Gate complexity ablation on HotpotQA (Qwen3-4B).
 		With correct direction all gates reach $\sim$95\%; with wrong
 		direction, MLP performs \emph{worse} than logistic, an empirical
-		signature of the calibration-worsens-performance result.}
+		signature of the wrong-direction harm result.}
 	\vspace{-0.1in}
 	\label{tab:capacity}
 	\resizebox{\columnwidth}{!}{%
@@ -181,7 +181,7 @@ $<$1\% once direction is right. With wrong direction, the trend
 reverses: a higher-capacity MLP drops to 45.3\%,
 \emph{below} the wrong-direction logistic (62.0\%), because the
 more powerful gate more precisely targets harmful states. This is
-the empirical instantiation of the calibration-worsens-performance
+the empirical instantiation of the wrong-direction harm
 result of Appendix~\ref{app:proof-necessity}: signal direction
 consistently outweighs gate capacity, explaining why DIAL's
 minimal linear gate suffices.
