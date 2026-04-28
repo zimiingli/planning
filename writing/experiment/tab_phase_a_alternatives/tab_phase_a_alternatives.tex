@@ -11,8 +11,10 @@ $\alpha < 0$, Spearman flips sign as expected (rank order
 reversed). Pearson $\rho$ varies under non-linear $\sigma$
 transforms (informative); the only cell where Pearson sign
 flips is Phi-3.5 / APPS under $\log\sigma$, where Spearman
-remains stable at $-0.129$. DEAD: signal variance $\approx 0$
-or no positive utility labels.}
+remains stable at $-0.129$. $^\dagger$: cells where logged
+$\sigma$ has $\leq 2$ unique values or logged $U$ has no
+positive labels in the exploration data; correlation analysis
+is statistically ill-defined.}
 \label{tab:phase-a-alternatives}
 \footnotesize
 \begin{tabular}{l l c c c c c c c c}
@@ -33,14 +35,14 @@ Phi-3.5 & HotpotQA & $+0.184$ & $-0.184$ & $+0.184$ & $+0.184$ & $+0.184$ & $+0.
 Phi-3.5 & APPS & $-0.129$ & $+0.129$ & $-0.129$ & $-0.129$ & $-0.129$ & $-0.161$ & $-0.196$ & $+0.027$ \\
 Phi-3.5 & WebShop & $+0.335$ & $-0.335$ & $+0.335$ & $+0.335$ & $+0.335$ & $+0.399$ & $+0.324$ & $+0.296$ \\
 Phi-3.5 & FEVER & $-0.156$ & $+0.156$ & $-0.156$ & $-0.156$ & $-0.156$ & $-0.153$ & $-0.156$ & $-0.049$ \\
-Phi-3.5 & TWExpress & -- & -- & -- & -- & -- & -- & -- & -- \\
-Phi-3.5 & Plancraft & -- & -- & -- & -- & -- & -- & -- & -- \\
+Phi-3.5 & TWExpress$^\dagger$ & \multicolumn{8}{c}{n/a$^\dagger$ (insufficient signal: $|\sigma_{\mathrm{unique}}|\!\leq\!2$ or no positive $U$ labels)} \\
+Phi-3.5 & Plancraft$^\dagger$ & \multicolumn{8}{c}{n/a$^\dagger$ (insufficient signal: $|\sigma_{\mathrm{unique}}|\!\leq\!2$ or no positive $U$ labels)} \\
 \midrule
 Llama-3.1 & HotpotQA & $-0.346$ & $+0.346$ & $-0.346$ & $-0.346$ & $-0.346$ & $-0.332$ & $-0.335$ & $-0.288$ \\
 Llama-3.1 & APPS & $-0.242$ & $+0.242$ & $-0.242$ & $-0.242$ & $-0.242$ & $-0.266$ & $-0.150$ & $-0.326$ \\
 Llama-3.1 & WebShop & $+0.287$ & $-0.287$ & $+0.287$ & $+0.287$ & $+0.287$ & $+0.310$ & $+0.258$ & $+0.310$ \\
 Llama-3.1 & FEVER & $+0.428$ & $-0.428$ & $+0.428$ & $+0.428$ & $+0.428$ & $+0.431$ & $+0.528$ & $+0.354$ \\
-Llama-3.1 & TWExpress & -- & -- & -- & -- & -- & -- & -- & -- \\
+Llama-3.1 & TWExpress$^\dagger$ & \multicolumn{8}{c}{n/a$^\dagger$ (insufficient signal: $|\sigma_{\mathrm{unique}}|\!\leq\!2$ or no positive $U$ labels)} \\
 Llama-3.1 & Plancraft & $-0.041$ & $+0.041$ & $-0.041$ & $-0.041$ & $-0.041$ & $-0.014$ & $-0.035$ & $-0.003$ \\
 \bottomrule
 \end{tabular}
