@@ -75,9 +75,15 @@ def write_tex(reward, temp):
     for bb in BB_ORDER:
         for env in ENV_ORDER:
             r_rw = reward.get((bb, env)); r_tp = temp.get((bb, env))
-            if not r_rw or r_rw["status"] == "DEAD":
+            if not r_rw:
                 body_rows.append(
-                    f"{BB_DISPLAY.get(bb, bb)} & {env} & -- & -- & -- & -- & -- & -- & -- & -- \\\\"
+                    f"{BB_DISPLAY.get(bb, bb)} & {env} & \\multicolumn{{8}}{{c}}{{(no data)}} \\\\"
+                )
+                continue
+            if r_rw["status"] == "DEAD":
+                body_rows.append(
+                    f"{BB_DISPLAY.get(bb, bb)} & {env}$^\\dagger$ & "
+                    f"\\multicolumn{{8}}{{c}}{{n/a$^\\dagger$ (insufficient signal: $|\\sigma_{{\\mathrm{{unique}}}}|\\!\\leq\\!2$ or no positive $U$ labels)}} \\\\"
                 )
                 continue
             scale = {s["alpha"]: s["spearman_rho"] for s in r_rw["scale_results"]}
@@ -110,8 +116,10 @@ $\alpha < 0$, Spearman flips sign as expected (rank order
 reversed). Pearson $\rho$ varies under non-linear $\sigma$
 transforms (informative); the only cell where Pearson sign
 flips is Phi-3.5 / APPS under $\log\sigma$, where Spearman
-remains stable at $-0.129$. DEAD: signal variance $\approx 0$
-or no positive utility labels.}
+remains stable at $-0.129$. $^\dagger$: cells where logged
+$\sigma$ has $\leq 2$ unique values or logged $U$ has no
+positive labels in the exploration data; correlation analysis
+is statistically ill-defined.}
 \label{tab:phase-a-alternatives}
 \footnotesize
 \begin{tabular}{l l c c c c c c c c}

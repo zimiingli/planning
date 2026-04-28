@@ -77,8 +77,14 @@ def write_tex(rows):
 
     def cell_line(bb, env):
         r = by_key.get((bb, env))
-        if r is None or r["status"] == "DEAD":
-            return f"{BB_DISPLAY.get(bb, bb)} & {env} & -- & -- & -- & -- & -- & -- & -- \\\\"
+        if r is None:
+            return f"{BB_DISPLAY.get(bb, bb)} & {env} & -- & \\multicolumn{{6}}{{c}}{{(no data)}} \\\\"
+        if r["status"] == "DEAD":
+            # Show N so reader sees experiment was attempted; cells span with explanation.
+            return (
+                f"{BB_DISPLAY.get(bb, bb)} & {env} & {r['n']}$^\\dagger$ & "
+                f"\\multicolumn{{6}}{{c}}{{n/a$^\\dagger$ (insufficient signal in logged data)}} \\\\"
+            )
         sp = r["spearman"]["raw"]
         pe = r["pearson"]
         sig = sp["p"] < 0.05
@@ -127,8 +133,11 @@ sign is stable vs.\ raw under each scheme (CI excludes 0 on the
 same side). The cross-backbone reversal cells (HotpotQA, APPS,
 FEVER) preserve sign across all three schemes on both metrics;
 the cells where Pearson sign flips are uniformly weak-signal cells
-with raw $|\rho|<0.13$. DEAD: signal variance $\approx 0$ or no
-positive utility labels. $^*$: $p<0.05$. 1000-resample bootstrap.}
+with raw $|\rho|<0.13$. $^\dagger$: cells where logged $\sigma$ has
+$\leq 2$ unique values or logged $U$ has no positive labels in the
+exploration data; correlation analysis is statistically ill-defined
+(we retain $N$ for transparency but do not compute $\rho$).
+$^*$: $p<0.05$. 1000-resample bootstrap.}
 \label{tab:phase-a-norm}
 \footnotesize
 \begin{tabular}{l l r c c c c c c}
