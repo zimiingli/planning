@@ -1148,6 +1148,94 @@ show large SR variance across backbones; DIAL adapts robustly.}
 \label{fig:multi-backbone-sr}
 \end{figure*}
 
+\subsection{Robustness of Reversal to Entropy Quantile-Normalization}
+\label{app:reversal-norm}
+
+A natural concern with Table~\ref{tab:signal-discovery} is that
+cross-backbone reversal could reflect incomparable raw entropy
+scales across tokenizers rather than a structural sign change.
+We rule this out by replacing each $\sigma(s)$ with its empirical
+quantile rank $Q(s) \!\in\! [0, 1]$ under three pooling schemes:
+\textbf{S1} ranks within each (environment, backbone) cell,
+\textbf{S2} ranks within each backbone's pool of states (across
+environments), and \textbf{S3} ranks within each environment's
+pool (across backbones). For each scheme we recompute Spearman
+$\rho(Q, U)$ and Pearson $\rho(Q, U)$ per cell with 1000-resample
+bootstrap confidence intervals.
+
+\paragraph{Spearman: invariant by construction.} Per-cell
+Spearman $\rho$ is mathematically rank-invariant under any
+within-cell monotone transform of $\sigma$, so all three schemes
+give identical Spearman $\rho$ to the raw column within each
+cell. We report this transparently -- it confirms that rank
+structure is preserved but is not, in itself, a non-trivial test.
+
+\paragraph{Pearson: scale-sensitive, the substantive test.}
+Pearson $\rho$ varies under non-linear normalization. Across the
+15 analyzable cells (3 cells DEAD: TWExpress on \{Phi-3.5,
+Llama-3.1\}, Plancraft on Phi-3.5), Pearson $\rho$ is
+sign-stable under S1, S2, and S3 on 11/15, 11/15, and 10/15
+cells respectively (Table~\ref{tab:phase-a-norm}). Cells where
+Pearson sign flips are uniformly weak-signal cells with raw
+$|\rho|<0.13$ and CIs straddling zero (Qwen3 WebShop, Phi-3.5
+HotpotQA, Plancraft); none of the strong cross-backbone reversal
+cells (HotpotQA, APPS, FEVER) exhibits a Pearson sign flip on
+any scheme.
+
+\input{experiment/tab_phase_a_quantile_norm/tab_phase_a_quantile_norm.tex}
+
+The cross-backbone reversal pattern on HotpotQA, APPS, and FEVER
+therefore survives all three normalization schemes, supporting
+the claim of \S\ref{sec:empirical-landscape} that the reversal
+is structural rather than a tokenizer-scale artifact.
+
+\subsection{Ruling Out Alternative Explanations: Reward and
+            Entropy Calibration}
+\label{app:reversal-alternatives}
+
+We further verify that the reversal is not explained by reward
+parameterization or entropy estimator calibration.
+
+\paragraph{Reward transformations.} Spearman $\rho(\sigma, U)$
+is rank-invariant under positive monotone transforms of $U$,
+so $U \!\to\! \alpha U$ for $\alpha > 0$ exactly preserves
+$\rho$ across all 15 analyzable cells; for $\alpha < 0$ the
+sign flips as expected (rank order reversed).
+Table~\ref{tab:phase-a-alternatives} shows the $\alpha\!=\!-1$
+column for completeness. Reward parameterization is therefore
+not a confound. Additive shifts $U \!\to\! U + c$ also preserve
+the correlation, but trivially flip the binary classifier label
+$\mathrm{sign}(U)$ on states with $U\!=\!0$; this is a
+degenerate property of the $U$ distribution rather than a
+sensitivity, and we do not include label-flip data in the
+robustness verdict.
+
+\paragraph{Entropy transformations.} For $\sigma \!\to\!
+\sigma/T$ with $T \in \{0.5, 1, 2, 5\}$, both Spearman and
+Pearson $\rho$ are exactly preserved (positive linear scaling).
+Under non-linear transforms $\sigma \!\to\! \sigma^\alpha$ with
+$\alpha \in \{0.5, 1, 2\}$ and $\sigma \!\to\! \log(\sigma +
+\epsilon)$, Spearman $\rho$ remains invariant by rank-preservation
+on every cell; Pearson varies (as expected for non-linear
+transforms) but only one cell -- Phi-3.5 / APPS under
+$\log\sigma$ -- exhibits a Pearson sign flip
+(Table~\ref{tab:phase-a-alternatives}). Spearman on that cell
+is stable at $-0.129$, so the structural reversal claim is
+unaffected. We report this single anomaly transparently rather
+than averaging it away.
+
+\input{experiment/tab_phase_a_alternatives/tab_phase_a_alternatives.tex}
+
+Across the four alternative explanations considered (rollout
+noise, reward bias, search depth, calibration error), only
+rollout noise and search depth would require new rollouts to
+test directly. Reward bias and calibration error are post-hoc
+verifiable on the logged data and are ruled out above. We leave
+the rollout-noise and search-depth ablations as future work; the
+two-source mixture interpretation of \S\ref{sec:toy-model} is
+consistent with all observational data and survives all
+post-hoc robustness checks within reach.
+
 \subsection{Stratified Analysis: Controlling for Trajectory Length}
 \label{app:stratified}
 

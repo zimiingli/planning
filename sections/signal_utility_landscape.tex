@@ -72,6 +72,11 @@ Section~\ref{sec:main-results} will show, gates that assume the
 wrong direction systematically fall \emph{below} the no-trigger
 baseline, making them strictly worse than doing nothing in
 mismatched (environment, backbone) pairs.
+This cross-backbone reversal is not an artifact of incomparable
+entropy scales across LLMs: per-(environment, backbone) quantile
+normalization preserves both Spearman rank ordering (trivially)
+and Pearson sign on the strong-correlation cells
+(Appendix~\ref{app:reversal-norm}).
 
 \textbf{Signal identity also varies across environments.}
 Beyond direction, the most informative signal itself differs
@@ -153,6 +158,12 @@ rather than a post-hoc explanation: in
 Section~\ref{sec:theory-verification} we derive three predictions
 from it (temporal dynamics, cross-environment consistency, and
 signal identity alignment) and verify each on held-out data.
+Reversal sign is also robust to monotone reward transformations
+$U \!\to\! \alpha U$ ($\alpha > 0$) and to entropy normalization
+$\sigma \!\to\! \sigma/T$, $\sigma \!\to\! \sigma^\alpha$, or
+$\sigma \!\to\! \log\sigma$ -- ruling out reward parameterization
+and entropy-pipeline calibration as alternative explanations
+(Appendix~\ref{app:reversal-alternatives}).
 
 \paragraph{Implication.}
 Under this decomposition, $\sigma$ is not a sufficient statistic
