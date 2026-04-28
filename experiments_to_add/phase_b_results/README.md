@@ -1,13 +1,74 @@
 # Phase B Results: Calibration-Quality Sweep (#02)
 
-**Date last updated**: 2026-04-28 (Wave 2 partial: 186/360 cells)
+**Date last updated**: 2026-04-28 (Wave 2 final: 235/360 cells, then cancelled)
 **Owner**: zmli6 (liziming033@gmail.com)
 **Plan**: [`../phase_b_plan.md`](../phase_b_plan.md)
 **Spec**: [`../02_calibration_quality_sweep.md`](../02_calibration_quality_sweep.md)
-**Status**:
-- **Wave 1 complete** (2026-04-27): 120/120 cells, 1 seed × 30 episodes — used for pipeline validation; insufficient signal-to-noise.
-- **Wave 2 in progress** (2026-04-28): 186/360 cells, 3 seeds × 100 episodes — multi-seed averaging reveals trends Wave 1 missed.
+**Status**: 🔴 **DEFERRED FROM PAPER (Path B chosen)** — see [Final verdict](#final-verdict-2026-04-28-post-wave-2) below.
+**Why**: Wave 2 final data (with N_cal=500 added) reveals the apparent strong-monotone "calibration worsens SR on misaligned envs" result was a partial-data artifact. SR variation across N_cal ∈ [20, 500] is within statistical noise (~3pp) on every (env, method) cell. **Phase B does not provide evidence for the abstract hook**.
+- **Wave 1 complete** (2026-04-27): 120/120 cells, 1 seed × 30 episodes — pipeline validation only.
+- **Wave 2 cancelled** (2026-04-28): 235/360 cells run before cancellation; remaining 125 tasks cancelled to save compute (no recoverable signal expected).
 **Harness**: `experiments/p5_competing_baselines.py` (with `--phase1-data-override` flag) + `experiments/p7_phase_b_subsample.py` (subsample generator) + `scripts/run_phase_b_calibration_sweep{,_wave2}.sbatch` (SLURM arrays)
+
+---
+
+## Final verdict (2026-04-28, post Wave 2)
+
+**Decision: Path B — drop Phase B from the paper entirely.**
+
+### What changed
+
+Wave 2 partial (186/360 cells, missing most N_cal=500) appeared to show two clean strong-monotone-negative cells:
+- HotpotQA / SEAG: ρ(N_cal, SR) = **-0.949**
+- FEVER / CoRefine: ρ = **-0.738**
+
+Wave 2 final (235/360 cells, with N_cal=500 populated to 47/72) **reverses both**:
+
+| Cell | Wave 2 partial ρ | Wave 2 final ρ | What changed |
+|---|---:|---:|---|
+| HotpotQA / SEAG | -0.949 | **-0.359** | SR @ N_cal=500 reverts up to 0.70 |
+| FEVER / CoRefine | -0.738 | **+0.154** | SR @ N_cal=500 also reverts up |
+
+The mean-SR trajectories show why:
+
+```
+HotpotQA seag:  N_cal=20 → 50 → 100 → 200 → 500
+                  0.71    0.70   0.69   0.69   0.70   ← N=500 reverts
+                                                ↑
+                                    range = 2pp (within ~3pp seed noise)
+
+FEVER corefine: 0.49    0.49   0.47   0.48   0.49   ← N=500 reverts
+                                                ↑
+                                    range = 2pp (within ~3pp seed noise)
+```
+
+**The "strong-negative" finding was a 4-point artifact**: with only N_cal ∈ {20, 50, 100, 200} sampled, the small downward drift looks monotonic. Adding the 5th point (N_cal=500) fully within the noise band reveals there is no real trend.
+
+### Why no monotone effect appears
+
+| Reason | Detail |
+|---|---|
+| Effect size << noise floor | SE on SR with 100 ep × 3 seeds ≈ 3pp; observed range across N_cal is 1-3pp on every cell. |
+| N_cal sweep is a *gentle* intervention | Compare with Table 4's wrong-direction ablation, which inverts the gate's predicted direction outright (23-37pp drop). N_cal grows the calibration set but doesn't reverse it; the gate's threshold converges quickly. |
+| Threshold convergence | SEAG / CoRefine percentile-fit thresholds stabilize by N_cal ≈ 50; further data doesn't change the gate's decisions much. |
+| Base agent dominance | On APPS (base SR ≈ 0.62), gates rarely fire (RR < 0.10), so SR is pinned to base regardless of N_cal. |
+| WebShop SR-definition issue | Bimodal 0%/100% pattern; not interpretable for calibration sweep. |
+
+### Verdict for paper integration
+
+| Claim source | Status |
+|---|---|
+| Phase A (cross-backbone reversal robustness) | ✅ Integrated (§3.1, §3.2, App G.X, App G.Y). Done. |
+| **Phase B (calibration-quality sweep)** | ❌ **Drop entirely from paper**. No evidence of monotone effect. |
+| Abstract hook ("better calibration can worsen") | Stays. Supported by Table 4 wrong-direction ablation (23-37pp drop) — a stronger and cleaner intervention than the calibration data-size sweep. |
+
+**Action**: Phase B compute artifacts (`results/phase_b_calibration_sweep{,_wave2}/`) and this `phase_b_results/` folder are retained for transparency / future revisits, but **none of it goes into the paper**.
+
+### Lessons for future #02-style experiments
+
+1. **Estimate effect size before designing the sweep**. If the predicted effect is < 2× the noise floor, the sweep can't detect it without massive episode counts.
+2. **The wrong-direction ablation (Table 4) is the right tool for this hypothesis**. Inverting the gate is a much larger intervention than varying calibration data size.
+3. **Partial data is dangerous**: 4-of-5 sweep points showed an artifactual monotone trend. Always analyze with the full grid before drawing conclusions.
 
 ---
 
@@ -130,16 +191,18 @@ End-to-end: ~3 hours wall-clock from first submit to 120/120 (mostly waiting on 
 
 ## Analysis
 
-### TL;DR (post Wave 2 partial, 2026-04-28)
+### TL;DR (post Wave 2 partial, 2026-04-28) — ⚠️ **SUPERSEDED, see "Final verdict" above**
+
+> **NOTE**: This section was written when Wave 2 was 52% complete (186/360 cells, N_cal=500 nearly empty). The strong-monotone "findings" reported below **did not survive when N_cal=500 data was added** (Wave 2 235/360). Both ρ values reverted toward zero; the apparent monotone trend was a 4-point partial-data artifact. Kept here as part of the analysis trail; the operative conclusion is Path B (drop Phase B from paper).
 
 **Multi-seed averaging changed the picture.** Wave 1 looked mixed; Wave 2 (3 seeds × 100 ep, 52% complete) reveals two clean strong-monotone-negative cells on the misaligned envs:
 
-- ⭐ **HotpotQA / SEAG**: ρ(N_cal, SR) = **-0.949** (Wave 1 had reported -0.258 = "flat"; multi-seed averaging unmasked the trend)
-- ⭐ **FEVER / CoRefine**: ρ = **-0.738** (consistent with Wave 1's -0.707)
+- ⭐ **HotpotQA / SEAG**: ρ(N_cal, SR) = **-0.949** (Wave 1 had reported -0.258 = "flat"; multi-seed averaging unmasked the trend) — **superseded: -0.359 with full N_cal=500 data**
+- ⭐ **FEVER / CoRefine**: ρ = **-0.738** (consistent with Wave 1's -0.707) — **superseded: +0.154 with full N_cal=500 data**
 
-These are the lead cells for §5.2.1.
+These are the lead cells for §5.2.1. — **superseded; no §5.2.1 will be written**
 
-The **practical lesson** is that #02's effect size is real but small enough that a single seed × 30 episodes is insufficient to see it cleanly — exactly the noise floor we feared.
+The **practical lesson** is that #02's effect size is real but small enough that a single seed × 30 episodes is insufficient to see it cleanly — exactly the noise floor we feared. — **superseded: with 100 ep × 3 seeds the effect is still within noise, suggesting the effect may not be there at all rather than just hidden by noise.**
 
 ### Wave 2 partial verdict (mean over available seeds)
 
@@ -331,4 +394,5 @@ python planning/experiments_to_add/phase_b_results/generate_csvs.py
 - 2026-04-27 ~late evening: Wave 1 complete (120/120). Initial analysis: 2 cells matched, others mixed. Recommended Wave 2.
 - 2026-04-27 ~midnight: Wave 2 launched (job 24171804, 360 tasks).
 - 2026-04-28 ~early morning: Wave 2 retry submitted (job 24178742, 102 tasks on bad-node failures: gpu47 added to exclude list).
-- 2026-04-28: Wave 2 at 52% (186/360). HotpotQA SEAG: ρ flipped from -0.26 (W1) to **-0.95 (W2)** — multi-seed unmasking. Recommended Path C mechanism-stratified claim. README updated with Wave 2 verdict and revised §5.2.1 lead sentence.
+- 2026-04-28 morning: Wave 2 at 52% (186/360). HotpotQA SEAG: ρ flipped from -0.26 (W1) to -0.95 (W2 partial) — multi-seed unmasking. Recommended Path C mechanism-stratified claim. README updated with Wave 2 verdict and revised §5.2.1 lead sentence.
+- 2026-04-28 afternoon: Wave 2 at 65% (235/360, N_cal=500 column populated). **Reversal**: HotpotQA SEAG ρ goes -0.95 → **-0.36**, FEVER CoRefine ρ goes -0.74 → **+0.15**. Earlier "strong-monotone" was a 4-point partial-data artifact. Decision: **Path B — drop Phase B from paper**. Wave 2 cancelled (job 24171804 + 24178742). Phase A integration unaffected.
