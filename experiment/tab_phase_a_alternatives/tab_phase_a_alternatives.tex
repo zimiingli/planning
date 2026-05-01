@@ -10,39 +10,36 @@ upstream entropy-pipeline bugs. For $U\!\to\!\alpha U$ with
 $\alpha < 0$, Spearman flips sign as expected (rank order
 reversed). Pearson $\rho$ varies under non-linear $\sigma$
 transforms (informative); the only cell where Pearson sign
-flips is Phi-3.5 / APPS under $\log\sigma$, where Spearman
-remains stable at $-0.129$. $^\dagger$: cells where logged
-$\sigma$ has $\leq 2$ unique values or logged $U$ has no
-positive labels in the exploration data; correlation analysis
-is statistically ill-defined.}
+flips is Phi-3.5 / APPS under $\log\sigma$ ($+0.027$), where
+Spearman remains stable at $-0.129$. Three cells with
+insufficient logged data (TWExpress on \{Phi-3.5, Llama-3.1\},
+Plancraft on Phi-3.5: $|\sigma_{\mathrm{unique}}|\!\leq\!2$ or
+no positive $U$ labels) are excluded; correlation analysis is
+statistically ill-defined there.}
 \label{tab:phase-a-alternatives}
 \footnotesize
 \begin{tabular}{l l c c c c c c c c}
 \toprule
 & & \multicolumn{5}{c}{\textbf{Spearman $\rho$}} & \multicolumn{3}{c}{\textbf{Pearson $\rho$}} \\
 \cmidrule(lr){3-7} \cmidrule(lr){8-10}
-& & raw & $\alpha U$, $\alpha\!=\!-1$ & $\sigma^{0.5}$ & $\sigma^{2}$ & $\log\sigma$ & $\sigma^{0.5}$ & $\sigma^{2}$ & $\log\sigma$ \\
-\textbf{Backbone} & \textbf{Env} & & & & & & & & \\
+\textbf{Backbone} & \textbf{Env} & raw & $\alpha U$, $\alpha\!=\!-1$ & $\sigma^{0.5}$ & $\sigma^{2}$ & $\log\sigma$ & $\sigma^{0.5}$ & $\sigma^{2}$ & $\log\sigma$ \\
 \midrule
-Qwen3-4B & HotpotQA & $-0.327$ & $+0.327$ & $-0.327$ & $-0.327$ & $-0.327$ & $-0.201$ & $-0.085$ & $-0.317$ \\
-Qwen3-4B & APPS & $+0.317$ & $-0.317$ & $+0.317$ & $+0.317$ & $+0.317$ & $+0.273$ & $+0.085$ & $+0.305$ \\
-Qwen3-4B & WebShop & $+0.133$ & $-0.133$ & $+0.133$ & $+0.133$ & $+0.133$ & $+0.127$ & $+0.008$ & $+0.238$ \\
-Qwen3-4B & FEVER & $-0.119$ & $+0.119$ & $-0.119$ & $-0.119$ & $-0.119$ & $-0.228$ & $-0.140$ & $-0.240$ \\
+Qwen3-4B & HotpotQA  & $-0.327$ & $+0.327$ & $-0.327$ & $-0.327$ & $-0.327$ & $-0.201$ & $-0.085$ & $-0.317$ \\
+Qwen3-4B & APPS      & $+0.317$ & $-0.317$ & $+0.317$ & $+0.317$ & $+0.317$ & $+0.273$ & $+0.085$ & $+0.305$ \\
+Qwen3-4B & WebShop   & $+0.133$ & $-0.133$ & $+0.133$ & $+0.133$ & $+0.133$ & $+0.127$ & $+0.008$ & $+0.238$ \\
+Qwen3-4B & FEVER     & $-0.119$ & $+0.119$ & $-0.119$ & $-0.119$ & $-0.119$ & $-0.228$ & $-0.140$ & $-0.240$ \\
 Qwen3-4B & TWExpress & $-0.290$ & $+0.290$ & $-0.290$ & $-0.290$ & $-0.290$ & $-0.305$ & $-0.281$ & $-0.264$ \\
 Qwen3-4B & Plancraft & $-0.016$ & $+0.016$ & $-0.016$ & $-0.016$ & $-0.016$ & $-0.019$ & $-0.031$ & $-0.010$ \\
 \midrule
 Phi-3.5 & HotpotQA & $+0.184$ & $-0.184$ & $+0.184$ & $+0.184$ & $+0.184$ & $+0.170$ & $+0.042$ & $+0.107$ \\
-Phi-3.5 & APPS & $-0.129$ & $+0.129$ & $-0.129$ & $-0.129$ & $-0.129$ & $-0.161$ & $-0.196$ & $+0.027$ \\
-Phi-3.5 & WebShop & $+0.335$ & $-0.335$ & $+0.335$ & $+0.335$ & $+0.335$ & $+0.399$ & $+0.324$ & $+0.296$ \\
-Phi-3.5 & FEVER & $-0.156$ & $+0.156$ & $-0.156$ & $-0.156$ & $-0.156$ & $-0.153$ & $-0.156$ & $-0.049$ \\
-Phi-3.5 & TWExpress$^\dagger$ & \multicolumn{8}{c}{n/a$^\dagger$ (insufficient signal: $|\sigma_{\mathrm{unique}}|\!\leq\!2$ or no positive $U$ labels)} \\
-Phi-3.5 & Plancraft$^\dagger$ & \multicolumn{8}{c}{n/a$^\dagger$ (insufficient signal: $|\sigma_{\mathrm{unique}}|\!\leq\!2$ or no positive $U$ labels)} \\
+Phi-3.5 & APPS     & $-0.129$ & $+0.129$ & $-0.129$ & $-0.129$ & $-0.129$ & $-0.161$ & $-0.196$ & $+0.027$ \\
+Phi-3.5 & WebShop  & $+0.335$ & $-0.335$ & $+0.335$ & $+0.335$ & $+0.335$ & $+0.399$ & $+0.324$ & $+0.296$ \\
+Phi-3.5 & FEVER    & $-0.156$ & $+0.156$ & $-0.156$ & $-0.156$ & $-0.156$ & $-0.153$ & $-0.156$ & $-0.049$ \\
 \midrule
-Llama-3.1 & HotpotQA & $-0.346$ & $+0.346$ & $-0.346$ & $-0.346$ & $-0.346$ & $-0.332$ & $-0.335$ & $-0.288$ \\
-Llama-3.1 & APPS & $-0.242$ & $+0.242$ & $-0.242$ & $-0.242$ & $-0.242$ & $-0.266$ & $-0.150$ & $-0.326$ \\
-Llama-3.1 & WebShop & $+0.287$ & $-0.287$ & $+0.287$ & $+0.287$ & $+0.287$ & $+0.310$ & $+0.258$ & $+0.310$ \\
-Llama-3.1 & FEVER & $+0.428$ & $-0.428$ & $+0.428$ & $+0.428$ & $+0.428$ & $+0.431$ & $+0.528$ & $+0.354$ \\
-Llama-3.1 & TWExpress$^\dagger$ & \multicolumn{8}{c}{n/a$^\dagger$ (insufficient signal: $|\sigma_{\mathrm{unique}}|\!\leq\!2$ or no positive $U$ labels)} \\
+Llama-3.1 & HotpotQA  & $-0.346$ & $+0.346$ & $-0.346$ & $-0.346$ & $-0.346$ & $-0.332$ & $-0.335$ & $-0.288$ \\
+Llama-3.1 & APPS      & $-0.242$ & $+0.242$ & $-0.242$ & $-0.242$ & $-0.242$ & $-0.266$ & $-0.150$ & $-0.326$ \\
+Llama-3.1 & WebShop   & $+0.287$ & $-0.287$ & $+0.287$ & $+0.287$ & $+0.287$ & $+0.310$ & $+0.258$ & $+0.310$ \\
+Llama-3.1 & FEVER     & $+0.428$ & $-0.428$ & $+0.428$ & $+0.428$ & $+0.428$ & $+0.431$ & $+0.528$ & $+0.354$ \\
 Llama-3.1 & Plancraft & $-0.041$ & $+0.041$ & $-0.041$ & $-0.041$ & $-0.041$ & $-0.014$ & $-0.035$ & $-0.003$ \\
 \bottomrule
 \end{tabular}

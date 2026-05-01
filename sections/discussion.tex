@@ -24,4 +24,7 @@ DIAL requires $N_{\text{explore}}{=}50$ exploration episodes per new
 (environment, backbone) deployment---a modest but non-zero one-time
 cost amortized over subsequent inference, and the only cost incurred
 beyond the per-step inference budget reported in
-\S\ref{sec:method}.
+\S\ref{sec:method}. We do not claim DIAL eliminates the need for
+environment-level adaptation; rather, it makes that adaptation
+sparse and amortized, replacing per-deployment manual tuning of
+direction with a one-time exploration phase.

@@ -168,11 +168,12 @@ and entropy-pipeline calibration as alternative explanations
 \paragraph{Implication.}
 Under this decomposition, $\sigma$ is not a sufficient statistic
 for $\mathrm{VOC}$: two states with identical $\sigma$ but
-opposite latent types have opposite-sign utility. No policy of the
-form $g(\sigma(s))$ can therefore deliver non-negative value across
-heterogeneous settings, and uncertainty-only fixed-direction gates
-empirically fail across our six environments
-(Proposition~\ref{prop:necessity}, proof in
+opposite latent types have opposite-sign utility. An
+uncertainty-only gate $g(\sigma(s))$ that lacks features
+distinguishing latent state types therefore cannot guarantee
+non-negative value across heterogeneous settings, and
+uncertainty-only fixed-direction gates empirically fail across
+our six environments (Proposition~\ref{prop:necessity}, proof in
 Appendix~\ref{app:proof-necessity}). Recovering sufficiency
 requires augmenting $\sigma$ with features that distinguish the two
 state types, directly motivating the multi-feature design of

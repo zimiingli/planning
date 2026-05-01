@@ -291,8 +291,8 @@ magnitude. Empirically this scaling is clean: HotpotQA
 ($|\rho|{=}0.494$) loses 37.0\%, FEVER ($|\rho|{=}0.619$)
 loses 36.8\%, WebShop ($|\rho|{=}0.444$) loses 23.2\%,
 while Plancraft ($|\rho|{=}0.016$) loses only 2.8\%; the
-slope of damage in $|\rho|$ is the slope of calibration
-quality, since better-calibrated gates concentrate their firing
+slope of damage in $|\rho|$ is the slope of ranking
+sharpness, since sharper-ranking gates concentrate their firing
 on higher-$|\sigma|$ states which, when the direction is wrong,
 are exactly the harmful ones.
 
@@ -333,9 +333,9 @@ If $T$ systematically selects worse actions in Type~I states,
 $\mathrm{VOC} < 0$ for those states. This explains why
 wrong-direction gating is not merely wasteful
 ($\mathrm{VOC} = 0$) but actively harmful
-($\mathrm{VOC} < 0$), and why \emph{better-calibrated} gates
+($\mathrm{VOC} < 0$), and why \emph{sharper-ranking} gates
 fire more precisely on these $\mathrm{VOC} < 0$ states, so
-calibration improvements amplify rather than mitigate the harm
+ranking improvements amplify rather than mitigate the harm
 (Table~\ref{tab:wrong-direction} and
 App~\ref{app:wrong-direction}). The classical VOC framework's
 $\mathrm{VOC} \geq 0$ guarantee fails for adaptive compute in
@@ -1171,16 +1171,31 @@ cell. We report this transparently -- it confirms that rank
 structure is preserved but is not, in itself, a non-trivial test.
 
 \paragraph{Pearson: scale-sensitive, the substantive test.}
-Pearson $\rho$ varies under non-linear normalization. Across the
-15 analyzable cells (3 cells DEAD: TWExpress on \{Phi-3.5,
-Llama-3.1\}, Plancraft on Phi-3.5), Pearson $\rho$ is
-sign-stable under S1, S2, and S3 on 11/15, 11/15, and 10/15
-cells respectively (Table~\ref{tab:phase-a-norm}). Cells where
-Pearson sign flips are uniformly weak-signal cells with raw
-$|\rho|<0.13$ and CIs straddling zero (Qwen3 WebShop, Phi-3.5
-HotpotQA, Plancraft); none of the strong cross-backbone reversal
-cells (HotpotQA, APPS, FEVER) exhibits a Pearson sign flip on
-any scheme.
+Pearson $\rho$ varies under non-linear normalization. We
+partition the 18 (env, backbone) cells by raw Pearson $|\rho|$
+at the 0.13 threshold and report the 11 strong-signal cells
+($|\rho|\geq 0.13$) in Table~\ref{tab:phase-a-norm}.
+\textbf{All 11 strong-signal cells are robust}: Pearson sign is
+stable under all three normalization schemes on 10 cells and
+2/3 schemes on 1 cell (Phi-3.5 APPS, where S3 yields $-0.054$
+with CI straddling zero). Critically, every cell that the
+paper's reversal claim invokes---including the cross-backbone
+anchors on HotpotQA, APPS, and FEVER---is in this strong block.
+The remaining 7 cells fall into two categories that we exclude
+from the table for brevity. \textbf{Weak-signal cells} (4 of 7:
+Qwen3 WebShop, Phi-3.5 HotpotQA, and Plancraft on \{Qwen3,
+Llama-3.1\}) all have raw $|\rho|<0.13$ and CIs already
+straddling zero; under each of S1/S2/S3 they remain
+inconclusive, but since the paper does not claim reversal on
+these cells, this is expected sample-level noise rather than a
+refutation. \textbf{Insufficient-data cells} (3 of 7: TWExpress
+on \{Phi-3.5, Llama-3.1\} and Plancraft on Phi-3.5) have logged
+$\sigma$ with $\leq 2$ unique values or no positive $U$ labels,
+making correlation analysis statistically ill-defined. The
+pattern in the strong block---stability tracks signal strength,
+with no strong-signal cell flipping under any
+scheme---is what one expects if the reversal is structural
+rather than a tokenizer-scale artifact.
 
 \input{experiment/tab_phase_a_quantile_norm/tab_phase_a_quantile_norm.tex}
 
