@@ -1,4 +1,4 @@
 environment,abs_rho,bsw_sr,dial_sr,degradation_pp,two_source_type
 HotpotQA,0.494,0.582,0.952,37.0,Type I
-WebShop,0.444,0.214,0.438,22.4,Mixed
+WebShop,0.444,0.206,0.438,23.2,Mixed
 FEVER,0.619,0.130,0.498,36.8,Type I
