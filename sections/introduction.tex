@@ -5,19 +5,7 @@
 \label{sec:intro}
 
 % --- Module 1: Why this problem matters (~45%) ---
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=\columnwidth]{figures/fig_intro_teaser.pdf}
-	\vspace{-0.4in}
-\caption{\textbf{The fixed-direction assumption fails on half 
-of the environments.} Spearman correlation 
-$\rho(\text{entropy}, U)$ across six environments on 
-Qwen3-4B. Prior entropy 
-gating~\cite{seag2025,cats2025,corefine2026} assumes 
-$\rho > 0$ (shaded region), but 3 of 6 environments 
-violate this assumption.}
-	\label{fig:intro_reversal}
-\end{figure}
+
 
 Large language models (LLMs) have rapidly advanced across a wide
 range of tasks, from question answering and code generation to web
@@ -56,6 +44,21 @@ token entropy as the canonical signal, Figure~\ref{fig:intro_reversal} tests thi
 high entropy instead indicates states on which extra compute is 
 wasted. The signal--utility relationship reverses direction across environments, with a sharp consequence: when the assumed direction is wrong, sharper-ranking gates worsen performance by more precisely selecting harmful states. This raises a central question: \emph{if the signal--utility direction is not fixed, can adaptive compute 
 still be principled?}
+
+\begin{wrapfigure}{r}{0.48\textwidth}
+	\vspace{-12pt}
+	\centering
+	\includegraphics[width=0.46\textwidth]{figures/fig_intro_teaser.pdf}
+	\caption{\textbf{The fixed-direction assumption fails on half
+			of the environments.} Spearman correlation
+		$\rho(\text{entropy}, U)$ across six environments on
+		Qwen3-4B. Prior entropy
+		gating~\cite{seag2025,cats2025,corefine2026} assumes
+		$\rho > 0$ (shaded region), but 3 of 6 environments
+		violate this assumption.}
+	\label{fig:intro_reversal}
+	\vspace{-10pt}
+\end{wrapfigure}
 
 % --- Module 2: Our finding + diagnosis (~30%) ---
 

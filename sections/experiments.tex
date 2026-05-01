@@ -51,15 +51,15 @@ $\text{Cost} \leq$ with at least one strict inequality.
 Token cost constants are reported in
 Appendix~\ref{app:cost}.
 \begin{figure*}[t]
-\centering
-\includegraphics[width=\textwidth]{figures/fig_pareto.pdf}
-\vspace{-0.4in}
-\caption{SR vs.\ Cost ($\times$base) across all 6 environments
-(Qwen3-4B). Shaded region: dominated by DIAL (lower SR \emph{and} higher cost).
-Full numerical results across three backbones are in
-Table~\ref{tab:full-results}.}
-\label{fig:pareto}
+	\centering
+	\includegraphics[width=\textwidth]{figures/fig_pareto.pdf}
+	\caption{SR vs.\ Cost ($\times$base) across all 6 environments
+		(Qwen3-4B). Shaded region: dominated by DIAL (lower SR \emph{and} higher cost).
+		Full numerical results across three backbones are in
+		Table~\ref{tab:full-results}.}
+	\label{fig:pareto}
 \end{figure*}
+
 
 \subsection{Main Results}
 \label{sec:main-results}
@@ -68,72 +68,55 @@ Table~\ref{tab:full-results}.}
 
 \textbf{DIAL Pareto-dominates fixed-direction baselines.}
 Figure~\ref{fig:pareto} shows the SR--Cost Pareto frontier across
-all 6 environments on Qwen3-4B. Full results across three
+all 6 environments on Qwen3-4B; full results across three
 backbones are in Appendix~\ref{app:full-results}.
-
 Three patterns emerge. First, \emph{fixed-direction baselines
-catastrophically fail when the assumed direction is wrong}: on
-FEVER (Type~I), CATTS achieves only 32.2\% SR (below the 37.0\%
-no-trigger baseline) yet costs 16.46$\times$base due to its
-$K{=}5$ per-step voting overhead.
-Second, \emph{DIAL achieves competitive SR at substantially lower
-cost} when rollouts help: on HotpotQA ($\Delta{=}{+}48.0$), DIAL
-reaches 95.2\% SR at 8.02$\times$ vs.\ always\_trigger's 97.0\%
+catastrophically fail when the assumed direction is wrong}:
+on FEVER, a Type~I task, CATTS reaches only 32.2\% SR, below
+the 37.0\% no-trigger baseline, yet costs 16.46$\times$ base
+from its $K{=}5$ per-step voting overhead.
+Second, \emph{DIAL achieves competitive SR at substantially
+lower cost} when rollouts help: on HotpotQA, DIAL reaches
+95.2\% SR at 8.02$\times$ versus always\_trigger's 97.0\%
 at 10.63$\times$; on WebShop, DIAL matches always\_trigger
-(43.8\% vs.\ 43.0\%) at less than half the cost
-(2.50$\times$ vs.\ 5.56$\times$); on APPS, DIAL outperforms the
-best fixed-direction baseline (s1\_budget, 69.0\%) by 4\% at
-comparable cost. Third, \emph{in rollout-harmful environments
-DIAL reverts toward base\_only}: in Plancraft
-($\Delta{=}{-}7.0$), where always\_trigger itself loses 7.0\%,
-DIAL recovers near base\_only (23.3\% vs.\ 29.8\%), while
-baselines that trigger aggressively fall below base\_only
-(s1\_budget: 16.3\%). Across these patterns, DIAL interpolates
-between the two bounds in a headroom-dependent way; full bounds
-comparison is in Appendix~\ref{app:bounds-comparison}.
+in SR (43.8 vs.\ 43.0\%) at less than half the cost,
+2.50$\times$ versus 5.56$\times$; on APPS, DIAL outperforms
+the best fixed-direction baseline, s1\_budget at 69.0\%, by
+4 points at comparable cost. Third, \emph{in rollout-harmful
+environments DIAL reverts toward base\_only}: on Plancraft,
+where always\_trigger itself loses 7.0 points, DIAL recovers
+near base\_only at 23.3 vs.\ 29.8\%, while aggressive
+baselines such as s1\_budget fall below base\_only at 16.3\%.
+Across these patterns, DIAL interpolates between the two
+bounds in a headroom-dependent way; the full bounds comparison
+is in Appendix~\ref{app:bounds-comparison}.
 
 % FEVER remains DIAL's weakest environment: while DIAL achieves the
 % highest SR (49.8\%), its cost (16.51$\times$base) is also the
 % highest, a limitation we analyze in \S\ref{sec:discussion}.
 
-
 \subsection{Ablation Studies}
 \label{sec:ablation}
 
 The main results show \emph{that} DIAL works; we now ask
-\emph{why}. We isolate the role of direction along three axes:
-its sign (direction reversal), the gate's capacity to exploit it
-(gate complexity), and the source of the features it acts over
-(LLM feature layer); a regularizer ablation appears in
+\emph{why}. We isolate the role of direction along two axes:
+its sign (direction reversal) and the gate's capacity to exploit
+it (gate complexity). LLM feature and regularizer ablations
+appear in Appendix~\ref{app:llm-features} and
 Appendix~\ref{app:regularizer-ablation}.
 
-\textbf{Direction is a first-order determinant of gate quality.}
-To isolate the effect of direction, we reverse the sign of all
-learned weights in DIAL's fitted gate, keeping everything else
-unchanged. Table~\ref{tab:wrong-direction} shows the result.
-In environments with strong signal ($|\rho| > 0.4$), reversal
-causes SR drops exceeding 23\%. In weak-signal environments
-like Plancraft ($|\rho|{=}0.016$), reversal has negligible
-effect. The degradation scales with signal strength: wrong
-direction is not a minor calibration error but a structural
-failure, consistent with the wrong-direction harm result of
-Appendix~\ref{app:proof-necessity}. Reversing the learned weights constructs an adversarially wrong-direction gate: it preserves the learned ranking structure 
-while inverting the trigger semantics. The resulting
-23--37\% SR collapse on strong-signal environments confirms
-that ranking states well is harmful when the direction is 
-inverted, as the gate fires precisely on states where 
-computation has negative value.
-
-\begin{table}[t]
+\begin{wraptable}{r}{0.52\textwidth}
+\vspace{-12pt}
 \caption{Effect of reversing DIAL's learned direction.
 $\Delta$SR: reversed $-$ original. Degradation scales with
-signal strength $|\rho|$.}
-\vspace{-0.1in}
+entropy--utility signal strength $|\rho(\text{entropy}, U)|$.}
+\vspace{-.1in}
 \label{tab:wrong-direction}
-\resizebox{\columnwidth}{!}{%
+\centering
+\resizebox{0.5\textwidth}{!}{%
 \begin{tabular}{lcccc}
 \toprule
-Environment & DIAL SR & Reversed SR & $\Delta$ SR & $|\rho|$ \\
+Environment & DIAL SR & Reversed SR & $\Delta$ SR & $|\rho_{\text{ent}}|$ \\
 \midrule
 FEVER          & 49.8\% & 13.0\% & $-$36.8 & 0.619 \\
 HotpotQA       & 95.2\% & 58.2\% & $-$37.0 & 0.494 \\
@@ -144,81 +127,61 @@ Plancraft      & 23.3\% & 20.5\% & $-$2.8  & 0.016 \\
 \bottomrule
 \end{tabular}%
 }
-\end{table}
+\vspace{-10pt}
+\end{wraptable}
+\textbf{Direction is a first-order determinant of gate quality.}
+To isolate the effect of direction, we reverse the sign of all
+learned weights in DIAL's fitted gate while keeping everything
+else unchanged, constructing an adversarially wrong-direction
+gate that preserves ranking structure but inverts trigger
+semantics. Table~\ref{tab:wrong-direction} shows that on
+strong-signal environments with $|\rho_{\text{ent}}| > 0.4$,
+reversal collapses SR by 23--37\%; on weak-signal Plancraft
+($|\rho_{\text{ent}}|{=}0.016$) the effect is negligible. The damage scales
+with signal strength: wrong direction is not a calibration
+error but a structural failure. This instantiates the
+wrong-direction harm result of Appendix~\ref{app:proof-necessity}:
+a sharper gate fires precisely on the states where
+computation has negative value.
 
-\begin{table}[t]
-	\caption{Gate complexity ablation on HotpotQA (Qwen3-4B).
-		With correct direction all gates reach $\sim$95\%; with wrong
-		direction, MLP performs \emph{worse} than logistic, an empirical
-		signature of the wrong-direction harm result.}
-	\vspace{-0.1in}
-	\label{tab:capacity}
-	\resizebox{\columnwidth}{!}{%
-		\begin{tabular}{lccc}
-			\toprule
-			Gate & Direction & SR (\%) & $\Delta$ \\
-			\midrule
-			Logistic (5 feat)     & Correct & 95.2     & $+$46.2 \\
-			MLP (5 feat)          & Correct & 94.5 & $+$45.5 \\
-			Hidden state (2560-d) & Correct & 95.1 & $+$46.1 \\
-			\midrule
-			Logistic (5 feat)     & Wrong   & 62.0     & $+$13.0 \\
-			MLP (5 feat)          & Wrong   & 45.3     & $-$3.7 \\
-			\midrule
-			No gate (base)        & ---     & 49.0     & 0 \\
-			\bottomrule
-		\end{tabular}
-	}
-\end{table}
-\textbf{Gate capacity does not substitute for direction.}
-A natural objection is that DIAL's gains come from the simplicity
-of its gate rather than from learned direction. To rule this out,
-we vary gate architectures while controlling direction
-(Table~\ref{tab:capacity}). With correct direction, a logistic
-gate (5 features), a 2-layer MLP (5 features), and a hidden-state
-probe (2560-d) all reach $\sim$95\% SR on HotpotQA: capacity adds
-$<$1\% once direction is right. With wrong direction, the trend
-reverses: a higher-capacity MLP drops to 45.3\%,
-\emph{below} the wrong-direction logistic (62.0\%), because the
-more powerful gate more precisely targets harmful states. This is
-the empirical instantiation of the wrong-direction harm
-result of Appendix~\ref{app:proof-necessity}: signal direction
-consistently outweighs gate capacity, explaining why DIAL's
-minimal linear gate suffices.
-
-
-
-\textbf{The LLM feature layer is an automation convenience.} Table~\ref{tab:llm-ablation} compares DIAL
-with and without LLM-generated features. FEVER is the only
-environment where LLM features contribute meaningfully
-($+$9.1\%), where task-specific signals (\texttt{has\_claim},
-\texttt{text\_length}) extend the universal feature pool.
-In the remaining environments, removing LLM features changes SR
-by ${<}$2\%; in Plancraft and APPS the contribution is
-effectively zero. Per-environment LLM-proposed features and the
-LASSO selection counts behind these numbers are reported in
-Appendix~\ref{app:llm-features} (Table~\ref{tab:llm-features}).
-
-\begin{table}[t]
-\caption{LLM feature ablation. SR (\%) with and without
-LLM-generated features.}
+\begin{wraptable}{r}{0.50\textwidth}
+\vspace{-12pt}
+\caption{Gate complexity ablation on HotpotQA (Qwen3-4B).
+With correct direction all gates reach $\approx$95\%; with wrong
+direction, MLP performs worse than logistic.}
 \vspace{-0.1in}
-\label{tab:llm-ablation}
-\resizebox{\columnwidth}{!}{%
+\label{tab:capacity}
+\centering
+\resizebox{0.48\textwidth}{!}{%
 \begin{tabular}{lccc}
 \toprule
-Environment & w/ LLM & w/o LLM & $\Delta$ \\
+Gate & Direction & SR (\%) & $\Delta$ \\
 \midrule
-HotpotQA  & 95.2 & 93.8 & $+$1.4 \\
-WebShop   & 43.8 & 42.7 & $+$1.1 \\
-FEVER     & 49.8 & 40.7 & $+$9.1 \\
-TWExpress & 99.0 & 97.2 & $+$1.8 \\
-Plancraft & 23.3 & 23.4 & $-$0.2 \\
-APPS      & 73.0 & 73.0 & $+$0.0 \\
+Logistic (5 feat)     & Correct & 95.2 & $+$46.2 \\
+MLP (5 feat)          & Correct & 94.5 & $+$45.5 \\
+Hidden state (2560-d) & Correct & 95.1 & $+$46.1 \\
+\midrule
+Logistic (5 feat)     & Wrong   & 62.0 & $+$13.0 \\
+MLP (5 feat)          & Wrong   & 45.3 & $-$3.7 \\
+\midrule
+No gate (base)        & ---     & 49.0 & 0 \\
 \bottomrule
 \end{tabular}%
 }
-\end{table}
+\vspace{-10pt}
+\end{wraptable}
+\textbf{Gate capacity does not substitute for direction.}
+A natural objection is that DIAL's gains come from gate
+simplicity rather than learned direction. With correct
+direction, a logistic gate (5 features), a 2-layer MLP
+(5 features), and a hidden-state probe (2560-d) all reach
+$\approx$95\% SR on HotpotQA: capacity adds $<$1\%. With wrong
+direction, the ordering inverts: the MLP drops to 45.3\%,
+\emph{below} the wrong-direction logistic at 62.0\%. Direction
+consistently outweighs capacity, which is why DIAL's minimal
+linear gate suffices.
+
+
 
 \subsection{Two-Source Model Verification}
 \label{sec:theory-verification}
@@ -229,19 +192,9 @@ verify each on held-out data: within-episode temporal dynamics
 (P1), within-task causal manipulation (P2), and cross-environment
 signal identity (P3).
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/fig_temporal_shift.pdf}
-\vspace{-0.3in}
-\caption{P1 verification: $\rho$(entropy, $U$) shifts from
-early to late steps. Blue: early (step $\leq$ median), red:
-late. Values on each bar show the Spearman $\rho$ for that
-phase. Plancraft is omitted ($|\rho|{=}0.016$, too weak for
-meaningful comparison).}
-\label{fig:temporal-shift}
-\end{figure}
 
 \paragraph{P1: Temporal dynamics.}
+
 The Two-Source Model predicts that $\rho$ should decrease over
 the episode: as the agent gathers information, Type~D states
 are resolved and late-step uncertainty increasingly reflects
@@ -254,6 +207,17 @@ $\rho$ shifts from non-significant positive ($+$0.102, $p{=}0.084$)
 to weak negative ($-$0.144). Full numerical results are in
 Appendix~\ref{app:temporal}.
 
+
+\begin{wrapfigure}{l}{0.42\textwidth}
+	\vspace{-12pt}
+	\centering
+	\includegraphics[width=0.40\textwidth]{figures/fig_temporal_shift.pdf}
+	\caption{P1: $\rho$(entropy, $U$) shifts from early (blue,
+		step $\leq$ median) to late (red); bars show Spearman $\rho$.
+		Plancraft omitted ($|\rho|{=}0.016$).}
+	\label{fig:temporal-shift}
+	\vspace{-10pt}
+\end{wrapfigure}
 \paragraph{P2: Controlled information manipulation.}
 P1 verifies a within-episode dynamic; we now intervene on
 $p_I$ directly for \emph{causal} evidence. We construct two
@@ -267,29 +231,9 @@ is weak; injecting gold evidence makes entropy dominant
 ($\rho{=}{+}0.311$) while \texttt{step\_count} weakens. As the
 only test in this section that intervenes on the latent
 mixture rather than observing it, P2 confirms that signal
-identity is a function of information structure, not an
-environment-specific constant.
-
-\begin{table}[t]
-\caption{Controlled information manipulation on HotpotQA
-(Qwen3-4B). Within a single task, manipulating information
-availability shifts which signal dominates, providing causal
-evidence for the Two-Source Model.}
-\vspace{-0.1in}
-\label{tab:controlled}
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{lccccc}
-\toprule
-Condition & Base SR & $\rho$(entropy) & $\rho$(step\_count)
-  & DIAL SR & $n$ \\
-\midrule
-Original  & 49.0\% & $-$0.041 & $-$0.494 & 95.2\% & 1117 \\
-InfoPoor  & 44.0\% & $+$0.119 & $\mathbf{-0.608}$ & 94.0\% & 317 \\
-InfoRich  & 82.0\% & $\mathbf{+0.311}$ & $-$0.147 & 88.3\% & 221 \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
+identity is a function of information structure.
+%, not an
+%environment-specific constant.
 
 \paragraph{P3: Signal identity alignment.}
 The Two-Source Model further predicts that, observed across
@@ -302,13 +246,51 @@ while \texttt{num\_available\_actions} and other choice-related
 features dominate in WebShop. Per-environment LASSO selection
 results are in Appendix~\ref{app:feature-selection}.
 
-\input{experiment/tab_signal_identity/tab_signal_identity.tex}
-
 The three tests provide convergent evidence across distinct
-modes of inference: within-episode dynamics (P1), within-task
-intervention (P2), and cross-environment observation (P3).
-Cross-setting $\rho$ consistency at fixed backbone is reported
+modes of inference. Cross-setting $\rho$ consistency at fixed
+backbone is reported
 in Appendix~\ref{app:cross-setting}; multi-backbone
 verification in Appendix~\ref{app:multi-backbone} and stratified
 analysis in Appendix~\ref{app:stratified} provide additional
 robustness checks.
+
+\begin{table}[t]
+	\begin{minipage}[t]{0.48\textwidth}
+		\centering
+		\caption{Controlled information manipulation on HotpotQA
+			(Qwen3-4B). Manipulating information availability shifts
+			which signal dominates, providing causal evidence for the
+			Two-Source Model.}
+		\label{tab:controlled}
+		\resizebox{\linewidth}{!}{%
+			\begin{tabular}{lcccc}
+				\toprule
+				Condition & Base SR & $\rho$(entropy) & $\rho$(step\_count) & DIAL SR \\
+				\midrule
+				Original  & 49.0\% & $-$0.041 & $-$0.494 & 95.2\% \\
+				InfoPoor  & 44.0\% & $+$0.119 & $\mathbf{-0.608}$ & 94.0\% \\
+				InfoRich  & 82.0\% & $\mathbf{+0.311}$ & $-$0.147 & 88.3\% \\
+				\bottomrule
+		\end{tabular}}
+	\end{minipage}\hfill
+	\begin{minipage}[t]{0.50\textwidth}
+		\centering
+		\caption{Strongest signal per environment aligns with the
+			dominant state type: information-sufficiency proxies in Type~I,
+			decision-complexity in Type~D.}
+		\label{tab:signal-identity}
+		\resizebox{\linewidth}{!}{%
+			\begin{tabular}{lllcl}
+				\toprule
+				\textbf{Env} & \textbf{Type} & \textbf{Strongest Signal} & $|\rho|$ & \textbf{Interpretation} \\
+				\midrule
+				HotpotQA   & Info-Poverty   & step\_count        & 0.494 & Info accumulation \\
+				FEVER      & Info-Poverty   & step\_count        & 0.619 & Info accumulation \\
+				TWExpress  & Info-Poverty   & step\_count        & 0.477 & Exploration depth \\
+				WebShop    & Mixed          & num\_avail\_actions & 0.444 & Decision-space size \\
+				APPS       & Decision-Diff  & step\_count        & 0.339 & Debugging depth \\
+				Plancraft  & Weak (harmful) & has\_output        & 0.162 & Rollout harmful \\
+				\bottomrule
+		\end{tabular}}
+	\end{minipage}
+\end{table}

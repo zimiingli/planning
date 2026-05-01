@@ -1,30 +1,18 @@
 % ============================================================
 % 6. LIMITATIONS
 % ============================================================
+\vspace{-0.2in}
 \section{Limitations}
 \label{sec:discussion}
-
-DIAL's weakest result is on FEVER, where all methods incur high
-cost due to the environment's extreme Type~I structure: DIAL costs
-16.51$\times$base and achieves 49.8\% SR, while cheaper alternatives
-like SEAG (47.3\% at 17.19$\times$) are only marginally lower in both
-SR and cost. Rollout value in FEVER concentrates in the first one
-or two steps, and random exploration misses these critical steps with
-50\% probability. This failure mode is predicted by the two-source
-model: FEVER is the most extreme Type~I environment, where undirected
-exploration is least efficient, and exposes the cost of insisting on
-signal-agnostic exploration in high-$p_I$ regimes. Addressing this
-through curriculum-based exploration is an important direction for
-future work. We verify our findings on three backbones (4B--8B) across
-all six environments (Appendix~\ref{app:multi-backbone}); testing on
-larger models (70B+) remains future work. The two-source model assumes
-linear conditional relationships and serves as an explanatory
-framework rather than a precise predictor of $\rho$ values. Finally,
-DIAL requires $N_{\text{explore}}{=}50$ exploration episodes per new
-(environment, backbone) deployment---a modest but non-zero one-time
-cost amortized over subsequent inference, and the only cost incurred
-beyond the per-step inference budget reported in
-\S\ref{sec:method}. We do not claim DIAL eliminates the need for
-environment-level adaptation; rather, it makes that adaptation
-sparse and amortized, replacing per-deployment manual tuning of
-direction with a one-time exploration phase.
+\vspace{-0.1in}
+DIAL's weakest result is on FEVER: although DIAL still
+beats every baseline (49.8\% SR at 16.51$\times$ base),
+the absolute cost remains high because rollout value
+concentrates in the first one or two steps and random
+exploration misses them with 50\% probability.
+Curriculum-based exploration in high-$p_I$ regimes is a
+natural extension. DIAL also incurs a one-time exploration cost per
+(environment, backbone) deployment, amortized over
+subsequent inference. In exchange, it eliminates the
+manual direction tuning that fixed-direction methods
+require.

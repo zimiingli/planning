@@ -3,30 +3,6 @@
 % ============================================================
 \section{Why Fixed-Direction Gating Fails}
 \label{sec:signal-landscape}
-\begin{table}[!t]
-\caption{Signal--utility correlations across 6 environments and
-3 backbones. $\rho$: Spearman correlation of token entropy with
-optimizer utility $U$. $^*$: significant at $p{<}0.05$.
-Direction varies across \emph{both} environments and model
-backbones.}
-\vspace{-0.1in}
-\label{tab:signal-discovery}
-\centering\small
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{lcccc}
-\toprule
-Environment & Qwen3 & Phi-3.5 & Llama-3.1 & Cons. \\
-\midrule
-HotpotQA   & $-$0.327$^*$ & $+$0.184$^*$ & $-$0.346$^*$ & \xmark \\
-WebShop    & $+$0.133$^*$ & $+$0.335$^*$ & $+$0.287$^*$ & \cmark \\
-FEVER      & $-$0.119$^*$ & $-$0.156$^*$ & $+$0.428$^*$ & \xmark \\
-APPS       & $+$0.317$^*$ & $-$0.024     & $-$0.249$^*$ & \xmark \\
-TWExpress  & $-$0.290$^*$ & $+$0.000     & $+$0.000     & --- \\
-Plancraft  & $-$0.016     & $+$0.000     & $-$0.176$^*$ & --- \\
-\bottomrule
-\end{tabular}
-\end{table}
-
 We first formalize the adaptive gating problem, then measure
 signal--utility correlations across diverse environments to test
 the fixed-direction assumption.
@@ -53,6 +29,30 @@ $g: \mathcal{S} \to \{0, 1\}$ that triggers $T$ only when $U > 0$.
             and Backbones}
 \label{sec:empirical-landscape}
 
+\begin{wraptable}{r}{0.52\textwidth}
+\vspace{-12pt}
+\caption{Signal--utility correlations across 6 environments and
+3 backbones. $\rho$: Spearman correlation of token entropy with
+optimizer utility $U$. $^*$: significant at $p{<}0.05$.
+Direction varies across \emph{both} environments and model
+backbones.}
+\label{tab:signal-discovery}
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lcccc}
+\toprule
+Environment & Qwen3 & Phi-3.5 & Llama-3.1 & Cons. \\
+\midrule
+HotpotQA   & $-$0.327$^*$ & $+$0.184$^*$ & $-$0.346$^*$ & \xmark \\
+WebShop    & $+$0.133$^*$ & $+$0.335$^*$ & $+$0.287$^*$ & \cmark \\
+FEVER      & $-$0.119$^*$ & $-$0.156$^*$ & $+$0.428$^*$ & \xmark \\
+APPS       & $+$0.317$^*$ & $-$0.024     & $-$0.249$^*$ & \xmark \\
+TWExpress  & $-$0.290$^*$ & $+$0.000     & $+$0.000     & --- \\
+Plancraft  & $-$0.016     & $+$0.000     & $-$0.176$^*$ & --- \\
+\bottomrule
+\end{tabular}
+\vspace{-10pt}
+\end{wraptable}
 \textbf{The signal--utility direction is not fixed.}
 Table~\ref{tab:signal-discovery} reports Spearman correlations
 between token entropy and optimizer utility across 6 environments

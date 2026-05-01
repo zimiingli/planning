@@ -1,18 +1,26 @@
-% EMNLP 2025 Paper Draft
+% NeurIPS 2026 Paper Draft
 % Title: Same Signal, Opposite Meaning: Why Adaptive Compute Fails Across Environments
-% Template: EMNLP (ACL style)
+% Template: NeurIPS 2026
 
-\documentclass[11pt]{article}
+\documentclass{article}
 \PassOptionsToPackage{table}{xcolor}
 
-% === EMNLP / ACL Style ===
-\usepackage[hyperref]{template/acl}
+% === NeurIPS 2026 Style ===
+% Default option = anonymous double-blind submission with line numbers.
+% For arXiv preprint: use [preprint]; for camera-ready: use [final].
+\PassOptionsToPackage{authoryear,round}{natbib}
+\usepackage{template/neurips_2026}
+% Preserve ACL-style \cite -> \citep (parenthetical) to match existing manuscript text.
+\let\citeOriginal\cite
+\renewcommand{\cite}{\citep}
+\usepackage{hyperref}
 \usepackage{times}
 \usepackage{latexsym}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage{graphicx}
+\usepackage{wrapfig}
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{enumitem}
@@ -82,9 +90,12 @@
 % REFERENCES
 % ============================================================
 \newpage
+\bibliographystyle{plainnat}
 \bibliography{references}
 \newpage
 \input{sections/appendix}
 
+\newpage
+\input{checklist}
 
 \end{document}
