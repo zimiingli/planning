@@ -51,7 +51,9 @@ do_pull() {
     commit_local_changes "$1"
 
     info "正在从 A 仓库 ($MAIN_REMOTE) 拉取..."
-    git pull --rebase $MAIN_REMOTE $BRANCH || error "从 A 仓库拉取失败"
+    # 用 merge 不用 rebase：rebase 会把 subtree --squash 产生的合并结构拆扁，
+    # 导致下一次拉取时 squash commit 被当成普通 commit 重放，路径全部错位。
+    git pull --no-rebase --no-edit $MAIN_REMOTE $BRANCH || error "从 A 仓库拉取失败"
 
     info "正在从 Overleaf ($OVERLEAF_REMOTE) 拉取 writing 更新..."
     if ! git subtree pull --prefix=$SUBTREE_PREFIX $OVERLEAF_REMOTE $BRANCH --squash -m "从 Overleaf 同步 writing 更新"; then
