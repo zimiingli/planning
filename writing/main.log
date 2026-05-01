@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.1.24)  28 APR 2026 13:41
-=======
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.1.24)  28 APR 2026 12:54
->>>>>>> 8f24992aca7541396174c2804387a678ef985551
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.1.24)  28 APR 2026 13:45
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1690,19 +1686,11 @@ Underfull \hbox (badness 2376) in paragraph at lines 1214--1227
 \OT1/ptm/m/n/10.95 rank-invariant un-der pos-i-tive mono-tone trans-
  []
 
-<<<<<<< HEAD
 (./experiment/tab_phase_a_alternatives/tab_phase_a_alternatives.tex
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 18.
 )
 Underfull \hbox (badness 1132) in paragraph at lines 1295--1300
-=======
-(./experiment/tab_phase_a_alternatives/tab_phase_a_alternatives.tex)
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [24]
-Underfull \hbox (badness 1132) in paragraph at lines 1280--1285
->>>>>>> 8f24992aca7541396174c2804387a678ef985551
 \OT1/ptm/m/n/10.95 strong), Web-Shop ($\OMS/cmsy/m/n/10.95 j\OML/cmm/m/it/10.95
  ^^Z\OMS/cmsy/m/n/10.95 j[]\OT1/cmr/m/n/10.95 0\OML/cmm/m/it/10.95 :\OT1/cmr/m/
 n/10.95 444$\OT1/ptm/m/n/10.95 , mod-er-ate), and
@@ -1723,11 +1711,7 @@ Underfull \hbox (badness 2698) in paragraph at lines 1360--1368
 -ron-
  []
 
-<<<<<<< HEAD
 <figures/fig_trigger_adapt.pdf, id=1387, 504.85918pt x 274.38448pt>
-=======
-<figures/fig_trigger_adapt.pdf, id=1392, 504.85918pt x 274.38448pt>
->>>>>>> 8f24992aca7541396174c2804387a678ef985551
 File: figures/fig_trigger_adapt.pdf Graphic file (type pdf)
 <use figures/fig_trigger_adapt.pdf>
 Package pdftex.def Info: figures/fig_trigger_adapt.pdf  used on input line 1390
@@ -1751,11 +1735,7 @@ Here is how much of TeX's memory you used:
  51605 multiletter control sequences out of 15000+600000
  552151 words of font info for 127 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
-<<<<<<< HEAD
  93i,14n,99p,1362b,1883s stack positions out of 10000i,1000n,20000p,200000b,200000s
-=======
- 93i,14n,99p,1473b,1883s stack positions out of 10000i,1000n,20000p,200000b,200000s
->>>>>>> 8f24992aca7541396174c2804387a678ef985551
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb><
 /usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></u
@@ -1781,11 +1761,7 @@ s/type1/urw/times/utmb8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/ur
 w/times/utmr8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/times/ut
 mri8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/zapfding/uzdr.pfb
 >
-<<<<<<< HEAD
 Output written on main.pdf (27 pages, 862403 bytes).
-=======
-Output written on main.pdf (27 pages, 861576 bytes).
->>>>>>> 8f24992aca7541396174c2804387a678ef985551
 PDF statistics:
  1637 PDF objects out of 1728 (max. 8388607)
  1096 compressed objects within 11 object streams
