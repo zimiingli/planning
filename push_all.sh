@@ -54,7 +54,14 @@ do_pull() {
     git pull --rebase $MAIN_REMOTE $BRANCH || error "从 A 仓库拉取失败"
 
     info "正在从 Overleaf ($OVERLEAF_REMOTE) 拉取 writing 更新..."
-    git subtree pull --prefix=$SUBTREE_PREFIX $OVERLEAF_REMOTE $BRANCH --squash -m "从 Overleaf 同步 writing 更新" || warn "Overleaf 拉取失败或无新更新"
+    if ! git subtree pull --prefix=$SUBTREE_PREFIX $OVERLEAF_REMOTE $BRANCH --squash -m "从 Overleaf 同步 writing 更新"; then
+        # 检查是否处于冲突态，若有冲突中止整个流程，避免把冲突标记当成正常改动提交推送
+        if [ -n "$(git ls-files -u)" ] || git status --porcelain | grep -qE '^(UU|AA|DD|AU|UA|DU|UD) '; then
+            error "Overleaf 拉取产生合并冲突，请手动解决后再运行。可用 'git status' 查看冲突文件，解决后 'git add' 并 'git commit'，再重新执行本脚本。"
+        else
+            warn "Overleaf 拉取失败或无新更新（无冲突，继续）"
+        fi
+    fi
 
     info "拉取完成！"
 }
