@@ -59,7 +59,9 @@
       "Bash(compgen -c)",
       "Bash(module avail *)",
       "Bash(dpkg -l)",
-      "Bash(rpm -qa)"
+      "Bash(rpm -qa)",
+      "Bash(rm -f writing/main.aux writing/main.bbl writing/main.blg writing/main.log writing/main.out writing/main.toc writing/main.synctex.gz)",
+      "Bash(pdflatex -interaction=nonstopmode main.tex)"
     ]
   }
 }
