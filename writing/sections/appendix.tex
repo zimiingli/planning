@@ -766,6 +766,56 @@ APPS      & 60.5 & 1.00 & 79.5 &  3.65 & 73.0 & 2.61 \\
 \end{table}
 
 
+\subsection{Compute Resources}
+\label{app:compute}
+
+All experiments are run on NVIDIA A100 GPUs with 40\,GB of memory.
+Each backbone (Qwen3-4B, Llama-3.1-8B-Instruct, Phi-3.5-mini-instruct)
+fits on a single A100 in BF16, and we serve the model with vLLM for
+batched inference. The full set of reported experiments covers
+6 environments $\times$ 3 backbones $\times$ 3 seeds, plus the
+DIAL exploration phase ($N_{\text{explore}}{=}50$ episodes per
+(environment, backbone) deployment) and ablations.
+% TODO: replace the following figure with the actual measured total.
+We estimate the total compute used to produce the results in this
+paper at approximately \textbf{[XXX]} A100-GPU-hours, of which
+roughly \textbf{[XX]\%} corresponds to evaluation rollouts,
+\textbf{[XX]\%} to DIAL exploration, and the remainder to baseline
+runs and ablations. The full research project, including
+preliminary experiments and configurations that did not make it
+into the paper, used roughly \textbf{[YYY]} A100-GPU-hours in
+total.
+
+\subsection{Asset Licenses}
+\label{app:licenses}
+
+Table~\ref{tab:licenses} lists the public assets used in this
+paper, together with their licenses. We use each asset within the
+terms of its license; all datasets and model weights are obtained
+from their official releases.
+
+\begin{table}[h!]
+\caption{Datasets and pre-trained models used in this paper.}
+\label{tab:licenses}
+\centering\small
+\begin{tabular}{llll}
+\toprule
+\textbf{Asset} & \textbf{Type} & \textbf{Source} & \textbf{License} \\
+\midrule
+HotpotQA          & Dataset       & \citet{yang2018hotpotqa}   & CC BY-SA 4.0 \\
+APPS              & Dataset       & \citet{hendrycks2021apps}  & MIT \\
+WebShop           & Dataset+Env   & \citet{yao2022webshop}     & MIT (Princeton NLP) \\
+FEVER             & Dataset       & \citet{thorne2018fever}    & CC BY-SA 3.0 \\
+TextWorld Express & Environment   & \citet{jansen2023twexpress} & Apache 2.0 \\
+Plancraft         & Environment   & \citet{dagan2024plancraft} & MIT \\
+Qwen3-4B          & Model weights & Alibaba (Qwen team)        & Apache 2.0 \\
+Llama-3.1-8B-Instruct & Model weights & Meta                   & Llama 3.1 Community License \\
+Phi-3.5-mini-instruct & Model weights & Microsoft              & MIT \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
 % ============================================================
 % E. FULL RESULTS
 % ============================================================
