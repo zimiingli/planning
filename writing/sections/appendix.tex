@@ -776,15 +776,17 @@ batched inference. The full set of reported experiments covers
 6 environments $\times$ 3 backbones $\times$ 3 seeds, plus the
 DIAL exploration phase ($N_{\text{explore}}{=}50$ episodes per
 (environment, backbone) deployment) and ablations.
-% TODO: replace the following figure with the actual measured total.
 We estimate the total compute used to produce the results in this
-paper at approximately \textbf{[XXX]} A100-GPU-hours, of which
-roughly \textbf{[XX]\%} corresponds to evaluation rollouts,
-\textbf{[XX]\%} to DIAL exploration, and the remainder to baseline
-runs and ablations. The full research project, including
-preliminary experiments and configurations that did not make it
-into the paper, used roughly \textbf{[YYY]} A100-GPU-hours in
-total.
+paper at approximately \textbf{1{,}900} A100-GPU-hours, of which
+roughly \textbf{55\%} corresponds to evaluation rollouts (DIAL,
+the two bounds, and six fixed-direction baselines across all
+(environment, backbone, seed) combinations), \textbf{2\%} to DIAL
+exploration, and the remainder to ablations (LLM-feature variants,
+gate-capacity, wrong-direction reversal, regularizer,
+controlled-reversal interventions, and supplementary multi-backbone
+runs). The full research project, including preliminary experiments
+and configurations that did not make it into the paper, used
+roughly \textbf{2{,}600} A100-GPU-hours in total.
 
 \subsection{Asset Licenses}
 \label{app:licenses}
