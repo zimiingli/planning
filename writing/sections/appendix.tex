@@ -59,7 +59,7 @@ rather than depth. These methods adapt computation within a single
 forward pass. Our work operates at a different granularity: we
 adapt whether to invoke an external optimizer at each decision step,
 and the key challenge is not input difficulty but the
-\emph{direction} of the signal--utility relationship.
+\emph{direction} of the signal-utility relationship.
 
 \subsection{LLM Confidence Estimation and Calibration}
 \label{app:calibration}
@@ -76,7 +76,7 @@ aleatoric uncertainty in LLM outputs, a distinction conceptually
 related to our Type~I/Type~D decomposition.
 Our work extends these findings: not only does calibration
 \emph{quality} vary across tasks, but the \emph{direction} of the
-uncertainty--utility relationship reverses entirely.
+uncertainty-utility relationship reverses entirely.
 
 \subsection{Metareasoning and Value of Computation}
 
@@ -131,10 +131,9 @@ study how a fixed budget should be distributed across these
 mechanisms or absorbed into long latent
 traces~\cite{snell2024scaling,deepseek2025r1}.
 Closer to our setting, agent-specific work adapts these
-mechanisms to interactive, multi-step
-environments by applying tree search to web
-tasks~\cite{koh2024tree}, coupling MCTS with preference
-learning over agent
+mechanisms to interactive, multi-step environments by applying
+tree search to web tasks~\cite{koh2024tree}, coupling MCTS with
+preference learning over agent
 trajectories~\cite{putta2024agentq}, and characterizing scaling
 behavior for agent
 rollouts~\cite{DBLP:journals/corr/abs-2506-12928,huang2026evolverouter}.
@@ -151,10 +150,11 @@ composes with any of the above as a drop-in test-time optimizer.
 \label{app:theory}
 
 This appendix collects the theoretical material referenced in
-Section~\ref{sec:signal-landscape}: the formal statement and
-proof of the necessity-of-direction-discovery result, the
-wrong-direction damage quantification, and the VOC negativity
-analysis.
+Section~\ref{sec:signal-landscape}: the formal statement and proof
+of the necessity-of-direction-discovery result
+(\S\ref{app:proof-necessity}), the wrong-direction damage
+quantification (\S\ref{app:wrong-direction}), and the VOC
+negativity analysis (\S\ref{app:voc}).
 
 \subsection{Insufficiency of Uncertainty Signals: Statement and Proof}
 \label{app:proof-necessity}
@@ -296,18 +296,18 @@ sharpness, since sharper-ranking gates concentrate their firing
 on higher-$|\sigma|$ states which, when the direction is wrong,
 are exactly the harmful ones.
 
-Below we discuss two environments where reversal has minimal
-effect, both consistent with the same prediction (small
-$|\rho|$ or rollout-safe optimizer).
+Two environments show only minimal damage under reversal, both
+consistent with the same prediction (small $|\rho|$ or
+rollout-safe optimizer):
 
-TWExpress is rollout-safe ($\Delta{=}{+}31.8$): the optimizer
-rarely harms performance regardless of when it is triggered,
-so both directions achieve near-perfect SR (99.0\%).
+\paragraph{TWExpress is rollout-safe ($\Delta{=}{+}31.8$).}
+The optimizer rarely harms performance regardless of when it is
+triggered, so both directions achieve near-perfect SR (99.0\%).
 
-APPS shows a small negative $\Delta$SR ($-$2.5\%), consistent
-with its unstable signal direction across backbones
-(Table~\ref{tab:signal-discovery}): Qwen3 shows positive $\rho$,
-Llama-3.1 shows negative $\rho$, and Phi-3.5 is
+\paragraph{APPS shows a small negative $\Delta$SR ($-2.5\%$).}
+This is consistent with its unstable signal direction across
+backbones (Table~\ref{tab:signal-discovery}): Qwen3 shows
+positive $\rho$, Llama-3.1 shows negative $\rho$, and Phi-3.5 is
 non-significant. When the signal is this unstable, direction
 reversal has minimal impact and small fluctuations can favor
 either direction.
@@ -351,14 +351,12 @@ $T$ on a non-trivial fraction of $\mathrm{VOC} < 0$ states.
 \section{DIAL Implementation Details}
 \label{app:dial-details}
 
-This appendix expands on the implementation of the
-$\sigma$-augmentation procedure introduced in
-Section~\ref{sec:method}: how the $(s, U)$ data is collected
-under the signal-agnosticity constraint (Phase~1, \S\ref{app:hyperparams-details}),
-how the candidate feature pool $\phi_{\text{cand}}$ that approximates
-the latent type $\tau$ is constructed (Phase~2, \S\ref{app:llm-feature-layer}),
-and how the sparse linear gate that lifts $\sigma$ toward sufficiency
-for VOC is fit (Phase~3, \S\ref{app:hyperparams-details}).
+This appendix expands on DIAL's implementation: hyperparameters
+and training details (\S\ref{app:hyperparams-details}), universal
+feature definitions (\S\ref{app:universal-features}), the optional
+LLM feature layer (\S\ref{app:llm-feature-layer}), online
+adaptation for drifting environments (\S\ref{app:online-adaptation}),
+and the LLM prompt template (\S\ref{app:llm-prompts}).
 
 \begin{algorithm}[h]
 	\caption{DIAL: Direction-Informed Adaptive Learning}
@@ -394,12 +392,16 @@ for VOC is fit (Phase~3, \S\ref{app:hyperparams-details}).
 		\State Standardize $\phi_{\text{cand}}$ on $\mathcal{D}$
 		\State Select $C$ via 5-fold CV on held-out log-loss
 		\State Fit $\ell_1$-regularized logistic regression:
-		$\mathbf{w}, b \gets \arg\min\,
-		\mathcal{L}_{\text{logistic}}(\mathbf{w}, b; \mathcal{D}) +
-		\tfrac{1}{C}\|\mathbf{w}\|_1$
-		\State $\phi \gets$ features with non-zero $w_i$
+		\begin{equation}
+		\mathbf{w}^*, b^* = \argmin_{\mathbf{w}, b}\
+		\sum_{(\phi, U) \in \mathcal{D}}
+		\ell\bigl(\sigma(\mathbf{w}^\top \phi + b),\, U\bigr)
+		+ \tfrac{1}{C} \|\mathbf{w}\|_1
+		\label{eq:lasso-full}
+		\end{equation}
+		\State $\phi \gets$ features with non-zero $w_i^*$
 		\State $g(s) \gets
-		\mathbf{1}[\sigma(\mathbf{w}^\top \phi(s) + b) > \tau]$
+		\mathbf{1}[\sigma(\mathbf{w}^{*\top} \phi(s) + b^*) > \tau]$
 
 		\State \Return $g$
 	\end{algorithmic}
@@ -414,13 +416,14 @@ all features in $\phi_{\text{cand}}$ are standardized to zero mean
 and unit variance on $\mathcal{D}$, ensuring that the interpretable
 weight signs discussed in Section~\ref{sec:learn} are not
 confounded by scale differences across heterogeneous features.
-We induce sparsity using $\ell_1$-regularized logistic regression
-with regularization strength $C$ selected by 5-fold
-cross-validation over
+We induce sparsity using the $\ell_1$-regularized logistic
+regression of Eq.~\eqref{eq:lasso-full}, with $\ell$ the binary
+cross-entropy loss and regularization strength $C$ selected by
+5-fold cross-validation over
 $C \in \{0.01, 0.03, 0.1, 0.3, 1.0, 3.0, 10.0\}$, optimizing
-held-out log-loss. Features with zero coefficient after fitting are
-dropped from the deployed gate. The decision threshold $\tau$ in
-Eq.~\eqref{eq:gate} is fixed to $0.5$ for all environments.
+held-out log-loss. Features with zero coefficient after fitting
+are dropped from the deployed gate. The decision threshold $\tau$
+in Eq.~\eqref{eq:gate} is fixed to $0.5$ for all environments.
 
 \subsection{Universal Feature Definitions}
 \label{app:universal-features}
@@ -432,7 +435,6 @@ available in every environment.
 \centering\small
 \caption{Universal feature definitions.}
 \label{tab:universal-features}
-%\resizebox{\columnwidth}{!}{%
 \begin{tabular}{ll}
 \toprule
 Feature & Definition \\
@@ -443,7 +445,6 @@ Feature & Definition \\
 \texttt{state\_length}   & Token count of the current state text \\
 \bottomrule
 \end{tabular}
-%}
 \end{table}
 
 \subsection{LLM Feature Layer}
@@ -464,7 +465,8 @@ distinguish positive-utility from negative-utility states and to
 produce a Python function that extracts exactly 5 task-specific
 features from the raw state text. Each feature must return a
 float value using only the Python standard library. The full
-prompt template is provided in \S\ref{app:llm-prompts}.
+prompt template is shown in Figure~\ref{fig:llm-prompt-template}
+(\S\ref{app:llm-prompts}).
 
 The LLM-proposed features $\phi_{\text{LLM}}(s)$ are combined
 with the universal features to form the candidate pool
@@ -501,27 +503,10 @@ offline-fitted gate.
 \subsection{LLM Reasoning Prompts}
 \label{app:llm-prompts}
 
-The full LLM prompt template is provided below. We use WebShop
-as the example, where LLM features contribute most meaningfully.
+Figure~\ref{fig:llm-prompt-template} shows the full LLM prompt
+template. We use WebShop as the example, where LLM features
+contribute most meaningfully.
 
-% \begin{quote}\small\ttfamily
-% You are an AI agent that has been exploring an interactive
-% environment. During exploration, you sometimes performed
-% ``rollouts'' (additional computation) to improve your decisions.
-% Sometimes the rollout was useful (positive utility), sometimes
-% it was not.
-
-% Your task: Analyze the patterns in your experience and write a
-% Python function that extracts features from the state text that
-% could predict whether a rollout would be useful.
-
-% [Exploration statistics and representative examples provided]
-
-% Requirements: Return a dict with string keys and float values.
-% Use only Python standard library. Extract exactly 5 features
-% based on the patterns you observe. Focus on features that DIFFER
-% between useful and not-useful rollout cases.
-% \end{quote}
 \begin{figure}[h]
   \centering
   \begin{tcolorbox}[
@@ -661,7 +646,6 @@ optimizer is worth invoking, not how it scores internally.
 $\Delta$: rollout headroom.}
 \label{tab:env-setup}
 \centering\small
-%\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lcccl}
 \toprule
 Environment & Base SR & Always SR & $\Delta$ & Optimizer $T$ \\
@@ -673,8 +657,7 @@ TWExpress      & 67.5\% & 99.3\% & +31.8   & Per-action eval \\
 Plancraft      & 29.8\% & 22.8\% & $-$7.0  & Per-action eval \\
 APPS           & 60.5\% & 79.5\% & +19.0   & $K$-variant sampling \\
 \bottomrule
-\end{tabular}%
-%}
+\end{tabular}
 \end{table}
 
 \subsection{Detailed Baseline Comparison}
@@ -687,7 +670,7 @@ need.
 
 \begin{table*}[h!]
 \caption{Detailed comparison of baselines. All methods assume a
-fixed signal--utility direction.
+fixed signal-utility direction.
 $^\dagger$Requires a separate labeled dataset for calibration.}
 \label{tab:baseline-detail}
 \centering\small
@@ -764,7 +747,6 @@ always\_trigger (59.8\%), a limitation analyzed in
 (always$-$base).}
 \label{tab:bounds-comparison}
 \centering\small
-%\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lcccccc}
 \toprule
 & \multicolumn{2}{c}{\textbf{base\_only}}
@@ -780,8 +762,7 @@ TWExpress & 67.5 & 1.00 & 99.3 &  2.15 & 99.0 & 1.81 \\
 Plancraft & 29.8 & 1.00 & 22.8 &  6.13 & 23.3 & 3.63 \\
 APPS      & 60.5 & 1.00 & 79.5 &  3.65 & 73.0 & 2.61 \\
 \bottomrule
-\end{tabular}%
-%}
+\end{tabular}
 \end{table}
 
 
@@ -839,22 +820,22 @@ Section~\ref{sec:empirical-landscape}.
 \subsection{Per-Environment Feature Selection}
 \label{app:feature-selection}
 
-The LASSO coefficient matrix identifies, per environment, which
-auxiliary features carry information about the latent state
-type $\tau$, the components of $\phi(s)$ that lift $\sigma$
-toward sufficiency for VOC, as predicted by
-App~\ref{app:proof-necessity}. \texttt{step\_count} is
-informative in 4 of 5 environments with significant signal: it
-proxies \emph{information accumulation}, distinguishing late-step
-Type~I states (where information has accumulated to a known
-shortage) from early-step Type~D states (where multiple options
-are still viable). WebShop is the exception, relying on
-\texttt{num\_available\_actions} and task-specific features
-(\texttt{price\_mentioned}, \texttt{action\_is\_click}); these
-proxy \emph{decision optionality} directly, as expected for a
-choice-dominated (Type~D) environment. In every case, the
-features LASSO retains are interpretable as proxies for the
-two-source decomposition rather than ad-hoc engineering choices.
+The LASSO coefficient matrix identifies which auxiliary features
+carry information about the latent state type $\tau$ in each
+environment. These are exactly the components of $\phi(s)$ that
+lift $\sigma$ toward sufficiency for VOC (App~\ref{app:proof-necessity}).
+\texttt{step\_count} is informative in 4 of 5 environments with
+significant signal: it proxies \emph{information accumulation},
+distinguishing late-step Type~I states (where information has
+accumulated to a known shortage) from early-step Type~D states
+(where multiple options are still viable). WebShop is the
+exception, relying on \texttt{num\_available\_actions} and
+task-specific features (\texttt{price\_mentioned},
+\texttt{action\_is\_click}); these proxy \emph{decision optionality}
+directly, as expected for a choice-dominated (Type~D) environment.
+In every case, the features LASSO retains are interpretable as
+proxies for the two-source decomposition rather than ad-hoc
+engineering choices.
 
 \subsection{LLM-Generated Features}
 \label{app:llm-features}
@@ -1003,15 +984,15 @@ def extract_features(state_text, step_count, action_text):
 \label{app:regularizer-ablation}
 
 The signed-weight diagnostic of \S\ref{sec:learn} and DIAL's
-robustness to noisy LLM-proposed features (\S\ref{sec:reason}) both
-rely on the \emph{exact} sparsity induced by the $\ell_1$ penalty
-in Eq.~\eqref{eq:lasso}. To verify that $\ell_1$ specifically,
-rather than any shrinkage or selection mechanism, is responsible
-for these properties, we ablate the regularizer while holding all
-other pipeline components fixed: same exploration dataset
-$\mathcal{D}$, same candidate feature pool $\phi_{\text{cand}}$,
-same 5-fold CV protocol for hyperparameters, same threshold
-$\tau{=}0.5$. We compare five variants:
+robustness to noisy LLM-proposed features (\S\ref{sec:reason})
+both rely on the \emph{exact} sparsity induced by the $\ell_1$
+penalty in Eq.~\eqref{eq:lasso-full}. To verify that $\ell_1$
+specifically, rather than any shrinkage or selection mechanism,
+is responsible for these properties, we ablate the regularizer
+while holding all other pipeline components fixed: same
+exploration dataset $\mathcal{D}$, same candidate feature pool
+$\phi_{\text{cand}}$, same 5-fold CV protocol for hyperparameters,
+same threshold $\tau{=}0.5$. We compare five variants:
 
 \begin{itemize}
 \item \textbf{$\ell_1$-logistic} (DIAL default): joint sparsity and
@@ -1046,7 +1027,6 @@ $\ell_1$ is the only variant that achieves competitive SR
 diagnostic.}
 \label{tab:regularizer-ablation}
 \centering\small
-%\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lcccccc}
 \toprule
  & \multicolumn{2}{c}{HotpotQA} & \multicolumn{2}{c}{WebShop} & \multicolumn{2}{c}{Plancraft} \\
@@ -1060,8 +1040,7 @@ No regularization     & TBD  & 36   & TBD  & 36   & TBD  & 36   \\
 Elastic Net           & TBD  & TBD  & TBD  & TBD  & TBD  & TBD  \\
 MI top-3 + unreg.     & TBD  & 3    & TBD  & 3    & TBD  & 3    \\
 \bottomrule
-\end{tabular}%
-%}
+\end{tabular}
 \end{table}
 
 \noindent\textit{Note.} $\ell_1$ \#nz values are measured across
@@ -1126,24 +1105,24 @@ optional LLM layer.
 \label{app:auc}
 
 Table~\ref{tab:auc-hierarchy} is the empirical instantiation of
-the sufficient-statistic claim of
-\S\ref{sec:empirical-landscape}: it measures, on held-out data,
-how much of $\mathrm{VOC}$ each gate family can recover. Single
-entropy is near chance (AUC${\approx}$0.50) in every
-environment, the operational signature of $\sigma$'s
-insufficiency for VOC. Multi-signal logistic gates that augment
-$\sigma$ with universal auxiliary features reach 0.74--0.92,
-recovering most of the available signal; hidden-state probes
-(which have access to the model's full internal representation,
-an upper bound on what any feature map $\phi(s)$ can extract)
-reach 0.79--0.99. The gap between the single-entropy row and
-the multi-signal row is therefore a quantitative measure of how
-much auxiliary conditioning is required to lift $\sigma$ toward
-sufficiency for VOC; the residual gap between multi-signal and
-hidden-state probe is the sufficiency that universal features
-fail to capture (small in most environments). The bottleneck is
-signal \emph{combination}, not gate \emph{capacity}, and the
-multi-signal LR row is the empirical case for DIAL's design.
+the sufficient-statistic claim of \S\ref{sec:toy-model}: it
+measures, on held-out data, how much of $\mathrm{VOC}$ each gate
+family can recover. Single entropy is near chance
+(AUC${\approx}$0.50) in every environment, the operational
+signature of $\sigma$'s insufficiency for VOC. Multi-signal
+logistic gates that augment $\sigma$ with universal auxiliary
+features reach 0.74--0.92, recovering most of the available
+signal; hidden-state probes (which have access to the model's
+full internal representation, an upper bound on what any feature
+map $\phi(s)$ can extract) reach 0.79--0.99. The gap between the
+single-entropy row and the multi-signal row is therefore a
+quantitative measure of how much auxiliary conditioning is
+required to lift $\sigma$ toward sufficiency for VOC; the
+residual gap between multi-signal and hidden-state probe is the
+sufficiency that universal features fail to capture (small in
+most environments). The bottleneck is signal \emph{combination},
+not gate \emph{capacity}, and the multi-signal LR row is the
+empirical case for DIAL's design.
 
 \begin{table}[H]
 \caption{AUC by gate family. Single entropy is near chance;
@@ -1152,7 +1131,6 @@ FEVER and TWExpress are omitted because their short episodes
 yield insufficient held-out data for reliable AUC estimation.}
 \label{tab:auc-hierarchy}
 \centering\small
-%\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lcccc}
 \toprule
 Gate family & HotpotQA & APPS & WebShop & Plancraft \\
@@ -1162,8 +1140,7 @@ Best single signal  & 0.78 & 0.78 & 0.90 & 0.74 \\
 Multi-signal LR     & 0.85 & 0.76 & 0.92 & 0.74 \\
 Hidden-state probe  & 0.87 & 0.79 & 0.99 & 0.95 \\
 \bottomrule
-\end{tabular}%
-%}
+\end{tabular}
 \end{table}
 
 % ============================================================
@@ -1195,7 +1172,7 @@ bootstrap confidence intervals.
 Spearman $\rho$ is mathematically rank-invariant under any
 within-cell monotone transform of $\sigma$, so all three schemes
 give identical Spearman $\rho$ to the raw column within each
-cell. We report this transparently -- it confirms that rank
+cell. We report this transparently: it confirms that rank
 structure is preserved but is not, in itself, a non-trivial test.
 
 \paragraph{Pearson: scale-sensitive, the substantive test.}
@@ -1207,8 +1184,8 @@ at the 0.13 threshold and report the 11 strong-signal cells
 stable under all three normalization schemes on 10 cells and
 2/3 schemes on 1 cell (Phi-3.5 APPS, where S3 yields $-0.054$
 with CI straddling zero). Critically, every cell that the
-paper's reversal claim invokes---including the cross-backbone
-anchors on HotpotQA, APPS, and FEVER---is in this strong block.
+paper's reversal claim invokes, including the cross-backbone
+anchors on HotpotQA, APPS, and FEVER, is in this strong block.
 The remaining 7 cells fall into two categories that we exclude
 from the table for brevity. \textbf{Weak-signal cells} (4 of 7:
 Qwen3 WebShop, Phi-3.5 HotpotQA, and Plancraft on \{Qwen3,
@@ -1220,10 +1197,10 @@ refutation. \textbf{Insufficient-data cells} (3 of 7: TWExpress
 on \{Phi-3.5, Llama-3.1\} and Plancraft on Phi-3.5) have logged
 $\sigma$ with $\leq 2$ unique values or no positive $U$ labels,
 making correlation analysis statistically ill-defined. The
-pattern in the strong block---stability tracks signal strength,
-with no strong-signal cell flipping under any
-scheme---is what one expects if the reversal is structural
-rather than a tokenizer-scale artifact.
+pattern in the strong block, where stability tracks signal
+strength and no strong-signal cell flips under any scheme, is
+what one expects if the reversal is structural rather than a
+tokenizer-scale artifact.
 
 \input{experiment/tab_phase_a_quantile_norm/tab_phase_a_quantile_norm.tex}
 
@@ -1260,12 +1237,22 @@ Under non-linear transforms $\sigma \!\to\! \sigma^\alpha$ with
 $\alpha \in \{0.5, 1, 2\}$ and $\sigma \!\to\! \log(\sigma +
 \epsilon)$, Spearman $\rho$ remains invariant by rank-preservation
 on every cell; Pearson varies (as expected for non-linear
-transforms) but only one cell -- Phi-3.5 / APPS under
-$\log\sigma$ -- exhibits a Pearson sign flip
+transforms) but only one cell, Phi-3.5 / APPS under
+$\log\sigma$, exhibits a Pearson sign flip
 (Table~\ref{tab:phase-a-alternatives}). Spearman on that cell
 is stable at $-0.129$, so the structural reversal claim is
 unaffected. We report this single anomaly transparently rather
 than averaging it away.
+
+\paragraph{Trajectory length.}
+Trajectory length varies across environments and correlates with
+both entropy and utility. To rule out length as a confounder, we
+stratify by step count and recompute $\rho(\text{entropy}, U)$
+within each stratum. Direction reversal persists within
+trajectory-length strata where utility variance is non-zero. In
+HotpotQA, $\rho$ remains negative across all three strata
+($-0.18$/$-0.46$/$-0.42$). The reversal is not an artifact of
+trajectory length.
 
 \input{experiment/tab_phase_a_alternatives/tab_phase_a_alternatives.tex}
 
@@ -1297,7 +1284,6 @@ show $\rho$ shifting more negative from early to late steps,
 consistent with P1. Plancraft omitted ($|\rho|{=}0.016$, too weak
 for meaningful comparison).}
 \label{tab:temporal}
-%\resizebox{\columnwidth}{!}{%
 \begin{tabular}{llccccl}
 \toprule
 \textbf{Env} & \textbf{Phase} & $\rho$ & \textbf{95\% CI}
@@ -1328,8 +1314,7 @@ TWExpress & early & $+$0.161 & --- & 422 & $<$0.001
   & \multirow{2}{*}{$\Delta{=}{-}0.153$} \\
   & late  & $+$0.008 & n.s. & 376 & 0.877 & \\
 \bottomrule
-\end{tabular}%
-%}
+\end{tabular}
 \end{table}
 
 The prediction holds across 4 of 5 testable environments:
@@ -1392,12 +1377,15 @@ for.
 	\label{fig:multi-backbone-heatmap}
 \end{figure*}
 
-Figure~\ref{fig:multi-backbone-heatmap} visualizes the
-direction variation, with gold borders marking sign flips.
-On Phi-3.5 FEVER: most fixed-direction baselines score near or
-below base\_only (7.2\% base $\to$ 8.5--23\%), demonstrating that
-the fixed-direction assumption is brittle when the model changes
-(Figure~\ref{fig:multi-backbone-sr}).
+Figure~\ref{fig:multi-backbone-heatmap} visualizes this direction
+variation, with gold borders marking sign flips. The downstream
+consequence appears in Figure~\ref{fig:multi-backbone-sr}: on
+Phi-3.5 FEVER, most fixed-direction baselines score at or below
+base\_only (7.2\% base $\to$ 8.5--23\% across baselines), while
+DIAL adapts to the different sign and reaches 20.5\%. The
+fixed-direction assumption is brittle when the model changes;
+DIAL's per-(environment, backbone) direction discovery handles
+this transparently.
 
 \begin{figure*}[h!]
 \centering
@@ -1408,27 +1396,6 @@ show large SR variance across backbones; DIAL adapts robustly.}
 \label{fig:multi-backbone-sr}
 \end{figure*}
 
-\subsection{Stratified Analysis: Controlling for Trajectory Length}
-\label{app:stratified}
-
-Trajectory length varies across environments and correlates with
-both entropy and utility. To rule out length as a confounder, we
-stratify by step count and recompute $\rho(\text{entropy}, U)$
-within each stratum.
-Direction reversal persists within trajectory-length strata where
-utility variance is non-zero. In HotpotQA, $\rho$ remains negative
-across all three strata ($-0.18$/$-0.46$/$-0.42$). The reversal
-is not an artifact of trajectory length.
-\begin{figure*}[h]
-\centering
-\includegraphics[width=\textwidth]{figures/fig_trigger_adapt.pdf}
-\caption{Environment-adaptive trigger behavior. Panels ordered by
-rollout headroom $\Delta$. Solid line: per-step trigger rate with
-95\% CI band. Dashed gray: 50\% reference. RR: overall trigger
-rate. DIAL's trigger rate ranges from 73\% (TWExpress) to $<$20\%
-(late-step Plancraft), emerging from direction learning alone.}
-\label{fig:trigger-adapt}
-\end{figure*}
 \subsection{Environment-Adaptive Trigger Behavior}
 \label{app:trigger-rate}
 
@@ -1442,21 +1409,22 @@ In rollout-harmful Plancraft ($\Delta{=}{-}7.0$), the trigger
 rate decays from 49\% at step~0 to ${<}$20\% in later steps,
 as the gate learns that late-step rollouts are increasingly
 harmful. WebShop and APPS show moderate, stable trigger rates.
-This full behavioral range emerges from the per-environment
-signed weights fitted in \S\ref{sec:learn}: the gate does not
-need an explicit headroom estimate, because signal direction
-already encodes whether the environment rewards or penalizes
-additional computation.
+This full behavioral range emerges entirely from the
+per-environment signed weights fitted in \S\ref{sec:learn}: DIAL
+never receives an explicit headroom estimate, because signal
+direction already encodes whether the environment rewards or
+penalizes additional computation.
 
-
-
-% \subsection{Hyperparameter Sensitivity}
-% \label{app:hyperparam}
-
-% DIAL is robust to $N_{\text{explore}} \in [30, 100]$ (stable SR for
-% $N_{\text{explore}} \geq 30$; marginal gains above 50) and gate
-% threshold $\tau \in [0.3, 0.7]$.
-
+\begin{figure*}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_trigger_adapt.pdf}
+\caption{Environment-adaptive trigger behavior. Panels ordered by
+rollout headroom $\Delta$. Solid line: per-step trigger rate with
+95\% CI band. Dashed gray: 50\% reference. RR: overall trigger
+rate. DIAL's trigger rate ranges from 73\% (TWExpress) to $<$20\%
+(late-step Plancraft), emerging from direction learning alone.}
+\label{fig:trigger-adapt}
+\end{figure*}
 
 % ============================================================
 % H. BROADER IMPACT
