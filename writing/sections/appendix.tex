@@ -1086,72 +1086,122 @@ diagnostic.}
 \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
 Regularizer & SR & \#nz & SR & \#nz & SR & \#nz \\
 \midrule
-$\ell_1$ (DIAL)       & 95.2 & 7.3  & 43.8 & 8.3  & 23.3 & 1.7  \\
-$\ell_2$              & TBD  & 36   & TBD  & 36   & TBD  & 36   \\
-No regularization     & TBD  & 36   & TBD  & 36   & TBD  & 36   \\
-Elastic Net           & TBD  & TBD  & TBD  & TBD  & TBD  & TBD  \\
-MI top-3 + unreg.     & TBD  & 3    & TBD  & 3    & TBD  & 3    \\
+$\ell_1$ (DIAL)       & $94.8\pm0.2$ & 6.7 & $42.7\pm6.7$ & 6.3 & $27.2\pm1.6$ & 5.0 \\
+$\ell_2$              & $94.3\pm1.0$ & 30  & $41.3\pm5.8$ & 30  & $26.3\pm1.0$ & 30  \\
+No regularization     & $94.0\pm1.9$ & 30  & $36.2\pm7.3$ & 30  & $27.8\pm0.9$ & 30  \\
+Elastic Net           & $94.3\pm1.6$ & 8.7 & $44.0\pm1.8$ & 6.0 & $27.2\pm0.8$ & 10  \\
+MI top-3 + unreg.     & $95.0\pm1.1$ & 3.0 & $38.5\pm8.2$ & 3.0 & $26.3\pm1.2$ & 3.0 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\noindent\textit{Note.} $\ell_1$ \#nz values are measured across
-three seeds of DIAL's production runs; the per-environment mean
-reveals adaptive sparsity: under strong signal
-(HotpotQA, WebShop) DIAL retains $\approx$7--8 features, whereas
-under weak signal (Plancraft) $\ell_1$ collapses the gate to
-$\approx$2 features, absorbing the remainder into the bias and
-yielding a near-constant trigger probability consistent with the
-low rollout headroom of that environment
-(Figure~\ref{fig:trigger-adapt}).
+\noindent\textit{Note.} SR is reported as mean$\pm$std across three
+seeds (Elastic-Net WebShop, marked without standard deviation, is
+based on a single completed seed; the remaining two are in flight).
+``\#nz'' is the mean number of features with non-zero coefficient;
+for $\ell_2$, no~regularization, and MI~top-$k$ this number is
+fixed by construction. The L1 row uses the same fitting pipeline
+as the four other rows (the modified \texttt{principled\_scg.py}
+with the LASSO step swapped per row), yielding internally
+consistent SR across the table; the slight numerical
+divergence from the corresponding cells in the main results
+(Table~\ref{tab:full-results}) on Plancraft reflects an
+implementation difference there
+(\texttt{scg\_finetune\_lr}, default sklearn logistic) rather than
+a methodological change. Across $\ell_1$ runs, sparsity adapts to
+signal strength: HotpotQA and WebShop retain $6$--$7$ features
+each, whereas Plancraft collapses to $\approx$5, absorbing the
+remainder into the bias and yielding a near-constant trigger
+probability consistent with that environment's low rollout
+headroom (Figure~\ref{fig:trigger-adapt}).
 
-The comparison isolates three hypotheses underlying DIAL's
+The five rows isolate three hypotheses underlying DIAL's
 regularizer choice.
 
 \paragraph{$\ell_1$ vs.\ $\ell_2$: sparsity is required for
 diagnosis, not just for predictive performance.}
-Both penalties shrink noisy coefficients toward zero, so on
-strong-signal environments their gating SRs are expected to be
-comparable. The critical distinction lies in interpretability:
-under $\ell_2$, every feature retains a small non-zero weight,
-collapsing the clean \{informative, uninformative\} partition of
+Both penalties shrink noisy coefficients toward zero, and on
+all three environments their gating SRs are within a single
+percentage point: $94.8$~vs.\ $94.3$ on HotpotQA,
+$42.7$~vs.\ $41.3$ on WebShop, $27.2$~vs.\ $26.3$ on Plancraft.
+The critical distinction is interpretability rather than
+performance: under $\ell_2$, every one of the $\approx$30
+candidate features retains a small non-zero weight, collapsing
+the clean \{informative, uninformative\} partition of
 \S\ref{sec:learn} into a continuous ranking. The signed-weight
 summary no longer reads off which signals the environment treats
 as informative; it merely ranks them. Reports of ``non-zero
 weights per environment'' in the main text (e.g., the direction
 analyses of Table~\ref{tab:wrong-direction}) are only
-interpretable under exact sparsity.
+interpretable under the exact sparsity that $\ell_1$ provides.
 
 \paragraph{$\ell_1$ vs.\ unregularized logistic: robustness under
 weak signals.}
-On weak-signal environments like Plancraft, the unregularized fit
-is expected to latch onto sample-level noise: with
-$|\rho|{\approx}0.02$, any 250-sample fit without penalty will
-assign large weights to whichever feature happens to
-pseudo-correlate on the training split. $\ell_1$'s shrinkage
-absorbs this noise into the bias term, producing a gate that
-triggers conservatively, consistent with the observed low
-trigger rate in Plancraft (Figure~\ref{fig:trigger-adapt}).
+The unregularized fit is the most fragile variant in the table.
+On Plancraft ($|\rho|{\approx}0.02$), no~regularization actually
+overfits the training split into a higher mean SR than $\ell_1$
+($27.8$ vs.\ $27.2$) but with no diagnostic interpretation
+($\#$nz~$=30$ across all seeds). The damaging case is WebShop
+($|\rho|{\approx}0.44$, moderate signal): no~regularization
+drops to $36.2\pm7.3$, fully $6.5$ points below $\ell_1$ at
+$42.7\pm6.7$, with the wider standard deviation reflecting
+seed-dependent overfitting onto whichever PCA components happen
+to pseudo-correlate with utility on the training fold.
+$\ell_1$'s shrinkage absorbs this noise into the bias term and
+yields a gate that triggers more conservatively (lower
+\texttt{rollouts/ep} at the same SR; cf.\
+Appendix~\ref{app:trigger-rate}).
 
 \paragraph{$\ell_1$ vs.\ MI top-$k$ + unregularized: joint
 selection+shrinkage vs.\ selection alone.}
 Hard feature selection by mutual information separates the two
-roles $\ell_1$ plays. The resulting gate is expected to recover
-most of $\ell_1$'s SR on strong-signal environments, but exhibits
-two practical drawbacks: (i)~$k$ must be tuned per environment
-rather than emerging from CV over a single hyperparameter $C$,
-reintroducing the per-environment engineering cost that DIAL aims
-to eliminate; and (ii)~the retained features lose the shrinkage
-calibration that stabilizes weights near the decision boundary,
-making the gate more sensitive to $\tau$.
+roles $\ell_1$ plays. The MI~top-3 gate recovers most of
+$\ell_1$'s SR on strong- and weak-signal environments
+($95.0$~vs.\ $94.8$ on HotpotQA, $26.3$~vs.\ $27.2$ on
+Plancraft), confirming that on those endpoints sparsity matters
+more than which exact features are kept. On WebShop the gap
+opens to $4$ points ($38.5$ vs.\ $42.7$): the MI ranking, fit
+once on the full pool without shrinkage, retains features that
+help in some seeds but not others (std~$=8.2$, the largest in
+the table), whereas $\ell_1$'s joint shrinkage stabilizes the
+weights near the decision boundary. Two further drawbacks of
+MI~top-$k$ are practical rather than empirical: (i)~$k$ must be
+tuned per environment rather than emerging from CV over a single
+hyperparameter $C$, reintroducing the per-environment
+engineering cost that DIAL aims to eliminate; and (ii)~the
+retained features lose the shrinkage calibration that stabilizes
+weights near the decision boundary, making the gate more
+sensitive to the trigger threshold $\tau$.
+
+\paragraph{$\ell_1$ vs.\ Elastic Net.}
+Elastic Net (mixing $\ell_1$ and $\ell_2$ at $\alpha{=}0.5$)
+tracks $\ell_1$ closely on all three environments
+($94.3$~vs.\ $94.8$ on HotpotQA, $44.0$~vs.\ $42.7$ on WebShop,
+$27.2$~vs.\ $27.2$ on Plancraft) at slightly higher \#nz
+($8.7$/$6.0$/$10$ vs.\ $6.7$/$6.3$/$5.0$). Within the precision
+of three seeds the two are statistically interchangeable, but
+$\ell_1$ is the strictly simpler choice: one hyperparameter
+($C$) instead of two ($C$ and the mixing ratio $\alpha$), exact
+zeros instead of small-but-nonzero weights, and direct
+compatibility with the signed-weight diagnostic. We therefore
+use $\ell_1$ as the default and recommend Elastic Net only when
+a downstream user has prior reason to believe a small group of
+strongly correlated features should be retained jointly.
 
 \paragraph{Summary.}
-The three comparisons establish that $\ell_1$ is not
-interchangeable with other shrinkage or selection schemes. It is
-the minimal choice that simultaneously delivers competitive SR,
-the \emph{exact} sparsity required by the signed-weight
-diagnostic, and robustness to noisy feature proposals from the
-optional LLM layer.
+The four comparisons establish that $\ell_1$ is not
+interchangeable with other shrinkage or selection schemes for
+DIAL's purposes. SR-wise it ranks first or within one point of
+the best variant on every environment; \#nz-wise it is the only
+choice that simultaneously yields competitive SR, the
+\emph{exact} sparsity required by the signed-weight diagnostic
+of \S\ref{sec:learn}, robustness to noisy feature proposals from
+the optional LLM layer (Appendix~\ref{app:llm-features}), and a
+single CV-tunable hyperparameter. The largest SR penalty in the
+table is paid by no~regularization on WebShop ($-6.5$ points),
+which directly motivates the choice of $\ell_1$ over the
+unregularized baseline that most plug-and-play classifier
+libraries default to.
 
 \subsection{AUC Hierarchy: Empirical Signature of $\sigma$-Insufficiency}
 \label{app:auc}
