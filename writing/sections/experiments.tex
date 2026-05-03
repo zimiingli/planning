@@ -40,6 +40,8 @@ CoRefine~\cite{corefine2026}, CATTS~\cite{catts2026},
 AUQ~\cite{auq2026}, and s1\_budget~\cite{s1_2025}.
 Full specifications are in Appendix~\ref{app:method-comparison}.
 
+\input{experiment/tab_full_results/tab_full_results.tex}
+
 \paragraph{Metrics.} SR (success rate, $\uparrow$) and Cost
 ($\times$base, $\downarrow$): total deployment tokens normalized by
 base\_only tokens per episode. This metric counts \emph{all} LLM
@@ -50,46 +52,22 @@ A method Pareto-dominates another if $\text{SR} \geq$ and
 $\text{Cost} \leq$ with at least one strict inequality.
 Token cost constants are reported in
 Appendix~\ref{app:cost}.
-\begin{figure*}[t]
-	\centering
-	\includegraphics[width=\textwidth]{figures/fig_pareto.pdf}
-	\caption{SR vs.\ Cost ($\times$base) across all 6 environments
-		(Qwen3-4B). Shaded region: dominated by DIAL (lower SR \emph{and} higher cost).
-		Full numerical results across three backbones are in
-		Table~\ref{tab:full-results}.}
-	\label{fig:pareto}
-\end{figure*}
-
-
 \subsection{Main Results}
 \label{sec:main-results}
 
 
 
 \textbf{DIAL Pareto-dominates fixed-direction baselines.}
-Figure~\ref{fig:pareto} shows the SR--Cost Pareto frontier across
-all 6 environments on Qwen3-4B; full results across three
-backbones are in Appendix~\ref{app:full-results}.
-Three patterns emerge. First, \emph{fixed-direction baselines
-catastrophically fail when the assumed direction is wrong}:
-on FEVER, a Type~I task, CATTS reaches only 32.2\% SR, below
-the 37.0\% no-trigger baseline, yet costs 16.46$\times$ base
-from its $K{=}5$ per-step voting overhead.
-Second, \emph{DIAL achieves competitive SR at substantially
-lower cost} when rollouts help: on HotpotQA, DIAL reaches
-95.2\% SR at 8.02$\times$ versus always\_trigger's 97.0\%
-at 10.63$\times$; on WebShop, DIAL matches always\_trigger
-in SR (43.8 vs.\ 43.0\%) at less than half the cost,
-2.50$\times$ versus 5.56$\times$; on APPS, DIAL outperforms
-the best fixed-direction baseline, s1\_budget at 69.0\%, by
-4 points at comparable cost. Third, \emph{in rollout-harmful
-environments DIAL reverts toward base\_only}: on Plancraft,
-where always\_trigger itself loses 7.0 points, DIAL recovers
-near base\_only at 23.3 vs.\ 29.8\%, while aggressive
-baselines such as s1\_budget fall below base\_only at 16.3\%.
-Across these patterns, DIAL interpolates between the two
-bounds in a headroom-dependent way; the full bounds comparison
-is in Appendix~\ref{app:bounds-comparison}.
+Table~\ref{tab:full-results} reports SR and Cost ($\times$base) across all 6 environments and 3 backbones; the Qwen3-4B Pareto frontier is visualized in Appendix~\ref{app:multi-backbone}. DIAL
+achieves the highest SR in 17 of 18 (environment, backbone) cells. Three insights follow.
+First, \emph{wrong direction is catastrophic, not merely costly}.
+On Qwen3-4B FEVER, a Type~I task, CATTS pays 16.46$\times$ base for $K{=}5$ voting yet reaches only 32.2\% SR, below the 37.0\% no-trigger baseline: fixed-direction gating in the wrong direction
+does not merely waste compute, it actively hurts.
+Second, \emph{right direction lets DIAL dominate Pareto, not just match it}. On Qwen3-4B HotpotQA, DIAL trades 1.8 SR points for 2.6$\times$ less cost than always\_trigger (95.2 vs.\ 97.0\% at 8.02$\times$ vs.\ 10.63$\times$); on WebShop, DIAL matches always\_trigger at less than half the cost. The gap is too large
+to close by retuning thresholds without changing direction.
+Third, \emph{the win generalizes across backbones}. The same DIAL pipeline takes 6/6 cells on Phi-3.5-mini and 5/6 on Llama-3.1-8B, even though entropy--utility correlations flip sign across model families (\S\ref{sec:empirical-landscape}). Fixed-direction baselines instead break per-backbone: AUQ on HotpotQA falls from 95.0\% (Qwen3-4B) to 31.2\% (Phi-3.5).
+
+
 
 % FEVER remains DIAL's weakest environment: while DIAL achieves the
 % highest SR (49.8\%), its cost (16.51$\times$base) is also the
@@ -99,11 +77,12 @@ is in Appendix~\ref{app:bounds-comparison}.
 \label{sec:ablation}
 
 The main results show \emph{that} DIAL works; we now ask
-\emph{why}. We isolate the role of direction along two axes:
-its sign (direction reversal) and the gate's capacity to exploit
-it (gate complexity). LLM feature and regularizer ablations
-appear in Appendix~\ref{app:llm-features} and
-Appendix~\ref{app:regularizer-ablation}.
+\emph{why}. We ablate direction along two axes: its sign
+(direction reversal) and the gate's capacity to exploit it
+(gate complexity). We then characterize how DIAL's trigger
+rate adapts across rollout-headroom regimes. LLM feature and
+regularizer ablations appear in Appendix~\ref{app:llm-features}
+and Appendix~\ref{app:regularizer-ablation}.
 
 \begin{wraptable}{r}{0.52\textwidth}
 \vspace{-12pt}
@@ -181,7 +160,15 @@ direction, the ordering inverts: the MLP drops to 45.3\%,
 consistently outweighs capacity, which is why DIAL's minimal
 linear gate suffices.
 
-
+\textbf{Trigger rate adapts to rollout headroom.}
+Beyond direction discovery, DIAL's trigger rate itself adapts
+to each environment without an explicit headroom signal: from
+73\% on rollout-safe TWExpress (where almost any trigger
+helps) down to $<$20\% on rollout-harmful Plancraft
+($\Delta{=}{-}7.0$). Aggressive baselines like s1\_budget keep
+triggering and fall below \emph{base\_only} on Plancraft
+(16.3\% vs.\ 29.8\%); per-step trigger rates and the full
+analysis are in Appendix~\ref{app:trigger-rate}.
 
 \subsection{Two-Source Model Verification}
 \label{sec:theory-verification}

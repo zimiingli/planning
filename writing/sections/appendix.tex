@@ -824,14 +824,14 @@ Phi-3.5-mini-instruct~\cite{DBLP:journals/corr/abs-2404-14219} & Model weights &
 \section{Full Results}
 \label{app:full-results}
 
-Table~\ref{tab:full-results} reports SR and Cost ($\times$base)
-for all methods across 6 environments and 3 backbones. Cost
-includes all deployment LLM calls (base proposer, gate overhead,
-rollouts) normalized by base\_only cost. Bounds comparison is in
+Section~\ref{sec:main-results} (Table~\ref{tab:full-results})
+reports SR and Cost ($\times$base) for all methods across 6
+environments and 3 backbones. Cost includes all deployment LLM
+calls (base proposer, gate overhead, rollouts) normalized by
+base\_only cost. Bounds comparison is in
 Table~\ref{tab:bounds-comparison} (\S\ref{app:bounds-comparison}).
-Several patterns are consistent across backbones.
-
-\input{experiment/tab_full_results/tab_full_results.tex}
+This appendix elaborates per-backbone failure modes and cost
+anomalies that the aggregated table does not surface.
 
 \paragraph{Qwen3-4B.} DIAL achieves the highest SR in 4 of 6
 environments (HotpotQA, WebShop, TWExpress, APPS). The
@@ -1411,7 +1411,20 @@ mixture-driven account.
 We validate our core findings on three backbones from three vendors:
 Qwen3-4B-Instruct (Alibaba, 4B), Phi-3.5-mini-instruct (Microsoft,
 3.8B), and Llama-3.1-8B-Instruct (Meta, 8B) across all 6
-environments. Table~\ref{tab:full-results} reports full results.
+environments. Table~\ref{tab:full-results}
+(\S\ref{sec:main-results}) reports full numerical results, and
+Figure~\ref{fig:pareto} below visualizes the Qwen3-4B Pareto
+frontier.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/fig_pareto.pdf}
+  \caption{SR vs.\ Cost ($\times$base) across all 6 environments
+  on Qwen3-4B. Shaded region: dominated by DIAL (lower SR
+  \emph{and} higher cost). Full numerical results across three
+  backbones are in Table~\ref{tab:full-results}.}
+  \label{fig:pareto}
+\end{figure*}
 This appendix supports the (environment, backbone)-indexed
 formulation of \S\ref{sec:toy-model}: the same task changes
 $p_I$ (and, when it crosses $p_I^*$, the sign of $\rho$) when
