@@ -37,19 +37,21 @@ for i, phase in enumerate(phases):
                   color=phase_colors[phase], label=phase_labels[phase],
                   edgecolor="white", linewidth=0.5)
 
-    # Label each bar with its rho value
+    # Stagger labels: Early always above zero, Late always below zero.
+    # Color matches bar so reader can associate label with bar even when
+    # the label is displaced to the opposite side of the axis.
     for bar, v in zip(bars, vals):
         if np.isnan(v):
             continue
-        if v >= 0:
-            y_pos = v + 0.01
+        if phase == "early":
+            y_pos = max(0.0, v) + 0.04
             va = "bottom"
-        else:
-            y_pos = v - 0.01
+        else:  # late
+            y_pos = min(0.0, v) - 0.04
             va = "top"
         ax.text(bar.get_x() + bar.get_width() / 2, y_pos,
-                f"{v:+.2f}", ha="center", va=va, fontsize=6,
-                color="#444444")
+                f"{v:+.2f}", ha="center", va=va, fontsize=8,
+                fontweight="bold", color=phase_colors[phase])
 
 ax.axhline(y=0, color="black", linewidth=0.7)
 ax.set_xticks(x)
@@ -61,6 +63,10 @@ ax.spines["top"].set_visible(False)
 ax.spines["right"].set_visible(False)
 
 add_ygrid(ax)
+
+# Pad y-limits so bold labels don't crowd the top/bottom edges
+y_lo, y_hi = ax.get_ylim()
+ax.set_ylim(y_lo - 0.05, y_hi + 0.05)
 
 plt.tight_layout()
 fig.savefig(HERE / "output.pdf", bbox_inches="tight", dpi=200)
