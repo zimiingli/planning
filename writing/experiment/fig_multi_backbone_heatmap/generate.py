@@ -18,9 +18,20 @@ from style import *
 apply_style()
 
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
 import numpy as np
 import csv
 from pathlib import Path
+
+# Diverging palette aligned with Table 2 highlights:
+#   negative end -> tab10 blue (#1f77b4)  | mid -> white
+#   positive end -> DIAL crimson (#DC143C)
+# At |rho| ~0.35 the gradient sits near Table 2's
+# #E5EDF7 (light blue) / #FBE7EB (light crimson) tints.
+FIG2_CMAP = LinearSegmentedColormap.from_list(
+    'fig2_diverging',
+    ['#1f77b4', '#FFFFFF', '#DC143C'],
+)
 
 HERE = Path(__file__).parent
 
@@ -55,14 +66,14 @@ def main():
             matrix[ei, si] = float(row['rho'])
             pvals[ei, si] = float(row['p_value'])
 
-        im = ax.imshow(matrix, cmap='RdBu_r', vmin=-0.7, vmax=0.7, aspect='auto')
+        im = ax.imshow(matrix, cmap=FIG2_CMAP, vmin=-0.7, vmax=0.7, aspect='auto')
 
         ax.set_xticks(range(len(KEY_SIGNALS)))
         ax.set_xticklabels(KEY_SIGNALS, rotation=0, ha='center', fontsize=7)
         if bidx == 0:
             ax.set_yticks(range(len(ENV_ORDER)))
             ax.set_yticklabels(ENV_ORDER, fontsize=7)
-        ax.set_title(title, fontsize=9, fontweight='bold')
+        ax.set_title(title, fontsize=9)
 
         # Annotate values
         for i in range(len(ENV_ORDER)):
@@ -70,10 +81,10 @@ def main():
                 val = matrix[i, j]
                 if np.isnan(val):
                     continue
-                color = 'white' if abs(val) > 0.35 else 'black'
+                color = 'white' if abs(val) > 0.45 else 'black'
                 star = '*' if pvals[i, j] < 0.05 else ''
                 ax.text(j, i, f'{val:+.2f}{star}', ha='center', va='center',
-                        fontsize=6.5, color=color, fontweight='bold')
+                        fontsize=7, color=color)
 
     # Check sign flips and mark them
     for i in range(len(ENV_ORDER)):
@@ -92,7 +103,7 @@ def main():
                 if len(set(signs)) > 1:  # sign flip
                     for bidx in range(3):
                         rect = plt.Rectangle((j - 0.5, i - 0.5), 1, 1,
-                                             linewidth=2.5, edgecolor='gold',
+                                             linewidth=1.8, edgecolor='#1a1a1a',
                                              facecolor='none', zorder=10)
                         axes[bidx].add_patch(rect)
 

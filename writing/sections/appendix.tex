@@ -1155,53 +1155,30 @@ Appendix~\ref{app:trigger-rate}).
 \paragraph{$\ell_1$ vs.\ MI top-$k$ + unregularized: joint
 selection+shrinkage vs.\ selection alone.}
 Hard feature selection by mutual information separates the two
-roles $\ell_1$ plays. The MI~top-3 gate recovers most of
-$\ell_1$'s SR on strong- and weak-signal environments
-($95.0$~vs.\ $94.8$ on HotpotQA, $26.3$~vs.\ $27.2$ on
-Plancraft), confirming that on those endpoints sparsity matters
-more than which exact features are kept. On WebShop the gap
-opens to $4$ points ($38.5$ vs.\ $42.7$): the MI ranking, fit
-once on the full pool without shrinkage, retains features that
-help in some seeds but not others (std~$=8.2$, the largest in
-the table), whereas $\ell_1$'s joint shrinkage stabilizes the
-weights near the decision boundary. Two further drawbacks of
-MI~top-$k$ are practical rather than empirical: (i)~$k$ must be
-tuned per environment rather than emerging from CV over a single
-hyperparameter $C$, reintroducing the per-environment
-engineering cost that DIAL aims to eliminate; and (ii)~the
-retained features lose the shrinkage calibration that stabilizes
-weights near the decision boundary, making the gate more
-sensitive to the trigger threshold $\tau$.
+roles $\ell_1$ plays. MI~top-3 recovers most of $\ell_1$'s SR
+on strong- and weak-signal environments ($95.0$~vs.\ $94.8$ on
+HotpotQA, $26.3$~vs.\ $27.2$ on Plancraft), confirming that on
+those endpoints sparsity matters more than which exact features
+are kept. On WebShop the gap opens to $4$ points ($38.5$ vs.\
+$42.7$, std~$=8.2$, the largest in the table), reflecting
+seed-dependent overfitting that $\ell_1$'s joint shrinkage
+prevents. MI~top-$k$ also requires tuning $k$ per environment
+rather than CVing a single $C$, reintroducing the
+per-environment engineering cost DIAL aims to eliminate.
 
 \paragraph{$\ell_1$ vs.\ Elastic Net.}
-Elastic Net (mixing $\ell_1$ and $\ell_2$ at $\alpha{=}0.5$)
-tracks $\ell_1$ closely on all three environments
-($94.3$~vs.\ $94.8$ on HotpotQA, $44.0$~vs.\ $42.7$ on WebShop,
-$27.2$~vs.\ $27.2$ on Plancraft) at slightly higher \#nz
-($8.7$/$6.0$/$10$ vs.\ $6.7$/$6.3$/$5.0$). Within the precision
-of three seeds the two are statistically interchangeable, but
-$\ell_1$ is the strictly simpler choice: one hyperparameter
-($C$) instead of two ($C$ and the mixing ratio $\alpha$), exact
-zeros instead of small-but-nonzero weights, and direct
-compatibility with the signed-weight diagnostic. We therefore
-use $\ell_1$ as the default and recommend Elastic Net only when
-a downstream user has prior reason to believe a small group of
-strongly correlated features should be retained jointly.
+Elastic Net ($\alpha{=}0.5$) is statistically interchangeable
+with $\ell_1$ on all three environments (within $1$~pt SR;
+$\#$nz higher by $1$--$5$). We default to $\ell_1$ as the
+strictly simpler choice: one hyperparameter instead of two,
+exact zeros instead of small-but-nonzero weights, and direct
+compatibility with the signed-weight diagnostic.
 
 \paragraph{Summary.}
-The four comparisons establish that $\ell_1$ is not
-interchangeable with other shrinkage or selection schemes for
-DIAL's purposes. SR-wise it ranks first or within one point of
-the best variant on every environment; \#nz-wise it is the only
-choice that simultaneously yields competitive SR, the
-\emph{exact} sparsity required by the signed-weight diagnostic
-of \S\ref{sec:learn}, robustness to noisy feature proposals from
-the optional LLM layer (Appendix~\ref{app:llm-features}), and a
-single CV-tunable hyperparameter. The largest SR penalty in the
-table is paid by no~regularization on WebShop ($-6.5$ points),
-which directly motivates the choice of $\ell_1$ over the
-unregularized baseline that most plug-and-play classifier
-libraries default to.
+$\ell_1$ is the only variant in this table that simultaneously
+delivers competitive SR, the exact sparsity required by the
+signed-weight diagnostic of \S\ref{sec:learn}, and a single
+CV-tunable hyperparameter; we use it as the default.
 
 \subsection{AUC Hierarchy: Empirical Signature of $\sigma$-Insufficiency}
 \label{app:auc}
@@ -1485,15 +1462,19 @@ for.
 \begin{figure*}[h!]
 	\centering
 	\includegraphics[width=\textwidth]{figures/fig_multi_backbone_heatmap.pdf}
-	\caption{Multi-backbone signal direction heatmap. Gold borders
-	mark cells where the sign of $\rho$ flips across backbones with
-	significant correlations. Entropy direction is model-dependent;
-	structural signals (step\_count) are more stable.}
+	\caption{Multi-backbone signal direction heatmap. $^*$ marks
+	cells significant at $p{<}0.05$. Cells outlined in black are
+	\emph{sign-flip cells}: the same (environment, signal) pair
+	yields a significantly positive $\rho$ on at least one backbone
+	and a significantly negative $\rho$ on another, i.e.\ the
+	signal--utility direction is reversed across model families.
+	Entropy direction is model-dependent; structural signals
+	(\texttt{step\_count}) are more stable.}
 	\label{fig:multi-backbone-heatmap}
 \end{figure*}
 
 Figure~\ref{fig:multi-backbone-heatmap} visualizes this direction
-variation, with gold borders marking sign flips. The downstream
+variation, with black-outlined cells marking sign flips. The downstream
 consequence appears in Figure~\ref{fig:multi-backbone-sr}: on
 Phi-3.5 FEVER, most fixed-direction baselines score at or below
 base\_only (7.2\% base $\to$ 8.5--23\% across baselines), while
