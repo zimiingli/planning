@@ -1,0 +1,506 @@
+{
+  "qwen3|hotpotqa|cats": {
+    "mean": 93.2,
+    "std": 1.4433756729740592
+  },
+  "qwen3|hotpotqa|seag": {
+    "mean": 67.5,
+    "std": 4.821825380496476
+  },
+  "qwen3|hotpotqa|corefine": {
+    "mean": 68.2,
+    "std": 4.907477288111817
+  },
+  "qwen3|hotpotqa|catts": {
+    "mean": 68.3,
+    "std": 4.618802153517003
+  },
+  "qwen3|hotpotqa|auq": {
+    "mean": 95.0,
+    "std": 0.5000000000000004
+  },
+  "qwen3|hotpotqa|s1_budget": {
+    "mean": 94.0,
+    "std": 0.5000000000000004
+  },
+  "qwen3|hotpotqa|DIAL": {
+    "mean": 95.2,
+    "std": 0.28867513459481314
+  },
+  "qwen3|webshop|cats": {
+    "mean": 30.5,
+    "std": 2.1794494717703388
+  },
+  "qwen3|webshop|seag": {
+    "mean": 28.0,
+    "std": 4.924428900898054
+  },
+  "qwen3|webshop|corefine": {
+    "mean": 27.5,
+    "std": 3.7749172176353754
+  },
+  "qwen3|webshop|catts": {
+    "mean": 16.0,
+    "std": 0.5000000000000004
+  },
+  "qwen3|webshop|auq": {
+    "mean": 35.7,
+    "std": 4.8562674281111535
+  },
+  "qwen3|webshop|s1_budget": {
+    "mean": 17.8,
+    "std": 2.565800719723442
+  },
+  "qwen3|webshop|DIAL": {
+    "mean": 43.8,
+    "std": 8.251262529657707
+  },
+  "qwen3|fever|cats": {
+    "mean": 48.2,
+    "std": 2.516611478423586
+  },
+  "qwen3|fever|seag": {
+    "mean": 47.3,
+    "std": 3.2145502536643207
+  },
+  "qwen3|fever|corefine": {
+    "mean": 47.8,
+    "std": 2.0207259421636916
+  },
+  "qwen3|fever|catts": {
+    "mean": 32.2,
+    "std": 0.2886751345948099
+  },
+  "qwen3|fever|auq": {
+    "mean": 38.7,
+    "std": 4.010403138505322
+  },
+  "qwen3|fever|s1_budget": {
+    "mean": 44.2,
+    "std": 2.0207259421636894
+  },
+  "qwen3|fever|DIAL": {
+    "mean": 49.8,
+    "std": 3.6170890690351176
+  },
+  "qwen3|twexpress|cats": {
+    "mean": 96.7,
+    "std": 0.763762615825974
+  },
+  "qwen3|twexpress|seag": {
+    "mean": 97.3,
+    "std": 0.28867513459481314
+  },
+  "qwen3|twexpress|corefine": {
+    "mean": 97.5,
+    "std": 0.5000000000000004
+  },
+  "qwen3|twexpress|catts": {
+    "mean": 97.5,
+    "std": 0.5000000000000004
+  },
+  "qwen3|twexpress|auq": {
+    "mean": 95.5,
+    "std": 0.0
+  },
+  "qwen3|twexpress|s1_budget": {
+    "mean": 95.0,
+    "std": 0.5000000000000004
+  },
+  "qwen3|twexpress|DIAL": {
+    "mean": 99.0,
+    "std": 0.28867513459481314
+  },
+  "qwen3|plancraft|cats": {
+    "mean": 20.3,
+    "std": 2.843120351538663
+  },
+  "qwen3|plancraft|seag": {
+    "mean": 22.8,
+    "std": 0.763762615825974
+  },
+  "qwen3|plancraft|corefine": {
+    "mean": 20.8,
+    "std": 3.0138568866708537
+  },
+  "qwen3|plancraft|catts": {
+    "mean": 23.0,
+    "std": 1.5000000000000013
+  },
+  "qwen3|plancraft|auq": {
+    "mean": 22.2,
+    "std": 1.6072751268321595
+  },
+  "qwen3|plancraft|s1_budget": {
+    "mean": 16.3,
+    "std": 2.3629078131263035
+  },
+  "qwen3|plancraft|DIAL": {
+    "mean": 23.3,
+    "std": 2.0207259421636894
+  },
+  "qwen3|apps|cats": {
+    "mean": 66.2,
+    "std": 0.0
+  },
+  "qwen3|apps|seag": {
+    "mean": 66.0,
+    "std": 0.0
+  },
+  "qwen3|apps|corefine": {
+    "mean": 67.5,
+    "std": 0.0
+  },
+  "qwen3|apps|catts": {
+    "mean": 60.8,
+    "std": 0.0
+  },
+  "qwen3|apps|auq": {
+    "mean": 64.7,
+    "std": 1.0408329997330674
+  },
+  "qwen3|apps|s1_budget": {
+    "mean": 69.0,
+    "std": 1.258305739211793
+  },
+  "qwen3|apps|DIAL": {
+    "mean": 73.0,
+    "std": 1.0408329997330674
+  },
+  "phi35|hotpotqa|cats": {
+    "mean": 68.3,
+    "std": 2.753785273643047
+  },
+  "phi35|hotpotqa|seag": {
+    "mean": 88.3,
+    "std": 3.055050463303896
+  },
+  "phi35|hotpotqa|corefine": {
+    "mean": 87.7,
+    "std": 2.843120351538666
+  },
+  "phi35|hotpotqa|catts": {
+    "mean": 42.0,
+    "std": 1.4999999999999987
+  },
+  "phi35|hotpotqa|auq": {
+    "mean": 31.2,
+    "std": 1.4433756729740657
+  },
+  "phi35|hotpotqa|s1_budget": {
+    "mean": 91.2,
+    "std": 2.886751345948125
+  },
+  "phi35|hotpotqa|DIAL": {
+    "mean": 92.3,
+    "std": 2.753785273643047
+  },
+  "phi35|webshop|cats": {
+    "mean": 41.7,
+    "std": 3.818813079129867
+  },
+  "phi35|webshop|seag": {
+    "mean": 36.5,
+    "std": 2.7838821814150103
+  },
+  "phi35|webshop|corefine": {
+    "mean": 35.8,
+    "std": 3.3291640592396963
+  },
+  "phi35|webshop|catts": {
+    "mean": 28.7,
+    "std": 1.8929694486000896
+  },
+  "phi35|webshop|auq": {
+    "mean": 37.0,
+    "std": 1.9999999999999998
+  },
+  "phi35|webshop|s1_budget": {
+    "mean": 43.0,
+    "std": 1.3228756555322951
+  },
+  "phi35|webshop|DIAL": {
+    "mean": 57.3,
+    "std": 4.509249752822893
+  },
+  "phi35|fever|cats": {
+    "mean": 19.8,
+    "std": 2.0207259421636903
+  },
+  "phi35|fever|seag": {
+    "mean": 13.5,
+    "std": 3.0000000000000004
+  },
+  "phi35|fever|corefine": {
+    "mean": 13.7,
+    "std": 3.2532035493238567
+  },
+  "phi35|fever|catts": {
+    "mean": 12.7,
+    "std": 1.2583057392117922
+  },
+  "phi35|fever|auq": {
+    "mean": 8.5,
+    "std": 2.29128784747792
+  },
+  "phi35|fever|s1_budget": {
+    "mean": 20.0,
+    "std": 3.0413812651491092
+  },
+  "phi35|fever|DIAL": {
+    "mean": 20.5,
+    "std": 5.4083269131959835
+  },
+  "phi35|twexpress|cats": {
+    "mean": 68.2,
+    "std": 4.1633319989322635
+  },
+  "phi35|twexpress|seag": {
+    "mean": 92.5,
+    "std": 1.4999999999999958
+  },
+  "phi35|twexpress|corefine": {
+    "mean": 92.7,
+    "std": 1.5275252316519419
+  },
+  "phi35|twexpress|catts": {
+    "mean": 86.7,
+    "std": 2.309401076758505
+  },
+  "phi35|twexpress|auq": {
+    "mean": 92.5,
+    "std": 1.4999999999999958
+  },
+  "phi35|twexpress|s1_budget": {
+    "mean": 93.7,
+    "std": 0.763762615825974
+  },
+  "phi35|twexpress|DIAL": {
+    "mean": 96.7,
+    "std": 0.763762615825974
+  },
+  "phi35|plancraft|cats": {
+    "mean": 13.5,
+    "std": 0.5000000000000004
+  },
+  "phi35|plancraft|seag": {
+    "mean": 14.7,
+    "std": 0.7637626158259728
+  },
+  "phi35|plancraft|corefine": {
+    "mean": 15.2,
+    "std": 0.763762615825974
+  },
+  "phi35|plancraft|catts": {
+    "mean": 13.5,
+    "std": 0.0
+  },
+  "phi35|plancraft|auq": {
+    "mean": 12.7,
+    "std": 0.28867513459481314
+  },
+  "phi35|plancraft|s1_budget": {
+    "mean": 13.7,
+    "std": 0.7637626158259725
+  },
+  "phi35|plancraft|DIAL": {
+    "mean": 16.8,
+    "std": 1.2583057392117913
+  },
+  "phi35|apps|cats": {
+    "mean": 30.5,
+    "std": 1.8027756377319963
+  },
+  "phi35|apps|seag": {
+    "mean": 27.8,
+    "std": 0.763762615825974
+  },
+  "phi35|apps|corefine": {
+    "mean": 28.5,
+    "std": 0.28867513459481314
+  },
+  "phi35|apps|catts": {
+    "mean": 27.7,
+    "std": 0.0
+  },
+  "phi35|apps|auq": {
+    "mean": 27.2,
+    "std": 0.28867513459481314
+  },
+  "phi35|apps|s1_budget": {
+    "mean": 34.5,
+    "std": 0.28867513459481314
+  },
+  "phi35|apps|DIAL": {
+    "mean": 36.8,
+    "std": 2.0207259421636916
+  },
+  "llama31|hotpotqa|cats": {
+    "mean": 94.2,
+    "std": 1.3228756555322967
+  },
+  "llama31|hotpotqa|seag": {
+    "mean": 94.0,
+    "std": 2.0207259421636916
+  },
+  "llama31|hotpotqa|corefine": {
+    "mean": 94.2,
+    "std": 1.5000000000000013
+  },
+  "llama31|hotpotqa|catts": {
+    "mean": 94.0,
+    "std": 2.0207259421636916
+  },
+  "llama31|hotpotqa|auq": {
+    "mean": 95.0,
+    "std": 0.28867513459481314
+  },
+  "llama31|hotpotqa|s1_budget": {
+    "mean": 94.5,
+    "std": 0.5000000000000004
+  },
+  "llama31|hotpotqa|DIAL": {
+    "mean": 95.5,
+    "std": 1.7320508075688787
+  },
+  "llama31|webshop|cats": {
+    "mean": 36.0,
+    "std": 6.331139971074193
+  },
+  "llama31|webshop|seag": {
+    "mean": 27.5,
+    "std": 3.883726732577015
+  },
+  "llama31|webshop|corefine": {
+    "mean": 27.5,
+    "std": 3.752776749732568
+  },
+  "llama31|webshop|catts": {
+    "mean": 11.3,
+    "std": 3.785938897200183
+  },
+  "llama31|webshop|auq": {
+    "mean": 37.8,
+    "std": 4.310839052125853
+  },
+  "llama31|webshop|s1_budget": {
+    "mean": 11.2,
+    "std": 0.5
+  },
+  "llama31|webshop|DIAL": {
+    "mean": 41.7,
+    "std": 5.507570547286102
+  },
+  "llama31|fever|cats": {
+    "mean": 56.3,
+    "std": 2.3094010767585016
+  },
+  "llama31|fever|seag": {
+    "mean": 53.5,
+    "std": 2.929732638541158
+  },
+  "llama31|fever|corefine": {
+    "mean": 53.5,
+    "std": 3.329164059239694
+  },
+  "llama31|fever|catts": {
+    "mean": 14.2,
+    "std": 2.753785273643051
+  },
+  "llama31|fever|auq": {
+    "mean": 52.8,
+    "std": 2.291287847477919
+  },
+  "llama31|fever|s1_budget": {
+    "mean": 13.8,
+    "std": 1.0408329997330674
+  },
+  "llama31|fever|DIAL": {
+    "mean": 54.7,
+    "std": 3.214550253664318
+  },
+  "llama31|twexpress|cats": {
+    "mean": 35.8,
+    "std": 5.381419814125358
+  },
+  "llama31|twexpress|seag": {
+    "mean": 76.5,
+    "std": 0.8617168196860111
+  },
+  "llama31|twexpress|corefine": {
+    "mean": 76.0,
+    "std": 0.0
+  },
+  "llama31|twexpress|catts": {
+    "mean": 49.3,
+    "std": 0.0
+  },
+  "llama31|twexpress|auq": {
+    "mean": 63.2,
+    "std": 0.8617168196860111
+  },
+  "llama31|twexpress|s1_budget": {
+    "mean": 76.1,
+    "std": 2.985074626865669
+  },
+  "llama31|twexpress|DIAL": {
+    "mean": 94.8,
+    "std": 5.107184482014852
+  },
+  "llama31|plancraft|cats": {
+    "mean": 22.8,
+    "std": 0.28867513459481153
+  },
+  "llama31|plancraft|seag": {
+    "mean": 21.8,
+    "std": 3.4999999999999996
+  },
+  "llama31|plancraft|corefine": {
+    "mean": 21.5,
+    "std": 2.179449471770337
+  },
+  "llama31|plancraft|catts": {
+    "mean": 27.0,
+    "std": 2.9297326385411586
+  },
+  "llama31|plancraft|auq": {
+    "mean": 27.0,
+    "std": 1.5
+  },
+  "llama31|plancraft|s1_budget": {
+    "mean": 26.3,
+    "std": 0.7637626158259725
+  },
+  "llama31|plancraft|DIAL": {
+    "mean": 27.0,
+    "std": 4.4440972086577935
+  },
+  "llama31|apps|cats": {
+    "mean": 55.2,
+    "std": 1.3228756555322903
+  },
+  "llama31|apps|seag": {
+    "mean": 57.2,
+    "std": 1.6072751268321603
+  },
+  "llama31|apps|corefine": {
+    "mean": 57.2,
+    "std": 1.258305739211793
+  },
+  "llama31|apps|catts": {
+    "mean": 52.3,
+    "std": 1.0408329997330674
+  },
+  "llama31|apps|auq": {
+    "mean": 46.0,
+    "std": 0.5000000000000004
+  },
+  "llama31|apps|s1_budget": {
+    "mean": 52.5,
+    "std": 0.763762615825974
+  },
+  "llama31|apps|DIAL": {
+    "mean": 59.7,
+    "std": 1.9999999999999962
+  }
+}
