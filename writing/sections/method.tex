@@ -7,13 +7,14 @@
     \vspace{-0.2in}
 	\caption{\textbf{The DIAL pipeline.}
 		\textbf{(a) Explore}: collect signal-agnostic $(s, U)$ pairs via Bernoulli-$\varepsilon$ rollouts.
-		\textbf{(b) Reason}: build a candidate feature pool $\phi(s)$ from universal metrics plus optional LLM-proposed task-specific features.
+		\textbf{(b) Reason}: build a candidate feature pool $\phi(s)$ from universal metrics combined with LLM-proposed task-specific features.
 		\textbf{(c) Learn}: fit an $\ell_1$-regularized logistic gate, whose signed weights jointly perform feature selection and recover per-environment direction (Type~D: $w_i{>}0$; Type~I: $w_i{<}0$).}
 	\label{fig:method_overview}
 \end{figure*}
 \section{Direction-Informed Adaptive Learning}
 \label{sec:method}
 
+DIAL reframes gating from difficulty estimation to intervention-utility estimation: it trains on counterfactual optimizer utility rather than difficulty or correctness proxies, and uses signal-agnostic exploration so that the learned gate can discover when each feature indicates positive or negative rollout value instead of inheriting a fixed direction from the data collection rule.
 The analysis in \S\ref{sec:signal-landscape} implies three constraints for any cross-setting adaptive gate. It must (i) \emph{discover} the signal-utility direction per (environment, backbone) pair rather than hardcoding it; (ii) draw from a \emph{multi-signal feature pool} that approximates the latent state type $\tau(s)$, since no single signal is reliable across settings; and (iii) collect training data \emph{without conditioning on} the very signal whose direction is unknown, otherwise the data is biased toward the prior assumption. DIAL satisfies these three constraints in three stages (Fig.~\ref{fig:method_overview}): randomized exploration (\S\ref{sec:explore}), feature construction (\S\ref{sec:reason}), and sparse gate fitting (\S\ref{sec:learn}).
 
 \subsection{Explore: Signal-Agnostic Data Collection}
@@ -36,9 +37,7 @@ where $\phi(s)$ is the feature vector. Per-environment estimation details are in
 
 The next stage builds the candidate feature pool $\phi_{\text{cand}}(s)$. This pool must be rich enough to capture each environment's informative signals, but not so environment-specific that deployment requires manual engineering per task.
 
-DIAL's default is a small set of universal features available in every environment without engineering, including \texttt{step\_count}, \texttt{token\_entropy}, \texttt{action\_entropy}, and \texttt{state\_length} (full list in Table~\ref{tab:universal-features}). In the environments we study, this default pool alone recovers a gate that outperforms all fixed-direction baselines (\S\ref{sec:ablation}).
-
-For environments where universal features may be inadequate, DIAL offers an optional automation layer: an LLM receives a summary of $\mathcal{D}$ and proposes task-specific feature hypotheses $\phi_{\text{LLM}}(s)$, which join the universal pool to form $\phi_{\text{cand}}(s) = \phi_{\text{univ}}(s) \cup \phi_{\text{LLM}}(s)$. The $\ell_1$ penalty in the next stage automatically discards uninformative proposals, so the LLM layer can propose freely without degrading gate quality. We provide the prompt template and per-environment ablation in Appendix~\ref{app:llm-feature-layer} and Appendix~\ref{app:llm-features}.
+DIAL's candidate pool combines two layers. The first is a small set of universal features defined identically across environments: \texttt{step\_count}, \texttt{token\_entropy}, \texttt{evidence\_count}, \texttt{num\_available\_actions}, and \texttt{is\_finish} (definitions in Table~\ref{tab:universal-features}). Signals an environment does not naturally expose (e.g., \texttt{evidence\_count} outside QA-style tasks) default to zero, requiring no per-environment engineering. The second is an LLM-generated layer: an LLM receives a summary of $\mathcal{D}$ and proposes task-specific feature hypotheses $\phi_{\text{LLM}}(s)$, forming $\phi_{\text{cand}}(s) = \phi_{\text{univ}}(s) \cup \phi_{\text{LLM}}(s)$. The $\ell_1$ penalty in the next stage automatically discards uninformative proposals, so the LLM layer can propose freely without degrading gate quality. We show in \S\ref{sec:ablation} that the universal pool alone already outperforms all fixed-direction baselines, and the LLM layer adds further gains in environments where universal features are inadequate. We provide the prompt template and per-environment ablation in Appendix~\ref{app:llm-feature-layer} and Appendix~\ref{app:llm-features}.
 
 \subsection{Learn: Sparse Linear Gate}
 \label{sec:learn}
