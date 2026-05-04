@@ -4,18 +4,4 @@
 
 \section{Conclusion}
 
-Existing adaptive gating methods for LLM agents assume that higher
-uncertainty consistently indicates when extra computation helps.
-We show this fixed-direction assumption fails: the signal--utility
-relationship reverses across both environments and model backbones,
-and when the assumed direction is wrong, sharper-ranking gates
-worsen performance by more precisely selecting harmful states. We
-trace this reversal to a mixture of information-poor and
-decision-difficult states whose composition varies across
-(environment, backbone) pairs, and show that, under the two-source
-model, an uncertainty-only gate that lacks features distinguishing
-latent state types cannot guarantee non-negative value across
-heterogeneous settings. DIAL learns the correct direction per setting by fitting
-a sparse linear gate over a small set of state features, and
-outperforms every fixed-direction baseline across six environments
-and three backbones.
+Adaptive gating for LLM agents requires predicting when extra computation improves the final task outcome. We show that common fixed-direction gates fail in heterogeneous agent settings: the signal--utility relationship can reverse across environments and model backbones, and wrong-direction gates can worsen performance by selecting harmful states. We explain this reversal through a two-source model in which information-poor and decision-difficult states give the same signal opposite meanings. DIAL learns the utility direction per (environment, backbone) setting from interaction data, using a sparse feature-based gate to achieve a stronger overall success-cost trade-off than fixed-direction baselines across six environments and three backbones.

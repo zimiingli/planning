@@ -7,7 +7,7 @@ We first formalize the adaptive gating problem (\S\ref{sec:setup}), then measure
 
 \subsection{Problem Setup}
 \label{sec:setup}
-We study LLM-based agents that solve tasks through multi-step interaction with an environment. At each step $t$, the agent observes state $s_t$, selects action $a_t$ from its base policy $\pi$, and transitions to $s_{t+1}$. An environment-specific \emph{test time optimizer} $T$ (e.g., rollout evaluation, $K$-variant sampling) can be invoked at any step to potentially improve action quality. Let $\sigma(s)$ denote an uncertainty signal at state $s$ (e.g., token entropy). We define the \emph{optimizer utility} as:
+We study LLM-based agents that solve tasks through multi-step interaction with an environment. At each step $t$, the agent observes state $s_t$, selects action $a_t$ from its base policy $\pi$, and transitions to $s_{t+1}$. An environment-specific \emph{test time optimizer} $T$ (e.g., rollout evaluation, $K$-variant sampling) can be invoked at any step to potentially improve action quality. Let $\sigma(s)$ denote a scalar gating signal at state $s$ (e.g., token entropy, confidence, disagreement, or a learned difficulty score). We define the \emph{optimizer utility} as:
 \begin{equation}
   U(T, s) = \mathbb{E}[R(\tau) \mid a{=}T(s)] - \mathbb{E}[R(\tau) \mid a{=}\pi(s)],
   \label{eq:utility}
@@ -25,6 +25,7 @@ Table~\ref{tab:signal-discovery} reports Spearman correlations between token ent
 \begin{wraptable}{r}{0.52\textwidth}
 \vspace{-12pt}
 \caption{Signal-utility correlations across 6 environments and 3 backbones. $\rho$: Spearman correlation of token entropy with optimizer utility $U$. $^*$: significant at $p{<}0.05$. Direction varies across \emph{both} environments and model backbones.}
+%\vspace{-0.1in}
 \label{tab:signal-discovery}
 \centering\footnotesize
 \setlength{\tabcolsep}{3pt}
@@ -56,7 +57,7 @@ Beyond direction, the most informative signal itself differs across environments
 \label{sec:toy-model}
 
 \paragraph{Model.}
-We model direction reversal as arising from two coexisting state types at each decision step:
+We model direction reversal as arising from two coexisting state types within each environment, not from two disjoint classes of tasks. At each decision step, a state can be of either type:
 \begin{itemize}[leftmargin=*,nosep]
 \item \textbf{Type~I (information poverty):} Utility is \emph{negatively} related to entropy: $U_I(s) \sim -\alpha H(s) + \varepsilon_I$, with $\alpha > 0$ and zero-mean noise $\varepsilon_I$.
 \item \textbf{Type~D (decision difficulty):} Utility is \emph{positively} related to entropy: $U_D(s) \sim +\beta H(s) + \varepsilon_D$, with $\beta > 0$ and zero-mean noise $\varepsilon_D$.
@@ -69,7 +70,7 @@ Here $\alpha$ and $\beta$ are the within-type slopes: they capture how strongly 
 At the two extremes, $\rho \!=\! +\beta$ when the environment is pure Type~D ($p_I\!=\!0$) and $\rho \!=\! -\alpha$ when it is pure Type~I ($p_I\!=\!1$). In between, $\rho$ crosses zero at $p_I^* = \beta/(\alpha+\beta)$: environments above this threshold show negative $\rho$ (Type~I dominated), those below show positive $\rho$ (Type~D dominated), and those near it show negligible signal as the two effects cancel. This expression captures the sign-level dependence under a simplified linear model and is not intended as a estimator of Spearman $\rho$. 
 %The prediction is consistent with the observed Qwen3 pattern in Table~\ref{tab:signal-discovery}: search-based QA (FEVER, HotpotQA, TWExpress) shows negative $\rho$, code generation (APPS) shows positive $\rho$, and weak-signal environments (Plancraft) cluster near zero.
 
-\paragraph{Implication: $\sigma$ is not a sufficient statistic for VOC.}
+\paragraph{Implication: $\sigma$ is not sufficient for optimizer utility.}
 Two states with identical $\sigma$ but opposite latent types have opposite-sign utility. An uncertainty-only gate $g(\sigma(s))$ that lacks features distinguishing latent state types therefore cannot guarantee non-negative value across heterogeneous settings (Proposition~\ref{prop:necessity}, proof in Appendix~\ref{app:proof-necessity}). Recovering sufficiency requires augmenting $\sigma$ with features that distinguish the two state types, directly motivating the multi-feature design of \S\ref{sec:method}.
 
 \paragraph{Backbone-level reversal is a prediction, not an anomaly.}

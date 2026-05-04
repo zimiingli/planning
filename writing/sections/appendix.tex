@@ -61,9 +61,10 @@ adapt whether to invoke an external optimizer at each decision step,
 and the key challenge is not input difficulty but the
 \emph{direction} of the signal-utility relationship.
 
-\subsection{LLM Confidence Estimation and Calibration}
+\subsection{Confidence Calibration vs.\ Utility Calibration}
 \label{app:calibration}
 
+\paragraph{Classical confidence calibration.}
 \citet{kadavath2022knowwhat} show that larger models are
 well-calibrated on multiple-choice tasks and can estimate P(True)
 for their own outputs.
@@ -74,9 +75,29 @@ domain-dependent.
 \citet{yadkori2024believe} propose decoupling epistemic and
 aleatoric uncertainty in LLM outputs, a distinction conceptually
 related to our Type~I/Type~D decomposition.
-Our work extends these findings: not only does calibration
-\emph{quality} vary across tasks, but the \emph{direction} of the
-uncertainty-utility relationship reverses entirely.
+
+\paragraph{From confidence-to-correctness to confidence-to-utility.}
+These works ask whether confidence is calibrated to the
+\emph{correctness} of an action. Adaptive gating, however,
+requires a different alignment: whether a confidence-derived
+signal predicts the \emph{value of additional computation}. We
+call this latter target \emph{utility calibration}. The
+distinction matters because even a perfectly
+correctness-calibrated confidence may be insufficient for
+gating: a gate triggers only when extra computation improves
+the outcome, which depends on the environment and the
+optimizer, not just on whether the current action is right.
+
+\paragraph{Our contribution.}
+We extend these findings in two directions. First, we make the
+target distinction explicit: gating is a utility-calibration
+problem, not a correctness-calibration one. Second, we show
+that this strengthens the domain-dependence picture
+empirically: not only does calibration \emph{quality} vary
+across tasks, but the \emph{sign} of the signal-to-utility
+relationship reverses across (environment, backbone) pairs, so
+a gate using correctness-calibrated confidence under the wrong
+utility direction will systematically select harmful states.
 
 \subsection{Metareasoning and Value of Computation}
 
@@ -494,8 +515,8 @@ initial training, so no additional hyperparameter tuning is
 required at deployment time.
 
 This mode is \emph{not free}: $\varepsilon$-greedy overrides
-ignore the current gate, so in Type~I environments a fraction of
-overridden steps will trigger harmful rollouts. For stationary
+ignore the current gate, so in Type-I-dominant environments a
+fraction of overridden steps will trigger harmful rollouts. For stationary
 environments, which are the setting of our main experiments,
 we recommend skipping online adaptation and relying on the
 offline-fitted gate.
@@ -833,15 +854,15 @@ Table~\ref{tab:bounds-comparison} (\S\ref{app:bounds-comparison}).
 This appendix elaborates per-backbone failure modes and cost
 anomalies that the aggregated table does not surface.
 
-\paragraph{Qwen3-4B.} DIAL achieves the highest SR in 4 of 6
-environments (HotpotQA, WebShop, TWExpress, APPS). The
-$\times$base metric reveals hidden costs: CATTS on APPS costs
+\paragraph{Qwen3-4B.} DIAL achieves the highest SR across all
+six environments. The $\times$base metric reveals hidden costs
+of fixed-direction baselines: CATTS on APPS costs
 6.00$\times$base (due to $K{=}5$ per-step voting) despite
 barely triggering rollouts, while DIAL costs only
-2.61$\times$ at 12.2\% higher SR. FEVER is the main
-exception: DIAL achieves the highest SR (49.8\%) but at
-16.51$\times$base, the highest cost among all environments.
-This failure mode is analyzed in \S\ref{sec:discussion}.
+2.61$\times$ at 12.2\% higher SR. FEVER is the cost outlier:
+DIAL still leads in SR (49.8\%) but at 16.51$\times$base, the
+highest cost among all environments. This failure mode is
+analyzed in \S\ref{sec:discussion}.
 
 \paragraph{Phi-3.5-mini.} Fixed-direction baselines degrade
 sharply on this backbone. On FEVER, all six baselines score at or

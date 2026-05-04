@@ -1,19 +1,20 @@
 % ============================================================
 % 5. EXPERIMENTS
 % ============================================================
+%\vspace{-0.2in}
 \section{Experiments}
 \label{sec:experiments}
 
 \subsection{Experimental Setup}
-\label{sec:setup}
+\label{sec:exp-setup}
 
-We evaluate DIAL along three axes: does environment-aware gating
-Pareto-dominate fixed-direction baselines
+We evaluate DIAL along three axes: does environment-aware gating improve the success-cost
+frontier over fixed-direction baselines
 (\S\ref{sec:main-results}); which components drive the gains
 (\S\ref{sec:ablation}); and do the Two-Source Model's predictions
 hold on held-out data (\S\ref{sec:theory-verification}).
 
-\paragraph{Environments.} We evaluate on 6 environments:
+\textbf{Environments.} We evaluate on 6 environments:
 HotpotQA~\cite{yang2018hotpotqa},
 APPS~\cite{hendrycks2021apps},
 WebShop~\cite{yao2022webshop},
@@ -23,18 +24,20 @@ Plancraft~\cite{dagan2024plancraft}.
 % , spanning QA, code generation,
 % web navigation, fact verification, text games, and crafting planning.
 These cover the full range of the Two-Source
-Model, from pure Type~I (FEVER) through mixed (WebShop) to
-Type~D (APPS), including extreme rollout properties
+Model, from Type-I-dominant (FEVER) through mixed (WebShop) to
+Type-D-dominant (APPS), including extreme rollout properties
 (TWExpress: rollout-safe; Plancraft: rollout-harmful).
 Full environment specifications are in
 Appendix~\ref{app:environment}.
 
-\paragraph{Baselines.} All methods share the same agent and
+\textbf{Baselines.} All methods share the same agent and
 optimizer $T$; only the gating decision differs.
 We include two bounds: \emph{base\_only}, which never triggers
 the optimizer, and \emph{always\_trigger}.
-Six fixed-direction baselines all assume that high uncertainty
-warrants additional compute:
+Six fixed-direction or fixed-budget baselines instantiate a
+predetermined compute-allocation rule (high uncertainty, low
+confidence, disagreement, or a fixed token budget triggering
+additional computation):
 CaTS~\cite{cats2025}, SEAG~\cite{seag2025},
 CoRefine~\cite{corefine2026}, CATTS~\cite{catts2026},
 AUQ~\cite{auq2026}, and s1\_budget~\cite{s1_2025}.
@@ -42,7 +45,7 @@ Full specifications are in Appendix~\ref{app:method-comparison}.
 
 \input{experiment/tab_full_results/tab_full_results.tex}
 
-\paragraph{Metrics.} SR (success rate, $\uparrow$) and Cost
+\textbf{Metrics.} SR (success rate, $\uparrow$) and Cost
 ($\times$base, $\downarrow$): total deployment tokens normalized by
 base\_only tokens per episode. This metric counts \emph{all} LLM
 calls, including base proposer, gate overhead, and rollout calls, ensuring that per-step
@@ -52,18 +55,19 @@ A method Pareto-dominates another if $\text{SR} \geq$ and
 $\text{Cost} \leq$ with at least one strict inequality.
 Token cost constants are reported in
 Appendix~\ref{app:cost}.
+\vspace{-0.1in}
 \subsection{Main Results}
 \label{sec:main-results}
+\vspace{-0.1in}
 
 
-
-\textbf{DIAL Pareto-dominates fixed-direction baselines.}
+\textbf{DIAL improves the success-cost frontier over fixed-direction baselines.}
 Table~\ref{tab:full-results} reports SR and Cost ($\times$base) across all 6 environments and 3 backbones; the Qwen3-4B Pareto frontier is visualized in Appendix~\ref{app:multi-backbone}. DIAL
 achieves the highest SR in 16 of 18 (environment, backbone) cells. Three insights follow.
 First, \emph{wrong direction is catastrophic, not merely costly}.
-On Qwen3-4B FEVER, a Type~I task, CATTS pays 16.46$\times$ base for $K{=}5$ voting yet reaches only 32.2\% SR, below the 37.0\% no-trigger baseline: fixed-direction gating in the wrong direction
+On Qwen3-4B FEVER, a Type-I-dominant environment, CATTS pays 16.46$\times$ base for $K{=}5$ voting yet reaches only 32.2\% SR, below the 37.0\% no-trigger baseline: fixed-direction gating in the wrong direction
 does not merely waste compute, it actively hurts.
-Second, \emph{right direction lets DIAL dominate Pareto, not just match it}. On Qwen3-4B HotpotQA, DIAL trades 1.8 SR points for 2.6$\times$ less cost than always\_trigger (95.2 vs.\ 97.0\% at 8.02$\times$ vs.\ 10.63$\times$); on WebShop, DIAL matches always\_trigger at less than half the cost. The gap is too large
+Second, \emph{learning the right direction yields a better SR-cost trade-off, not just a retuned threshold}. On Qwen3-4B HotpotQA, DIAL trades 1.8 SR points for 2.6$\times$ less cost than always\_trigger (95.2 vs.\ 97.0\% at 8.02$\times$ vs.\ 10.63$\times$); on WebShop, DIAL matches always\_trigger at less than half the cost. The gap is too large
 to close by retuning thresholds without changing direction.
 Third, \emph{the win generalizes across backbones}. The same DIAL pipeline takes 6/6 cells on Phi-3.5-mini and 5/6 on Llama-3.1-8B, even though entropy--utility correlations flip sign across model families (\S\ref{sec:empirical-landscape}). Fixed-direction baselines instead break per-backbone: AUQ on HotpotQA falls from 95.0\% (Qwen3-4B) to 31.2\% (Phi-3.5).
 
@@ -72,10 +76,10 @@ Third, \emph{the win generalizes across backbones}. The same DIAL pipeline takes
 % FEVER remains DIAL's weakest environment: while DIAL achieves the
 % highest SR (49.8\%), its cost (16.51$\times$base) is also the
 % highest, a limitation we analyze in \S\ref{sec:discussion}.
-
+\vspace{-0.1in}
 \subsection{Ablation Studies}
 \label{sec:ablation}
-
+\vspace{-0.1in}
 The main results show \emph{that} DIAL works; we now ask
 \emph{why}. We ablate direction along two axes: its sign
 (direction reversal) and the gate's capacity to exploit it
@@ -140,8 +144,9 @@ trigger helps, down to $<$20\% on Plancraft, with a within-episode decay from 49
 steps as the gate learns that further rollouts only add harm. This adaptive magnitude emerges from the per-environment signed weights alone: direction discovery already encodes whether the environment rewards or penalizes additional computation. The full per-step analysis is in Appendix~\ref{app:trigger-rate}.
 
 
-
+\vspace{-0.1in}
 \subsection{Two-Source Model Verification}
+\vspace{-0.1in}
 \label{sec:theory-verification}
 \begin{wrapfigure}{r}{0.5\textwidth}
 	\vspace{-12pt}
@@ -165,32 +170,29 @@ cross-environment alignment of the dominant signal with the
 dominant state type (P3, population-level).
 
 
-\paragraph{P1: Temporal dynamics.}
+\textbf{P1: Temporal dynamics.}
 The Two-Source Model predicts that $\rho$ should decrease over the episode: as the agent gathers information, Type~D states are resolved and late-step uncertainty increasingly reflects residual Type~I states.
-Figure~\ref{fig:temporal-shift} confirms this. In HotpotQA, $\rho$ shifts from $-0.176$ (early) to $-0.437$ (late). In
+Figure~\ref{fig:temporal-shift} supports this pattern in environments with strong temporal signal. In HotpotQA, $\rho$ shifts from $-0.176$ (early) to $-0.437$ (late). In
 WebShop, the strong positive early-phase signal ($\rho{=}{+}0.285$) vanishes in the late phase. In APPS, $\rho$ shifts from non-significant positive ($+$0.102, $p{=}0.084$) to weak negative ($-$0.144). Full numerical results are in
 Appendix~\ref{app:temporal}.
 
-\vspace{-0.05in}
-\paragraph{P2: Controlled information manipulation.}
-
-P1 verifies a within-episode dynamic; we now intervene on $p_I$ directly for \emph{causal} evidence. We construct two
-interventions on HotpotQA: \textbf{InfoPoor} restricts retrievable evidence to a small passage subset (forcing
-Type~I), and \textbf{InfoRich} prepends gold-standard evidence to the prompt (forcing Type~D). Table~\ref{tab:controlled}
+%\vspace{-0.05in}
+\textbf{P2: Controlled information manipulation.} P1 verifies a within-episode dynamic; we now intervene on $p_I$ directly for \emph{causal} evidence. We construct two
+interventions on HotpotQA: \textbf{InfoPoor} restricts retrievable evidence to a small passage subset (increasing the Type~I mixture), and \textbf{InfoRich} prepends gold-standard evidence to the prompt (reducing information poverty and shifting states toward Type~D). Table~\ref{tab:controlled}
 reports the result: restricting evidence makes \texttt{step\_count} dominant ($\rho{=}{-}0.608$) while entropy
 is weak; injecting gold evidence makes entropy dominant ($\rho{=}{+}0.311$) while \texttt{step\_count} weakens. As the
 only test in this section that intervenes on the latent mixture rather than observing it, P2 confirms that signal identity is a function of information structure.
 %, not an
 %environment-specific constant.
-\vspace{-0.05in}
-\paragraph{P3: Signal identity alignment.}
+%\vspace{-0.05in}
 
+\textbf{P3: Signal identity alignment.}
 P2 manipulated information within one task; P3 asks whether the
 predicted alignment also holds \emph{across} tasks. The
 Two-Source Model further predicts that the strongest signal in
 each environment should reflect its dominant state type:
-information-sufficiency proxies in Type~I environments,
-decision-complexity proxies in Type~D. Table~\ref{tab:signal-identity} confirms this: \texttt{step\_count} dominates in Type~I-leaning environments,
+information-sufficiency proxies in Type-I-dominant environments,
+decision-complexity proxies in Type-D-dominant ones. Table~\ref{tab:signal-identity} confirms this: \texttt{step\_count} dominates in Type~I-leaning environments,
 while \texttt{num\_available\_actions} and other choice-related features dominate in WebShop. The LASSO coefficient matrix and its interpretation as Two-Source proxies are in Appendix~\ref{app:feature-selection}.
 
 The three tests are observational, interventional, and
