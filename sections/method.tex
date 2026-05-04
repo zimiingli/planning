@@ -29,7 +29,7 @@ DIAL therefore uses the simplest policy consistent with this constraint. At each
   \bigr\}_{t, i},
   \label{eq:dataset}
 \end{equation}
-where $\phi(s)$ is the feature vector described in \S\ref{sec:reason}. Per-environment estimation details are in Appendix~\ref{app:environment}.
+where $\phi(s)$ is the feature vector. Per-environment estimation details are in Appendix~\ref{app:environment}.
 
 \subsection{Reason: Feature Construction}
 \label{sec:reason}
@@ -45,10 +45,10 @@ For environments where universal features may be inadequate, DIAL offers an opti
 
 Given $\mathcal{D}$ and $\phi_{\text{cand}}$, DIAL fits an $\ell_1$-regularized logistic regression with the binary cross-entropy loss, where the regularization strength $\lambda$ controls sparsity over $\phi_{\text{cand}}$ so that uninformative features drop out. Let $(\mathbf{w}^*, b^*)$ denote the fitted weights and bias. The deployed gate is
 \begin{equation}
-  g(s) = \mathbf{1}\!\left[\sigma(\mathbf{w}^{*\top} \phi(s) + b^*) > \tau\right],
+  g(s) = \mathbf{1}\!\left[\mathrm{sigmoid}(\mathbf{w}^{*\top} \phi(s) + b^*) > \tau\right],
   \label{eq:gate}
 \end{equation}
 with threshold $\tau$ set by cross-validation on $\mathcal{D}$. At deployment, the gate requires only a feature evaluation and a single sigmoid: no extra LLM calls, no $K$-way voting, no calibration query. This zero-overhead deployment contrasts with prior gating methods that incur per-step costs (e.g., CATTS triggers $K{=}5$ forward passes per step, AUQ issues a confidence query every step).
 
 \paragraph{Signed weights as a diagnostic.}
-The $\ell_1$ penalty simultaneously performs feature selection and direction discovery. The sign of each fitted weight provides an interpretable per-environment estimate of the two-source mixture of \S\ref{sec:toy-model}: $w_i > 0$ indicates the environment sits on the Type~D side of the reversal threshold $p_I^*$ for signal~$i$ (high signal $\to$ trigger), $w_i < 0$ the Type~I side (high signal $\to$ \emph{don't} trigger), and $w_i \approx 0$ an uninformative signal. The complete pipeline, including online adaptation for drifting environments and detailed cost accounting, is provided in Appendix~\ref{app:dial-details}.
+The $\ell_1$ penalty simultaneously performs feature selection and direction discovery. The sign of each fitted weight provides an interpretable per-environment estimate of the two-source mixture of \S\ref{sec:toy-model}: $w_i > 0$ indicates that signal~$i$ behaves as a Type-D proxy in this setting (high signal $\to$ trigger), $w_i < 0$ that it behaves as a Type-I proxy (high signal $\to$ \emph{don't} trigger), and $w_i \approx 0$ that it is uninformative. The complete pipeline, including online adaptation for drifting environments and detailed cost accounting, is provided in Appendix~\ref{app:dial-details}.
