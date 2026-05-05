@@ -1,19 +1,21 @@
 \begin{table}[t]
 \centering
 \caption{Signal discovery summary (Qwen3-4B). Strongest signal, its $\rho$,
-entropy direction, and Two-Source type per environment. No single signal
-dominates universally; entropy direction reverses across environments.}
+entropy direction, and dominant regime per environment. Regime labels
+summarize empirical signal-utility patterns rather than ground-truth
+state annotations. No single signal dominates universally; entropy
+direction reverses across environments.}
 \label{tab:signal-discovery}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{lllcl}
 \toprule
-\textbf{Environment} & \textbf{Strongest Signal} & $\bm{\rho}$ & \textbf{Ent.\ Dir.} & \textbf{Type} \\
+\textbf{Environment} & \textbf{Strongest Signal} & $\bm{\rho}$ & \textbf{Ent.\ Dir.} & \textbf{Dominant regime} \\
 \midrule
-HotpotQA   & step\_count             & $-0.494$ & negative & Info-Poverty \\
-FEVER      & step\_count             & $-0.619$ & negative & Info-Poverty \\
-APPS       & step\_count             & $-0.339$ & positive & Decision-Diff \\
+HotpotQA   & step\_count             & $-0.494$ & negative & Type~I (interv.-unsuit.) \\
+FEVER      & step\_count             & $-0.619$ & negative & Type~I (interv.-unsuit.) \\
+APPS       & step\_count             & $-0.339$ & positive & Type~D (decision-diff.) \\
 WebShop    & num\_available\_actions  & $+0.444$ & positive & Mixed \\
-TWExpress  & step\_count             & $-0.477$ & negative & Info-Poverty \\
+TWExpress  & step\_count             & $-0.477$ & negative & Type~I (interv.-unsuit.) \\
 Plancraft  & has\_output             & $+0.162$ & negative & Weak (harmful) \\
 \bottomrule
 \end{tabular}%

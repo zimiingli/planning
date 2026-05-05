@@ -8,11 +8,8 @@
 % === NeurIPS 2026 Style ===
 % Default option = anonymous double-blind submission with line numbers.
 % For arXiv preprint: use [preprint]; for camera-ready: use [final].
-\PassOptionsToPackage{authoryear,round}{natbib}
+\PassOptionsToPackage{numbers,compress}{natbib}
 \usepackage{template/neurips_2026}
-% Preserve ACL-style \cite -> \citep (parenthetical) to match existing manuscript text.
-\let\citeOriginal\cite
-\renewcommand{\cite}{\citep}
 \usepackage{hyperref}
 \usepackage{times}
 \usepackage{latexsym}
@@ -90,7 +87,7 @@
 % REFERENCES
 % ============================================================
 \newpage
-\bibliographystyle{plainnat}
+\bibliographystyle{unsrtnat}
 \bibliography{references}
 \newpage
 \input{sections/appendix}
