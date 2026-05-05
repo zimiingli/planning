@@ -3,7 +3,7 @@
 % ============================================================
 \section{Why Fixed-Direction Gating Fails}
 \label{sec:signal-landscape}
-We first formalize the adaptive gating problem (\S\ref{sec:setup}), then measure signal-utility correlations across diverse environments to test the fixed-direction assumption (\S\ref{sec:empirical-landscape}), and finally model why the assumption fails (\S\ref{sec:toy-model}).
+In this section, we first formalize the adaptive gating problem (\S\ref{sec:setup}), then measure signal-utility correlations across diverse environments to test the fixed-direction assumption (\S\ref{sec:empirical-landscape}), and finally model why the assumption fails (\S\ref{sec:toy-model}).
 
 \subsection{Problem Setup}
 \label{sec:setup}
@@ -44,19 +44,19 @@ Plancraft  & $-$0.016     & $+$0.000     & $-$0.176$^*$ & --- \\
 \vspace{-10pt}
 \end{wraptable}
 
-\paragraph{Wrong direction is harmful, not just uninformative.}
+\textbf{Wrong direction is harmful, not just uninformative.}
 This direction mismatch is not benign: a gate that assumes the wrong direction systematically falls \emph{below} the no-trigger baseline. On strong-signal environments, reversing the gate's direction collapses success rate by 23–37 points (Table~\ref{tab:wrong-direction}), making it strictly worse than doing nothing in mismatched (environment, backbone) pairs.
 
-\paragraph{The reversal is not an artifact of entropy scales.}
+\textbf{The reversal is not an artifact of entropy scales.}
 A natural concern is that cross-backbone reversal could reflect incomparable raw entropy scales across tokenizers. We rule this out: per-(environment, backbone) quantile normalization preserves both Spearman rank ordering (trivially) and Pearson sign on the strong-correlation cells (Appendix~\ref{app:reversal-norm}). The reversal is also robust to monotone reward transformations $U \!\to\! \alpha U$ ($\alpha > 0$) and to entropy transformations $\sigma \!\to\! \sigma/T$, $\sigma \!\to\! \sigma^\alpha$, and $\sigma \!\to\! \log\sigma$, ruling out reward parameterization and entropy-pipeline calibration as alternative explanations (Appendix~\ref{app:reversal-alternatives}).
 
-\paragraph{Signal identity also varies across environments.}
+\textbf{Signal identity also varies across environments.}
 Beyond direction, the most informative signal itself differs across environments: \texttt{step\_count} dominates in most settings, but WebShop relies on \texttt{num\_available\_actions} instead (Appendix~\ref{app:feature-selection}), and no single signal is reliably informative across all environments (Appendix~\ref{app:auc}). Together with the direction reversal above, this suggests that uncertainty is entangled with latent state structure that varies across (environment, backbone) pairs. We formalize this in the next subsection.
 
 \subsection{Why Does Direction Reverse? A Two-Source Model}
 \label{sec:toy-model}
 
-\paragraph{Model.}
+\textbf{Model.}
 We model direction reversal as arising from two coexisting state types within each environment, not from two disjoint classes of tasks. At each decision step, a state can be of either type:
 \begin{itemize}[leftmargin=*,nosep]
 \item \textbf{Type~I (information poverty):} Utility is \emph{negatively} related to entropy: $U_I(s) \sim -\alpha H(s) + \varepsilon_I$, with $\alpha > 0$ and zero-mean noise $\varepsilon_I$.
@@ -70,11 +70,11 @@ Here $\alpha$ and $\beta$ are the within-type slopes: they capture how strongly 
 At the two extremes, $\rho \!=\! +\beta$ when the environment is pure Type~D ($p_I\!=\!0$) and $\rho \!=\! -\alpha$ when it is pure Type~I ($p_I\!=\!1$). In between, $\rho$ crosses zero at $p_I^* = \beta/(\alpha+\beta)$: environments above this threshold show negative $\rho$ (Type~I dominated), those below show positive $\rho$ (Type~D dominated), and those near it show negligible signal as the two effects cancel. This expression captures the sign-level dependence under a simplified linear model and is not intended as a estimator of Spearman $\rho$. 
 %The prediction is consistent with the observed Qwen3 pattern in Table~\ref{tab:signal-discovery}: search-based QA (FEVER, HotpotQA, TWExpress) shows negative $\rho$, code generation (APPS) shows positive $\rho$, and weak-signal environments (Plancraft) cluster near zero.
 
-\paragraph{Implication: $\sigma$ is not sufficient for optimizer utility.}
+\textbf{Implication: $\sigma$ is not sufficient for optimizer utility.}
 Two states with identical $\sigma$ but opposite latent types have opposite-sign utility. An uncertainty-only gate $g(\sigma(s))$ that lacks features distinguishing latent state types therefore cannot guarantee non-negative value across heterogeneous settings (Proposition~\ref{prop:necessity}, proof in Appendix~\ref{app:proof-necessity}). Recovering sufficiency requires augmenting $\sigma$ with features that distinguish the two state types, directly motivating the multi-feature design of \S\ref{sec:method}.
 
-\paragraph{Backbone-level reversal is a prediction, not an anomaly.}
+\textbf{Backbone-level reversal is a prediction, not an anomaly.}
 The fraction $p_I(\mathcal{E})$ defined above depends on more than just the environment. A state is information-poor only relative to what the agent already encodes: the same observation can be Type~I for a model that lacks the relevant knowledge and Type~D for one that has it. The effective mixture is therefore indexed by the (environment, backbone) pair, not the environment alone. This explains the backbone-level sign flips of Table~\ref{tab:signal-discovery}, most extreme on FEVER between Phi-3.5 and Llama-3.1: backbone changes shift $p_I$, and when they cross $p_I^*$, $\rho$ flips (Appendix~\ref{app:multi-backbone}).
 
-\paragraph{Theoretical grounding.}
+\textbf{Theoretical grounding.}
 This direction reversal is a special case of Simpson's paradox~\cite{simpson1951interpretation, DBLP:books/acm/22/Pearl22n}: aggregating subpopulations with opposing within-group trends reverses the aggregate correlation. Our decomposition adapts the epistemic/aleatoric distinction~\cite{der2009aleatory} to adaptive compute: Type~I states exhibit epistemic-like uncertainty (information deficit), while Type~D states exhibit aleatoric-like diversity (multiple viable paths). Rather than a post-hoc explanation, this decomposition makes testable predictions: in \S\ref{sec:theory-verification} we derive three (temporal dynamics, cross-environment consistency, and signal identity alignment) and verify each on held-out data.

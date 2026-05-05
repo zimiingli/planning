@@ -1,21 +1,17 @@
 \begin{table*}[t]
 \centering
-\caption{Robustness of $\rho(\sigma, U)$ to monotone reward and
-entropy transforms. Spearman $\rho$ is rank-invariant under
-positive monotone transforms of either variable, so the
-$\sigma\!\to\!\sigma^{0.5}$, $\sigma^{2}$, and $\log\sigma$
-columns must agree with the raw column up to numerical noise --
-this is reported transparently as a sanity check ruling out
-upstream entropy-pipeline bugs. For $U\!\to\!\alpha U$ with
-$\alpha < 0$, Spearman flips sign as expected (rank order
-reversed). Pearson $\rho$ varies under non-linear $\sigma$
-transforms (informative); the only cell where Pearson sign
-flips is Phi-3.5 / APPS under $\log\sigma$ ($+0.027$), where
-Spearman remains stable at $-0.129$. Three cells with
-insufficient logged data (TWExpress on \{Phi-3.5, Llama-3.1\},
-Plancraft on Phi-3.5: $|\sigma_{\mathrm{unique}}|\!\leq\!2$ or
-no positive $U$ labels) are excluded; correlation analysis is
-statistically ill-defined there.}
+\caption{Robustness of $\rho(\sigma, U)$ to monotone transforms.
+Spearman $\rho$ is rank-invariant under monotone transforms of
+either variable, so the $\sigma^{0.5}$, $\sigma^{2}$, and
+$\log\sigma$ columns must match raw up to numerical noise (a
+sanity check on the entropy pipeline); under
+$U\!\to\!\alpha U$ with $\alpha<0$, sign flips as expected.
+Pearson $\rho$ varies under non-linear $\sigma$ transforms; the
+only Pearson sign flip is Phi-3.5/APPS under $\log\sigma$
+($+0.027$), where Spearman stays stable at $-0.129$. Excluded:
+three cells with $|\sigma_{\mathrm{unique}}|\!\leq\!2$ or no
+positive $U$ labels (TWExpress on \{Phi-3.5, Llama-3.1\},
+Plancraft on Phi-3.5), where correlation is ill-defined.}
 \label{tab:phase-a-alternatives}
 \footnotesize
 \resizebox{\textwidth}{!}{%

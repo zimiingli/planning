@@ -1,24 +1,20 @@
 \begin{table*}[t]
 \centering
 \caption{Robustness of cross-backbone reversal to entropy
-quantile-normalization. For each (env, backbone) cell, we report
-Spearman $\rho(\sigma, U)$ (mathematically invariant under
-within-cell monotone transforms of $\sigma$, so shared across
-raw/S1/S2/S3) and Pearson $\rho$ under raw vs.\ three
-quantile-normalization schemes: \textbf{S1} (per-(env, backbone))
-ranks within each cell; \textbf{S2} (per-backbone) ranks within
-each backbone's pool; \textbf{S3} (per-environment) ranks within
-each environment's pool. We list the \textbf{11 strong-signal
-cells} (raw Pearson $|\rho|\geq 0.13$)—every cell the paper's
-reversal claim invokes, including the cross-backbone anchors on
-HotpotQA, APPS, and FEVER. \textbf{Robust} = sign stable vs.\ raw
-under all three schemes (CI excludes 0 on the same side).
-$^{\ddagger}$ Phi-3.5 APPS is robust under S1, S2 but inconclusive
-under S3 ($-0.054$, CI straddles zero). For completeness, 4 weak-
-signal cells (raw $|\rho|<0.13$, CIs already straddle zero in raw
-data; paper does not claim reversal there) and 3 cells with
-insufficient logged data are discussed in the surrounding prose
-and not reproduced here. $^*$: $p<0.05$. 1000-resample bootstrap.}
+quantile-normalization. We report Spearman $\rho(\sigma,U)$
+(invariant under within-cell monotone transforms, so shared
+across raw/S1/S2/S3) and Pearson $\rho$ under raw and three
+quantile schemes: \textbf{S1} ranks within each (env, backbone),
+\textbf{S2} within each backbone's pool, \textbf{S3} within each
+environment's pool. Listed are the \textbf{11 strong-signal
+cells} (raw Pearson $|\rho|\geq 0.13$) covering every reversal
+claim. \textbf{Robust} = sign stable vs.\ raw under all three
+schemes (CIs on the same side).
+$^{\ddagger}$ Phi-3.5 APPS robust under S1, S2 but inconclusive
+under S3. Excluded (discussed in prose): 4 weak-signal cells
+($|\rho|<0.13$, raw CIs straddle zero) and 3 cells with
+insufficient logged data. $^*$: $p<0.05$, 1000-resample
+bootstrap.}
 \label{tab:phase-a-norm}
 \footnotesize
 \begin{tabular}{l l r c c c c c l}
