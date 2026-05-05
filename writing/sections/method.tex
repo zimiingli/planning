@@ -4,7 +4,7 @@
 \begin{figure*}[t]
 	\centering
 	\includegraphics[width=\textwidth]{figures/dial_pipeline3.pdf} 
-    \vspace{-0.2in}
+    \vspace{-0.1in}
 	\caption{\textbf{The DIAL pipeline.}
 		\textbf{(a) Explore}: collect signal-agnostic $(s, U)$ pairs via Bernoulli-$\varepsilon$ rollouts.
 		\textbf{(b) Reason}: build a candidate feature pool $\phi(s)$ from universal metrics combined with LLM-proposed task-specific features.
@@ -20,7 +20,7 @@ The analysis in \S\ref{sec:signal-landscape} implies three constraints for any c
 \subsection{Explore: Signal-Agnostic Data Collection}
 \label{sec:explore}
 
-The exploration stage collects the $(s, U)$ pairs used to fit the gate, under one central constraint: the collection policy must not condition on any signal whose semantics we are trying to learn. A gate trained on uncertainty-triggered states would systematically under-sample the states that determine $\rho$'s sign, baking the prior assumption into the training data instead of testing it.
+The exploration stage collects the $(s, U)$ pairs used to fit the gate, under one central constraint: the collection policy must remain independent of any signal whose semantics we are trying to learn. A gate trained on uncertainty-triggered states would systematically under-sample the states that determine $\rho$'s sign, baking the prior assumption into the training data instead of testing it.
 
 DIAL therefore uses the simplest policy consistent with this constraint. At each step~$t$ in episode~$i$, a uniform random coin flip with probability $\varepsilon_{\text{explore}}$ determines whether to trigger the optimizer~$T$ ($z_t^{(i)}{=}1$) or use the base action ($z_t^{(i)}{=}0$). For each step with $z_t^{(i)}{=}1$, we estimate utility by paired counterfactual rollouts from the same state snapshot: we fork the environment, execute both the optimizer's chosen action and the base action via truncated rollouts of horizon $H$, and record which yields a higher return. We set $U_t^{(i)} = 1$ if the optimizer's action wins, and $0$ otherwise. The Bernoulli trigger eliminates selection bias, and the paired design eliminates baseline bias; the remaining approximation is the truncation horizon $H$. Aggregating across $N_{\text{explore}}$ episodes yields the dataset:
 \begin{equation}

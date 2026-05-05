@@ -14,7 +14,7 @@ frontier over fixed-direction baselines
 (\S\ref{sec:ablation}); and do the Two-Source Model's predictions
 hold on held-out data (\S\ref{sec:theory-verification}).
 
-\textbf{Environments.} We evaluate on 6 environments:
+\textbf{Environments.} We conduct evaluations across six environments: 
 HotpotQA~\cite{yang2018hotpotqa},
 APPS~\cite{hendrycks2021apps},
 WebShop~\cite{yao2022webshop},
@@ -45,7 +45,7 @@ Full specifications are in Appendix~\ref{app:method-comparison}.
 
 \input{experiment/tab_full_results/tab_full_results.tex}
 
-\textbf{Metrics.} SR (success rate, $\uparrow$) and Cost
+\textbf{Metrics.} We use SR (success rate, $\uparrow$) and Cost
 ($\times$base, $\downarrow$): total deployment tokens normalized by
 base\_only tokens per episode. This metric counts \emph{all} LLM
 calls, including base proposer, gate overhead, and rollout calls, ensuring that per-step
