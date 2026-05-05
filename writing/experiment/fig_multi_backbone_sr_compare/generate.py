@@ -60,18 +60,19 @@ def main():
         for xi, (fv, ev) in enumerate(zip(fixed_srs, dial_srs)):
             if not np.isnan(fv):
                 ax.text(xi - w/2, fv + 0.5, f'{fv:.0f}', ha='center', va='bottom',
-                        fontsize=6, color='#333333')
+                        fontsize=7, color='#333333')
             if not np.isnan(ev):
                 ax.text(xi + w/2, ev + 0.5, f'{ev:.0f}', ha='center', va='bottom',
-                        fontsize=6, color='#333333')
+                        fontsize=7, color='#333333')
 
         ax.set_xticks(x)
-        ax.set_xticklabels(BB_LABELS, fontsize=7)
-        ax.set_title(env, fontsize=9)
+        ax.set_xticklabels(BB_LABELS, fontsize=8)
+        ax.tick_params(axis='y', labelsize=8)
+        ax.set_title(env, fontsize=10)
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         if idx % 3 == 0:
-            ax.set_ylabel('SR (%)', fontsize=8)
+            ax.set_ylabel('SR (%)', fontsize=9)
         add_ygrid(ax)
 
     # Shared legend
@@ -80,7 +81,7 @@ def main():
         Patch(facecolor='#d6604d', label='DIAL'),
     ]
     fig.legend(handles=legend_elements, loc='upper center', ncol=2,
-               fontsize=9, bbox_to_anchor=(0.5, 1.02), frameon=False)
+               fontsize=10, bbox_to_anchor=(0.5, 1.02), frameon=False)
 
     plt.tight_layout(rect=[0, 0, 1, 0.95])
     fig.savefig(HERE / 'output.pdf', bbox_inches='tight', dpi=200)

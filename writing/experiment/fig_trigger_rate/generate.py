@@ -61,7 +61,7 @@ for idx, env_canon in enumerate(ENV_ORDER):
     sub = df[df["env_canon"] == env_canon].sort_values("step")
 
     if len(sub) == 0:
-        ax.set_title(ENV_DISPLAY.get(env_canon, env_canon), fontweight='bold')
+        ax.set_title(ENV_DISPLAY.get(env_canon, env_canon))
         ax.text(0.5, 0.5, 'No data', ha='center', va='center', transform=ax.transAxes)
         continue
 
@@ -85,7 +85,7 @@ for idx, env_canon in enumerate(ENV_ORDER):
 
     # Annotate RR in corner (not title)
     display_name = ENV_DISPLAY.get(env_canon, env_canon)
-    ax.set_title(display_name, fontweight="bold")
+    ax.set_title(display_name)
     ax.text(0.97, 0.95, f"RR={overall:.0%}", transform=ax.transAxes,
             ha='right', va='top', fontsize=9, color='#c44e52', fontweight='bold',
             bbox=dict(boxstyle='round,pad=0.2', facecolor='white', alpha=0.8, edgecolor='none'))

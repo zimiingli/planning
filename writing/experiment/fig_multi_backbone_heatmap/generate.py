@@ -45,6 +45,25 @@ def main():
     with open(HERE / 'data.csv', newline='') as f:
         rows = list(csv.DictReader(f))
 
+    # Pre-compute sign-flip cells: (env_idx, signal_idx) where significant
+    # rho changes sign across backbones.
+    flip_cells = set()
+    for i in range(len(ENV_ORDER)):
+        for j in range(len(KEY_SIGNALS)):
+            vals = []
+            for bb in BACKBONES:
+                for row in rows:
+                    if (row['backbone'] == bb and row['signal'] == KEY_SIGNALS[j]
+                            and row['environment'] == ENV_ORDER[i]):
+                        v = float(row['rho'])
+                        p = float(row['p_value'])
+                        if p < 0.05:
+                            vals.append(v)
+            if len(vals) >= 2:
+                signs = [np.sign(v) for v in vals if v != 0]
+                if len(set(signs)) > 1:
+                    flip_cells.add((i, j))
+
     fig, axes = plt.subplots(1, 3, figsize=(7, 3.2), sharey=True,
                               gridspec_kw={'wspace': 0.15, 'right': 0.88})
 
@@ -75,7 +94,7 @@ def main():
             ax.set_yticklabels(ENV_ORDER, fontsize=7)
         ax.set_title(title, fontsize=9)
 
-        # Annotate values
+        # Annotate values; sign-flip cells get an extra ⇄ marker.
         for i in range(len(ENV_ORDER)):
             for j in range(len(KEY_SIGNALS)):
                 val = matrix[i, j]
@@ -83,29 +102,10 @@ def main():
                     continue
                 color = 'white' if abs(val) > 0.45 else 'black'
                 star = '*' if pvals[i, j] < 0.05 else ''
-                ax.text(j, i, f'{val:+.2f}{star}', ha='center', va='center',
+                flip_mark = r' $\rightleftarrows$' if (i, j) in flip_cells else ''
+                ax.text(j, i, f'{val:+.2f}{star}{flip_mark}',
+                        ha='center', va='center',
                         fontsize=7, color=color)
-
-    # Check sign flips and mark them
-    for i in range(len(ENV_ORDER)):
-        for j in range(len(KEY_SIGNALS)):
-            vals = []
-            for bb in BACKBONES:
-                for row in rows:
-                    if (row['backbone'] == bb and row['signal'] == KEY_SIGNALS[j]
-                            and row['environment'] == ENV_ORDER[i]):
-                        v = float(row['rho'])
-                        p = float(row['p_value'])
-                        if p < 0.05:
-                            vals.append(v)
-            if len(vals) >= 2:
-                signs = [np.sign(v) for v in vals if v != 0]
-                if len(set(signs)) > 1:  # sign flip
-                    for bidx in range(3):
-                        rect = plt.Rectangle((j - 0.5, i - 0.5), 1, 1,
-                                             linewidth=1.8, edgecolor='#1a1a1a',
-                                             facecolor='none', zorder=10)
-                        axes[bidx].add_patch(rect)
 
     cbar_ax = fig.add_axes([0.90, 0.15, 0.015, 0.7])
     cbar = fig.colorbar(im, cax=cbar_ax)

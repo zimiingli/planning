@@ -17,6 +17,15 @@ from style import *
 apply_style()
 
 import matplotlib.pyplot as plt
+
+# Bump fonts by one notch for this teaser figure (local override only)
+plt.rcParams.update({
+    'font.size':       FONT_TICK   + 1,
+    'axes.labelsize':  FONT_LABEL  + 1,
+    'xtick.labelsize': FONT_TICK   + 1,
+    'ytick.labelsize': FONT_TICK   + 1,
+    'legend.fontsize': FONT_LEGEND + 1,
+})
 from pathlib import Path
 import csv
 
@@ -65,7 +74,7 @@ def main():
         ax.text(r + offset, yi, f'{r:+.2f}',
                 va='center',
                 ha='left' if r >= 0 else 'right',
-                fontsize=FONT_ANNOT, color='#333333')
+                fontsize=FONT_ANNOT + 1, color='#333333')
 
     ax.axvline(0, color='#555555', linewidth=0.8, zorder=2)
 
@@ -73,7 +82,7 @@ def main():
     ax.text(0.98, 1.03,
             r'prior-work assumption: $\rho > 0$',
             transform=ax.transAxes,
-            color=TYPE_D_COLOR, fontsize=FONT_LABEL, fontweight='bold',
+            color=TYPE_D_COLOR, fontsize=FONT_LABEL + 1, fontweight='bold',
             ha='right', va='bottom')
 
     ax.set_yticks(y)
