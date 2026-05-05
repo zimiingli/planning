@@ -54,7 +54,7 @@ for i, direction in enumerate(["Correct", "Wrong"]):
     for bar, v in zip(bars, heights):
         ax.text(bar.get_x() + bar.get_width() / 2, v + 1.5,
                 f"{v:.1f}", ha="center", va="bottom",
-                fontsize=8, fontweight="bold",
+                fontsize=10, fontweight="bold",
                 color=COLORS[direction])
 
 # Base_only reference line — labeled in the legend instead of inline.
@@ -62,11 +62,11 @@ ax.axhline(BASE_SR, color="#222222", linewidth=1.0, linestyle="--",
            label="base only", zorder=1)
 
 ax.set_xticks(x)
-ax.set_xticklabels(gate_order, fontsize=8)
-ax.tick_params(axis="y", labelsize=8)
-ax.set_ylabel("SR (\\%)", fontsize=9)
+ax.set_xticklabels(gate_order, fontsize=10)
+ax.tick_params(axis="y", labelsize=10)
+ax.set_ylabel("SR (\\%)", fontsize=11)
 ax.set_ylim(0, 105)
-ax.legend(fontsize=8, frameon=False, loc="lower center",
+ax.legend(fontsize=10, frameon=False, loc="lower center",
           bbox_to_anchor=(0.5, 1.02), ncol=3)
 ax.spines["top"].set_visible(False)
 ax.spines["right"].set_visible(False)
