@@ -1,10 +1,13 @@
 % ============================================================
 % 3. WHY FIXED-DIRECTION GATING FAILS
 % ============================================================
+\vspace{-0.1in}
 \section{Why Fixed-Direction Gating Fails}
 \label{sec:signal-landscape}
+\vspace{-0.1in}
 In this section, we first formalize the adaptive gating problem (\S\ref{sec:setup}), then measure signal-utility correlations across diverse environments to test the fixed-direction assumption (\S\ref{sec:empirical-landscape}), and finally model why the assumption fails (\S\ref{sec:toy-model}).
 
+\vspace{-0.1in}
 \subsection{Problem Setup}
 \label{sec:setup}
 We study LLM-based agents that solve tasks through multi-step interaction with an environment. At each step $t$, the agent observes state $s_t$, selects action $a_t$ from its base policy $\pi$, and transitions to $s_{t+1}$. An environment-specific \emph{test time optimizer} $T$ (e.g., rollout evaluation, $K$-variant sampling) can be invoked at any step to potentially improve action quality. Let $\sigma(s)$ denote a scalar gating signal at state $s$ (e.g., token entropy, confidence, disagreement, or a learned difficulty score). We define the \emph{optimizer utility} as:
@@ -19,7 +22,7 @@ where $R(\tau)$ is the episode return. $U > 0$ indicates the optimizer improves 
 
 \begin{wraptable}{r}{0.52\textwidth}
 	\vspace{-12pt}
-	\caption{Signal-utility correlations across 6 environments and 3 backbones. $\rho$: Spearman of token entropy with optimizer utility $U$; direction varies across both. $^*$: $p{<}0.05$.}
+	\caption{Signal-utility correlations across 6 environments and 3 backbones. $\rho$: Spearman of token entropy with utility $U$; direction varies across both. Cons.: sign agreement across backbones (\cmark same, \xmark flip, ---: insufficient). $^*$: $p{<}0.05$.}
 %	\vspace{-0.1in}
 	\label{tab:signal-discovery}
 	\centering\footnotesize
@@ -51,9 +54,10 @@ This direction mismatch is not benign: a gate that assumes the wrong direction s
 \textbf{The reversal is not an artifact of entropy scales.}
 A natural concern is that cross-backbone reversal could reflect incomparable raw entropy scales across tokenizers. We rule this out: per-(environment, backbone) quantile normalization preserves both Spearman rank ordering (trivially) and Pearson sign on the strong-correlation cells (Appendix~\ref{app:reversal-norm}). The reversal is also robust to monotone reward transformations $U \!\to\! \alpha U$ ($\alpha > 0$) and to entropy transformations $\sigma \!\to\! \sigma/T$, $\sigma \!\to\! \sigma^\alpha$, and $\sigma \!\to\! \log\sigma$, ruling out reward parameterization and entropy-pipeline calibration as alternative explanations (Appendix~\ref{app:reversal-alternatives}). Together, these findings suggest that uncertainty reflects latent state structure that varies across (environment, backbone) pairs, which we formalize next.
 
+\vspace{-0.1in}
 \subsection{Why Does Direction Reverse? A Two-Source Model}
 \label{sec:toy-model}
-
+\vspace{-0.1in}
 \textbf{Model.}
 We model direction reversal as arising from two coexisting regimes within each environment, not from two disjoint classes of tasks. The following linear form is a regime-level abstraction: it specifies the sign of the signal-utility relationship within each regime, not a mechanistic claim that all states within a regime share a single underlying cause. Operationally, Type~I denotes regimes with a negative within-regime signal-utility slope, regardless of whether the cause is missing evidence, weak grounding, invalid intermediate states, or rollout-induced compounding errors. At each decision step, a state can be of either type:
 \begin{itemize}[leftmargin=*,nosep]
@@ -65,7 +69,7 @@ Here $\alpha$ and $\beta$ are the within-type slopes: they capture how strongly 
   \rho(\mathcal{E}) \;\approx\; \beta - (\alpha + \beta)\,p_I(\mathcal{E}).
   \label{eq:direction}
 \end{equation}
-At the two extremes, $\rho \!=\! +\beta$ when the environment is pure Type~D ($p_I\!=\!0$) and $\rho \!=\! -\alpha$ when it is pure Type~I ($p_I\!=\!1$). In between, $\rho$ crosses zero at $p_I^* = \beta/(\alpha+\beta)$: environments above this threshold show negative $\rho$ (Type~I dominated), those below show positive $\rho$ (Type~D dominated), and those near it show negligible signal as the two effects cancel. This expression captures the sign-level dependence under a simplified linear model and is not intended as a estimator of Spearman $\rho$. 
+At the two extremes, $\rho \!=\! +\beta$ when the environment is pure Type~D ($p_I\!=\!0$) and $\rho \!=\! -\alpha$ when it is pure Type~I ($p_I\!=\!1$). In between, $\rho$ crosses zero at $p_I^* = \beta/(\alpha+\beta)$: environments above this threshold show negative $\rho$ (Type~I dominated), those below show positive $\rho$ (Type~D dominated), and those near it show negligible signal as the two effects cancel. This expression captures the sign-level dependence under a simplified linear model and is not intended as an estimator of Spearman $\rho$. 
 %The prediction is consistent with the observed Qwen3 pattern in Table~\ref{tab:signal-discovery}: search-based QA (FEVER, HotpotQA, TWExpress) shows negative $\rho$, code generation (APPS) shows positive $\rho$, and weak-signal environments (Plancraft) cluster near zero.
 
 \textbf{Implication: $\sigma$ is not sufficient for optimizer utility.}
