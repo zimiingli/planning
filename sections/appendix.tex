@@ -814,16 +814,16 @@ batched inference. The full set of reported experiments covers
 DIAL exploration phase ($N_{\text{explore}}{=}50$ episodes per
 (environment, backbone) deployment) and ablations.
 We estimate the total compute used to produce the results in this
-paper at approximately \textbf{1{,}900} A100-GPU-hours, of which
-roughly \textbf{55\%} corresponds to evaluation rollouts (DIAL,
+paper at approximately {1{,}900} A100-GPU-hours, of which
+roughly {55\%} corresponds to evaluation rollouts (DIAL,
 the two bounds, and six fixed-direction baselines across all
-(environment, backbone, seed) combinations), \textbf{2\%} to DIAL
+(environment, backbone, seed) combinations), {2\%} to DIAL
 exploration, and the remainder to ablations (LLM-feature variants,
 gate-capacity, wrong-direction reversal, regularizer,
 controlled-reversal interventions, and supplementary multi-backbone
 runs). The full research project, including preliminary experiments
 and configurations that did not make it into the paper, used
-roughly \textbf{2{,}600} A100-GPU-hours in total.
+roughly {2{,}600} A100-GPU-hours in total.
 
 \subsection{Asset Licenses}
 \label{app:licenses}
@@ -908,7 +908,7 @@ Section~\ref{sec:empirical-landscape}.
 \S\ref{app:feature-selection} reports which features the
 $\ell_1$ gate selects per environment and how their signed weights
 align with the Two-Source Model.
-\S\ref{app:llm-features} ablates the optional LLM feature layer.
+\S\ref{app:llm-features} ablates the LLM feature layer.
 \S\ref{app:regularizer-ablation} stress-tests sparsity by
 ablating the regularizer under an expanded candidate pool.
 \S\ref{app:auc} reports the AUC hierarchy
@@ -1490,6 +1490,15 @@ check rather than a standalone falsifiable prediction; the
 causal evidence in P2 is the more decisive test of the
 mixture-driven account.
 
+\begin{figure*}[t]
+	\centering
+	\includegraphics[width=\textwidth]{figures/fig_pareto.pdf}
+	\caption{SR vs.\ Cost ($\times$base) across all 6 environments
+		on Qwen3-4B. Shaded region: dominated by DIAL (lower SR
+		\emph{and} higher cost). Full numerical results across three
+		backbones are in Table~\ref{tab:full-results}.}
+	\label{fig:pareto}
+\end{figure*}
 \subsection{Multi-Backbone Verification}
 \label{app:multi-backbone}
 
@@ -1501,15 +1510,7 @@ environments. Table~\ref{tab:full-results}
 Figure~\ref{fig:pareto} below visualizes the Qwen3-4B Pareto
 frontier.
 
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=\textwidth]{figures/fig_pareto.pdf}
-  \caption{SR vs.\ Cost ($\times$base) across all 6 environments
-  on Qwen3-4B. Shaded region: dominated by DIAL (lower SR
-  \emph{and} higher cost). Full numerical results across three
-  backbones are in Table~\ref{tab:full-results}.}
-  \label{fig:pareto}
-\end{figure*}
+
 This appendix supports the (environment, backbone)-indexed
 formulation of \S\ref{sec:toy-model}: the same task changes
 $p_I$ (and, when it crosses $p_I^*$, the sign of $\rho$) when
@@ -1530,6 +1531,14 @@ for.
 	(\texttt{step\_count}) are more stable.}
 	\label{fig:multi-backbone-heatmap}
 \end{figure*}
+\begin{figure*}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{figures/fig_multi_backbone_sr.pdf}
+	\caption{Cross-backbone comparison: DIAL (red) vs.\ best
+		fixed-direction baseline (blue) across 3 backbones. Fixed baselines
+		show large SR variance across backbones; DIAL adapts robustly.}
+	\label{fig:multi-backbone-sr}
+\end{figure*}
 
 Figure~\ref{fig:multi-backbone-heatmap} visualizes this direction
 variation, with black-outlined cells marking sign flips. The downstream
@@ -1541,14 +1550,7 @@ fixed-direction assumption is brittle when the model changes;
 DIAL's per-(environment, backbone) direction discovery handles
 this transparently.
 
-\begin{figure*}[h!]
-\centering
-\includegraphics[width=\textwidth]{figures/fig_multi_backbone_sr.pdf}
-\caption{Cross-backbone comparison: DIAL (red) vs.\ best
-fixed-direction baseline (blue) across 3 backbones. Fixed baselines
-show large SR variance across backbones; DIAL adapts robustly.}
-\label{fig:multi-backbone-sr}
-\end{figure*}
+
 
 \subsection{Environment-Adaptive Trigger Behavior}
 \label{app:trigger-rate}
