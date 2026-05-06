@@ -29,6 +29,7 @@ Model, from intervention-unsuitable-leaning (FEVER) through mixed (WebShop) to d
 Full environment specifications are in
 Appendix~\ref{app:environment}.
 
+\vspace{-0.025in}
 \textbf{Baselines.} All methods share the same agent and
 optimizer $T$; only the gating decision differs.
 Six fixed-direction or fixed-budget baselines instantiate a
@@ -42,7 +43,7 @@ the optimizer, and \emph{always\_trigger}.
 
 
 \input{experiment/tab_full_results/tab_full_results.tex}
-\vspace{-0.05in}
+\vspace{-0.025in}
 \textbf{Metrics.} We use SR (success rate, $\uparrow$) and Cost
 ($\times$base, $\downarrow$): total deployment tokens normalized by
 base\_only tokens per episode. This metric counts \emph{all} LLM
@@ -88,7 +89,7 @@ regularizer ablations appear in Appendix~\ref{app:llm-features}
 and Appendix~\ref{app:regularizer-ablation}.
 
 \begin{wraptable}{r}{0.52\textwidth}
-\vspace{-1pt}
+\vspace{-12pt}
 \caption{Effect of reversing DIAL's learned direction.
 $\Delta$SR: reversed $-$ original. $|\rho_{\text{ent}}|$ is the
 absolute Spearman correlation between token entropy and
@@ -112,6 +113,7 @@ Plancraft      & 23.3\% & 20.5\% & $-$2.8  & 0.016 \\
 }
 \vspace{-10pt}
 \end{wraptable}
+\vspace{-0.025in}
 \textbf{Direction is a first-order determinant of gate quality.}
 To isolate the effect of direction, we reverse the sign of all learned weights in DIAL's fitted gate while keeping everything
 else unchanged, constructing an adversarially wrong-direction gate that preserves ranking structure but inverts trigger
@@ -121,7 +123,7 @@ wrong-direction harm result of Appendix~\ref{app:wrong-direction}: a sharper gat
 computation has negative value.
 
 \begin{wrapfigure}{r}{0.45\textwidth}
-\vspace{-12pt}
+\vspace{-15pt}
 \centering
 \includegraphics[width=0.43\textwidth]{figures/fig_capacity_ablation.pdf}
 \vspace{-0.1in}
@@ -131,10 +133,12 @@ wrong direction.}
 \label{fig:capacity}
 \vspace{-10pt}
 \end{wrapfigure}
+\vspace{-0.025in}
 \textbf{Gate capacity does not substitute for direction.}
 A natural objection is that DIAL's gains come from gate simplicity rather than learned direction. With correct
 direction, a logistic gate, a 2-layer MLP, and a hidden-state probe (2560-d) all reach $\approx$95\% SR on HotpotQA: capacity adds $<$1\% (Figure~\ref{fig:capacity}). With wrong direction, the ordering inverts: the MLP drops to 45.3\%, \emph{below} the wrong-direction logistic at 62.0\%. Direction consistently outweighs capacity, which is why DIAL's minimal linear gate suffices.
 
+\vspace{-0.025in}
 \textbf{Trigger rate adapts to rollout headroom.}
 In rollout-harmful environments, baselines that fire aggressively pay a price beyond efficiency: on Plancraft
 ($\Delta{=}{-}7.0$), s1\_budget keeps triggering and falls below \emph{base\_only} (16.3\% vs.\ 29.8\%, see
@@ -142,16 +146,18 @@ Appendix~\ref{app:bounds-comparison}); more compute makes performance \emph{wors
 trigger helps, down to $<$20\% on Plancraft, with a within-episode decay from 49\% at step~0 to under 20\% in late
 steps as the gate learns that further rollouts only add harm. This adaptive magnitude emerges from the per-environment signed weights alone: direction discovery already encodes whether the environment rewards or penalizes additional computation. The full per-step analysis is in Appendix~\ref{app:trigger-rate}.
 
+
+\vspace{-0.025in}
 \textbf{Why fewer rollouts can improve SR.}
 The optimizer is not a monotone improvement operator. In intervention-unsuitable states, rollout evaluation starts from the same unreliable context as the base policy and can amplify misleading evidence, invalid intermediate states, or compounding trajectory errors. Avoiding such negative-utility interventions therefore improves accuracy, not merely efficiency. DIAL's gain in low-headroom regimes comes from learning when \emph{not} to invoke the optimizer, while still triggering in decision-difficult states where rollouts expose useful alternatives.
 
 
-\vspace{-0.1in}
+\vspace{-0.15in}
 \subsection{Two-Source Model Verification}
 \vspace{-0.1in}
 \label{sec:theory-verification}
 \begin{wrapfigure}{r}{0.5\textwidth}
-	\vspace{-12pt}
+	\vspace{-33pt}
 	\centering
 	\includegraphics[width=0.43\textwidth]{figures/fig_temporal_shift.pdf}
 	\vspace{-0.1in}

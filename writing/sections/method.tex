@@ -3,12 +3,12 @@
 % ============================================================
 \begin{figure*}[t]
 	\centering
-	\includegraphics[width=\textwidth]{figures/dial_pipeline4.pdf} 
+	\includegraphics[width=\textwidth]{figures/dial_pipeline5.pdf} 
     \vspace{-0.2in}
 	\caption{\textbf{The DIAL pipeline.}
-		\textbf{(a) Explore}: collect signal-agnostic $(s, U)$ pairs via Bernoulli-$\varepsilon$ rollouts.
-		\textbf{(b) Reason}: build a candidate feature pool $\phi(s)$ from universal metrics combined with LLM-proposed task-specific features.
-		\textbf{(c) Learn}: fit an $\ell_1$-regularized logistic gate, whose signed weights jointly perform feature selection and recover per-environment direction (Type~D: $w_i{>}0$; Type~I: $w_i{<}0$).}
+		\textbf{(a) Explore}: paired counterfactual rollouts via Bernoulli-$\varepsilon$ yield raw data $\mathcal{D}_{\text{raw}}{=}\{(\text{state text}, R(a_T){-}R(a_B))\}$.
+		\textbf{(b) Reason}: from each state text, a candidate feature pool $\phi_{\text{cand}}(s)$ combines universal features with LLM-proposed task-specific features, yielding $\mathcal{D}{=}\{(\phi(s), U)\}$.
+		\textbf{(c) Learn}: fit an $\ell_1$-regularized logistic gate $g(s)$; signed weights jointly select features and recover per-environment direction (Type~D: $w_i{>}0$; Type~I: $w_i{<}0$).}
 	\label{fig:method_overview}
 \end{figure*}
 \vspace{-0.1in}
@@ -40,7 +40,7 @@ where $\phi(s)$ is the feature vector. Per-environment estimation details are in
 \vspace{-0.05in}
 The next stage builds the candidate feature pool $\phi_{\text{cand}}(s)$. This pool must be rich enough to capture each environment's informative signals, but not so environment-specific that deployment requires manual engineering per task.
 
-DIAL's candidate pool combines two layers. The first is a small set of universal features defined identically across environments: \texttt{step\_count}, \texttt{token\_entropy}, \texttt{evidence\_count}, \texttt{num\_available\_actions}, and \texttt{is\_finish} (definitions in Table~\ref{tab:universal-features}). Signals an environment does not naturally expose (e.g., \texttt{evidence\_count} outside QA-style tasks) default to zero, requiring no per-environment engineering. The second is an LLM-generated layer: an LLM receives a summary of $\mathcal{D}$ and proposes task-specific feature hypotheses $\phi_{\text{LLM}}(s)$, forming $\phi_{\text{cand}}(s) = \phi_{\text{univ}}(s) \cup \phi_{\text{LLM}}(s)$. The $\ell_1$ penalty in the next stage automatically discards uninformative proposals, so the LLM layer can propose freely without degrading gate quality. We show in \S\ref{sec:ablation} that the universal pool alone already outperforms all fixed-direction baselines, and the LLM layer adds further gains in environments where universal features are inadequate. We provide the prompt template and per-environment ablation in Appendix~\ref{app:llm-feature-layer} and Appendix~\ref{app:llm-features}.
+DIAL's candidate pool combines two layers. The first is a small set of universal features defined identically across environments: \texttt{step\_count}, \texttt{token\_entropy}, \texttt{evidence\_count}, \texttt{num\_available\_actions}, and \texttt{is\_finish} (definitions in Table~\ref{tab:universal-features}). All universal features are computed from the state text via either direct parsing (e.g., \texttt{evidence\_count}) or the agent's existing LLM forward pass (e.g., \texttt{token\_entropy}, \texttt{is\_finish}); no additional data source is required. Signals an environment does not naturally expose (e.g., \texttt{evidence\_count} outside QA-style tasks) default to zero, requiring no per-environment engineering. The second is an LLM-generated layer: an LLM receives a summary of $\mathcal{D}$ and proposes task-specific feature hypotheses $\phi_{\text{LLM}}(s)$, forming $\phi_{\text{cand}}(s) = \phi_{\text{univ}}(s) \cup \phi_{\text{LLM}}(s)$. The $\ell_1$ penalty in the next stage automatically discards uninformative proposals, so the LLM layer can propose freely without degrading gate quality. We show in \S\ref{sec:ablation} that the universal pool alone already outperforms all fixed-direction baselines, and the LLM layer adds further gains in environments where universal features are inadequate. We provide the prompt template and per-environment ablation in Appendix~\ref{app:llm-feature-layer} and Appendix~\ref{app:llm-features}.
 
 \vspace{-0.1in}
 \subsection{Learn: Sparse Linear Gate}
