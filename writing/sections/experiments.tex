@@ -44,16 +44,23 @@ the optimizer, and \emph{always\_trigger}.
 
 \input{experiment/tab_full_results/tab_full_results.tex}
 \vspace{-0.025in}
+% \textbf{Metrics.} We use SR (success rate, $\uparrow$) and Cost
+% ($\times$base, $\downarrow$): total deployment tokens normalized by
+% base\_only tokens per episode. This metric counts \emph{all} LLM
+% calls, including base proposer, gate overhead, and rollout calls, ensuring that per-step
+% overhead is not hidden. Calibration or exploration overhead is
+% excluded for all methods.
+% A method Pareto-dominates another if $\text{SR} \geq$ and
+% $\text{Cost} \leq$ with at least one strict inequality.
+% Token cost constants are reported in
+% Appendix~\ref{app:cost}.
 \textbf{Metrics.} We use SR (success rate, $\uparrow$) and Cost
-($\times$base, $\downarrow$): total deployment tokens normalized by
-base\_only tokens per episode. This metric counts \emph{all} LLM
-calls, including base proposer, gate overhead, and rollout calls, ensuring that per-step
-overhead is not hidden. Calibration or exploration overhead is
-excluded for all methods.
-A method Pareto-dominates another if $\text{SR} \geq$ and
-$\text{Cost} \leq$ with at least one strict inequality.
-Token cost constants are reported in
-Appendix~\ref{app:cost}.
+($\times$base, $\downarrow$), total deployment tokens normalized by
+base\_only per episode and including all LLM calls (base proposer, gate
+overhead, rollout); calibration and exploration overhead are excluded
+for all methods. A method Pareto-dominates another if
+$\text{SR}\geq$ and $\text{Cost}\leq$ with at least one strict inequality.
+Token cost constants are in Appendix~\ref{app:cost}.
 \vspace{-0.15in}
 \subsection{Main Results}
 \label{sec:main-results}
@@ -94,7 +101,7 @@ and Appendix~\ref{app:regularizer-ablation}.
 $\Delta$SR: reversed $-$ original. $|\rho_{\text{ent}}|$ is the
 absolute Spearman correlation between token entropy and
 optimizer utility. Degradation scales with $|\rho_{\text{ent}}|$.}
-\vspace{-.1in}
+\vspace{-.05in}
 \label{tab:wrong-direction}
 \centering
 \resizebox{0.5\textwidth}{!}{%
