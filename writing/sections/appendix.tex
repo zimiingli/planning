@@ -299,26 +299,26 @@ Table~\ref{tab:wrong-direction} is the empirical statement of
 the headline claim: a gate with reversed weights is, by
 construction, a more precisely calibrated \emph{harm-targeting}
 mechanism, and the resulting SR collapse scales with signal
-strength $|\rho|$. The decomposition predicts the relationship
+strength $|\rho^*|$. The decomposition predicts the relationship
 quantitatively. By the wrong-direction lemma in
 App~\ref{app:proof-necessity},
 \[
   \mathrm{SR}(g_{-d^*}, \mathcal{E}) -
   \mathrm{SR}(\mathrm{base}, \mathcal{E})
-  \;\approx\; -\,c \cdot |\rho(\mathcal{E})|,
+  \;\approx\; -\,c \cdot |\rho^*(\mathcal{E})|,
 \]
 where $c$ is a constant that depends on the optimizer's harm
 magnitude. Empirically this scaling is clean: HotpotQA
-($|\rho|{=}0.494$) loses 37.0\%, FEVER ($|\rho|{=}0.619$)
-loses 36.8\%, WebShop ($|\rho|{=}0.444$) loses 23.2\%,
-while Plancraft ($|\rho|{=}0.016$) loses only 2.8\%; the
-slope of damage in $|\rho|$ is the slope of ranking
+($|\rho^*|{=}0.494$) loses 37.0\%, FEVER ($|\rho^*|{=}0.619$)
+loses 36.8\%, WebShop ($|\rho^*|{=}0.444$) loses 23.2\%,
+while Plancraft ($|\rho^*|{=}0.016$) loses only 2.8\%; the
+slope of damage in $|\rho^*|$ is the slope of ranking
 sharpness, since sharper-ranking gates concentrate their firing
 on higher-$|\sigma|$ states which, when the direction is wrong,
 are exactly the harmful ones.
 
 Two environments show only minimal damage under reversal, both
-consistent with the same prediction (small $|\rho|$ or
+consistent with the same prediction (small $|\rho^*|$ or
 rollout-safe optimizer):
 
 \paragraph{TWExpress is rollout-safe ($\Delta{=}{+}31.8$).}
@@ -882,7 +882,7 @@ analyzed in \S\ref{sec:discussion}.
 
 \paragraph{Phi-3.5-mini.} Fixed-direction baselines degrade
 sharply on this backbone. On FEVER, all six baselines score at or
-below 20\% (base: 7.2\%), while DIAL reaches 20.5\%. On WebShop,
+below 20\%, while DIAL reaches 20.5\%. On WebShop,
 DIAL (57.3\%) exceeds the best baseline (s1\_budget, 43.0\%) by
 14.3\% at lower cost (2.56$\times$ vs.\ 3.89$\times$).
 
@@ -892,7 +892,7 @@ capacity. On TWExpress, CaTS collapses to near-base performance
 achieves 94.8\%. On FEVER, DIAL (54.7\%) is competitive with CaTS
 (56.3\%), unlike Qwen3 where FEVER is the weakest environment.
 On APPS, AUQ drops to
-46.0\% (below base 60.2\%), demonstrating that wrong-direction
+46.0\% (below the no-trigger baseline), demonstrating that wrong-direction
 gating actively harms performance on this backbone.
 
 
@@ -1111,9 +1111,9 @@ retained features. This variant isolates \emph{selection} from
 
 Table~\ref{tab:regularizer-ablation} reports SR and the mean number
 of non-zero fitted weights across three environments spanning
-signal strength: HotpotQA ($|\rho|{=}0.494$, strong),
-WebShop ($|\rho|{=}0.444$, moderate), and Plancraft
-($|\rho|{=}0.016$, weak).
+signal strength: HotpotQA ($|\rho^*|{=}0.494$, strong),
+WebShop ($|\rho^*|{=}0.444$, moderate), and Plancraft
+($|\rho^*|{=}0.016$, weak).
 
 \begin{table}[h]
 \caption{Regularizer ablation on three environments ordered by
@@ -1131,7 +1131,7 @@ diagnostic.}
 \begin{tabular}{lcccccc}
 \toprule
  & \multicolumn{2}{c}{HotpotQA} & \multicolumn{2}{c}{WebShop} & \multicolumn{2}{c}{Plancraft} \\
- & \multicolumn{2}{c}{$|\rho|{=}0.494$} & \multicolumn{2}{c}{$|\rho|{=}0.444$} & \multicolumn{2}{c}{$|\rho|{=}0.016$} \\
+ & \multicolumn{2}{c}{$|\rho^*|{=}0.494$} & \multicolumn{2}{c}{$|\rho^*|{=}0.444$} & \multicolumn{2}{c}{$|\rho^*|{=}0.016$} \\
 \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
 Regularizer & SR & \#nz & SR & \#nz & SR & \#nz \\
 \midrule
@@ -1187,11 +1187,11 @@ interpretable under the exact sparsity that $\ell_1$ provides.
 \paragraph{$\ell_1$ vs.\ unregularized logistic: robustness under
 weak signals.}
 The unregularized fit is the most fragile variant in the table.
-On Plancraft ($|\rho|{\approx}0.02$), no~regularization actually
+On Plancraft ($|\rho^*|{\approx}0.02$), no~regularization actually
 overfits the training split into a higher mean SR than $\ell_1$
 ($27.8$ vs.\ $27.2$) but with no diagnostic interpretation
 ($\#$nz~$=30$ across all seeds). The damaging case is WebShop
-($|\rho|{\approx}0.44$, moderate signal): no~regularization
+($|\rho^*|{\approx}0.44$, moderate signal): no~regularization
 drops to $36.2\pm7.3$, fully $6.5$ points below $\ell_1$ at
 $42.7\pm6.7$, with the wider standard deviation reflecting
 seed-dependent overfitting onto whichever PCA components happen
@@ -1418,7 +1418,7 @@ information-gathering attempts.
 \centering
 \caption{Temporal shift in $\rho$(entropy, $U$). All environments
 show $\rho$ shifting more negative from early to late steps,
-consistent with P1. Plancraft omitted ($|\rho|{=}0.016$, too weak
+consistent with P1. Plancraft omitted ($|\rho^*|{=}0.016$, too weak
 for meaningful comparison).}
 \label{tab:temporal}
 \begin{tabular}{llccccl}

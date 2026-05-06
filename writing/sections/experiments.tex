@@ -73,7 +73,7 @@ achieves the highest SR in 16 of 18 (environment, backbone) cells. Three insight
 First, \emph{wrong direction is catastrophic, not merely costly}.
 On Qwen3-4B FEVER, an intervention-unsuitable-leaning environment, CATTS pays 16.46$\times$ base for $K{=}5$ voting yet reaches only 32.2\% SR, below the 37.0\% no-trigger baseline: fixed-direction gating in the wrong direction
 does not merely waste compute, it actively hurts.
-Second, \emph{learning the right direction yields a better SR-cost trade-off, not just a retuned threshold}. On Qwen3-4B HotpotQA, DIAL trades 1.8 SR points for 2.6$\times$ less cost than always\_trigger (95.2 vs.\ 97.0\% at 8.02$\times$ vs.\ 10.63$\times$); on WebShop, DIAL matches always\_trigger at less than half the cost. The gap is too large
+Second, \emph{learning the right direction yields a better SR-cost trade-off, not just a retuned threshold}. On Qwen3-4B HotpotQA, DIAL trades 1.8 SR points for 1.3$\times$ less cost than always\_trigger (95.2 vs.\ 97.0\% at 8.02$\times$ vs.\ 10.63$\times$); on WebShop, DIAL matches always\_trigger at less than half the cost. The gap is too large
 to close by retuning thresholds without changing direction.
 Third, \emph{the win generalizes across backbones}. The same DIAL pipeline takes 6/6 cells on both Qwen3-4B and Phi-3.5-mini and 4/6 on Llama-3.1-8B, even though entropy--utility correlations flip sign across model families (\S\ref{sec:empirical-landscape}). Fixed-direction baselines instead break per-backbone: AUQ on HotpotQA falls from 95.0\% (Qwen3-4B) to 31.2\% (Phi-3.5).
 
@@ -96,18 +96,19 @@ regularizer ablations appear in Appendix~\ref{app:llm-features}
 and Appendix~\ref{app:regularizer-ablation}.
 
 \begin{wraptable}{r}{0.52\textwidth}
-\vspace{-12pt}
+\vspace{-2pt}
 \caption{Effect of reversing DIAL's learned direction.
-$\Delta$SR: reversed $-$ original. $|\rho_{\text{ent}}|$ is the
-absolute Spearman correlation between token entropy and
-optimizer utility. Degradation scales with $|\rho_{\text{ent}}|$.}
+$\Delta$SR: reversed $-$ original. $|\rho^*|$ is the
+absolute Spearman correlation between the dominant signal
+and optimizer utility in each environment. Degradation
+scales with $|\rho^*|$.}
 \vspace{-.05in}
 \label{tab:wrong-direction}
 \centering
 \resizebox{0.5\textwidth}{!}{%
 \begin{tabular}{lcccc}
 \toprule
-Environment & DIAL SR & Reversed SR & $\Delta$ SR & $|\rho_{\text{ent}}|$ \\
+Environment & DIAL SR & Reversed SR & $\Delta$ SR & $|\rho^*|$ \\
 \midrule
 FEVER          & 49.8\% & 13.0\% & $-$36.8 & 0.619 \\
 HotpotQA       & 95.2\% & 58.2\% & $-$37.0 & 0.494 \\
@@ -124,8 +125,8 @@ Plancraft      & 23.3\% & 20.5\% & $-$2.8  & 0.016 \\
 \textbf{Direction is a first-order determinant of gate quality.}
 To isolate the effect of direction, we reverse the sign of all learned weights in DIAL's fitted gate while keeping everything
 else unchanged, constructing an adversarially wrong-direction gate that preserves ranking structure but inverts trigger
-semantics. Table~\ref{tab:wrong-direction} shows that on strong-signal environments with $|\rho_{\text{ent}}| > 0.4$,
-reversal collapses SR by 23--37\%; on weak-signal Plancraft ($|\rho_{\text{ent}}|{=}0.016$) the effect is negligible. The damage scales with signal strength: wrong direction is not a calibration error but a structural failure. This instantiates the
+semantics. Table~\ref{tab:wrong-direction} shows that on strong-signal environments with $|\rho^*| > 0.4$,
+reversal collapses SR by 23--37\%; on weak-signal Plancraft ($|\rho^*|{=}0.016$) the effect is negligible. The damage scales with signal strength: wrong direction is not a calibration error but a structural failure. This instantiates the
 wrong-direction harm result of Appendix~\ref{app:wrong-direction}: a sharper gate fires precisely on the states where
 computation has negative value.
 
